@@ -6,7 +6,6 @@ const query = async(sql, params) => {
   const [results, ] = await connection.execute(sql, params);
 
   return results;
-  console.log(results)
 }
 
 module.exports = {
