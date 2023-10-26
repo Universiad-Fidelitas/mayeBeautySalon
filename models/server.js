@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { dbConnection } = require('../database/config');
+const { authenticateToken } = require('../middlewares/jsonwebtoken');
 require('dotenv').config();
 
 class Server {
@@ -38,8 +39,9 @@ class Server {
     }
 
     routes() {
-        this.app.use('/v1/api/users', require('../routes/user'))
-        this.app.use('/v1/api/rols', require('../routes/rols'))
+        this.app.use('/v1/api/usuarios', require('../routes/user'))
+        this.app.use('/v1/api/rols', authenticateToken,require('../routes/rols'))
+        this.app.use('/v1/api/auth', authenticateToken,require('../routes/auth'))
     }
 
     listen() {

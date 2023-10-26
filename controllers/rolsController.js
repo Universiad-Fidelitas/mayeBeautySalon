@@ -18,7 +18,7 @@ const getRols = async (req, res = response) => {
     const { pageIndex, NumOfItems, pagination } = req.body;
     try {
         const offSetStatus = pagination ? `LIMIT ${ pageIndex },${ NumOfItems }` : '';
-        const rows = await dbService.query(`SELECTd * FROM rols ${ offSetStatus }`);
+        const rows = await dbService.query(`SELECT * FROM rols ${ offSetStatus }`);
         const data = helper.emptyOrRows(rows);
         res.json(data);
     }
