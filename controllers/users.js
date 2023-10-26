@@ -1,6 +1,7 @@
 const { response } = require('express');
 const dbService = require('../database/dbService');
 const helper = require('../helpers/dbHelpers');
+const { hashPassword } = require('../helpers/bcrypt');
 
 const getUsers = async (req, res = response) => {
     try {
@@ -14,9 +15,9 @@ const getUsers = async (req, res = response) => {
 }
 
 const postUser = async (req, res = response) => {
-    const { nombre } = req.body;
+    const { rol_id, firstname, lastname, email, password } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO rols (name) VALUES ("${ nombre }")`);
+        const rows = await dbService.query(`INSERT INTO users (user_id, rol_id, firstname, lastname, email, password) VALUES (NULL, "${rol_id}", "${firstname}", "${lastname}", "${email}","${await hashPassword(password)}")`);
         const data = helper.emptyOrRows(rows);
         res.json(data)
     }
