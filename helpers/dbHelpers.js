@@ -1,6 +1,4 @@
 function getOffset(currentPage = 1, listPerPage) {
-
-    console.log(currentPage, listPerPage)
       return (currentPage - 1) * [listPerPage];
     }
     
