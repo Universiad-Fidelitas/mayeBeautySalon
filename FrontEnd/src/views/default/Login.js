@@ -1,25 +1,38 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { NavLink, useHistory } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import LayoutFullpage from 'layout/LayoutFullpage';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import HtmlHead from 'components/html-head/HtmlHead';
+import { useDispatch } from 'react-redux';
+import { loginUsuario } from 'store/slices/authThunk';
 
 const Login = () => {
   const title = 'Login';
   const description = 'Login Page';
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const formikRef = useRef();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required('Email is required'),
     password: Yup.string().min(6, 'Must be at least 6 chars!').required('Password is required'),
   });
-  const initialValues = { email: '', password: '' };
-  const onSubmit = (values) => console.log('submit form', values);
+  const initialValues = { email: 'mgranadosmunos@gmail.com', password: 'Mg1101012' };
+
+  const onSubmit = async (loginData) => {
+    const result = await dispatch(loginUsuario(loginData));
+    if(result.isLogin){
+      history.push('/dashboard');
+    }
+    formikRef.current.setFieldError('password', result.message);
+  };
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
   const { handleSubmit, handleChange, values, touched, errors } = formik;
+  formikRef.current = formik;
 
   const leftSide = (
     <div className="min-h-100 d-flex align-items-center">

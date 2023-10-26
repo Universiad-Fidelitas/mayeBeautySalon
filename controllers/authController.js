@@ -12,13 +12,18 @@ const userLogin = async (req, res) => {
         const data = helper.emptyOrRows(rows);
 
         if (data.length === 0) {
-            return res.status(401).json({ message: "Usuario no encontrado" });
+            return res.status(200).json({
+                isLogin: false,
+                message: "Usuario o contraseña incorrectos"
+            });
         }
-
         const usuario = data[0];
 
         if (!(await comparePasswords(password, usuario.password))) {
-            return res.status(401).json({ message: "Contraseña Incorrecta" });
+            return res.status(200).json({
+                isLogin: false,
+                message: "Usuario o contraseña incorrectos"
+            });
         }
 
         const rolQuery = "SELECT name FROM rols WHERE rol_id = ?";
@@ -31,6 +36,7 @@ const userLogin = async (req, res) => {
 
         res.json({
             ...userWithoutSensitiveData,
+            isLogin: true,
             rolName: rolName.name,
             token: generateToken(userWithoutSensitiveData),
         });

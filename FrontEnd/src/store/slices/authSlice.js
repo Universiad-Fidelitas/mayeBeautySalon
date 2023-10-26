@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DEFAULT_USER, IS_DEMO } from 'config.js';
 
 const initialState = {
-  isLogin: IS_DEMO,
-  currentUser: IS_DEMO ? DEFAULT_USER : {},
+  isLogin: false,
+  currentUser: {},
 };
 
 const authSlice = createSlice({

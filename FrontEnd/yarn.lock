@@ -863,14 +863,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/plugin-transform-react-jsx-development@^7.12.1":
-  version "7.14.5"
-  resolved "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-development/-/plugin-transform-react-jsx-development-7.14.5.tgz"
-  integrity sha512-rdwG/9jC6QybWxVe2UVOa7q6cnTpw8JRRHOxntG/h6g/guAOe6AhtQHJuJh5FwmnXIT1bdm5vC2/5huV8ZOorQ==
-  dependencies:
-    "@babel/plugin-transform-react-jsx" "^7.14.5"
-
-"@babel/plugin-transform-react-jsx-development@^7.14.5":
+"@babel/plugin-transform-react-jsx-development@^7.12.1", "@babel/plugin-transform-react-jsx-development@^7.14.5":
   version "7.14.5"
   resolved "https://registry.npmjs.org/@babel/plugin-transform-react-jsx-development/-/plugin-transform-react-jsx-development-7.14.5.tgz"
   integrity sha512-rdwG/9jC6QybWxVe2UVOa7q6cnTpw8JRRHOxntG/h6g/guAOe6AhtQHJuJh5FwmnXIT1bdm5vC2/5huV8ZOorQ==
@@ -902,15 +895,7 @@
     "@babel/plugin-syntax-jsx" "^7.14.5"
     "@babel/types" "^7.14.9"
 
-"@babel/plugin-transform-react-pure-annotations@^7.12.1":
-  version "7.14.5"
-  resolved "https://registry.npmjs.org/@babel/plugin-transform-react-pure-annotations/-/plugin-transform-react-pure-annotations-7.14.5.tgz"
-  integrity sha512-3X4HpBJimNxW4rhUy/SONPyNQHp5YRr0HhJdT2OH1BRp0of7u3Dkirc7x9FRJMKMqTBI079VZ1hzv7Ouuz///g==
-  dependencies:
-    "@babel/helper-annotate-as-pure" "^7.14.5"
-    "@babel/helper-plugin-utils" "^7.14.5"
-
-"@babel/plugin-transform-react-pure-annotations@^7.14.5":
+"@babel/plugin-transform-react-pure-annotations@^7.12.1", "@babel/plugin-transform-react-pure-annotations@^7.14.5":
   version "7.14.5"
   resolved "https://registry.npmjs.org/@babel/plugin-transform-react-pure-annotations/-/plugin-transform-react-pure-annotations-7.14.5.tgz"
   integrity sha512-3X4HpBJimNxW4rhUy/SONPyNQHp5YRr0HhJdT2OH1BRp0of7u3Dkirc7x9FRJMKMqTBI079VZ1hzv7Ouuz///g==
@@ -3011,21 +2996,7 @@ babel-extract-comments@^1.0.0:
   dependencies:
     babylon "^6.18.0"
 
-babel-jest@^26.6.0:
-  version "26.6.3"
-  resolved "https://registry.npmjs.org/babel-jest/-/babel-jest-26.6.3.tgz"
-  integrity sha512-pl4Q+GAVOHwvjrck6jKjvmGhnO3jHX/xuB9d27f+EJZ/6k+6nMuPjorrYp7s++bKKdANwzElBWnLWaObvTnaZA==
-  dependencies:
-    "@jest/transform" "^26.6.2"
-    "@jest/types" "^26.6.2"
-    "@types/babel__core" "^7.1.7"
-    babel-plugin-istanbul "^6.0.0"
-    babel-preset-jest "^26.6.2"
-    chalk "^4.0.0"
-    graceful-fs "^4.2.4"
-    slash "^3.0.0"
-
-babel-jest@^26.6.3:
+babel-jest@^26.6.0, babel-jest@^26.6.3:
   version "26.6.3"
   resolved "https://registry.npmjs.org/babel-jest/-/babel-jest-26.6.3.tgz"
   integrity sha512-pl4Q+GAVOHwvjrck6jKjvmGhnO3jHX/xuB9d27f+EJZ/6k+6nMuPjorrYp7s++bKKdANwzElBWnLWaObvTnaZA==
