@@ -1,5 +1,6 @@
 const enMessages = {
   'menu.dashboards': 'Dashboards',
+  'menu.trabajadores': 'Workers',
   'menu.default': 'Default',
   'menu.visual': 'Visual',
   'menu.analytic': 'Analytic',
@@ -22,6 +23,8 @@ const enMessages = {
   'menu.detail': 'Detail',
   'menu.miscellaneous': 'Miscellaneous',
   'menu.faq': 'Faq',
+  'menu.language': 'Language',
+  'menu.roles': 'Roles',
   'menu.knowledge-base': 'Knowledge Base',
   'menu.error': 'Error',
   'menu.coming-soon': 'Coming Soon',

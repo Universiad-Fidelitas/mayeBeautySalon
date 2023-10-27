@@ -5,8 +5,12 @@ import { Col, Dropdown, Row } from 'react-bootstrap';
 import { MENU_PLACEMENT } from 'constants.js';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
+import { setLogoutUser } from 'store/slices/authSlice';
 
-const NavUserMenuContent = () => (
+const NavUserMenuContent = () => {
+  const dispatch = useDispatch();
+  
+  return (
   <div>
     <Row className="mb-3 ms-0 me-0">
       <Col xs="12" className="ps-1 mb-2">
@@ -87,7 +91,7 @@ const NavUserMenuContent = () => (
             </a>
           </li>
           <li>
-            <a href="#/!">
+            <a onClick={() => dispatch(setLogoutUser())}>
               <CsLineIcons icon="logout" className="me-2" size="17" /> <span className="align-middle">Logout</span>
             </a>
           </li>
@@ -95,7 +99,7 @@ const NavUserMenuContent = () => (
       </Col>
     </Row>
   </div>
-);
+)};
 
 const NavUserMenuDropdownToggle = React.memo(
   React.forwardRef(({ onClick, expanded = false, user = {} }, ref) => (

@@ -1,8 +1,9 @@
 import { DEFAULT_PATHS } from 'config.js';
 
 import HorizontalPage from 'views/Horizontal';
-import VerticalPage from 'views/Vertical';
 import Dashboard from 'views/admin/Dashboard';
+import Roles from 'views/admin/Usuarios/Roles';
+import Usuarios from 'views/admin/Usuarios/Usuarios';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
@@ -12,26 +13,24 @@ const routesAndMenuItems = {
       path: DEFAULT_PATHS.APP,
       exact: true,
       redirect: true,
-      to: `${appRoot}/horizontal`,
-    },
-    {
-      path: `${appRoot}/horizontal`,
-      component: HorizontalPage,
-      label: 'menu.horizontal',
-      icon: 'grid-2',
-    },
-    {
-      path: `${appRoot}/vertical`,
-      label: 'menu.vertical',
-      icon: 'grid-3',
-      component: VerticalPage,
+      to: `${appRoot}/dashboard`,
     },
     {
       path: `${appRoot}/dashboard`,
       label: 'menu.dashboard',
-      icon: 'grid-3',
+      icon: 'dashboard-1',
       component: Dashboard,
       protected: true
+    },
+    {
+      path: `${appRoot}/trabajadores`,
+      label: 'menu.trabajadores',
+      icon: 'tea',
+      protected: true,
+      subs: [
+        { path: '/usuarios',icon: 'user', label: 'menu.users', component: Usuarios },
+        { path: '/roles',icon: 'diagram-1', label: 'menu.roles', component: Roles },
+      ],
     },
   ],
   sidebarItems: [],

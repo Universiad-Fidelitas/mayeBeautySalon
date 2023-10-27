@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import { Dropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { MENU_PLACEMENT } from 'constants.js';
 import { changeLang } from 'lang/langSlice';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
+import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
 const MENU_NAME = 'NavLanguageSwitcher';
 const NavLanguageSwitcher = () => {
@@ -19,6 +21,7 @@ const NavLanguageSwitcher = () => {
   const { color } = useSelector((state) => state.settings);
   const { showingNavMenu } = useSelector((state) => state.layout);
   const { languages, currentLang } = useSelector((state) => state.lang);
+  const { formatMessage: f } = useIntl();
 
   const onSelectLang = (code) => {
     dispatch(changeLang(code));
@@ -43,7 +46,8 @@ const NavLanguageSwitcher = () => {
             show: showingNavMenu === MENU_NAME,
           })}
         >
-          {currentLang.code}
+
+          {`${f({ id: 'menu.language' })}: ${currentLang.code}`}
         </Dropdown.Toggle>
 
         <Dropdown.Menu

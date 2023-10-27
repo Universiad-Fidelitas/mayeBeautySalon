@@ -2,6 +2,7 @@ const dbService = require('../database/dbService');
 const helper = require('../helpers/dbHelpers');
 const { generateToken } = require('../middlewares/jsonwebtoken');
 const { comparePasswords } = require('../helpers/bcrypt');
+const jwt = require('jsonwebtoken');
 
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -44,7 +45,21 @@ const userLogin = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+const tokenValidation = async (req, res) => {
+    const { token } = req.body;
+    const secretKey = 'your-secret-key'; // Replace with your secret key
+    if (token){
+        try {
+            jwt.verify(token, secretKey);
+            res.json({ valid:  true});
+          } catch (error) {
+            res.json({ valid:  false});
+        }
+    }
+  };
+
 
 module.exports = {
-    userLogin
+    userLogin,
+    tokenValidation
 }

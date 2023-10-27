@@ -12,15 +12,15 @@ import langReducer from 'lang/langSlice';
 import menuReducer from 'layout/nav/main-menu/menuSlice';
 import notificationReducer from 'layout/nav/notifications/notificationSlice';
 import scrollspyReducer from 'components/scrollspy/scrollspySlice';
+import authReducer from 'store/slices/authSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
-import authReducer from 'store/slices/authSlice';
 
 const persistConfig = {
   key: REDUX_PERSIST_KEY,
   storage,
-  whitelist: ['menu', 'settings', 'lang'],
+  whitelist: ['menu', 'settings', 'lang', 'auth'],
 };
 
 const persistedReducer = persistReducer(

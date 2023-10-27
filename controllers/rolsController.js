@@ -15,15 +15,62 @@ const getById = async (req, res = response) => {
 }
 
 const getRols = async (req, res = response) => {
-    const { pageIndex, NumOfItems, pagination } = req.body;
+    const { pageIndex, pageSize, term, sortBy } = req.body;
     try {
-        const offSetStatus = pagination ? `LIMIT ${ pageIndex },${ NumOfItems }` : '';
-        const rows = await dbService.query(`SELECT * FROM rols ${ offSetStatus }`);
-        const data = helper.emptyOrRows(rows);
-        res.json(data);
-    }
-    catch(error) {
-        res.status(500).json({message: error.message})
+        // Calculate the offset based on pageIndex and pageSize
+        const offset = pageIndex * pageSize;
+
+        // Build the base query
+        let baseQuery = 'SELECT * FROM rols';
+
+        // Build the query based on the search term
+        if (term) {
+            baseQuery += ` WHERE name LIKE '%${term}%'`; // Replace column_name with the actual column name for searching
+        }
+
+        // Initialize an array to store individual ORDER BY clauses
+        const orderByClauses = [];
+
+        // Construct the ORDER BY clauses from the sortBy array
+        if (Array.isArray(sortBy)) {
+            for (const sortItem of sortBy) {
+                const { id, desc } = sortItem;
+                if (id) {
+                    orderByClauses.push(`${id} ${desc ? 'DESC' : 'ASC'}`);
+                }
+            }
+        }
+
+        // Add ORDER BY clauses to the query
+        if (orderByClauses.length > 0) {
+            baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
+        }
+
+        // Construct the full query with pagination
+        const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
+
+        // Query the database with the constructed query for pagination, search, and sorting
+        const rows = await dbService.query(query);
+
+        // Calculate the total row count based on the filtered result set
+        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_rols`);
+        const totalRowCount = totalRowCountResult[0].count;
+
+        // Calculate the pageCount based on the totalRowCount and pageSize
+        const pageCount = Math.ceil(totalRowCount / pageSize);
+
+        // Create the pagination response
+        const response = {
+            pageSize,
+            pageIndex,
+            pageCount,
+            items: rows,
+            rowCount: totalRowCount,
+        };
+
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
 

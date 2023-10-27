@@ -13,10 +13,14 @@ const authSlice = createSlice({
       state.currentUser = action.payload;
       state.isLogin = true;
     },
+    setLogoutUser(state, action) {
+      state.currentUser = {};
+      state.isLogin = false;
+    },
   },
 });
 
-export const { setCurrentUser } = authSlice.actions;
+export const { setCurrentUser, setLogoutUser } = authSlice.actions;
 const authReducer = authSlice.reducer;
 
 export default authReducer;

@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const languages = [
-  { code: 'EN', locale: 'en-US', direction: 'ltr' },
-  { code: 'ES', locale: 'es-ES', direction: 'ltr' },
-  { code: 'DE', locale: 'de-DE', direction: 'ltr' },
+  { code: 'English', locale: 'en-US', direction: 'ltr' },
+  { code: 'Español', locale: 'es-ES', direction: 'ltr' },
 ];
 const navigatorLang = (navigator.languages && navigator.languages[0]) || navigator.language || navigator.userLanguage;
 
