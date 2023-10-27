@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { DEFAULT_USER, IS_DEMO } from 'config.js';
 
 const initialState = {
-  isLogin: IS_DEMO,
-  currentUser: IS_DEMO ? DEFAULT_USER : {},
+  isLogin: false,
+  currentUser: {},
 };
 
 const authSlice = createSlice({
@@ -14,10 +13,14 @@ const authSlice = createSlice({
       state.currentUser = action.payload;
       state.isLogin = true;
     },
+    setLogoutUser(state, action) {
+      state.currentUser = {};
+      state.isLogin = false;
+    },
   },
 });
 
-export const { setCurrentUser } = authSlice.actions;
+export const { setCurrentUser, setLogoutUser } = authSlice.actions;
 const authReducer = authSlice.reducer;
 
 export default authReducer;

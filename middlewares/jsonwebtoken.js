@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const secretKey = 'your-secret-key'; // Replace with your secret key
-const expiresIn = '1m';
+const expiresIn = '10m';
 
 const generateToken = (usuario) => {
     const token = jwt.sign(usuario, secretKey, { expiresIn });
@@ -26,5 +26,5 @@ const authenticateToken = (req, res, next) => {
 
 module.exports = {
     generateToken,
-    authenticateToken
+    authenticateToken,
 }

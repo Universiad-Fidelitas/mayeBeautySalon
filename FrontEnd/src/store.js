@@ -9,10 +9,10 @@ import { FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from 'reduxjs-toolk
 import settingsReducer from 'settings/settingsSlice';
 import layoutReducer from 'layout/layoutSlice';
 import langReducer from 'lang/langSlice';
-import authReducer from 'auth/authSlice';
 import menuReducer from 'layout/nav/main-menu/menuSlice';
 import notificationReducer from 'layout/nav/notifications/notificationSlice';
 import scrollspyReducer from 'components/scrollspy/scrollspySlice';
+import authReducer from 'store/slices/authSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -20,7 +20,7 @@ import { REDUX_PERSIST_KEY } from 'config.js';
 const persistConfig = {
   key: REDUX_PERSIST_KEY,
   storage,
-  whitelist: ['menu', 'settings', 'lang'],
+  whitelist: ['menu', 'settings', 'lang', 'auth'],
 };
 
 const persistedReducer = persistReducer(

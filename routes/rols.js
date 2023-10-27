@@ -3,8 +3,8 @@ const { check, param } = require('express-validator');
 const { getRols, postRols, putRols, deleteRols, getById } = require('../controllers/rolsController');
 const router = Router();
 
-router.get('/', getRols)
-router.post('/', [
+router.post('/', getRols)
+router.post('/add', [
     check('name', 'Email is not valid').isEmail()
 ], postRols)
 
