@@ -57,7 +57,3 @@ Iniciamos el projecto
 - **Client:** React JS
 - **Server:** Node JS
 - **Base Datos:** MySql
-
-
-![Logo](https://www.coopeande1.com/sites/default/files/2021-01/u_fidelitas.png)
-
