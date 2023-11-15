@@ -1,7 +1,9 @@
 import React from 'react';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
+import { useIntl } from 'react-intl';
 
 const ControlsSearch = ({ tableInstance, onChange }) => {
+  const { formatMessage: f } = useIntl();
   const {
     state: { globalFilter },
   } = tableInstance;
@@ -17,7 +19,7 @@ const ControlsSearch = ({ tableInstance, onChange }) => {
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        placeholder="Search"
+        placeholder={f({ id: 'menu.search' })}
       />
       {value && value.length > 0 ? (
         <span
