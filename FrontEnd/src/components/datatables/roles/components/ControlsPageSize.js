@@ -1,7 +1,9 @@
 import React from 'react';
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useIntl } from 'react-intl';
 
 const ControlsPageSize = ({ tableInstance }) => {
+  const { formatMessage: f } = useIntl();
   const {
     setPageSize,
     gotoPage,
@@ -19,7 +21,7 @@ const ControlsPageSize = ({ tableInstance }) => {
       {({ ref, ...triggerHandler }) => (
         <Dropdown className="d-inline-block" align="end">
           <Dropdown.Toggle ref={ref} {...triggerHandler} variant="foreground-alternate" className="shadow">
-            {pageSize} Items
+            {pageSize} {f({ id: 'menu.items' })}
           </Dropdown.Toggle>
           <Dropdown.Menu
             className="shadow dropdown-menu-end"
@@ -28,15 +30,15 @@ const ControlsPageSize = ({ tableInstance }) => {
                 {
                   name: 'computeStyles',
                   options: {
-                    gpuAcceleration: false,
+                    gpuAcceleration: true,
                   },
                 },
               ],
             }}
           >
             {options.map((pSize) => (
-              <Dropdown.Item key={`pageSize.${pSize}`} active={pSize === pageSize} onSelect={() => onSelectPageSize(pSize)}>
-                {pSize} Items
+              <Dropdown.Item key={`pageSize.${pSize}`} active={pSize === pageSize} onClick={() => onSelectPageSize(pSize)}>
+                {pSize} {f({ id: 'menu.items' })}
               </Dropdown.Item>
             ))}
           </Dropdown.Menu>

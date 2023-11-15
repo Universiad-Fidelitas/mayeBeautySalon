@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { useIntl } from 'react-intl';
 import axios from 'axios';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
@@ -18,12 +19,13 @@ import Table from '../../../components/datatables/roles/components/Table';
 import TablePagination from '../../../components/datatables/roles/components/TablePagination';
 
 const Roles = () => {
+  const { formatMessage: f } = useIntl();
   const title = 'Roles de usuario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'usuarios', text: 'Usuarios' },
-    { to: 'usuarios/roles', title: 'Roles' },
+    { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' })},
+    { to: 'trabajadores/roles', title: 'Roles' },
   ];
 
   const columns = React.useMemo(() => {
@@ -77,7 +79,7 @@ const Roles = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
     },
     useGlobalFilter,
     useSortBy,

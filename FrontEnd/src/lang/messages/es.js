@@ -28,7 +28,7 @@ const enMessages = {
   'menu.error': 'es|Error',
   'menu.coming-soon': 'es|Coming Soon',
   'menu.pricing': 'es|Pricing',
-  'menu.search': 'es|Search',
+  'menu.search': 'Buscar',
   'menu.mailing': 'es|Mailing',
   'menu.empty': 'es|Empty',
   'menu.portfolio': 'es|Portfolio',
@@ -176,5 +176,7 @@ const enMessages = {
   'menu.player': 'es|Player',
   'menu.material': 'es|Material',
   'menu.syllabus': 'es|Syllabus',
+  'menu.items': 'Elementos',
+  'menu.addNew': 'Agregar Nuevo',
 };
 export default enMessages;
