@@ -13,6 +13,7 @@ import menuReducer from 'layout/nav/main-menu/menuSlice';
 import notificationReducer from 'layout/nav/notifications/notificationSlice';
 import scrollspyReducer from 'components/scrollspy/scrollspySlice';
 import authReducer from 'store/slices/authSlice';
+import rolsReducer from 'store/rols/rolsSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -30,6 +31,7 @@ const persistedReducer = persistReducer(
     layout: layoutReducer,
     lang: langReducer,
     auth: authReducer,
+    rols: rolsReducer,
     menu: menuReducer,
     notification: notificationReducer,
     scrollspy: scrollspyReducer,

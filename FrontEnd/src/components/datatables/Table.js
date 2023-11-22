@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import React from 'react';
 
-const Table = ({ tableInstance, className = 'react-table boxed' }) => {
+export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
   const { getTableProps, headerGroups, page, getTableBodyProps, prepareRow, toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
 
   return (
@@ -60,4 +60,3 @@ const Table = ({ tableInstance, className = 'react-table boxed' }) => {
     </>
   );
 };
-export default Table;

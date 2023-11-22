@@ -1,22 +1,13 @@
-/* eslint-disable no-plusplus */
 import React, { useEffect, useState, useCallback } from 'react';
-import { Col, Form, Row } from 'react-bootstrap';
+import { ModalAddEdit, ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { useDispatch, useSelector } from 'react-redux';
+import { editRol, getRols, postRol } from 'store/rols';
+import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
-import axios from 'axios';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import { SERVICE_URL } from 'config.js';
-import { baseApi } from 'api/apiConfig';
-import ButtonsAddNew from '../../../components/datatables/roles/components/ButtonsAddNew';
-import ControlsPageSize from '../../../components/datatables/roles/components/ControlsPageSize';
-import ControlsAdd from '../../../components/datatables/roles/components/ControlsAdd';
-import ControlsEdit from '../../../components/datatables/roles/components/ControlsEdit';
-import ControlsDelete from '../../../components/datatables/roles/components/ControlsDelete';
-import ControlsSearch from '../../../components/datatables/roles/components/ControlsSearch';
-import ModalAddEdit from '../../../components/datatables/roles/components/ModalAddEdit';
-import Table from '../../../components/datatables/roles/components/Table';
-import TablePagination from '../../../components/datatables/roles/components/TablePagination';
+import * as Yup from 'yup';
 
 const Roles = () => {
   const { formatMessage: f } = useIntl();
@@ -27,9 +18,18 @@ const Roles = () => {
     { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' })},
     { to: 'trabajadores/roles', title: 'Roles' },
   ];
+  const [data, setData] = useState([]);
+  const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
+  const [term, setTerm] = useState('');
+  const dispatch = useDispatch();
+  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols)
 
   const columns = React.useMemo(() => {
     return [
+      {
+        Header: 'Rol Id',
+        accessor: 'rol_id',
+      },
       {
         Header: 'Name',
         accessor: 'name',
@@ -61,11 +61,6 @@ const Roles = () => {
     ];
   }, []);
 
-  const [data, setData] = useState([]);
-  const [pageCount, setPageCount] = React.useState(1);
-  const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
-  const [term, setTerm] = useState('');
-
   const tableInstance = useTable(
     {
       columns,
@@ -91,64 +86,47 @@ const Roles = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
-  const fetchData = useCallback( async () => {
-    const response = await baseApi.post('/rols', { term, sortBy, pageIndex, pageSize });
-    const { items, pageCount: pCount } = response.data;
-    setData(items);
-    setPageCount(pCount);
-  }, [sortBy, pageIndex, pageSize, term]);
+  useEffect(() => {
+    dispatch(getRols({ term, sortBy, pageIndex, pageSize }))
+  }, [sortBy, pageIndex, pageSize, term])
 
-  const addItem = React.useCallback(
-    async ({ item }) => {
-      document.body.classList.add('spinner');
-      const response = await axios.post(`${SERVICE_URL}/datatable`, { sortBy, pageSize, pageIndex, item });
-      setTimeout(() => {
-        const { items, pageCount: pCount } = response.data;
-        setData(items);
-        setPageCount(pCount);
-        document.body.classList.remove('spinner');
-      }, 1000);
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  useEffect(() => {
+    if (rols.length > 0){
+      setData(rols);
+    }
+  }, [isRolesLoading])
+  
+  const deleteItems = useCallback(async (values) => {
+    console.log('deleteItems')
+  }, [sortBy, pageIndex, pageSize]);
 
-  const editItem = React.useCallback(
-    async ({ item }) => {
-      console.log(item)
-      document.body.classList.add('spinner');
-      const response = await axios.put(`${SERVICE_URL}/datatable`, { sortBy, pageSize, pageIndex, item });
-      setTimeout(() => {
-        const { items, pageCount: pCount } = response.data;
-        setData(items);
-        setPageCount(pCount);
-        document.body.classList.remove('spinner');
-      }, 1000);
-    },
-    [sortBy, pageIndex, pageSize]
-  );
 
-  const deleteItems = React.useCallback(
-    async ({ ids }) => {
-      document.body.classList.add('spinner');
-      const response = await axios.delete(`${SERVICE_URL}/datatable`, { sortBy, pageSize, pageIndex, ids });
-      setTimeout(() => {
-        const { items, pageCount: pCount } = response.data;
-        setData(items);
-        setPageCount(pCount);
-        document.body.classList.remove('spinner');
-      }, 1000);
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  const editItem = useCallback(async (values) => {
+    dispatch(editRol(values))
+  }, [sortBy, pageIndex, pageSize]);
+  
+  const addItem = useCallback(async (values) => {
+    dispatch(postRol(values))
+  }, [sortBy, pageIndex, pageSize]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
 
-  useEffect(() => {
-    fetchData();
-  }, [sortBy, fetchData, pageIndex, pageSize, term]);
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+    .required('First Name is required')
+    .min(3, 'First Name must be at least 3 character')
+    .max(10, 'First Name must be at most 10 characters'),
+  });
 
+  const formFields = [
+    {
+      id:'name',
+      label: 'Nombre del rol',
+    }
+  ]
+  
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -193,7 +171,7 @@ const Roles = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} />
+          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields}/>
         </Col>
       </Row>
     </>

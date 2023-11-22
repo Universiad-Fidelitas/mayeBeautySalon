@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
-const ControlsDelete = ({ tableInstance, deleteItems }) => {
+export const ControlsDelete = ({ tableInstance, deleteItems }) => {
   const { selectedFlatRows } = tableInstance;
   const onClick = () => {
     deleteItems({ ids: selectedFlatRows.map((x) => x.original.id) });
@@ -23,4 +23,3 @@ const ControlsDelete = ({ tableInstance, deleteItems }) => {
     </OverlayTrigger>
   );
 };
-export default ControlsDelete;

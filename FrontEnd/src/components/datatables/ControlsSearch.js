@@ -2,7 +2,7 @@ import React from 'react';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useIntl } from 'react-intl';
 
-const ControlsSearch = ({ tableInstance, onChange }) => {
+export const ControlsSearch = ({ tableInstance, onChange }) => {
   const { formatMessage: f } = useIntl();
   const {
     state: { globalFilter },
@@ -39,5 +39,3 @@ const ControlsSearch = ({ tableInstance, onChange }) => {
     </>
   );
 };
-
-export default ControlsSearch;
