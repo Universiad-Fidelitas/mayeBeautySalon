@@ -17,21 +17,16 @@ const getById = async (req, res = response) => {
 const getRols = async (req, res = response) => {
     const { pageIndex, pageSize, term, sortBy } = req.body;
     try {
-        // Calculate the offset based on pageIndex and pageSize
         const offset = pageIndex * pageSize;
 
-        // Build the base query
         let baseQuery = 'SELECT * FROM rols';
 
-        // Build the query based on the search term
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`; // Replace column_name with the actual column name for searching
+            baseQuery += ` WHERE name LIKE '%${term}%'`;
         }
 
-        // Initialize an array to store individual ORDER BY clauses
         const orderByClauses = [];
 
-        // Construct the ORDER BY clauses from the sortBy array
         if (Array.isArray(sortBy)) {
             for (const sortItem of sortBy) {
                 const { id, desc } = sortItem;
@@ -41,25 +36,19 @@ const getRols = async (req, res = response) => {
             }
         }
 
-        // Add ORDER BY clauses to the query
         if (orderByClauses.length > 0) {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
 
-        // Construct the full query with pagination
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
 
-        // Query the database with the constructed query for pagination, search, and sorting
         const rows = await dbService.query(query);
 
-        // Calculate the total row count based on the filtered result set
         const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_rols`);
         const totalRowCount = totalRowCountResult[0].count;
 
-        // Calculate the pageCount based on the totalRowCount and pageSize
         const pageCount = Math.ceil(totalRowCount / pageSize);
 
-        // Create the pagination response
         const response = {
             pageSize,
             pageIndex,
@@ -81,12 +70,16 @@ const postRols = async (req, res = response) => {
         const { insertId } = helper.emptyOrRows(rows);
 
         res.status(200).json({
-            insertId,
-            msg: "Rol Added Succesfully"
+            rol_id: insertId,
+            success: true,
+            message: "¡El rol ha sido agregado exitosamente!"
         })
     }
     catch(error) {
-        res.status(500).json({message: error.message})
+        res.status(200).json({
+            success: false,
+            message: "¡No es posible agregar un rol duplicado!"
+        })
     }
 }
 
@@ -99,28 +92,41 @@ const putRols = async (req, res = response) => {
         const { affectedRows } = helper.emptyOrRows(rows);
         res.status(200).json({
             affectedRows,
-            msg: "Rol Edited Succesfully"
+            success: true,
+            message: "¡El rol ha sido editado exitosamente!"
         })
     }
     catch(error) {
-        res.status(500).json({message: error.message})
+        res.status(200).json({
+            success: false,
+            message: "¡Se ha producido un error al ejecutar la acción.!"
+        })
     }
 }
 
 const deleteRols = async (req, res = response) => {
-    const { rol_id } = req.params;
+    const { rol_ids } = req.body;
     try {
-        const rows = await dbService.query(`DELETE FROM rols WHERE rol_id=${ rol_id }`);
+        const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
         const { affectedRows } = helper.emptyOrRows(rows);
+        if( affectedRows === 1 ) {
+            res.status(200).json({
+                success: true,
+                message: "¡El rol ha sido eliminado exitosamente!"
+            });
+        } else {
+            res.status(200).json({
+                success: true,
+                message: "¡Los roles han sido eliminados exitosamente!"
+            });
+        }
+    } catch (error) {
         res.status(200).json({
-            affectedRows,
-            msg: "Rol Deleted Succesfully"
+            success: false,
+            message: "¡Se ha producido un error al ejecutar la acción.!"
         })
     }
-    catch(error) {
-        res.status(500).json({message: error.message})
-    }
-}
+};
 
 module.exports = {
     getRols,

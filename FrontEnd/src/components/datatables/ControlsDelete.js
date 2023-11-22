@@ -5,7 +5,7 @@ import CsLineIcons from 'cs-line-icons/CsLineIcons';
 export const ControlsDelete = ({ tableInstance, deleteItems }) => {
   const { selectedFlatRows } = tableInstance;
   const onClick = () => {
-    deleteItems({ ids: selectedFlatRows.map((x) => x.original.id) });
+    deleteItems(selectedFlatRows.map((x) => Object.entries(x.original).filter(([key]) => key.includes("id"))).flat().map(([key, value]) => value));
   };
 
   if (selectedFlatRows.length === 0) {

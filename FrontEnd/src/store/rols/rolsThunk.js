@@ -1,5 +1,7 @@
 import { baseApi } from 'api/apiConfig';
+import { toast } from 'react-toastify';
 import { setLoadedRols, setLoadingRols, setRols } from './rolsSlice';
+
 
 const getRols = (tableStatus) => {
   return async (dispatch) => {
@@ -20,11 +22,15 @@ const postRol = (newRol) => {
   return async (dispatch) => {
     try {
         const { data } = await baseApi.post('/rols/add', newRol);
-        if(data){
+        const { success, message } = data
+        if(success){
             dispatch(getRols({ term: "", sortBy: [], pageIndex: 0, pageSize: 5 }))
+            toast(message, { className: 'success' })
+         } else {
+          toast(message, { className: 'danger' })
          }
     } catch (error) {
-        dispatch(setLoadedRols())
+      toast('¡Se ha producido un error al ejecutar la acción.!', { className: 'danger' })
     }
   };
 };
@@ -33,11 +39,28 @@ const editRol = ({ rol_id, name }) => {
   return async (dispatch) => {
     try {
         const { data } = await baseApi.put(`/rols/${rol_id}`, { name });
-        if(data){
-            dispatch(getRols({ term: "", sortBy: [], pageIndex: 0, pageSize: 5 }))
+        const { success, message } = data
+        if(success){
+          dispatch(getRols({ term: "", sortBy: [], pageIndex: 0, pageSize: 5 }))
+          toast(message, { className: 'success' })
         }
     } catch (error) {
-        dispatch(setLoadedRols())
+      toast('¡Se ha producido un error al ejecutar la acción.!', { className: 'danger' })
+    }
+  };
+};
+
+const deleteRols = (rol_ids) => {
+  return async (dispatch) => {
+    try {
+        const { data } = await baseApi.post('/rols/delete', { rol_ids } );
+        const { success, message } = data
+        if(success){
+          dispatch(getRols({ term: "", sortBy: [], pageIndex: 0, pageSize: 5 }))
+          toast(message, { className: 'success' })
+        }
+    } catch (error) {
+      toast('¡Se ha producido un error al ejecutar la acción.!', { className: 'danger' })
     }
   };
 };
@@ -45,5 +68,6 @@ const editRol = ({ rol_id, name }) => {
 export {
     getRols,
     postRol,
-    editRol
+    editRol,
+    deleteRols
 };
