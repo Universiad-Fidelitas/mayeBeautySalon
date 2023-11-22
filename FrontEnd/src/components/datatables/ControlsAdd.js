@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
-const ControlsAdd = ({ tableInstance }) => {
+export const ControlsAdd = ({ tableInstance }) => {
   const { toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
   const addButtonClick = () => {
     toggleAllPageRowsSelected(false);
@@ -17,4 +17,3 @@ const ControlsAdd = ({ tableInstance }) => {
     </OverlayTrigger>
   );
 };
-export default ControlsAdd;

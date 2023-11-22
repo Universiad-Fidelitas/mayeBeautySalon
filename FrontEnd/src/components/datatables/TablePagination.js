@@ -2,7 +2,7 @@ import React from 'react';
 import { Pagination } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
-const TablePagination = ({ tableInstance }) => {
+export const TablePagination = ({ tableInstance }) => {
   const {
     gotoPage,
     canPreviousPage,
@@ -39,4 +39,3 @@ const TablePagination = ({ tableInstance }) => {
     </Pagination>
   );
 };
-export default TablePagination;

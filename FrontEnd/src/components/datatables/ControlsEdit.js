@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
-const ControlsEdit = ({ tableInstance }) => {
+export const ControlsEdit = ({ tableInstance }) => {
   const { selectedFlatRows, setIsOpenAddEditModal } = tableInstance;
   if (selectedFlatRows.length !== 1) {
     return (
@@ -19,4 +19,3 @@ const ControlsEdit = ({ tableInstance }) => {
     </OverlayTrigger>
   );
 };
-export default ControlsEdit;

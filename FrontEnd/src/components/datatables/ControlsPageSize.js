@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 
-const ControlsPageSize = ({ tableInstance }) => {
+export const ControlsPageSize = ({ tableInstance }) => {
   const { formatMessage: f } = useIntl();
   const {
     setPageSize,
@@ -47,5 +47,3 @@ const ControlsPageSize = ({ tableInstance }) => {
     </OverlayTrigger>
   );
 };
-
-export default ControlsPageSize;

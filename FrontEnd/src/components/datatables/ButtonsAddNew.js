@@ -3,7 +3,7 @@ import React from 'react';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useIntl } from 'react-intl';
 
-const ButtonsAddNew = ({ tableInstance }) => {
+export const ButtonsAddNew = ({ tableInstance }) => {
   const { toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
   const { formatMessage: f } = useIntl();
   
@@ -17,5 +17,3 @@ const ButtonsAddNew = ({ tableInstance }) => {
     </Button>
   );
 };
-
-export default ButtonsAddNew;

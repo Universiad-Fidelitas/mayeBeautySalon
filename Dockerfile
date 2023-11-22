@@ -1,3 +1,4 @@
+
 FROM node
 
 # Set working directory
@@ -7,16 +8,13 @@ WORKDIR /maye-beauty-salon
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --legacy-peer-deps
+RUN npm install
 
 # Copy source code
 COPY . .
 
-# Build React app
-RUN npm run build --legacy-peer-deps
-
-# Expose port 3000
-EXPOSE 3000
+# Expose port 5000
+EXPOSE 4000
 
 # Start server
 CMD ["npm", "start"]
