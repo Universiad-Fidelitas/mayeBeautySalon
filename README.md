@@ -47,7 +47,7 @@ Iniciamos el projecto
 ## 🎩 Autores
 
 - [@MauricioGranadosMunoz](https://github.com/)
-- [@ramos](https://github.com/)
+- [@Jose Ramos]([https://github.com/](https://github.com/JoseRamosO))
 - [@Steven](https://github.com/)
 - [@Karolay](https://github.com/)
 
