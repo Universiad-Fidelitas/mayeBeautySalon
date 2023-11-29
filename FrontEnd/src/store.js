@@ -17,6 +17,7 @@ import rolsReducer from 'store/rols/rolsSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
+import calendarReducer from 'views/admin/Citas/calendarSlice';
 
 const persistConfig = {
   key: REDUX_PERSIST_KEY,
@@ -35,6 +36,7 @@ const persistedReducer = persistReducer(
     menu: menuReducer,
     notification: notificationReducer,
     scrollspy: scrollspyReducer,
+    calendar: calendarReducer,
   })
 );
 const store = configureStore({

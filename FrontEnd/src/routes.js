@@ -1,6 +1,5 @@
 import { DEFAULT_PATHS } from 'config.js';
-
-import HorizontalPage from 'views/Horizontal';
+import Citas from 'views/admin/Citas/Citas';
 import Dashboard from 'views/admin/Dashboard';
 import Productos from 'views/admin/Inventario/Productos';
 import Roles from 'views/admin/Usuarios/Roles';
@@ -21,6 +20,13 @@ const routesAndMenuItems = {
       label: 'menu.dashboard',
       icon: 'dashboard-1',
       component: Dashboard,
+      protected: true
+    },
+    {
+      path: `${appRoot}/citas`,
+      label: 'Citas',
+      icon: 'check-square',
+      component: Citas,
       protected: true
     },
     {
