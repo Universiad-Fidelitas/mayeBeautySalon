@@ -3,7 +3,7 @@ const config = {
       host: 'localhost',
       user: "root",
       password: "",
-      database: "AuthenticationDB",
+      database: "mayeBeautySalon",
       connectTimeout: 60000
     },
     listPerPage: 2,

@@ -8,7 +8,7 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        const query = "SELECT * FROM users WHERE email = ?";
+        const query = "SELECT * FROM auth_login WHERE email = ?";
         const rows = await dbService.query(query, [email]);
         const data = helper.emptyOrRows(rows);
 
