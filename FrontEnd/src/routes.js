@@ -2,6 +2,7 @@ import { DEFAULT_PATHS } from 'config.js';
 
 import HorizontalPage from 'views/Horizontal';
 import Dashboard from 'views/admin/Dashboard';
+import Productos from 'views/admin/Inventario/Productos';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 
@@ -30,6 +31,15 @@ const routesAndMenuItems = {
       subs: [
         { path: '/usuarios',icon: 'user', label: 'menu.users', component: Usuarios },
         { path: '/roles',icon: 'diagram-1', label: 'menu.roles', component: Roles },
+      ],
+    },
+    {
+      path: `${appRoot}/inventario`,
+      label: 'Inventario',
+      icon: 'activity',
+      protected: true,
+      subs: [
+        { path: '/productos',icon: 'anchor', label: 'Productos', component: Productos },
       ],
     },
   ],
