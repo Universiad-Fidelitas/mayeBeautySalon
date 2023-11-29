@@ -10,6 +10,6 @@ router.post('/add', [
 
 router.get('/:rol_id', [ param('rol_id').isNumeric().withMessage('rol_id must be a number')], getById)
 router.put('/:rol_id', [ param('rol_id').isNumeric().withMessage('rol_id must be a number')], putRols)
-router.delete('/:rol_id', [ param('rol_id').isNumeric().withMessage('rol_id must be a number')], deleteRols)
+router.post('/delete', [ param('rol_id').isNumeric().withMessage('rol_id must be a number')], deleteRols)
 
 module.exports = router;

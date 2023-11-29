@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { ModalAddEdit, ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { editRol, getRols, postRol } from 'store/rols';
+import { deleteRols, editRol, getRols, postRol } from 'store/rols';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -35,19 +35,6 @@ const Roles = () => {
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
-        Cell: ({ cell }) => {
-          return (
-            <a
-              className="list-item-heading body"
-              href="#!"
-              onClick={(e) => {
-                e.preventDefault();
-              }}
-            >
-              {cell.value}
-            </a>
-          );
-        },
       },
       {
         Header: '',
@@ -97,7 +84,7 @@ const Roles = () => {
   }, [isRolesLoading])
   
   const deleteItems = useCallback(async (values) => {
-    console.log('deleteItems')
+    dispatch(deleteRols(values))
   }, [sortBy, pageIndex, pageSize]);
 
 
@@ -117,7 +104,7 @@ const Roles = () => {
     name: Yup.string()
     .required('First Name is required')
     .min(3, 'First Name must be at least 3 character')
-    .max(10, 'First Name must be at most 10 characters'),
+    .max(15, 'First Name must be at most 15 characters'),
   });
 
   const formFields = [
