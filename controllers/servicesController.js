@@ -3,9 +3,9 @@ const dbService = require('../database/dbService');
 const helper = require('../helpers/dbHelpers');
 
 const getById = async (req, res = response) => {
-    const { rol_id } = req.params;
+    const { service_id } = req.params;
     try {
-        const rows = await dbService.query(`SELECT * FROM rols WHERE rol_id=${ rol_id }`);
+        const rows = await dbService.query(`SELECT * FROM services WHERE service_id=${ service_id }`);
         const data = helper.emptyOrRows(rows);
         res.json(data);
     }
@@ -14,12 +14,12 @@ const getById = async (req, res = response) => {
     }
 }
 
-const getRols = async (req, res = response) => {
+const getServices = async (req, res = response) => {
     const { pageIndex, pageSize, term, sortBy } = req.body;
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT * FROM rols';
+        let baseQuery = 'SELECT * FROM services';
 
         if (term) {
             baseQuery += ` WHERE name LIKE '%${term}%'`;
@@ -44,7 +44,7 @@ const getRols = async (req, res = response) => {
 
         const rows = await dbService.query(query);
 
-        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_rols`);
+        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_services`);
         const totalRowCount = totalRowCountResult[0].count;
 
         const pageCount = Math.ceil(totalRowCount / pageSize);
@@ -63,38 +63,41 @@ const getRols = async (req, res = response) => {
     }
 }
 
-const postRols = async (req, res = response) => {
+const postServices = async (req, res = response) => {
     const { name } = req.body;
-    const { permissions } = req.body;
+    const { duration } = req.body;
+    const { price } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO rols (name, permissions) VALUES ("${ name }"), ("${ permissions }")`);
+        const rows = await dbService.query(`INSERT INTO services (name, time, price) VALUES ("${ name }", "${ duration }"), "${ price }")`);
         const { insertId } = helper.emptyOrRows(rows);
 
         res.status(200).json({
-            rol_id: insertId,
+            service_id: insertId,
             success: true,
-            message: "¡El rol ha sido agregado exitosamente!"
+            message: "¡El servicio ha sido agregado exitosamente!"
         })
     }
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar un rol duplicado!"
+            message: "¡No es posible agregar un servicio duplicado!"
         })
     }
 }
 
-const putRols = async (req, res = response) => {
-    const { rol_id } = req.params;
+const putServices = async (req, res = response) => {
+    const { service_id } = req.params;
     const { name } = req.body;
-    const { permissions } = req.body;
+    const { duration } = req.body;
+    const { price } = req.body;
+
     try {
-        const rows = await dbService.query(`UPDATE rols SET name="${ name }", permissions="${ permissions }" WHERE rol_id=${ rol_id }`);
+        const rows = await dbService.query(`UPDATE services SET name="${ name }", duration="${duration }", price="${price }" WHERE service_id=${ service_id }`);
         const { affectedRows } = helper.emptyOrRows(rows);
         res.status(200).json({
             affectedRows,
             success: true,
-            message: "¡El rol ha sido editado exitosamente!"
+            message: "¡El servicio ha sido editado exitosamente!"
         })
     }
     catch(error) {
@@ -105,20 +108,20 @@ const putRols = async (req, res = response) => {
     }
 }
 
-const deleteRols = async (req, res = response) => {
-    const { rol_ids } = req.body;
+const deleteServices = async (req, res = response) => {
+    const { Services_ids } = req.body;
     try {
-        const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
+        const rows = await dbService.query(`DELETE FROM services WHERE service_id IN (${Services_ids.join(',')})`);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
-                message: "¡El rol ha sido eliminado exitosamente!"
+                message: "¡El servicio ha sido eliminado exitosamente!"
             });
         } else {
             res.status(200).json({
                 success: true,
-                message: "¡Los roles han sido eliminados exitosamente!"
+                message: "¡Los servicios han sido eliminados exitosamente!"
             });
         }
     } catch (error) {
@@ -130,9 +133,9 @@ const deleteRols = async (req, res = response) => {
 };
 
 module.exports = {
-    getRols,
-    postRols,
-    putRols,
-    deleteRols,
+    getServices,
+    postServices,
+    putServices,
+    deleteServices,
     getById
 }

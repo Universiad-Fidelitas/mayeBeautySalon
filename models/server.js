@@ -42,6 +42,11 @@ class Server {
         this.app.use('/v1/api/usuarios', require('../routes/user'))
         this.app.use('/v1/api/rols', authenticateToken,require('../routes/rols'))
         this.app.use('/v1/api/auth', require('../routes/auth'))
+        this.app.use('/v1/api/providers', authenticateToken,require('../routes/providers'))
+        this.app.use('/v1/api/products', authenticateToken,require('../routes/products'))
+        this.app.use('/v1/api/services', authenticateToken,require('../routes/services'))
+        this.app.use('/v1/api/categories', authenticateToken,require('../routes/categories'))
+        this.app.use('/v1/api/inventory', authenticateToken,require('../routes/inventory'))
     }
 
     listen() {
