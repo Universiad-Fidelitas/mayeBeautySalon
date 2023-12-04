@@ -19,14 +19,14 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 
-const Productos = () => {
+const Categorias = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Productos';
+  const title = 'KARO';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'inventario/productos', text: f({ id: 'Inventario' }) },
-    { to: 'inventario/productos', title: 'Productos' },
+    { to: 'trabajadores/usuarios', text: f({ id: 'Inventario' }) },
+    { to: 'trabajadores/roles', title: 'Proctos' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -41,7 +41,7 @@ const Productos = () => {
         accessor: 'rol_id',
       },
       {
-        Header: 'Productos',
+        Header: 'KRAO',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -125,31 +125,7 @@ const Productos = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre del producto',
-    },
-    {
-      id: 'brand',
-      label: 'Marca',
-    },
-    {
-      id: 'price',
-      label: 'Precio',
-    },
-    {
-      id: 'image',
-      label: 'Imagen',
-    },
-    {
-      id: 'activated',
-      label: 'Activado?',
-    },
-    {
-      id: 'provider_id',
-      label: 'Proveedor',
-    },
-    {
-      id: 'category_id',
-      label: 'Categoria',
+      label: 'Nombre de la categoria',
     },
   ];
 
@@ -203,4 +179,4 @@ const Productos = () => {
     </>
   );
 };
-export default Productos;
+export default Categorias;

@@ -19,14 +19,14 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 
-const Productos = () => {
+const Inventario = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Productos';
+  const title = 'Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'inventario/productos', text: f({ id: 'Inventario' }) },
-    { to: 'inventario/productos', title: 'Productos' },
+    { to: 'Inventario/Inventario', text: f({ id: 'Inventario' }) },
+    { to: 'Inventario/Inventario', title: 'Inventario' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -41,7 +41,7 @@ const Productos = () => {
         accessor: 'rol_id',
       },
       {
-        Header: 'Productos',
+        Header: 'Accion',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -124,32 +124,28 @@ const Productos = () => {
 
   const formFields = [
     {
-      id: 'name',
-      label: 'Nombre del producto',
+      id: 'action',
+      label: 'Accion',
     },
     {
-      id: 'brand',
-      label: 'Marca',
+      id: 'size',
+      label: 'Tamaño',
+    },
+    {
+      id: 'amount',
+      label: 'Cantidad',
+    },
+    {
+      id: 'product_id',
+      label: 'ID Producto',
     },
     {
       id: 'price',
       label: 'Precio',
     },
     {
-      id: 'image',
-      label: 'Imagen',
-    },
-    {
-      id: 'activated',
-      label: 'Activado?',
-    },
-    {
-      id: 'provider_id',
-      label: 'Proveedor',
-    },
-    {
-      id: 'category_id',
-      label: 'Categoria',
+      id: 'date',
+      label: 'Fecha',
     },
   ];
 
@@ -203,4 +199,4 @@ const Productos = () => {
     </>
   );
 };
-export default Productos;
+export default Inventario;
