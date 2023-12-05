@@ -19,14 +19,14 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 
-const Categorias = () => {
+const Servicios = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Categorias';
+  const title = 'Servicios';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/usuarios', text: f({ id: 'Inventariado' }) },
-    { to: 'trabajadores/roles', title: 'Categorias' },
+    { to: 'inventario/productos', text: f({ id: 'Inventario' }) },
+    { to: 'inventario/proveedores', title: 'Servicios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -41,7 +41,7 @@ const Categorias = () => {
         accessor: 'rol_id',
       },
       {
-        Header: 'KRAO',
+        Header: 'Proveedor',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -125,7 +125,11 @@ const Categorias = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre de la categoria',
+      label: 'Nombre del proveedor',
+    },
+    {
+      id: 'activated',
+      label: 'Activado?',
     },
   ];
 
@@ -179,4 +183,4 @@ const Categorias = () => {
     </>
   );
 };
-export default Categorias;
+export default Servicios;

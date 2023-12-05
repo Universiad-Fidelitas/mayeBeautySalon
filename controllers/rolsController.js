@@ -67,7 +67,8 @@ const postRols = async (req, res = response) => {
     const { name } = req.body;
     const { permissions } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO rols (name, permissions) VALUES ("${ name }"), ("${ permissions }")`);
+        const rows = await dbService.query(`INSERT INTO rols (name) VALUES ("${ name }")`);
+        // const rows = await dbService.query(`INSERT INTO rols (name, permissions) VALUES ("${ name }"), ("${ permissions }")`);
         const { insertId } = helper.emptyOrRows(rows);
 
         res.status(200).json({
@@ -89,7 +90,8 @@ const putRols = async (req, res = response) => {
     const { name } = req.body;
     const { permissions } = req.body;
     try {
-        const rows = await dbService.query(`UPDATE rols SET name="${ name }", permissions="${ permissions }" WHERE rol_id=${ rol_id }`);
+        // const rows = await dbService.query(`UPDATE rols SET name="${ name }", permissions="${ permissions }" WHERE rol_id=${ rol_id }`);
+        const rows = await dbService.query(`UPDATE rols SET name="${ name }" WHERE rol_id=${ rol_id }`);
         const { affectedRows } = helper.emptyOrRows(rows);
         res.status(200).json({
             affectedRows,
