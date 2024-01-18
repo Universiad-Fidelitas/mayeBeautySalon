@@ -16,6 +16,6 @@ services:
       context: .
       dockerfile: ./FrontEnd/Dockerfile
 networks:
-  network1:
-    name: my-pre-existing-network
+  network:
+    name: myDatabaseNetworkk
     external: true
