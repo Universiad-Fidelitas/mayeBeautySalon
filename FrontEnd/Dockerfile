@@ -22,7 +22,8 @@ RUN npm build --legacy-peer-deps
 FROM nginx:alpine
 
 # Copy the build output from the builder stage to the NGINX web server directory
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+# COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+COPY --from=builder ./build /usr/share/nginx/html
 
 # Expose the port the app runs on
 EXPOSE 80
