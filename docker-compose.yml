@@ -1,4 +1,4 @@
-version: "1.2"
+version: "2.2"
 services:
   mayebeautysalon-backend:
     container_name: mayebeautysalon-backend
