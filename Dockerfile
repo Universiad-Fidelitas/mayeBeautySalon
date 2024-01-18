@@ -1,20 +1,19 @@
+# Use an official Node.js runtime as a parent image
+FROM node:14
 
-FROM node:alpine
+# Set the working directory in the container
+WORKDIR /usr/src/app
 
-# Set working directory
-WORKDIR /maye-beauty-salon
-
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install dependencies
+# Install app dependencies
 RUN npm install
 
-# Copy source code
+# Copy the rest of the application code to the working directory
 COPY . .
 
-# Expose port 5000
+# Expose the port the app runs on
 EXPOSE 4000
-
-# Start server
+# Command to run your application
 CMD ["npm", "start"]
