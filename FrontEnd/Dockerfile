@@ -10,22 +10,22 @@ WORKDIR /FrontEnd
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install --legacy-peer-deps
+# RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
 
 # Build React app
-RUN npm build --legacy-peer-deps
+# RUN npm build --legacy-peer-deps
 
 # Production stage
 FROM nginx:latest as production-app
 
 # Set working directory to Nginx HTML directory
 WORKDIR /usr/share/nginx/html
-
+RUN ls -la
 # Copy build from the build stage
-COPY --from=build /FrontEnd/build .
+# COPY --from=build /FrontEnd/build .
 COPY --from=build /FrontEnd/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
