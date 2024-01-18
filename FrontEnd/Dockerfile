@@ -1,29 +1,43 @@
-# Use an official Node.js image as a parent image
-FROM node:14 as builder
+# Build stage
+FROM node:14 as build
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /FrontEnd
 
-# Copy package.json and package-lock.json to the working directory
-COPY frontend/package*.json ./
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Install app dependencies
-RUN npm install
+# Print the contents of the working directory for debugging
+RUN ls -la
 
-# Copy the rest of the application code to the working directory
-COPY frontend/ .
+# Install dependencies
+RUN npm install --legacy-peer-deps
 
-# Build the React app
-RUN npm run build
+# Copy source code
+COPY . .
 
-# Use a lightweight image for serving the static files
-FROM nginx:alpine
+# Print the contents of the working directory again for debugging
+RUN ls -la
 
-# Copy the build output from the builder stage to the NGINX web server directory
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html
+# Build React app
+RUN npm build --legacy-peer-deps
 
-# Expose the port the app runs on
+# Production stage
+FROM nginx:latest as production-app
+
+# Set working directory to Nginx HTML directory
+WORKDIR /usr/share/nginx/html
+
+# Copy build from the build stage
+COPY --from=builder /usr/src/FrontEnd/build /usr/share/nginx/html
+# COPY /FrontEnd/build .
+# COPY /FrontEnd/nginx.conf /etc/nginx/nginx.conf
+
+# Print the contents of the copied directory for debugging
+RUN ls -la
+
+# Expose port 80
 EXPOSE 80
 
-# Default command to run the NGINX server
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
