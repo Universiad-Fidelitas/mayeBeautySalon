@@ -25,7 +25,7 @@ FROM nginx:latest as production-app
 WORKDIR /usr/share/nginx/html
 RUN ls -la
 # Copy build from the build stage
-# COPY --from=build /FrontEnd/build .
+COPY --from=build /FrontEnd/build .
 COPY --from=build /FrontEnd/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
