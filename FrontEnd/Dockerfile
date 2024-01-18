@@ -1,22 +1,24 @@
-# Use an official Node.js image as a parent image
+# Use an official Node.js image as a parent image for building
 FROM node:14 as builder
 
-# Set the working directory in the container
 WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json to the working directory
-COPY FrontEnd/package*.json ./
+COPY package*.json ./
 
 # Install app dependencies
 RUN npm install --legacy-peer-deps
 
 # Copy the rest of the application code to the working directory
-COPY FrontEnd/ .
+COPY . .
 
 # Build the React app
-RUN npm run build --legacy-peer-deps
+RUN ls -la
+RUN npm build --legacy-peer-deps
+# RUN npm run build-css --legacy-peer-deps
+# RUN npm run build-js --legacy-peer-deps
 
-# Use a lightweight image for serving the static files
+# Production Stage - Use NGINX image to serve the built app
 FROM nginx:alpine
 
 # Copy the build output from the builder stage to the NGINX web server directory
