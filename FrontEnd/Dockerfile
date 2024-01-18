@@ -34,7 +34,7 @@ RUN ls -la /FrontEnd/build
 
 # Copy build from the build stage
 COPY --from=build /FrontEnd/build /usr/share/nginx/html
-COPY /FrontEnd/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /FrontEnd/nginx.conf /etc/nginx/nginx.conf
 
 # Print the contents of the copied directory for debugging
 RUN ls -la
