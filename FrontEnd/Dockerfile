@@ -2,9 +2,9 @@
 FROM node:14 as build
 
 # Set working directory
-RUN mkdir /FrontEnd
-COPY . /FrontEnd
-WORKDIR /FrontEnd
+RUN mkdir /app
+COPY . /app
+WORKDIR /app
 RUN pwd
 
 # Copy package.json and package-lock.json
@@ -25,6 +25,7 @@ RUN ls -la
 FROM nginx:latest as production-app
 
 # Set working directory to Nginx HTML directory
+RUN cd /app/FrontEnd
 RUN pwd
 RUN ls -la
 # Copy build from the build stage
