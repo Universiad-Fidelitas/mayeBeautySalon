@@ -5,6 +5,7 @@ FROM node:14 as build
 RUN mkdir /FrontEnd
 COPY . /FrontEnd
 WORKDIR /FrontEnd
+RUN pwd
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
@@ -17,11 +18,14 @@ COPY . .
 
 # Build React app
 RUN npm build --legacy-peer-deps
+RUN pwd
+RUN ls -la
 
 # Production stage
 FROM nginx:latest as production-app
 
 # Set working directory to Nginx HTML directory
+RUN pwd
 RUN ls -la
 # Copy build from the build stage
 # COPY --from=build /FrontEnd/build /usr/share/nginx/html
