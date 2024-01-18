@@ -8,6 +8,7 @@ WORKDIR /FrontEnd
 COPY package*.json ./
 
 # Print the contents of the working directory for debugging
+RUN pwd
 RUN ls -la
 
 # Install dependencies
@@ -27,6 +28,7 @@ FROM nginx:latest as production-app
 
 # Set working directory to Nginx HTML directory
 WORKDIR /usr/share/nginx/html
+RUN pwd
 RUN ls -la
 
 # Copy build from the build stage
