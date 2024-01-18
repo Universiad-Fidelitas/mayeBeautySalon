@@ -1,0 +1,21 @@
+version: "1"
+services:
+  mayebeautysalon-backend:
+    container_name: mayebeautysalon-backend
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 4000:4000
+
+  mayebeautysalon-frontend:
+    container_name: mayebeautysalon-frontend
+    restart: always
+    build:
+      context: .
+      dockerfile: ./FrontEnd/Dockerfile
+networks:
+  network1:
+    name: my-pre-existing-network
+    external: true

@@ -1,8 +1,8 @@
 const config = {
     db: {
-      host: 'localhost',
+      host: '20.42.113.139',
       user: "root",
-      password: "",
+      password: "root",
       database: "mayeBeautySalon",
       connectTimeout: 60000
     },

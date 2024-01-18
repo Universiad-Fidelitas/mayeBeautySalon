@@ -1,5 +1,5 @@
 
-FROM node
+FROM node:alpine
 
 # Set working directory
 WORKDIR /maye-beauty-salon
