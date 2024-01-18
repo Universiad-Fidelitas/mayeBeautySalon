@@ -32,7 +32,7 @@ RUN pwd
 RUN ls -la
 
 # Copy build from the build stage
-COPY /FrontEnd/build .
+COPY --from=build /FrontEnd/build /usr/share/nginx/html
 COPY /FrontEnd/nginx.conf /etc/nginx/nginx.conf
 
 # Print the contents of the copied directory for debugging
