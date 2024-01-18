@@ -27,6 +27,7 @@ FROM nginx:latest as production-app
 
 # Set working directory to Nginx HTML directory
 WORKDIR /usr/share/nginx/html
+RUN ls -la
 
 # Copy build from the build stage
 COPY /FrontEnd/build .
