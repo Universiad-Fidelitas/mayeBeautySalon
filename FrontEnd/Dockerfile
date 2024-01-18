@@ -21,7 +21,7 @@ COPY . .
 RUN ls -la
 
 # Build React app
-RUN npm run build --legacy-peer-deps
+RUN npm build --legacy-peer-deps
 
 # Production stage
 FROM nginx:latest as production-app
