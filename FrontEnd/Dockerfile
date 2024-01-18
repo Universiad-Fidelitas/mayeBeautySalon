@@ -29,7 +29,7 @@ FROM nginx:latest as production-app
 WORKDIR /usr/share/nginx/html
 
 # Copy build from the build stage
-COPY --from=build /usr/src/FrontEnd/build /usr/share/nginx/html
+COPY --from=build /usr/FrontEnd/build /usr/share/nginx/html
 # COPY /FrontEnd/build .
 # COPY /FrontEnd/nginx.conf /etc/nginx/nginx.conf
 
