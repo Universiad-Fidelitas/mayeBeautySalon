@@ -2,6 +2,8 @@
 FROM node:14 as build
 
 # Set working directory
+RUN mkdir /FrontEnd
+COPY . /FrontEnd
 WORKDIR /FrontEnd
 
 # Copy package.json and package-lock.json
@@ -23,7 +25,7 @@ FROM nginx:latest as production-app
 WORKDIR /usr/share/nginx/html
 
 # Copy build from the build stage
-COPY --from=build /FrontEnd/build /usr/share/nginx/html
+COPY --from=build /FrontEnd/build .
 COPY --from=build /FrontEnd/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
