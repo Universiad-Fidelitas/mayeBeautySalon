@@ -20,7 +20,7 @@ RUN npm run build --legacy-peer-deps
 
 # Use Nginx as a lightweight base image
 FROM nginx:alpine
-
+RUN ls -la
 # Copy the built React app to the Nginx web server directory
 COPY --from=build /build /usr/share/nginx/html
 
