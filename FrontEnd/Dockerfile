@@ -1,32 +1,29 @@
-# Use an official Node.js image as a parent image for building
-FROM node:14 as builder
+# Use the official Node.js image as a base image
+FROM node:14-alpine as build
 
-WORKDIR /usr/src/app
+# Set the working directory
+WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy the package.json and package-lock.json files
 COPY package*.json ./
 
-# Install app dependencies
+# Install dependencies
 RUN npm install --legacy-peer-deps
 
-# Copy the rest of the application code to the working directory
+# Copy the entire application
 COPY . .
 
 # Build the React app
-RUN ls -la
 RUN npm build --legacy-peer-deps
-# RUN npm run build-css --legacy-peer-deps
-# RUN npm run build-js --legacy-peer-deps
 
-# Production Stage - Use NGINX image to serve the built app
+# Use Nginx as a lightweight base image
 FROM nginx:alpine
 
-# Copy the build output from the builder stage to the NGINX web server directory
-# COPY --from=builder /usr/src/app/build /usr/share/nginx/html
-# COPY --from=builder ./build /usr/share/nginx/html
+# Copy the built React app to the Nginx web server directory
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose the port the app runs on
+# Expose port 80
 EXPOSE 80
 
-# Default command to run the NGINX server
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
