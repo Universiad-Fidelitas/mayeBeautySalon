@@ -16,3 +16,26 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build Docker image
     - run: docker-compose build --no-cache
+
+
+
+    name: Docker Ubuntu CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Build Docker image
+      run: docker-compose build --no-cache
+
+    - name: Run Docker container
+      run: docker run -d -p 80:80 --name frontend-container mayebeautysalon_frontend
