@@ -12,10 +12,11 @@ RUN npm install --legacy-peer-deps
 
 # Copy the entire application
 COPY . .
+RUN cat package.json
 RUN ls -la
 
 # Build the React app
-RUN npm build --legacy-peer-deps
+RUN npm run build --legacy-peer-deps
 
 # Use Nginx as a lightweight base image
 FROM nginx:alpine
