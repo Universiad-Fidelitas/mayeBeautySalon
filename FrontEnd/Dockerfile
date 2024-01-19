@@ -17,12 +17,12 @@ RUN ls -la
 
 # Build the React app
 RUN npm run build --legacy-peer-deps
-
+RUN ls -la
 # Use Nginx as a lightweight base image
 FROM nginx:alpine
 RUN ls -la
 # Copy the built React app to the Nginx web server directory
-COPY --from=build /build /usr/share/nginx/html
+COPY --from=build /app/build /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
