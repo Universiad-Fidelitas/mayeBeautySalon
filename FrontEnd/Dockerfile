@@ -6,21 +6,22 @@ WORKDIR /app
 
 # Copy the package.json and package-lock.json files
 COPY package*.json ./
-
+RUN ls -la
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
 # Copy the entire application
 COPY . .
+RUN ls -la
 
 # Build the React app
 RUN npm build --legacy-peer-deps
 
 # Use Nginx as a lightweight base image
 FROM nginx:alpine
-RUN ls -la /app/build
+
 # Copy the built React app to the Nginx web server directory
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /build /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
