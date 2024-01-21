@@ -58,6 +58,11 @@ Iniciamos el projecto
 - **Server:** Node JS
 - **Base Datos:** MySql
 
-- ## Estructura de la Base de Datos:
-- ![AnalisisRequerimientos drawio (3)](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/bb360d75-c047-440a-8322-76dc66143f32)
+## Estructura de la Base de Datos:
+![image](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/02d94bd1-ae17-438d-aba1-1d9ff1d32099)
+
+## Sprint 1
+![image](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/d817eb6a-6f34-4cc8-b216-d3b630268141)
+
+
 
