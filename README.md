@@ -57,3 +57,7 @@ Iniciamos el projecto
 - **Client:** React JS
 - **Server:** Node JS
 - **Base Datos:** MySql
+
+- ## Estructura de la Base de Datos:
+- ![AnalisisRequerimientos drawio (3)](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/bb360d75-c047-440a-8322-76dc66143f32)
+
