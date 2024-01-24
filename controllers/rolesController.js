@@ -3,9 +3,9 @@ const dbService = require('../database/dbService');
 const helper = require('../helpers/dbHelpers');
 
 const getById = async (req, res = response) => {
-    const { rol_id } = req.params;
+    const { role_id } = req.params;
     try {
-        const rows = await dbService.query(`SELECT * FROM rols WHERE rol_id=${ rol_id }`);
+        const rows = await dbService.query(`select name, permissions from roles where activated = 1 AND role_id=${ role_id }`);
         const data = helper.emptyOrRows(rows);
         res.json(data);
     }
@@ -14,17 +14,15 @@ const getById = async (req, res = response) => {
     }
 }
 
-const getRols = async (req, res = response) => {
+const getRoles = async (req, res = response) => {
     const { pageIndex, pageSize, term, sortBy } = req.body;
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT * FROM rols';
-
+        let baseQuery = 'select name, permissions from roles where activated = 1';
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%'`;
         }
-
         const orderByClauses = [];
 
         if (Array.isArray(sortBy)) {
@@ -39,11 +37,8 @@ const getRols = async (req, res = response) => {
         if (orderByClauses.length > 0) {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
-
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
-
         const rows = await dbService.query(query);
-
         const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_rols`);
         const totalRowCount = totalRowCountResult[0].count;
 
@@ -63,16 +58,17 @@ const getRols = async (req, res = response) => {
     }
 }
 
-const postRols = async (req, res = response) => {
+const postRole = async (req, res = response) => {
     const { name } = req.body;
     const { permissions } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO rols (name) VALUES ("${ name }")`);
+        //const rows = await dbService.query(`INSERT INTO rols (name) VALUES ("${ name }")`);
+        const rows = await dbService.query(`CALL sp_role('create', 0, "${ name }", "${ permissions }");`);
         // const rows = await dbService.query(`INSERT INTO rols (name, permissions) VALUES ("${ name }"), ("${ permissions }")`);
         const { insertId } = helper.emptyOrRows(rows);
 
         res.status(200).json({
-            rol_id: insertId,
+            role_id: insertId,
             success: true,
             message: "¡El rol ha sido agregado exitosamente!"
         })
@@ -85,13 +81,14 @@ const postRols = async (req, res = response) => {
     }
 }
 
-const putRols = async (req, res = response) => {
-    const { rol_id } = req.params;
+const putRole = async (req, res = response) => {
+    const { role_id } = req.params;
     const { name } = req.body;
     const { permissions } = req.body;
     try {
         // const rows = await dbService.query(`UPDATE rols SET name="${ name }", permissions="${ permissions }" WHERE rol_id=${ rol_id }`);
-        const rows = await dbService.query(`UPDATE rols SET name="${ name }" WHERE rol_id=${ rol_id }`);
+        //const rows = await dbService.query(`UPDATE rols SET name="${ name }" WHERE rol_id=${ rol_id }`);
+        const rows = await dbService.query(`CALL sp_role('update', ${ role_id }, '${ name }', '${permissions}');`);
         const { affectedRows } = helper.emptyOrRows(rows);
         res.status(200).json({
             affectedRows,
@@ -107,10 +104,12 @@ const putRols = async (req, res = response) => {
     }
 }
 
-const deleteRols = async (req, res = response) => {
-    const { rol_ids } = req.body;
+const deleteRole = async (req, res = response) => {
+    const { role_id } = req.body;
     try {
-        const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
+        //const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
+        const rows = await dbService.query(`CALL sp_role('delete', ${ role_id },'','')`);
+        
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
             res.status(200).json({
@@ -132,9 +131,9 @@ const deleteRols = async (req, res = response) => {
 };
 
 module.exports = {
-    getRols,
-    postRols,
-    putRols,
-    deleteRols,
+    getRoles,
+    postRole,
+    putRole,
+    deleteRole,
     getById
 }
