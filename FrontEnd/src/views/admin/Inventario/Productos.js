@@ -12,7 +12,7 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/rols';
+import { deleteRols, editRol, getRols, postRol } from 'store/roles';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
