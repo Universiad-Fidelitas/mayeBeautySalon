@@ -20,6 +20,34 @@ const loginUsuario = (loginData) => {
   };
 };
 
+
+const forgotPassword = (email) => {
+    return async () => {
+      try {
+          const { data } = await baseApi.post(
+              '/auth/password-reset',
+              { email }
+          );
+          return data;
+      } catch (error) {
+          return error;
+      }
+    };
+};
+
+const updateUserPassword = (updatePassData) => {
+    return async () => {
+      try {
+          const { data } = await baseApi.post('/auth/password-reset/update-password', updatePassData);
+          return data;
+      } catch (error) {
+          return error;
+      }
+    };
+};
+
 export {
-    loginUsuario
+    loginUsuario,
+    forgotPassword,
+    updateUserPassword
 };

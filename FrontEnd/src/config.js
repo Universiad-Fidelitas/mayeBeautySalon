@@ -16,7 +16,7 @@ export const DEFAULT_PATHS = {
   LOGIN: '/login',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
-  RESET_PASSWORD: '/reset-password/:user_id/:token',
+  RESET_PASSWORD: '/reset-password/:resetToken',
   USER_WELCOME: '/dashboards/default',
   NOTFOUND: '/page-not-found',
   UNAUTHORIZED: '/unauthorized',

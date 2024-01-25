@@ -30,21 +30,27 @@ import { Slide, ToastContainer } from 'react-toastify';
 
 // mock server register for demo
 import '@mock-api';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 const Main = () => {
   const layoutlessRoutes = useMemo(() => getLayoutlessRoutes({ data: routesAndMenuItems }), []);
+  const queryClient = new QueryClient();
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistedStore}>
-        <Helmet {...REACT_HELMET_PROPS} />
-        <ToastContainer transition={Slide} newestOnTop />
-        <Router basename={process.env.REACT_APP_BASENAME}>
-          <LangProvider>
-            <RouteIdentifier routes={[...layoutlessRoutes, ...defaultRoutes]} fallback={<Loading />} />
-          </LangProvider>
-        </Router>
-      </PersistGate>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools/> 
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistedStore}>
+          <Helmet {...REACT_HELMET_PROPS} />
+          <ToastContainer transition={Slide} newestOnTop />
+          <Router basename={process.env.REACT_APP_BASENAME}>
+            <LangProvider>
+              <RouteIdentifier routes={[...layoutlessRoutes, ...defaultRoutes]} fallback={<Loading />} />
+            </LangProvider>
+          </Router>
+        </PersistGate>
+      </Provider>
+    </QueryClientProvider>
   );
 };
 

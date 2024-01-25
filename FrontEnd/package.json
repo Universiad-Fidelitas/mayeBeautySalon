@@ -53,6 +53,7 @@
     "react-intl": "^5.20.2",
     "react-masonry-css": "^1.0.16",
     "react-number-format": "^4.6.4",
+    "react-query": "^3.39.3",
     "react-quilljs": "^1.2.17",
     "react-rating": "^2.0.5",
     "react-redux": "^7.2.4",

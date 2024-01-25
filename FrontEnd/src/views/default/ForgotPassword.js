@@ -1,21 +1,35 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { Button, Form } from 'react-bootstrap';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import LayoutFullpage from 'layout/LayoutFullpage';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import HtmlHead from 'components/html-head/HtmlHead';
+import { useDispatch } from 'react-redux';
+import { forgotPassword } from 'store/slices/authThunk';
+import { IconNotification } from 'components/notifications/IconNotification';
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
   const title = 'Forgot Password';
   const description = 'Forgot Password Page';
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required('Email is required'),
   });
-  const initialValues = { email: '' };
-  const onSubmit = (values) => console.log('submit form', values);
+  const initialValues = { email: 'mgranadosmunos@gmail.com' };
+  const onSubmit = async ({ email }) => {
+    const { status, message } = await dispatch(forgotPassword(email));
+    if (status) {
+      toast(<IconNotification title="Enlace enviado" description={message} toastType="success"/>, { className: 'success' });
+      history.push('/login');
+    } else {
+      toast(<IconNotification title="No encontrado" description={message} toastType="danger"/>, { className: 'danger' });
+    }
+  };
 
   const formik = useFormik({ initialValues, validationSchema, onSubmit });
   const { handleSubmit, handleChange, values, touched, errors } = formik;
