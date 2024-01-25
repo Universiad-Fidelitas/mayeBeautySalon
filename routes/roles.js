@@ -4,9 +4,7 @@ const { getRoles,postRole,putRole, deleteRole, getById } = require('../controlle
 const router = Router();
 
 router.get('/', getRoles)
-router.post('/add', [
-    check('name', 'Email is not valid').isEmail()
-], postRole)
+router.post('/add', postRole)
 
 router.get('/:role_id', [ param('role_id').isNumeric().withMessage('role_id must be a number')], getById)
 router.put('/:role_id', [ param('role_id').isNumeric().withMessage('role_id must be a number')], putRole)
