@@ -11,7 +11,7 @@ import { store } from '../store';
 
 
 const baseApi = axios.create({
-  baseURL: 'http://20.42.113.139:4000/v1/api',
+  baseURL: 'http://localhost:4000/v1/api',
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',

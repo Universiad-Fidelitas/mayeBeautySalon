@@ -3,6 +3,9 @@ const helper = require('../helpers/dbHelpers');
 const { generateToken } = require('../middlewares/jsonwebtoken');
 const { comparePasswords } = require('../helpers/bcrypt');
 const jwt = require('jsonwebtoken');
+const sendEmail = require("../utils/email/emailService");
+const { v4: uuidv4 } = require('uuid');
+const moment = require('moment');
 
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
@@ -56,10 +59,45 @@ const tokenValidation = async (req, res) => {
             res.json({ valid:  false});
         }
     }
-  };
+};
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    const [userFound] = await dbService.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (userFound) {
+        const {user_id} = userFound;
+        const resetToken = uuidv4();
+        const { affectedRows } = await dbService.query('INSERT INTO ps_tokens (user_id, token, expired) VALUES (?, ?, ?)', [user_id, resetToken, 0]);
+        const resetLink = `http://localhost:3000/reset-password/${user_id}/${resetToken}`;
+        if (affectedRows > 0) {
+            // await sendEmail('mgranadosmunoz@gmail.com', "Password reset", resetLink);
+            res.json({ status: 'ok', message: 'Reset link sent successfully', resetLink });
+        }
+    } else {
+        res.status(404).json({ message: 'User not found' });
+    }
+};
+
+const resetPasswordTokenValidation = async (req, res) => {
+    try {
+        const { user_id, resetToken } = req.body;
+        const [userToken] = await dbService.query('SELECT * FROM ps_tokens WHERE user_id = ? AND token = ?', [user_id, resetToken]);
+        const { create_at } = userToken;
+        const hoursDifference = moment(create_at).diff(moment(), 'hours');
+        if (hoursDifference < 2) {
+            res.json({ status: 'ok', allowed: true,  message: 'Token is valid'});
+        } else {
+            res.json({ status: 'ok', allowed: false, message: 'Token is not valid or is expired' });
+        }
+      } catch (error) {
+        res.status(500).json({ status: 'ok', allowed: false, message: error.message });
+    }
+};
 
 
 module.exports = {
     userLogin,
-    tokenValidation
+    tokenValidation,
+    forgotPassword,
+    resetPasswordTokenValidation
 }
