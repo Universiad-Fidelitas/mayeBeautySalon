@@ -1,8 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ModalAddEdit, ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
+import {
+  ModalAddEdit,
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+} from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/rols';
+import { deleteRols, editRol, getRols, postRol } from 'store/roles';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -15,14 +25,14 @@ const Roles = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' })},
+    { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' }) },
     { to: 'trabajadores/roles', title: 'Roles' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols)
+  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
 
   const columns = React.useMemo(() => {
     return [
@@ -74,46 +84,51 @@ const Roles = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }))
-  }, [sortBy, pageIndex, pageSize, term])
+    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+  }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (rols.length > 0){
+    if (rols.length > 0) {
       setData(rols);
     }
-  }, [isRolesLoading])
-  
-  const deleteItems = useCallback(async (values) => {
-    dispatch(deleteRols(values))
-  }, [sortBy, pageIndex, pageSize]);
+  }, [isRolesLoading]);
 
+  const deleteItems = useCallback(
+    async (values) => {
+      dispatch(deleteRols(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
 
-  const editItem = useCallback(async (values) => {
-    dispatch(editRol(values))
-  }, [sortBy, pageIndex, pageSize]);
-  
-  const addItem = useCallback(async (values) => {
-    dispatch(postRol(values))
-  }, [sortBy, pageIndex, pageSize]);
+  const editItem = useCallback(
+    async (values) => {
+      dispatch(editRol(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
+
+  const addItem = useCallback(
+    async (values) => {
+      dispatch(postRol(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-    .required('First Name is required')
-    .min(3, 'First Name must be at least 3 character')
-    .max(15, 'First Name must be at most 15 characters'),
+    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
   });
 
   const formFields = [
     {
-      id:'name',
+      id: 'name',
       label: 'Nombre del rol',
-    }
-  ]
-  
+    },
+  ];
+
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -158,7 +173,7 @@ const Roles = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields}/>
+          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>

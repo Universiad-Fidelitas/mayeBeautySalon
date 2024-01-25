@@ -13,7 +13,7 @@ import menuReducer from 'layout/nav/main-menu/menuSlice';
 import notificationReducer from 'layout/nav/notifications/notificationSlice';
 import scrollspyReducer from 'components/scrollspy/scrollspySlice';
 import authReducer from 'store/slices/authSlice';
-import rolsReducer from 'store/rols/rolsSlice';
+import rolsReducer from 'store/roles/rolsSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
