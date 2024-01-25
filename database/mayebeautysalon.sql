@@ -50,7 +50,7 @@ CREATE TABLE `auth_login` (
 ,`last_name` varchar(100)
 ,`email` varchar(150)
 ,`password` varchar(100)
-,`telefono` int(15)
+,`phone` int(15)
 ,`activated` tinyint(1)
 ,`imagen` varchar(100)
 ,`rol_id` int(11)
@@ -193,7 +193,7 @@ CREATE TABLE `users` (
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `telefono` int(15) NOT NULL,
+  `phone` int(15) NOT NULL,
   `activated` tinyint(1) NOT NULL,
   `imagen` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -202,7 +202,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `rol_id`, `cedula`, `first_name`, `last_name`, `email`, `telefono`, `activated`, `imagen`) VALUES
+INSERT INTO `users` (`user_id`, `rol_id`, `cedula`, `first_name`, `last_name`, `email`, `phone`, `activated`, `imagen`) VALUES
 (11, 1, 305300042, 'Mauricio', 'Granados', 'mgranadosmunos@gmail.com', 83230353, 1, 'nuk');
 
 -- --------------------------------------------------------
@@ -212,7 +212,7 @@ INSERT INTO `users` (`user_id`, `rol_id`, `cedula`, `first_name`, `last_name`, `
 --
 DROP TABLE IF EXISTS `auth_login`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `auth_login`  AS SELECT `users`.`user_id` AS `user_id`, `users`.`cedula` AS `cedula`, `users`.`first_name` AS `first_name`, `users`.`last_name` AS `last_name`, `users`.`email` AS `email`, `passwords`.`password` AS `password`, `users`.`telefono` AS `telefono`, `users`.`activated` AS `activated`, `users`.`imagen` AS `imagen`, `users`.`rol_id` AS `rol_id`, `rols`.`name` AS `rol_name`, `passwords`.`last_update` AS `last_update` FROM ((`users` join `passwords` on(`users`.`user_id` = `passwords`.`user_id`)) join `rols` on(`users`.`rol_id` = `rols`.`rol_id`))  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `auth_login`  AS SELECT `users`.`user_id` AS `user_id`, `users`.`cedula` AS `cedula`, `users`.`first_name` AS `first_name`, `users`.`last_name` AS `last_name`, `users`.`email` AS `email`, `passwords`.`password` AS `password`, `users`.`phone` AS `phone`, `users`.`activated` AS `activated`, `users`.`imagen` AS `imagen`, `users`.`rol_id` AS `rol_id`, `rols`.`name` AS `rol_name`, `passwords`.`last_update` AS `last_update` FROM ((`users` join `passwords` on(`users`.`user_id` = `passwords`.`user_id`)) join `rols` on(`users`.`rol_id` = `rols`.`rol_id`))  ;
 
 --
 -- Indexes for dumped tables
