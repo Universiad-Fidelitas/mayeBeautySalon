@@ -1,28 +1,27 @@
-# Use the official Node.js image as a base image
+# Stage 1: Build the React app
 FROM node:20-alpine as build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files
+# Copy package files
 COPY package*.json ./
-RUN ls -la
+
 # Install dependencies
 RUN npm install --legacy-peer-deps
 
 # Copy the entire application
 COPY . .
-RUN cat package.json
-RUN ls -la
 
 # Build the React app
 RUN npm run build --legacy-peer-deps
-RUN ls -la
-# Use Nginx as a lightweight base image
+
+# Stage 2: Use Nginx as a lightweight base image
 FROM nginx:alpine
-RUN ls -la
+
 # Copy the built React app to the Nginx web server directory
 COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy Nginx configuration
 COPY --from=build /app/nginx.conf /etc/nginx/nginx.conf
 
 # Expose port 80
