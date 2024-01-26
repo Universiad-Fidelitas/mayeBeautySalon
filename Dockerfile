@@ -14,6 +14,8 @@ RUN npm install
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 4000/tcp
+EXPOSE 4000
 # Command to run your application
-CMD ["npm", "start"]
+CMD ["npm","run","start-prod-backend"]
+
+
