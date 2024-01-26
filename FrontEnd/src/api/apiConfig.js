@@ -9,9 +9,10 @@ import { store } from '../store';
 
 
 
-
+console.log('TESTMAU', process.env.REACT_APP_SERVER_PORT)
+console.log('REACT_APP_SERVER_PORT:', process.env.REACT_APP_SERVER_PORT);
 const baseApi = axios.create({
-  baseURL: 'http://localhost:4000/v1/api',
+  baseURL: process.env.REACT_APP_BASE_API_URL,
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',

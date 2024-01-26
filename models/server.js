@@ -3,12 +3,12 @@ const cors = require('cors');
 const path = require('path');
 const { dbConnection } = require('../database/config');
 const { authenticateToken } = require('../middlewares/jsonwebtoken');
-require('dotenv').config();
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
 class Server {
     constructor() {
         this.app = express();
-        this.port = 4000;
+        this.port = process.env.SERVER_PORT;
         
         //Middlewares
         this.middlewares();

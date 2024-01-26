@@ -1,4 +1,5 @@
 version: "2.2"
+
 services:
   backend:
     container_name: mayebeautyBackend
@@ -8,6 +9,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 4000:4000
+    networks:
+      - myDatabaseNetwork
 
   frontend:
     container_name: mayebeautyFrontend
@@ -17,7 +20,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:80"
-      
+    networks:
+      - myDatabaseNetwork
+
   nginx:
     image: nginx:alpine
     volumes:
@@ -27,3 +32,9 @@ services:
     depends_on:
       - backend
       - frontend
+    networks:
+      - myDatabaseNetwork
+
+networks:
+  myDatabaseNetwork:
+    external: true

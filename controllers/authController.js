@@ -72,7 +72,7 @@ const forgotPassword = async (req, res) => {
             const { affectedRows } = await dbService.query('INSERT INTO ps_tokens (user_id, token, expired) VALUES (?, ?, ?)', [user_id, resetToken, 0]);
             const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
             if (affectedRows > 0) {
-                // await sendEmail('mgranadosmunoz@gmail.com', "Password reset", resetLink);
+                await sendEmail('mgranadosmunoz@gmail.com', "Password reset", resetLink);
                 res.json({resetLink, status: true, message: 'Hemos enviado con éxito el enlace de restablecimiento a tu dirección de correo electrónico.' });
             }
         } else {
