@@ -15,23 +15,13 @@ services:
   frontend:
     container_name: mayebeautyFrontend
     restart: always
+    volumes:
+      - ./FrontEnd/nginx.conf:/etc/nginx/conf.d/default.conf
     build:
       context: ./FrontEnd
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
-    networks:
-      - myDatabaseNetwork
-
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./FrontEnd/nginx.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-      - frontend
+       - "80:80"
     networks:
       - myDatabaseNetwork
 
