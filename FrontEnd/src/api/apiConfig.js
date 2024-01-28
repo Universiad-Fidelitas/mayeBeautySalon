@@ -9,8 +9,8 @@ import { store } from '../store';
 
 
 
-console.log('TESTMAU', process.env.REACT_APP_SERVER_PORT)
-console.log('REACT_APP_SERVER_PORT:', process.env.REACT_APP_SERVER_PORT);
+console.log('TESTMAU', process.env.REACT_APP_BASE_API_URL)
+console.log('REACT_APP_SERVER_PORT:', process.env.REACT_APP_BASE_API_URL);
 const baseApi = axios.create({
   baseURL: process.env.REACT_APP_BASE_API_URL,
   timeout: 5000,

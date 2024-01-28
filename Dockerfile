@@ -1,21 +1,21 @@
-# Use an official Node.js runtime as a parent image
-FROM node:14
+# Stage 1: Build the React app
+FROM node:20-alpine AS build
+WORKDIR /usr/src/app/
+COPY FrontEnd/package.json ./
+RUN npm install --legacy-peer-deps
+COPY FrontEnd .
+RUN npm run build
 
-# Set the working directory in the container
+# Stage 2: Create the final image
+FROM node:20-alpine
 WORKDIR /usr/src/app
-
-# Copy package.json and package-lock.json to the working directory
-COPY package*.json ./
-
-# Install app dependencies
+COPY package.json ./
 RUN npm install
-
-# Copy the rest of the application code to the working directory
 COPY . .
+COPY --from=build /usr/src/app ./FrontEnd
 
-# Expose the port the app runs on
-EXPOSE 4000
-# Command to run your application
-CMD ["npm","run","start-prod-backend"]
+# Expose the port your app will run on
+EXPOSE 80
 
-
+# Start the application
+CMD ["npm", "run", "start-prod"]
