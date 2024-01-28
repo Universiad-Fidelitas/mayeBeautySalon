@@ -2,26 +2,13 @@ version: "2.2"
 
 services:
   backend:
-    container_name: mayebeautyBackend
+    container_name: mayebeautyApp
     restart: always
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 4000:4000
-    networks:
-      - myDatabaseNetwork
-
-  frontend:
-    container_name: mayebeautyFrontend
-    restart: always
-    volumes:
-      - ./FrontEnd/nginx.conf:/etc/nginx/conf.d/default.conf
-    build:
-      context: ./FrontEnd
-      dockerfile: Dockerfile
-    ports:
-       - "80:80"
+      - 80:80
     networks:
       - myDatabaseNetwork
 
