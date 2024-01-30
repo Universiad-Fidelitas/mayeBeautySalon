@@ -1,17 +1,46 @@
-version: "2.2"
+version: '3'
 
 services:
-  backend:
+  app:
     container_name: mayebeautyApp
     restart: always
+    environment:
+      - NODE_ENV=production
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 80:80
+    expose:
+      - 4000 # Expose the port that your Node.js application is listening on
     networks:
-      - myDatabaseNetwork
+      - mynetwork
+
+  nginx:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app
+    networks:
+      - mynetwork
+
+  certbot:
+    image: certbot/certbot
+    restart: always
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - ./FrontEnd/build:/var/www/html
+    command: certonly --webroot --webroot-path=/var/www/html --agree-tos --email mgranadosmunoz@gmail.com -d mayebeautysalon.com -d www.mayebeautysalon.com
+    depends_on:
+      - nginx
+    networks:
+      - mynetwork
 
 networks:
-  myDatabaseNetwork:
-    external: true
+  mynetwork:
+    driver: bridge
