@@ -9,9 +9,8 @@ const moment = require('moment');
 const { hashPassword } = require('../helpers/bcrypt');
 
 const userLogin = async (req, res) => {
-    const { email, password } = req.body;
-
     try {
+        const { email, password } = req.body;
         const query = "SELECT * FROM auth_login WHERE email = ?";
         const rows = await dbService.query(query, [email]);
         const data = helper.emptyOrRows(rows);
