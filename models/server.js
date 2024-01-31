@@ -30,19 +30,6 @@ class Server {
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
           });
-
-        // PARSE JSON FORMAT
-        this.app.use( express.json() );
-
-        // Serve the static files for the React app
-        this.app.use(express.static(path.join(__dirname, '..', 'FrontEnd', 'build')));
-
-        // Handle other routes (if needed) by serving the React app's main HTML file
-        this.app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '..', 'FrontEnd', 'build', 'index.html'));
-        });
-
-
     }
 
     routes() {
@@ -54,6 +41,18 @@ class Server {
         this.app.use('/v1/api/services', authenticateToken,require('../routes/services'))
         this.app.use('/v1/api/categories', require('../routes/categories'))
         this.app.use('/v1/api/inventory', authenticateToken,require('../routes/inventory'))
+
+
+        // PARSE JSON FORMAT
+        this.app.use( express.json() );
+
+        // Serve the static files for the React app
+        this.app.use(express.static(path.join(__dirname, '..', 'FrontEnd', 'build')));
+
+        // Handle other routes (if needed) by serving the React app's main HTML file
+        this.app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'FrontEnd', 'build', 'index.html'));
+        });
     }
 
     listen() {
