@@ -5,9 +5,12 @@ const helper = require('../helpers/dbHelpers');
 const getById = async (req, res = response) => {
     const { role_id } = req.params;
     try {
-        const rows = await dbService.query(`select role_id, name, permissions from roles where activated = 1 AND role_id=${ role_id }`);
-        const data = helper.emptyOrRows(rows);
-        res.json(data);
+        let baseQuery = `select role_id, name, permissions from roles where activated = 1 AND role_id=${ role_id }`;
+        const rows = await dbService.query(baseQuery);
+        const response = {
+            items: rows
+        };
+        res.status(404).json(response);
     }
     catch(error) {
         res.status(500).json({message: error.message})
