@@ -31,8 +31,8 @@ const userLogin = async (req, res) => {
             });
         }
 
-        const rolQuery = "SELECT name FROM rols WHERE rol_id = ?";
-        const rolRows = await dbService.query(rolQuery, [usuario.rol_id]);
+        const rolQuery = "SELECT name FROM roles WHERE role_id = ?";
+        const rolRows = await dbService.query(rolQuery, [usuario.role_id]);
         const rolName = helper.emptyOrRows(rolRows)[0];
 
         const userWithoutSensitiveData = { ...usuario };

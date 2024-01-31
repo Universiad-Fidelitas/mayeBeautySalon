@@ -26,23 +26,22 @@ const routesAndMenuItems = {
       label: 'menu.dashboard',
       icon: 'dashboard-1',
       component: Dashboard,
-      protected: true
+      protected: true,
     },
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
       icon: 'check-square',
       component: Citas,
-      protected: true
+      protected: true,
     },
     {
       path: `${appRoot}/trabajadores`,
       label: 'menu.trabajadores',
       icon: 'laptop',
-      protected: true,
       subs: [
-        { path: '/usuarios',icon: 'user', label: 'menu.users', component: Usuarios },
-        { path: '/roles',icon: 'diagram-1', label: 'menu.roles', component: Roles },
+        { path: '/usuarios', icon: 'user', label: 'menu.users', component: Usuarios },
+        { path: '/roles', icon: 'diagram-1', label: 'menu.roles', component: Roles },
       ],
     },
     {
@@ -51,11 +50,11 @@ const routesAndMenuItems = {
       icon: 'database',
       protected: true,
       subs: [
-        { path: '/inventario',icon: 'file-text', label: 'Inventario', component: Inventario },
-        { path: '/categorias',icon: 'dropdown', label: 'Categorias', component: Categorias },
-        { path: '/productos',icon: 'gift', label: 'Productos', component: Productos },
-        { path: '/proveedores',icon: 'destination', label: 'Proveedores', component: Proveedores },
-        { path: '/servicios',icon: 'wizard', label: 'Servicios', component: Servicios },
+        { path: '/inventario', icon: 'file-text', label: 'Inventario', component: Inventario },
+        { path: '/categorias', icon: 'dropdown', label: 'Categorias', component: Categorias },
+        { path: '/productos', icon: 'gift', label: 'Productos', component: Productos },
+        { path: '/proveedores', icon: 'destination', label: 'Proveedores', component: Proveedores },
+        { path: '/servicios', icon: 'wizard', label: 'Servicios', component: Servicios },
       ],
     },
     {
@@ -64,8 +63,8 @@ const routesAndMenuItems = {
       icon: 'book',
       protected: true,
       subs: [
-        { path: '/facturas',icon: 'content', label: 'Facturas', component: Facturas },
-        { path: '/transacciones',icon: 'book-open', label: 'Transacciones', component: Transacciones },
+        { path: '/facturas', icon: 'content', label: 'Facturas', component: Facturas },
+        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', component: Transacciones },
       ],
     },
   ],

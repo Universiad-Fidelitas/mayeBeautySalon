@@ -38,7 +38,7 @@ const Roles = () => {
     return [
       {
         Header: 'Rol Id',
-        accessor: 'rol_id',
+        accessor: 'role_id',
       },
       {
         Header: 'Name',
@@ -86,7 +86,7 @@ const Roles = () => {
   useEffect(() => {
     dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
-
+  console.log(term, sortBy, pageIndex, pageSize);
   useEffect(() => {
     if (rols.length > 0) {
       setData(rols);
@@ -124,8 +124,10 @@ const Roles = () => {
 
   const formFields = [
     {
-      id: 'name',
-      label: 'Nombre del rol',
+      id: 'permissions',
+      label: 'Roles',
+      type: 'checkbox',
+      className2: 'form-check',
     },
   ];
 
