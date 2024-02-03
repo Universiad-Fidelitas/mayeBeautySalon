@@ -7,10 +7,10 @@ const getRols = (tableStatus) => {
     try {
       dispatch(setLoadingRols());
       const { data } = await baseApi.post('/roles', tableStatus);
-      if (data.items) {
+      if (data) {
         dispatch(setRols(data));
         dispatch(setLoadedRols());
-      }
+      } 
     } catch (error) {
       dispatch(setLoadedRols());
     }
@@ -34,10 +34,10 @@ const postRol = (newRol) => {
   };
 };
 
-const editRol = ({ rol_id, name }) => {
+const editRol = ({ role_id, name, permissions }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/roles/${rol_id}`, { name });
+      const { data } = await baseApi.put(`/roles/${role_id}`, { name, permissions });
       const { success, message } = data;
       if (success) {
         dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
@@ -52,7 +52,7 @@ const editRol = ({ rol_id, name }) => {
 const deleteRols = (rol_ids) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.post('/roles/delete', { rol_ids });
+      const { data } = await baseApi.post('/roles/delete', { role_id: rol_ids.toString() });
       const { success, message } = data;
       if (success) {
         dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
