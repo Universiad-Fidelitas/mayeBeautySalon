@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { ModalAddEdit, ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { deleteUsers, editUser, getUsers, postUser } from 'store/users';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -15,7 +15,7 @@ const Usuarios = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' })},
+    { to: 'trabajadores/users', text: f({ id: 'menu.trabajadores' })},
     { to: 'trabajadores/roles', title: 'Usuarios' },
   ];
   const [data, setData] = useState([]);
@@ -27,12 +27,12 @@ const Usuarios = () => {
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'User Id',
+        accessor: 'user_id',
       },
       {
         Header: 'Name',
-        accessor: 'name',
+        accessor: 'first_name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -61,7 +61,7 @@ const Usuarios = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['user_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -74,7 +74,7 @@ const Usuarios = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }))
+    dispatch(getUsers({ term, sortBy, pageIndex, pageSize }))
   }, [sortBy, pageIndex, pageSize, term])
 
   useEffect(() => {
@@ -84,16 +84,16 @@ const Usuarios = () => {
   }, [isRolesLoading])
   
   const deleteItems = useCallback(async (values) => {
-    dispatch(deleteRols(values))
+    dispatch(deleteUsers(values))
   }, [sortBy, pageIndex, pageSize]);
 
 
   const editItem = useCallback(async (values) => {
-    dispatch(editRol(values))
+    dispatch(editUser(values))
   }, [sortBy, pageIndex, pageSize]);
   
   const addItem = useCallback(async (values) => {
-    dispatch(postRol(values))
+    dispatch(postUser(values))
   }, [sortBy, pageIndex, pageSize]);
 
   const searchItem = useAsyncDebounce((val) => {

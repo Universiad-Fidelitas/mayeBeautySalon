@@ -40,7 +40,7 @@ const routesAndMenuItems = {
       label: 'menu.trabajadores',
       icon: 'laptop',
       subs: [
-        { path: '/usuarios', icon: 'user', label: 'menu.users', component: Usuarios },
+        { path: '/users', icon: 'user', label: 'menu.users', component: Usuarios },
         { path: '/roles', icon: 'diagram-1', label: 'menu.roles', component: Roles },
       ],
     },
