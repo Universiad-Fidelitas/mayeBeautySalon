@@ -59,7 +59,8 @@ Iniciamos el projecto
 - **Base Datos:** MySql
 
 ## Estructura de la Base de Datos:
-![image](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/02d94bd1-ae17-438d-aba1-1d9ff1d32099)
+![AnalisisRequerimientos drawio (5) drawio](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/d15e9e36-e3fa-49c5-b2e2-40130d3d735a)
+
 
 ## Sprint 1
 ![image](https://github.com/Universiad-Fidelitas/mayeBeautySalon/assets/84950250/d817eb6a-6f34-4cc8-b216-d3b630268141)

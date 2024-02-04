@@ -104,10 +104,8 @@ const putRole = async (req, res = response) => {
 const deleteRole = async (req, res = response) => {
     const { role_id } = req.body;
     try {
-        //const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
-
         const userQuery = `CALL sp_role('delete', ?, '', '');`;
-        const rows = await dbService.query(userQuery, [role_id ]);
+        const rows = await dbService.query(userQuery, [role_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
             res.status(200).json({

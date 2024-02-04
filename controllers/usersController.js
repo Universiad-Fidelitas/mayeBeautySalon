@@ -63,7 +63,7 @@ const getUser = async (req, res = response) => {
 const postUser = async (req, res = response) => {
     const { role_id, cedula, first_name, last_name, email, phone, imagen, password } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (role_id, cedula, first_name, last_name, email, phone, activated, imagen ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
         const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, cedula, first_name, last_name, email, phone, 1, imagen ]);
  
         if (affectedRows > 0) {
@@ -86,7 +86,6 @@ const postUser = async (req, res = response) => {
         })
     }
 }
-
 
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;

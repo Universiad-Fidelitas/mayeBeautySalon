@@ -14,7 +14,7 @@ const SidebarMenu = () => {
       getMenuItems({
         data: routesAndMenuItems.sidebarItems,
         isLogin,
-        userRole: currentUser.role,
+        userRole: currentUser.permissions
       }),
     [isLogin, currentUser]
   );
