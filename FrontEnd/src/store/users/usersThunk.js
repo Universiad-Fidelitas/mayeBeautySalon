@@ -7,7 +7,9 @@ const getUsers = (tableStatus) => {
     try {
       dispatch(setLoadingUsers());
       const { data } = await baseApi.post('/users', tableStatus);
+      console.log("setLoadedUsers", data);
       if (data.items) {
+        
         dispatch(setUsers(data));
         dispatch(setLoadedUsers());
       }
@@ -34,10 +36,10 @@ const postUser = (newUser) => {
   };
 };
 
-const editUser = ({ user_id, name }) => {
+const editUser = ({ user_id, role_id, id_card, first_name, last_name, email, phone, activated, image }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/users/${user_id}`, { name });
+      const { data } = await baseApi.put(`/users/${user_id}`, { role_id, id_card, first_name, last_name, email, phone, activated, image });
       const { success, message } = data;
       if (success) {
         dispatch(getUsers({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
@@ -48,11 +50,12 @@ const editUser = ({ user_id, name }) => {
     }
   };
 };
+
 
 const deleteUsers = (user_ids) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.post('/users/delete', { user_ids });
+      const { data } = await baseApi.post('/users/delete', { user_id: user_ids.toString() });
       const { success, message } = data;
       if (success) {
         dispatch(getUsers({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
@@ -63,5 +66,4 @@ const deleteUsers = (user_ids) => {
     }
   };
 };
-
-export { getUsers, postUser, editUser, deleteUsers };
+export { getUsers, postUser,editUser, deleteUsers };

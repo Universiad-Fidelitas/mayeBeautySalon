@@ -23,18 +23,56 @@ const Usuarios = () => {
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols)
+  const { isUsersLoading, users, pageCount } = useSelector((state) => state.users)
   const { userHasPermission } = useUserPermissions();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'User Id',
+        Header: 'user_id',
         accessor: 'user_id',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
-        Header: 'Name',
+        Header: 'Nombre',
         accessor: 'first_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-20',
+      },
+      {
+        Header: 'Apellido',
+        accessor: 'last_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-20',
+      },
+      {
+        Header: 'Cédula',
+        accessor: 'id_card',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-20',
+      },
+      {
+        Header: 'Correo electrónico',
+        accessor: 'email',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-20',
+      },
+      {
+        Header: 'Teléfono',
+        accessor: 'phone',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-10',
+      },
+      {
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-20',
+      },
+      {
+        Header: 'Estado',
+        accessor: 'activated',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -63,7 +101,7 @@ const Usuarios = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['user_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'first_name', desc: false }], hiddenColumns: ['user_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -80,10 +118,10 @@ const Usuarios = () => {
   }, [sortBy, pageIndex, pageSize, term])
 
   useEffect(() => {
-    if (rols.length > 0){
-      setData(rols);
+    if (users.length > 0){
+      setData(users);
     }
-  }, [isRolesLoading])
+  }, [isUsersLoading])
   
   const deleteItems = useCallback(async (values) => {
     dispatch(deleteUsers(values))
@@ -110,10 +148,42 @@ const Usuarios = () => {
   });
 
   const formFields = [
+    
     {
-      id:'name',
-      label: 'Nombre del rol',
-    }
+      id:'role_id',
+      label: 'Role',
+      type: 'number',
+    }, 
+    {
+      id:'first_name',
+      label: 'Nombre',
+      type: 'text',
+    }, 
+    {
+      id:'last_name',
+      label: 'Apellidos',
+      type: 'text',
+    },
+    {
+      id:'cedula',
+      label: 'Cédula',
+      type: 'text',
+    },
+    {
+      id:'email',
+      label: 'Correo Electrónico',
+      type: 'text',
+    },
+    {
+      id:'phone',
+      label: 'Teléfono',
+      type: 'text',
+    },
+    {
+      id:'imagen',
+      label: 'Imagen',
+      type: 'text',
+    },
   ]
   
   return (

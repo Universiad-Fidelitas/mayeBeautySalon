@@ -86,7 +86,6 @@ const postUser = async (req, res = response) => {
         })
     }
 }
-
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;
     const { name, permissions } = req.body;
