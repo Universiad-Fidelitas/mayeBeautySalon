@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { DB_TABLE_ROLS } from 'data/rolsData';
+import { useExportAllPermissions } from 'hooks/useUserPermissions';
 
 export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const [permissionsList, setPermissionsList] = useState([]);
+  const [allSwitchChangeStatus, setAllSwitchChangeStatus] = useState(false);
+ const fullPermissionsList  = useExportAllPermissions();
+ 
 
   useEffect(() => {
     if (selectedFlatRows.length === 1) {
@@ -14,6 +18,16 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
       setPermissionsList([]);
     }
   }, [selectedFlatRows])
+
+
+  useEffect(() => {
+    if (permissionsList.length === fullPermissionsList.length) {
+      setAllSwitchChangeStatus(true)
+    } else {
+      setAllSwitchChangeStatus(false)
+    }
+  }, [permissionsList])
+  
 
   const onSubmit = (values) => {
     if (selectedFlatRows.length === 1) {
@@ -34,6 +48,15 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
     }
   };
 
+  const onAllSwitchChange = () => {
+    if(allSwitchChangeStatus){
+      setPermissionsList([]);
+    } else {
+      setPermissionsList(fullPermissionsList);
+    }
+    setAllSwitchChangeStatus(!allSwitchChangeStatus);
+  };
+
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -49,6 +72,10 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
                 <ErrorMessage name={id} component="div" />
               </div>
             ))}
+            <Col className="d-flex flex-row justify-content-between align-items-center">
+              <p className="h6">Todos los roles</p>
+              <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ allSwitchChangeStatus } onChange={() => onAllSwitchChange()}/>
+            </Col>
             {
               DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
                   <div className="mb-3" key={index}>
@@ -60,7 +87,7 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
                           <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ permissionsList.includes(`C_${permissionKey}`) } onChange={() => onSwitchChange(`C_${permissionKey}`)}/>
                       </Col>
                       <Col className="d-flex flex-row justify-content-between align-items-center">
-                          <label className="form-label m-0">Editar</label>
+                          <label className="form-label m-0">Obtener</label>
                           <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ permissionsList.includes(`R_${permissionKey}`) } onChange={() => onSwitchChange(`R_${permissionKey}`)}/>
                       </Col>
                       <Col className="d-flex flex-row justify-content-between align-items-center">

@@ -86,7 +86,7 @@ const Roles = () => {
         hideColumn: true,
       },
       {
-        Header: 'Name',
+        Header: 'Nombre del rol',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',

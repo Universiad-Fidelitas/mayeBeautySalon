@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 
 const Usuarios = () => {
   const { formatMessage: f } = useIntl();
@@ -23,6 +24,7 @@ const Usuarios = () => {
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
   const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols)
+  const { userHasPermission } = useUserPermissions();
 
   const columns = React.useMemo(() => {
     return [
@@ -126,9 +128,13 @@ const Usuarios = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {
+                userHasPermission('C_USERS') &&
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              }
+
             </Row>
           </div>
 
@@ -141,8 +147,15 @@ const Usuarios = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  {
+                    userHasPermission('C_USERS') && <ControlsAdd tableInstance={tableInstance} />
+                  }
+                  {
+                    userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />
+                  }
+                  {
+                    userHasPermission('D_USERS') && <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  }
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

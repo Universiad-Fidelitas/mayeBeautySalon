@@ -39,15 +39,7 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                   <td
                     key={`td.${cellIndex}`}
                     {...cell.getCellProps()}
-                    onClick={() => {
-                      if (cell.column.id === 'name') {
-                        toggleAllPageRowsSelected(false);
-                        row.toggleRowSelected();
-                        setIsOpenAddEditModal(true);
-                      } else {
-                        row.toggleRowSelected();
-                      }
-                    }}
+                    onClick={() => row.toggleRowSelected()}
                   >
                     {cell.render('Cell')}
                   </td>

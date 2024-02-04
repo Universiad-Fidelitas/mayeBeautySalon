@@ -30,7 +30,7 @@ const SearchInput = ({ show, setShow }) => {
       getSearchItems({
         data: routesAndMenuItems,
         isLogin,
-        userRole: currentUser.role,
+        userRole: currentUser.permissions,
       })(),
     [isLogin, currentUser]
   );

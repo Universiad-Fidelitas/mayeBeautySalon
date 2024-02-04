@@ -32,7 +32,7 @@ const MainMenu = () => {
       getMenuItems({
         data: attrMobile && useSidebar ? routesAndMenuItems : routesAndMenuItems.mainMenuItems,
         isLogin,
-        userRole: currentUser.role,
+        userRole: currentUser.permissions,
       }),
     [isLogin, currentUser, attrMobile, useSidebar]
   );
