@@ -34,14 +34,15 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: Citas,
       protected: true,
+      roles: 'R_CITAS',
     },
     {
       path: `${appRoot}/trabajadores`,
       label: 'menu.trabajadores',
       icon: 'laptop',
       subs: [
-        { path: '/usuarios', icon: 'user', label: 'menu.users', component: Usuarios },
-        { path: '/roles', icon: 'diagram-1', label: 'menu.roles', component: Roles },
+        { path: '/usuarios', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
+        { path: '/roles', icon: 'diagram-1', label: 'menu.roles',roles: 'R_ROLES', component: Roles },
       ],
     },
     {
@@ -50,11 +51,11 @@ const routesAndMenuItems = {
       icon: 'database',
       protected: true,
       subs: [
-        { path: '/inventario', icon: 'file-text', label: 'Inventario', component: Inventario },
-        { path: '/categorias', icon: 'dropdown', label: 'Categorias', component: Categorias },
-        { path: '/productos', icon: 'gift', label: 'Productos', component: Productos },
-        { path: '/proveedores', icon: 'destination', label: 'Proveedores', component: Proveedores },
-        { path: '/servicios', icon: 'wizard', label: 'Servicios', component: Servicios },
+        { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
+        { path: '/categorias', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
+        { path: '/productos', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
+        { path: '/proveedores', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
+        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: Servicios },
       ],
     },
     {
@@ -63,8 +64,8 @@ const routesAndMenuItems = {
       icon: 'book',
       protected: true,
       subs: [
-        { path: '/facturas', icon: 'content', label: 'Facturas', component: Facturas },
-        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', component: Transacciones },
+        { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
+        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS',  component: Transacciones },
       ],
     },
   ],

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  ModalAddEdit,
   ButtonsAddNew,
   ControlsPageSize,
   ControlsAdd,
@@ -18,6 +17,8 @@ import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { DB_TABLE_ROLS } from 'data/rolsData';
+import { ModalEditPermissions } from './ModalEditPermissions';
 
 const Roles = () => {
   const { formatMessage: f } = useIntl();
@@ -34,17 +35,67 @@ const Roles = () => {
   const dispatch = useDispatch();
   const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
 
+  const returnColorName = (permissionType) => {
+    if (permissionType === 'C') {
+      return 'success';
+    }
+    if (permissionType === 'R'){
+      return 'info';
+    }
+    if (permissionType === 'U'){
+      return 'warning';
+    }
+    return 'danger';
+  }
+
+  const returnPermissionTypeName = (permissionType) => {
+    if (permissionType === 'C') {
+      return 'Crear';
+    }
+    if (permissionType === 'R'){
+      return 'Obtener';
+    }
+    if (permissionType === 'U'){
+      return 'Actualizar';
+    }
+    return 'Eliminar';
+  }
+
+  const PermissionRowList = ({permissionsList}) => {
+    return DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
+      <div className={`${index !== DB_TABLE_ROLS.length - 1 ? 'mb-3' : 'mb-1'}`} key={index}>
+        <Col className="d-flex flex-row justify-content-between align-items-center">
+          <p className="h6 text-primary m-0">{ permissionName }</p>
+        </Col>
+        {
+          ['C','R','U','D'].map((permissionType, indexItem) => {
+            return permissionsList.includes(`${permissionType}_${permissionKey}`) && <span key={indexItem} className={`me-1 badge bg-outline-${returnColorName(permissionType)}`}>{`${returnPermissionTypeName(permissionType)} ${permissionName.toLocaleLowerCase()}`}</span>
+          })
+        }
+      </div>
+      
+    ))
+  }
+
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
+        Header: 'role_id',
         accessor: 'role_id',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
-        Header: 'Name',
+        Header: 'Nombre del rol',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Permisos',
+        accessor: 'permissions',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        Cell: ({ row }) => <PermissionRowList permissionsList={JSON.parse(row.values.permissions)}/>
       },
       {
         Header: '',
@@ -71,7 +122,7 @@ const Roles = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['role_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -86,10 +137,11 @@ const Roles = () => {
   useEffect(() => {
     dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
-  console.log(term, sortBy, pageIndex, pageSize);
   useEffect(() => {
     if (rols.length > 0) {
       setData(rols);
+    } else {
+      setData([]);
     }
   }, [isRolesLoading]);
 
@@ -124,10 +176,8 @@ const Roles = () => {
 
   const formFields = [
     {
-      id: 'permissions',
-      label: 'Roles',
-      type: 'checkbox',
-      className2: 'form-check',
+      id: 'name',
+      label: 'Nombre del producto',
     },
   ];
 
@@ -175,7 +225,7 @@ const Roles = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalEditPermissions tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>
