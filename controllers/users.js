@@ -16,10 +16,10 @@ const getUsers = async (req, res = response) => {
 
 
 const postUser = async (req, res = response) => {
-    const { rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password } = req.body;
+    const { role_id, cedula, first_name, last_name, email, phone, imagen, password } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (rol_id, cedula, first_name, last_name, email, phone, activated, imagen ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [rol_id, cedula, first_name, last_name, email, phone, activated, imagen ]);
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, imagen ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, cedula, first_name, last_name, email, phone, 1, imagen ]);
 
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
