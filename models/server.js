@@ -35,7 +35,7 @@ class Server {
     }
 
     routes() {
-        this.app.use('/v1/api/usuarios', require('../routes/user'))
+        this.app.use('/v1/api/users', require('../routes/users'))
         this.app.use('/v1/api/roles', require('../routes/roles'))
         this.app.use('/v1/api/auth', require('../routes/auth'))
         this.app.use('/v1/api/providers', authenticateToken,require('../routes/providers'))
