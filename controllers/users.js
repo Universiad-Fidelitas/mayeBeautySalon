@@ -41,8 +41,29 @@ const postUser = async (req, res = response) => {
         })
     }
 }
+const putUser = async (req, res = response) => {
+    const { user_id } = req.params;
+    const {  rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password } = req.body;
+    try {
+        const userQuery = `CALL sp_user('update', ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [user_id, rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password ]);
+        res.status(200).json({
+            role_id: insertId,
+            success: true,
+            message: "¡El usuario ha sido editado exitosamente!"
+        })
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "¡Se ha producido un error al editar la acción.!",
+            error: error
+        })
+    }
+}
 
 module.exports = {
     getUsers,
-    postUser
+    postUser,
+    putUser
 }
