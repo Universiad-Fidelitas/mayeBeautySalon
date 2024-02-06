@@ -5,20 +5,13 @@ const path = require('path');
 const emailService = async (email, subject, resetLink) => {
     try {
         const transporter = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            service: 'gmail',
+            host: 'smtp.office365.com',
+            port: 587,
+            secure: false,
             auth: {
-                user: 'noreply.mayebeautysalon@gmail.com',
-                pass: 'M~5rD^eivb2u4?w',
+               user: 'noreply@mayebeautysalon.com',
+               pass: 'Waj55523'
             },
-            auth: {
-                type: 'OAuth2',
-                user: 'noreply.mayebeautysalon@gmail.com',
-                clientId: '991493857162-veebs0tqhso9j798h0al9fi27nk2imql.apps.googleusercontent.com',
-                clientSecret: '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',
-                refreshToken: '1//04mPEZwWwnr_lCgYIARAAGAQSNwF-L9Irdjoxq0pbdojDChXJz1VI7Ke9ArHqak3aJPYCOKvr17pFsAOm7HQ4eVnHK6OOygAwLuY',
-                accessToken: 'ya29.a0AfB_byCTpqfAd-ZhHGFb43ebUkzlE1xlA1BkP_xvM_2N6nHux1OH9niL5ZbLsDT2-a4vjIVnSKh_WdNR9EOUCDxDeqTc0IsYhral-vw8OYgU_9NwajZQpDeIv_EZjZX9D-jroy14MJHtHyyj74nMObVczxPrUOr6okdtaCgYKAbQSARESFQHGX2MiWi8hChn0vu-Ek3_nKDGqgg0171'
-            }
         });
         
         // point to the template folder
@@ -34,7 +27,7 @@ const emailService = async (email, subject, resetLink) => {
         transporter.use('compile', hbs(handlebarOptions))
 
         await transporter.sendMail({
-            from: 'noreply.mayebeautysalon@gmail.com',
+            from: 'noreply@mayebeautysalon.com',
             template: 'passwordRecoveryEmail',
             to: email,
             subject: subject,
