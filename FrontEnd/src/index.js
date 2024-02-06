@@ -38,7 +38,7 @@ const Main = () => {
   const queryClient = new QueryClient();
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools/> 
+      <ReactQueryDevtools />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistedStore}>
           <Helmet {...REACT_HELMET_PROPS} />
