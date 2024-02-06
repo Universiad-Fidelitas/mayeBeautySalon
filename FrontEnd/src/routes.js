@@ -42,7 +42,7 @@ const routesAndMenuItems = {
       icon: 'laptop',
       subs: [
         { path: '/users', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
-        { path: '/roles', icon: 'diagram-1', label: 'menu.roles',roles: 'R_ROLES', component: Roles },
+        { path: '/roles', icon: 'diagram-1', label: 'menu.roles', roles: 'R_ROLES', component: Roles },
       ],
     },
     {
@@ -52,7 +52,7 @@ const routesAndMenuItems = {
       protected: true,
       subs: [
         { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
-        { path: '/categorias', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
+        { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
         { path: '/productos', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/proveedores', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
         { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: Servicios },
@@ -65,7 +65,7 @@ const routesAndMenuItems = {
       protected: true,
       subs: [
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
-        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS',  component: Transacciones },
+        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
       ],
     },
   ],
