@@ -15,6 +15,7 @@ import scrollspyReducer from 'components/scrollspy/scrollspySlice';
 import authReducer from 'store/slices/authSlice';
 import rolsReducer from 'store/roles/rolsSlice';
 import usersReducer from 'store/users/usersSlice';
+import categoriesReducer from 'store/categories/categoriesSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -35,6 +36,7 @@ const persistedReducer = persistReducer(
     auth: authReducer,
     rols: rolsReducer,
     users: usersReducer,
+    categories: categoriesReducer,
     menu: menuReducer,
     notification: notificationReducer,
     scrollspy: scrollspyReducer,
