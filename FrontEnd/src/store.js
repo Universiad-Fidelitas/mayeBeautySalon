@@ -14,6 +14,7 @@ import notificationReducer from 'layout/nav/notifications/notificationSlice';
 import scrollspyReducer from 'components/scrollspy/scrollspySlice';
 import authReducer from 'store/slices/authSlice';
 import rolsReducer from 'store/roles/rolsSlice';
+import brandsReducer from 'store/brands/brandsSlice';
 import usersReducer from 'store/users/usersSlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
 
@@ -35,6 +36,7 @@ const persistedReducer = persistReducer(
     lang: langReducer,
     auth: authReducer,
     rols: rolsReducer,
+    brands: brandsReducer,
     users: usersReducer,
     categories: categoriesReducer,
     menu: menuReducer,
