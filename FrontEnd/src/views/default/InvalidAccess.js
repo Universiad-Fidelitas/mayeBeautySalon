@@ -17,18 +17,18 @@ const InvalidAccess = () => {
           </NavLink>
         </div>
         <div className="mb-5">
-          <h2 className="cta-1 mb-0 text-primary">Ooops, it looks like an error!</h2>
-          <h2 className="display-2 text-primary">Invalid Access</h2>
+          <h2 className="cta-1 mb-0 text-primary">Lo sentimos, ha ocurrido un error!</h2>
+          <h2 className="display-2 text-primary">Accesos inválidos</h2>
         </div>
         <div className="mb-5">
-          <p className="h6">It looks like the page you are looking for is not available.</p>
+          <p className="h6"> Parece que la página que estás buscando no está disponible.</p>
           <p className="h6">
-            If you think that is a mistake, please <NavLink to="/">contact</NavLink> us.
+            Vuelva a intentarlo, por favor o <NavLink to="/">Contáctenos</NavLink> us.
           </p>
         </div>
         <div>
           <NavLink to="/" className="btn btn-icon btn-icon-start btn-primary">
-            <CsLineIcons icon="arrow-left" /> <span>Back to Home</span>
+            <CsLineIcons icon="arrow-left" /> <span>Volver a Inicio</span>
           </NavLink>
         </div>
       </div>

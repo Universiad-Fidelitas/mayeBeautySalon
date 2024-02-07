@@ -17,8 +17,8 @@ const Login = () => {
   const formikRef = useRef();
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required('Email is required'),
-    password: Yup.string().min(6, 'Must be at least 6 chars!').required('Password is required'),
+    email: Yup.string().email().required('El correo es requerido'),
+    password: Yup.string().min(6, 'Debe tener al menos 6 caracteres!').required('La contraseña es requerida'),
   });
   const initialValues = { email: 'mgranadosmunos@gmail.com', password: 'Mg1101012' };
 
@@ -39,16 +39,15 @@ const Login = () => {
       <div className="w-100 w-lg-75 w-xxl-50">
         <div>
           <div className="mb-5">
-            <h1 className="display-3 text-white">MAURICIO GARANADOS</h1>
-            <h1 className="display-3 text-white">Ready for Your Project</h1>
+            <h1 className="display-3 text-white">Maye Beauty Salón</h1>
+            <h1 className="display-3 text-white">Refleja tu belleza interior</h1>
           </div>
-          <p className="h6 text-white lh-1-5 mb-5">
-            Dynamically target high-payoff intellectual capital for customized technologies. Objectively integrate emerging core competencies before
-            process-centric communities...
+          <p className="h6 text-white lh-1-5 mb-5"> Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia exclusiva
+           y descubre un mundo de belleza hecho a tu medida....
           </p>
           <div className="mb-5">
             <Button size="lg" variant="outline-white" href="/">
-              Learn More
+              Conocer más
             </Button>
           </div>
         </div>
@@ -65,13 +64,13 @@ const Login = () => {
           </NavLink>
         </div>
         <div className="mb-5">
-          <h2 className="cta-1 mb-0 text-primary">Welcome,</h2>
-          <h2 className="cta-1 text-primary">let's get started!</h2>
+          <h2 className="cta-1 mb-0 text-primary">Bienvenido,</h2>
+          <h2 className="cta-1 text-primary">empecemos!</h2>
         </div>
         <div className="mb-5">
-          <p className="h6">Please use your credentials to login.</p>
+          <p className="h6">Inicia sesión para acceder a tu cuenta.</p>
           <p className="h6">
-            If you are not a member, please <NavLink to="/register">register</NavLink>.
+            ¿Aún no tienes una cuenta?, por favor <NavLink to="/register">Registrate aquí</NavLink>.
           </p>
         </div>
         <div>
@@ -85,12 +84,12 @@ const Login = () => {
               <CsLineIcons icon="lock-off" />
               <Form.Control type="password" name="password" onChange={handleChange} value={values.password} placeholder="Password" />
               <NavLink className="text-small position-absolute t-3 e-3" to="/forgot-password">
-                Forgot?
+                Olvidaste tu contraseña?
               </NavLink>
               {errors.password && touched.password && <div className="d-block invalid-tooltip">{errors.password}</div>}
             </div>
             <Button size="lg" type="submit">
-              Login
+              Iniciar sesión
             </Button>
           </form>
         </div>

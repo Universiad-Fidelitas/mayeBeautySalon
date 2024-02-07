@@ -39,16 +39,16 @@ const ForgotPassword = () => {
       <div className="w-100 w-lg-75 w-xxl-50">
         <div>
           <div className="mb-5">
-            <h1 className="display-3 text-white">MAURICIO GARANADOS</h1>
-            <h1 className="display-3 text-white">Ready for Your Project</h1>
+            <h1 className="display-3 text-white">Maye Beauty Salón</h1>
+            <h1 className="display-3 text-white">Refleja tu belleza interior</h1>
           </div>
           <p className="h6 text-white lh-1-5 mb-5">
-            Dynamically target high-payoff intellectual capital for customized technologies. Objectively integrate emerging core competencies before
-            process-centric communities...
+           Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia exclusiva
+           y descubre un mundo de belleza hecho a tu medida....
           </p>
           <div className="mb-5">
             <Button size="lg" variant="outline-white" href="/">
-              Learn More
+              Conocer más
             </Button>
           </div>
         </div>
@@ -65,13 +65,13 @@ const ForgotPassword = () => {
           </NavLink>
         </div>
         <div className="mb-5">
-          <h2 className="cta-1 mb-0 text-primary">Password is gone?</h2>
-          <h2 className="cta-1 text-primary">Let's reset it!</h2>
+          <h2 className="cta-1 mb-0 text-primary">¿Olvidaste tu contraseña?</h2>
+          <h2 className="cta-1 text-primary">Recuperemosla!</h2>
         </div>
         <div className="mb-5">
-          <p className="h6">Please enter your email to receive a link to reset your password.</p>
+          <p className="h6">Por favor ingresa tu correo electrónico para recibir un enlace para restablecer tu contraseña.</p>
           <p className="h6">
-            If you are a member, please <NavLink to="/login">login</NavLink>.
+            Volver a la página de <NavLink to="/login">Inicio de Sesión</NavLink>.
           </p>
         </div>
         <div>
@@ -82,7 +82,7 @@ const ForgotPassword = () => {
               {errors.email && touched.email && <div className="d-block invalid-tooltip">{errors.email}</div>}
             </div>
             <Button size="lg" type="submit">
-              Send Reset Email
+              Enviar
             </Button>
           </form>
         </div>
