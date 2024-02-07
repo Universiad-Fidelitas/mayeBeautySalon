@@ -45,7 +45,7 @@ const putUser = async (req, res = response) => {
     const { user_id } = req.params;
     const {  rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password } = req.body;
     try {
-        const userQuery = `CALL sp_user('update', ?, ?, ?);`;
+        const userQuery = `CALL sp_user('update', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [user_id, rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password ]);
         res.status(200).json({
             role_id: insertId,
