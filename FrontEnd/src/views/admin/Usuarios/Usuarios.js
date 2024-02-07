@@ -9,6 +9,10 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 import { useUserPermissions } from 'hooks/useUserPermissions';
+import { ModalAddEditUsuarios } from './ModalAddEditUsuarios';
+import UsuariosItemList from './UsuariosItemList';
+import UsuariosItemListHeader from './UsuariosItemListHeader';
+import UsuariosItemListPagination from './UsuariosItemListPagination';
 
 const Usuarios = () => {
   const { formatMessage: f } = useIntl();
@@ -29,52 +33,35 @@ const Usuarios = () => {
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'user_id',
-        accessor: 'user_id',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-        hideColumn: true,
-      },
-      {
         Header: 'Nombre',
         accessor: 'first_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-20',
-      },
-      {
-        Header: 'Apellido',
-        accessor: 'last_name',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-20',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
       },
       {
         Header: 'Cédula',
         accessor: 'id_card',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-20',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
       },
       {
         Header: 'Correo electrónico',
         accessor: 'email',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-20',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
       },
       {
         Header: 'Teléfono',
         accessor: 'phone',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-10',
-      },
-      {
-        Header: 'Imagen',
-        accessor: 'image',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-20',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
       },
       {
         Header: 'Estado',
         accessor: 'activated',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
       },
       {
         Header: '',
@@ -141,19 +128,13 @@ const Usuarios = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-    .required('First Name is required')
-    .min(3, 'First Name must be at least 3 character')
-    .max(15, 'First Name must be at most 15 characters'),
+    first_name: Yup.string()
+    .required('Nombre es requerido')
+    .min(3, 'Nombre debe tener al menos 3 caracteres')
+    .max(15, 'Nombre no puede tener más de 15 caracteres'),
   });
 
   const formFields = [
-    
-    {
-      id:'role_id',
-      label: 'Role',
-      type: 'number',
-    }, 
     {
       id:'first_name',
       label: 'Nombre',
@@ -177,11 +158,6 @@ const Usuarios = () => {
     {
       id:'phone',
       label: 'Teléfono',
-      type: 'text',
-    },
-    {
-      id:'imagen',
-      label: 'Imagen',
       type: 'text',
     },
   ]
@@ -232,16 +208,11 @@ const Usuarios = () => {
                 </div>
               </Col>
             </Row>
-            <Row>
-              <Col xs="12">
-                <Table className="react-table rows" tableInstance={tableInstance} />
-              </Col>
-              <Col xs="12">
-                <TablePagination tableInstance={tableInstance} />
-              </Col>
-            </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields}/>
+          <UsuariosItemListHeader tableInstance={tableInstance} />
+          <UsuariosItemList tableInstance={tableInstance} />
+          <UsuariosItemListPagination tableInstance={tableInstance} />
+          <ModalAddEditUsuarios tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields}/>
         </Col>
       </Row>
     </>

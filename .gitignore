@@ -39,3 +39,4 @@ jspm_packages
 
 #Excluding build directory
 public/
+/uploads
