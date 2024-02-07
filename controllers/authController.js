@@ -41,7 +41,7 @@ const userLogin = async (req, res) => {
         res.json({
             ...userWithoutSensitiveData,
             isLogin: true,
-            rolName: rolName.name,
+            role_name: rolName.name,
             token: generateToken(userWithoutSensitiveData),
         });
     } catch (error) {

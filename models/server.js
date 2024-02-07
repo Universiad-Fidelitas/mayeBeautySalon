@@ -9,10 +9,10 @@ class Server {
     constructor() {
         this.app = express();
         this.port = process.env.SERVER_PORT;
-        
-        //Middlewares
+
+        // Middlewares
         this.middlewares();
-        //Routes
+        // Routes
         this.routes();
     }
 
@@ -21,34 +21,37 @@ class Server {
     }
 
     middlewares() {
-        //CORS
-        this.app.use( cors());
-        this.app.options('*',cors());
+        // CORS
+        this.app.use(cors());
+        this.app.options('*', cors());
         this.app.use(function(req, res, next) {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
             res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             next();
-          });
+        });
         // PARSE JSON FORMAT
-        this.app.use( express.json() );
+        this.app.use(express.json());
     }
 
     routes() {
-        this.app.use('/v1/api/users', require('../routes/users'))
-        this.app.use('/v1/api/roles', require('../routes/roles'))
-        this.app.use('/v1/api/auth', require('../routes/auth'))
-        this.app.use('/v1/api/providers', authenticateToken,require('../routes/providers'))
-        this.app.use('/v1/api/products', authenticateToken,require('../routes/products'))
-        this.app.use('/v1/api/brands', require('../routes/brands'))
-        this.app.use('/v1/api/services', authenticateToken,require('../routes/services'))
-        this.app.use('/v1/api/categories', require('../routes/categories'))
-        this.app.use('/v1/api/inventory', authenticateToken,require('../routes/inventory'))
+        // Serve uploaded files at /v1/api/uploads endpoint
+        this.app.use('/v1/api/uploads', express.static(path.join(__dirname,'..', 'uploads')));
 
-        // Serve the static files for the React app
+        // Your existing routes...
+        this.app.use('/v1/api/users', require('../routes/users'));
+        this.app.use('/v1/api/roles', require('../routes/roles'));
+        this.app.use('/v1/api/auth', require('../routes/auth'));
+        this.app.use('/v1/api/providers', authenticateToken, require('../routes/providers'));
+        this.app.use('/v1/api/products', authenticateToken, require('../routes/products'));
+        this.app.use('/v1/api/services', authenticateToken, require('../routes/services'));
+        this.app.use('/v1/api/categories', require('../routes/categories'));
+        this.app.use('/v1/api/inventory', authenticateToken, require('../routes/inventory'));
+
+        // // Serve the static files for the React app
         this.app.use(express.static(path.join(__dirname, '..', 'FrontEnd', 'build')));
 
-        // Handle other routes (if needed) by serving the React app's main HTML file
+        // // Handle other routes (if needed) by serving the React app's main HTML file
         this.app.get('*', (req, res) => {
             res.sendFile(path.join(__dirname, '..', 'FrontEnd', 'build', 'index.html'));
         });
@@ -56,8 +59,8 @@ class Server {
 
     listen() {
         this.app.listen(this.port, () => {
-            console.log(`APP RUNNING IN: ${ this.port }`)
-        })
+            console.log(`APP RUNNING IN: ${this.port}`);
+        });
     }
 }
 
