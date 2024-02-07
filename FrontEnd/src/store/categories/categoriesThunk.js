@@ -1,29 +1,29 @@
 import { baseApi } from 'api/apiConfig';
 import { toast } from 'react-toastify';
-import { setLoadedRols, setLoadingRols, setRols } from './rolsSlice';
+import { setLoadedCategories, setLoadingCategories, setCategories } from './categoriesSlice';
 
-const getRols = (tableStatus) => {
+const getCategories = (tableStatus) => {
   return async (dispatch) => {
     try {
-      dispatch(setLoadingRols());
-      const { data } = await baseApi.post('/roles', tableStatus);
+      dispatch(setLoadingCategories());
+      const { data } = await baseApi.post('/categories', tableStatus);
       if (data) {
-        dispatch(setRols(data));
-        dispatch(setLoadedRols());
-      } 
+        dispatch(setCategories(data));
+        dispatch(setLoadedCategories());
+      }
     } catch (error) {
-      dispatch(setLoadedRols());
+      dispatch(setLoadedCategories());
     }
   };
 };
 
-const postRol = (newRol) => {
+const postCategory = (newCategory) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.post('/roles/add', newRol);
+      const { data } = await baseApi.post('/categories/add', newCategory);
       const { success, message } = data;
       if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
+        dispatch(getCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
         toast(message, { className: 'success' });
       } else {
         toast(message, { className: 'danger' });
@@ -34,13 +34,13 @@ const postRol = (newRol) => {
   };
 };
 
-const editRol = ({ role_id, name, permissions }) => {
+const editCategory = ({ category_id, name }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/roles/${role_id}`, { name, permissions });
+      const { data } = await baseApi.put(`/categories/${category_id}`, { name });
       const { success, message } = data;
       if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
+        dispatch(getCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
         toast(message, { className: 'success' });
       }
     } catch (error) {
@@ -49,13 +49,13 @@ const editRol = ({ role_id, name, permissions }) => {
   };
 };
 
-const deleteRols = (rol_ids) => {
+const deleteCategories = (category_ids) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.post('/roles/delete', { role_id: rol_ids.toString() });
+      const { data } = await baseApi.post('/categories/delete', { category_id: category_ids.toString() });
       const { success, message } = data;
       if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
+        dispatch(getCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
         toast(message, { className: 'success' });
       }
     } catch (error) {
@@ -64,4 +64,4 @@ const deleteRols = (rol_ids) => {
   };
 };
 
-export { getRols, postRol, editRol, deleteRols };
+export { getCategories, postCategory, editCategory, deleteCategories };

@@ -12,7 +12,7 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { getCategories, postCategory, editCategory, deleteCategories } from 'store/categories/categoriesThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -25,23 +25,25 @@ const Categorias = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/usuarios', text: f({ id: 'Inventariado' }) },
-    { to: 'trabajadores/roles', title: 'Categorias' },
+    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado/categories', title: 'Categorias' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+  const { isCategoriesLoading, categories, pageCount } = useSelector((state) => state.categories);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'ID',
+        accessor: 'category_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'KRAO',
+        Header: 'Nombre',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -84,32 +86,32 @@ const Categorias = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getCategories({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
+    if (categories.length > 0) {
+      setData(categories);
     }
-  }, [isRolesLoading]);
+  }, [isCategoriesLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      dispatch(deleteCategories(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      dispatch(editCategory(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postCategory(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -126,6 +128,7 @@ const Categorias = () => {
     {
       id: 'name',
       label: 'Nombre de la categoria',
+      type: 'text',
     },
   ];
 

@@ -36,12 +36,12 @@ const userLogin = async (req, res) => {
 
         const userWithoutSensitiveData = { ...usuario };
         delete userWithoutSensitiveData.password;
-        delete userWithoutSensitiveData.rol_id;
+        delete userWithoutSensitiveData.role_id;
 
         res.json({
             ...userWithoutSensitiveData,
             isLogin: true,
-            rolName: rolName.name,
+            role_name: rolName.name,
             token: generateToken(userWithoutSensitiveData),
         });
     } catch (error) {

@@ -22,10 +22,10 @@ export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchem
             <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {formFields.map(({ id, label }) => (
+            {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
-                <Field className="form-control" type="text" id={id} name={id} />
+                <Field className="form-control" type={type} id={id} name={id} />
                 <ErrorMessage name={id} component="div" />
               </div>
             ))}

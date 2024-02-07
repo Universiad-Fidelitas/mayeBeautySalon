@@ -5,9 +5,9 @@ const helper = require('../helpers/dbHelpers');
 const getById = async (req, res = response) => {
     const { category_id } = req.params;
     try {
-        const rows = await dbService.query(`SELECT * FROM categories WHERE category_id=${ category_id }`);
-        const data = helper.emptyOrRows(rows);
-        res.json(data);
+        const [categoryFound] = await dbService.query('SELECT * FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
+        console.log(categoryFound)
+        res.status(500).json({categoryFound, status: true, message: 'Se ha encontrado la categoria exitosamente.' });
     }
     catch(error) {
         res.status(500).json({message: error.message})
@@ -19,12 +19,10 @@ const getCategories = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT * FROM categories';
-
+        let baseQuery = 'select category_id, name from categories where activated = 1';
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%'`;
         }
-
         const orderByClauses = [];
 
         if (Array.isArray(sortBy)) {
@@ -39,11 +37,8 @@ const getCategories = async (req, res = response) => {
         if (orderByClauses.length > 0) {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
-
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
-
         const rows = await dbService.query(query);
-
         const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_categories`);
         const totalRowCount = totalRowCountResult[0].count;
 
@@ -63,60 +58,65 @@ const getCategories = async (req, res = response) => {
     }
 }
 
-const postCategories = async (req, res = response) => {
+const postCategory = async (req, res = response) => {
     const { name } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO categories (name) VALUES ("${ name }")`);
-        const { insertId } = helper.emptyOrRows(rows);
+        const userQuery = `CALL sp_category('create', '0', ?);`;
+        const { insertId } = await dbService.query(userQuery, [name ]);
 
-        res.status(200).json({
-            category_id: insertId,
-            success: true,
-            message: "¡El category ha sido agregado exitosamente!"
-        })
+                res.status(200).json({
+                    category_id: insertId,
+                    success: true,
+                    message: "¡La categoria ha sido agregada exitosamente!"
+                })
+
     }
-    catch(error) {
+    catch({ message }) {
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar un category duplicado!"
+            message: "¡No es posible agregar la categoria!",
+            error: message
         })
     }
 }
 
-const putCategories = async (req, res = response) => {
+
+const putCategory = async (req, res = response) => {
     const { category_id } = req.params;
     const { name } = req.body;
     try {
-        const rows = await dbService.query(`UPDATE categories SET name="${ name }" WHERE category_id=${ category_id }`);
-        const { affectedRows } = helper.emptyOrRows(rows);
+        const userQuery = `CALL sp_category('update', ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [category_id, name ]);
         res.status(200).json({
-            affectedRows,
+            category_id: insertId,
             success: true,
-            message: "¡El category ha sido editado exitosamente!"
+            message: "¡La categoria ha sido editada exitosamente!"
         })
     }
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "¡Se ha producido un error al ejecutar la acción.!"
+            message: "¡Se ha producido un error al editar la categoria!",
+            error: error
         })
     }
 }
 
-const deleteCategories = async (req, res = response) => {
-    const { category_ids } = req.body;
+const deleteCategory = async (req, res = response) => {
+    const { category_id } = req.body;
     try {
-        const rows = await dbService.query(`DELETE FROM categories WHERE category_id IN (${category_ids.join(',')})`);
+        const userQuery = `CALL sp_category('delete', ?, '');`;
+        const rows = await dbService.query(userQuery, [category_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
-                message: "¡El category ha sido eliminado exitosamente!"
+                message: "¡La categoria ha sido eliminado exitosamente!"
             });
         } else {
             res.status(200).json({
                 success: true,
-                message: "¡Los categories han sido eliminados exitosamente!"
+                message: "¡Las categorias han sido eliminados exitosamente!"
             });
         }
     } catch (error) {
@@ -129,8 +129,8 @@ const deleteCategories = async (req, res = response) => {
 
 module.exports = {
     getCategories,
-    postCategories,
-    putCategories,
-    deleteCategories,
+    postCategory,
+    putCategory,
+    deleteCategory,
     getById
 }
