@@ -12,7 +12,7 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, postCategory, editCategory, deleteCategories } from 'store/categories/categoriesThunk';
+import { getBrands, postBrand, editBrand, deleteBrands } from 'store/brands/brandsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -26,19 +26,19 @@ const Categorias = () => {
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/categories', title: 'Categorias' },
+    { to: '/inventariado/brands', title: 'Marcas' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isCategoriesLoading, categories, pageCount } = useSelector((state) => state.categories);
+  const { isBrandsLoading, brands, pageCount } = useSelector((state) => state.brands);
 
   const columns = React.useMemo(() => {
     return [
       {
         Header: 'ID',
-        accessor: 'category_id',
+        accessor: 'brand_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -86,32 +86,32 @@ const Categorias = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getCategories({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getBrands({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (categories.length > 0) {
-      setData(categories);
+    if (brands.length > 0) {
+      setData(brands);
     }
-  }, [isCategoriesLoading]);
+  }, [isBrandsLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteCategories(values));
+      dispatch(deleteBrands(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editCategory(values));
+      dispatch(editBrand(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postCategory(values));
+      dispatch(postBrand(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -127,7 +127,7 @@ const Categorias = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre de la categoria',
+      label: 'Nombre de la marca',
       type: 'text',
     },
   ];
