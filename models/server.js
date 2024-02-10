@@ -42,11 +42,12 @@ class Server {
         this.app.use('/v1/api/users', require('../routes/users'));
         this.app.use('/v1/api/roles', require('../routes/roles'));
         this.app.use('/v1/api/auth', require('../routes/auth'));
-        this.app.use('/v1/api/providers', authenticateToken, require('../routes/providers'));
-        this.app.use('/v1/api/products', authenticateToken, require('../routes/products'));
+        this.app.use('/v1/api/providers', require('../routes/providers'));
+        this.app.use('/v1/api/products', require('../routes/products'));
         this.app.use('/v1/api/services', authenticateToken, require('../routes/services'));
+        this.app.use('/v1/api/brands', require('../routes/brands'));
         this.app.use('/v1/api/categories', require('../routes/categories'));
-        this.app.use('/v1/api/inventory', authenticateToken, require('../routes/inventory'));
+        this.app.use('/v1/api/inventory', require('../routes/inventory'));
 
         // // Serve the static files for the React app
         this.app.use(express.static(path.join(__dirname, '..', 'FrontEnd', 'build')));

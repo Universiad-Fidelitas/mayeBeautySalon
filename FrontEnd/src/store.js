@@ -17,6 +17,8 @@ import rolsReducer from 'store/roles/rolsSlice';
 import brandsReducer from 'store/brands/brandsSlice';
 import usersReducer from 'store/users/usersSlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
+import productsReducer from 'store/products/productsSlice';
+import providersReducer from 'store/providers/providersSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -38,6 +40,8 @@ const persistedReducer = persistReducer(
     rols: rolsReducer,
     brands: brandsReducer,
     users: usersReducer,
+    products: productsReducer,
+    providers: providersReducer,
     categories: categoriesReducer,
     menu: menuReducer,
     notification: notificationReducer,

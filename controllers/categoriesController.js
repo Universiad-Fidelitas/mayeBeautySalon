@@ -111,12 +111,12 @@ const deleteCategory = async (req, res = response) => {
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
-                message: "¡La categoria ha sido eliminado exitosamente!"
+                message: "¡La categoria ha sido eliminada exitosamente!"
             });
         } else {
             res.status(200).json({
                 success: true,
-                message: "¡Las categorias han sido eliminados exitosamente!"
+                message: "¡Las categorias han sido eliminadas exitosamente!"
             });
         }
     } catch (error) {

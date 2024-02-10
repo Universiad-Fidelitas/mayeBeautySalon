@@ -12,12 +12,13 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { getProducts, postProduct, editProduct, deleteProducts } from 'store/products/productsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { ModalAddEditProductos } from './ModalAddEditProducto';
 
 const Productos = () => {
   const { formatMessage: f } = useIntl();
@@ -25,24 +26,74 @@ const Productos = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'inventario/productos', text: f({ id: 'Inventario' }) },
-    { to: 'inventario/productos', title: 'Productos' },
+    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado/products', title: 'Productos' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+  const { isProductsLoading, products, pageCount } = useSelector((state) => state.products);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'Nombre',
+        accessor: 'name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Productos',
-        accessor: 'name',
+        Header: 'Precio',
+        accessor: 'price',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tamaño',
+        accessor: 'size',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Marca',
+        accessor: 'brand_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Proveedor',
+        accessor: 'provider_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Categoria',
+        accessor: 'category_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Marca ID',
+        accessor: 'brand_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Proveedor ID',
+        accessor: 'provider_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Categoria ID',
+        accessor: 'category_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -71,7 +122,12 @@ const Productos = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+        sortBy: [{ id: 'name', desc: false }],
+        hiddenColumns: ['product_id', 'category_id', 'brand_id', 'provider_id'],
+      },
     },
     useGlobalFilter,
     useSortBy,
@@ -82,34 +138,33 @@ const Productos = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getProducts({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
+    if (products.length > 0) {
+      setData(products);
     }
-  }, [isRolesLoading]);
+  }, [isProductsLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      dispatch(deleteProducts(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      dispatch(editProduct(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postProduct(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -125,31 +180,18 @@ const Productos = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre del producto',
-    },
-    {
-      id: 'brand',
-      label: 'Marca',
+      label: 'Nombre de la marca',
+      type: 'text',
     },
     {
       id: 'price',
       label: 'Precio',
+      type: 'decimal',
     },
     {
       id: 'image',
       label: 'Imagen',
-    },
-    {
-      id: 'activated',
-      label: 'Activado?',
-    },
-    {
-      id: 'provider_id',
-      label: 'Proveedor',
-    },
-    {
-      id: 'category_id',
-      label: 'Categoria',
+      type: 'text',
     },
   ];
 
@@ -197,7 +239,13 @@ const Productos = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditProductos
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>

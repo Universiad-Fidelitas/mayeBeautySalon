@@ -1,14 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteRols, editRol, getRols, postRol } from 'store/roles';
@@ -39,43 +30,46 @@ const Roles = () => {
     if (permissionType === 'C') {
       return 'success';
     }
-    if (permissionType === 'R'){
+    if (permissionType === 'R') {
       return 'info';
     }
-    if (permissionType === 'U'){
+    if (permissionType === 'U') {
       return 'warning';
     }
     return 'danger';
-  }
+  };
 
   const returnPermissionTypeName = (permissionType) => {
     if (permissionType === 'C') {
       return 'Crear';
     }
-    if (permissionType === 'R'){
+    if (permissionType === 'R') {
       return 'Obtener';
     }
-    if (permissionType === 'U'){
+    if (permissionType === 'U') {
       return 'Actualizar';
     }
     return 'Eliminar';
-  }
+  };
 
-  const PermissionRowList = ({permissionsList}) => {
+  const PermissionRowList = ({ permissionsList }) => {
     return DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
       <div className={`${index !== DB_TABLE_ROLS.length - 1 ? 'mb-3' : 'mb-1'}`} key={index}>
         <Col className="d-flex flex-row justify-content-between align-items-center">
-          <p className="h6 text-primary m-0">{ permissionName }</p>
+          <p className="h6 text-primary m-0">{permissionName}</p>
         </Col>
-        {
-          ['C','R','U','D'].map((permissionType, indexItem) => {
-            return permissionsList.includes(`${permissionType}_${permissionKey}`) && <span key={indexItem} className={`me-1 badge bg-outline-${returnColorName(permissionType)}`}>{`${returnPermissionTypeName(permissionType)} ${permissionName.toLocaleLowerCase()}`}</span>
-          })
-        }
+        {['C', 'R', 'U', 'D'].map((permissionType, indexItem) => {
+          return (
+            permissionsList.includes(`${permissionType}_${permissionKey}`) && (
+              <span key={indexItem} className={`me-1 badge bg-outline-${returnColorName(permissionType)}`}>{`${returnPermissionTypeName(
+                permissionType
+              )} ${permissionName.toLocaleLowerCase()}`}</span>
+            )
+          );
+        })}
       </div>
-      
-    ))
-  }
+    ));
+  };
 
   const columns = React.useMemo(() => {
     return [
@@ -95,7 +89,7 @@ const Roles = () => {
         Header: 'Permisos',
         accessor: 'permissions',
         headerClassName: 'text-muted text-small text-uppercase w-30',
-        Cell: ({ row }) => <PermissionRowList permissionsList={JSON.parse(row.values.permissions)}/>
+        Cell: ({ row }) => <PermissionRowList permissionsList={JSON.parse(row.values.permissions)} />,
       },
       {
         Header: '',
@@ -133,7 +127,7 @@ const Roles = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
+  console.log('Table:', tableInstance);
   useEffect(() => {
     dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
@@ -225,7 +219,13 @@ const Roles = () => {
               </Col>
             </Row>
           </div>
-          <ModalEditPermissions tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalEditPermissions
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>
