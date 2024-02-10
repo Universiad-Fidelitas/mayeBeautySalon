@@ -49,15 +49,15 @@ const Dashboard = () => {
           <div className="d-flex">
             <Dropdown>
               <Dropdown.Toggle className="small-title p-0 align-top h-auto me-2" variant="link">
-                Today's
+                Hoy
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>Weekly</Dropdown.Item>
-                <Dropdown.Item>Monthly</Dropdown.Item>
-                <Dropdown.Item>Yearly</Dropdown.Item>
+                <Dropdown.Item>Semanal</Dropdown.Item>
+                <Dropdown.Item>Mensual</Dropdown.Item>
+                <Dropdown.Item>Anual</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-            <h2 className="small-title">Stats</h2>
+            <h2 className="small-title">Estadísticas</h2>
           </div>
           <div className="mb-5">
             <Row className="g-2">
@@ -158,7 +158,7 @@ const Dashboard = () => {
           {/* Stats End */}
 
           {/* Sales Start */}
-          <h2 className="small-title">Sales</h2>
+          <h2 className="small-title">Ventas</h2>
           <Card className="mb-5 sh-40">
             <Card.Body>
               <ChartCustomHorizontalTooltip />
