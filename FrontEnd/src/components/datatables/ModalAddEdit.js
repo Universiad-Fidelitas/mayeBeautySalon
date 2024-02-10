@@ -4,10 +4,9 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 
 export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-
   const onSubmit = (values) => {
     if (selectedFlatRows.length === 1) {
-      editItem({ ...selectedFlatRows[0].values, ...values });
+      editItem({ ...selectedFlatRows[0].original, ...values });
     } else {
       addItem(values);
     }

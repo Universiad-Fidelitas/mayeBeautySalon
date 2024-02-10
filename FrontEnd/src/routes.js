@@ -5,7 +5,7 @@ import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
 import Categorias from 'views/admin/Inventario/Categorias';
 import Marcas from 'views/admin/Inventario/Marcas';
-import Inventario from 'views/admin/Inventario/Inventario';
+// import Inventario from 'views/admin/Inventario/Inventario';
 import Productos from 'views/admin/Inventario/Productos';
 import Proveedores from 'views/admin/Inventario/Proveedores';
 import Servicios from 'views/admin/Inventario/Servicios';
@@ -51,11 +51,11 @@ const routesAndMenuItems = {
       label: 'Inventariado',
       icon: 'database',
       subs: [
-        { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
+        /// //// { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
-        { path: '/productos', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
-        { path: '/proveedores', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
+        { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
+        { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
         { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: Servicios },
       ],
     },

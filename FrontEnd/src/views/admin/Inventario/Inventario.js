@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+/* import React, { useEffect, useState, useCallback } from 'react';
 import {
   ModalAddEdit,
   ButtonsAddNew,
@@ -200,3 +200,4 @@ const Inventario = () => {
   );
 };
 export default Inventario;
+*/

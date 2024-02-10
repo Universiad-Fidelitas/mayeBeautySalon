@@ -12,36 +12,38 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { getProviders, postProvider, editProvider, deleteProviders } from 'store/providers/providersThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 
-const Proveedores = () => {
+const Marcas = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Proveedor';
+  const title = 'Marcas';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'inventario/productos', text: f({ id: 'Inventario' }) },
-    { to: 'inventario/proveedores', title: 'Proveedor' },
+    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado/providers', title: 'Marcas' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+  const { isProvidersLoading, providers, pageCount } = useSelector((state) => state.providers);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'ID',
+        accessor: 'provider_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Proveedor',
+        Header: 'Nombre',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -71,7 +73,7 @@ const Proveedores = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['provider_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -82,34 +84,33 @@ const Proveedores = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getProviders({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
+    if (providers.length > 0) {
+      setData(providers);
     }
-  }, [isRolesLoading]);
+  }, [isProvidersLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      dispatch(deleteProviders(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      dispatch(editProvider(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postProvider(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -125,11 +126,8 @@ const Proveedores = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre del proveedor',
-    },
-    {
-      id: 'activated',
-      label: 'Activado?',
+      label: 'Nombre de la marca',
+      type: 'text',
     },
   ];
 
@@ -183,4 +181,4 @@ const Proveedores = () => {
     </>
   );
 };
-export default Proveedores;
+export default Marcas;

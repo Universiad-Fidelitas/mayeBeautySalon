@@ -19,9 +19,9 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 
-const Categorias = () => {
+const Marcas = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Categorias';
+  const title = 'Marcas';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
@@ -73,7 +73,7 @@ const Categorias = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['brand_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -84,7 +84,6 @@ const Categorias = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
     dispatch(getBrands({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
@@ -182,4 +181,4 @@ const Categorias = () => {
     </>
   );
 };
-export default Categorias;
+export default Marcas;
