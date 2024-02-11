@@ -115,7 +115,7 @@ const NavUserMenuDropdownToggle = React.memo(
         onClick(e);
       }}
     >
-      <img className="profile" alt={user.name} src={user.thumb} />
+      <img className="profile" alt={user.name} src={`${process.env.REACT_APP_BASE_API_URL}/${user.image}`} />
       <div className="name">{user.name}</div>
     </a>
   ))

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Form } from 'react-bootstrap';
 import classNames from 'classnames';
+import { useRoles } from 'hooks/react-query/useRoles';
 
 const UsuariosItemList = ({ tableInstance }) => {
   const { page, prepareRow, toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
@@ -16,8 +17,11 @@ const UsuariosItemList = ({ tableInstance }) => {
       <div className="list mb-5">
         {page.map((row, i) => {
           prepareRow(row);
-          const { email, activated, first_name, last_name, phone, role_id, image, id_card } = row.original;
+          const { email, activated, first_name, last_name, phone, image, id_card, role_id: userCurrentRoleId } = row.original;
           const { checked, onChange } = row.getToggleRowSelectedProps();
+          const { isLoading, data: rolesData } = useRoles();
+
+          console.log('rolesData', rolesData.items.find((rol) => rol.role_id === userCurrentRoleId).name)
 
           return (
             <Card key={`card.${i}`} {...row.getRowProps()} className={classNames('mb-2', { selected: row.isSelected })}>
@@ -30,7 +34,7 @@ const UsuariosItemList = ({ tableInstance }) => {
                     <Row className="g-0 h-100 align-content-center">
                       <Col className="col-10 col-lg-3 d-flex flex-column mb-lg-0 mb-3 mb-lg-0 pe-3 d-flex order-1 view-click">
                         <div className="name">{`${first_name} ${last_name}`}</div>
-                        <div className="text-small text-muted text-truncate position">{role_id}</div>
+                        <div className="text-small text-primary position">{isLoading ? '' : rolesData.items.find((rol) => rol.role_id === userCurrentRoleId).name}</div> 
                       </Col>
                       <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate id_card">{id_card}</div>
