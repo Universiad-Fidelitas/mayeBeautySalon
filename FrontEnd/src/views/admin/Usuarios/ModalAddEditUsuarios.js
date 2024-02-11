@@ -1,18 +1,24 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
-import 'react-dropzone-uploader/dist/styles.css';
-import DropzonePreview from 'components/dropzone/DropzonePreview';
-import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 import { useRoles } from 'hooks/react-query/useRoles';
 import classNames from 'classnames';
+import { UsuariosImageUploader } from 'components/ImageUploading/UsuariosImageUploader';
+import CsLineIcons from 'cs-line-icons/CsLineIcons';
+import { forgotPassword } from 'store/slices/authThunk';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { IconNotification } from 'components/notifications/IconNotification';
 
-export const ModalAddEditUsuarios = ({ tableInstance, addItem, validationSchema, formFields }) => {
+export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { isLoading, data: rolesData } = useRoles();
   const [userRolSelected, setUserRolSelected] = useState();
-  const initialData = { first_name: '', last_name: '', cedula: '', email: '', phone: '' };
+  const initialData = { first_name: 'dsada', last_name: 'asdasd', id_card: '10753992', email: 'das@df.com', phone: '99595446' };
+  const [profileImage, setProfileImage] = useState([]);
+  const [activeUser, setActiveUser] = useState(false);
+  const dispatch = useDispatch();
 
   const rolDataDropdown = useMemo(
     () =>
@@ -22,30 +28,68 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, validationSchema,
     [rolesData]
   );
 
-  const onSubmit = (values) => {
+
+  const onSubmit = useCallback((values) => {
+    const formData = new FormData();
     const userSchema = {
       ...values,
       role_id: userRolSelected.value,
-      imagen: 'Karolay',
-      password: '1234567976',
-    };
-    // if (selectedFlatRows.length === 1) {
-    //   editItem({ ...selectedFlatRows[0].values, ...values });
-    // } else {
-    addItem(userSchema);
-    // }
+      image: profileImage[0].file,
+      activated: activeUser ? 1 : 0
+    }
+    Object.entries(userSchema).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    if(selectedFlatRows.length === 1){
+      editItem({
+        formData,
+        userId: selectedFlatRows[0].values.user_id,
+      });
+    } else {
+      addItem(formData);
+    }
     setIsOpenAddEditModal(false);
-
-    console.log('ModalAddEditUsuarios', values, userRolSelected);
+  }, [profileImage, userRolSelected, selectedFlatRows, activeUser])
+  
+  const handleImageFromUrl = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const filename = url.substring(url.lastIndexOf('/') + 1);
+    setProfileImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url}]);
   };
 
-  const getUploadParams = () => ({ url: 'https://httpbin.org/post' });
+  useEffect(() => {
+    if(selectedFlatRows.length === 1){
+      handleImageFromUrl(`http://localhost:4000/v1/api/${selectedFlatRows[0].values.image}`)
+    }
+  }, [selectedFlatRows])
+  
 
-  const onChangeStatus = (fileWithMeta, status) => {
-    console.log(fileWithMeta);
-    console.log(status);
+
+  useEffect(() => {
+    if(selectedFlatRows.length === 1){
+      setUserRolSelected(rolDataDropdown.find((rol) => rol.value === selectedFlatRows[0].values.role_id));
+      setProfileImage([{ dataurl: `http://localhost:4000/v1/api/${selectedFlatRows[0].values.image}` }]);
+      setActiveUser(selectedFlatRows[0].values.activated);
+    } else {
+      setActiveUser(true);
+      setUserRolSelected('');
+      setProfileImage([]);
+    }
+  }, [selectedFlatRows])
+
+  const enviarEmail = async () => {
+    if(selectedFlatRows.length === 1){
+      const { status, message } = await dispatch(forgotPassword(selectedFlatRows[0].values.email));
+      if (status) {
+        toast(<IconNotification title="Enlace enviado" description={message} toastType="success"/>, { className: 'success' });
+      } else {
+        toast(<IconNotification title="No encontrado" description={message} toastType="danger"/>, { className: 'danger' });
+      }
+    }
   };
 
+  
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
@@ -60,22 +104,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, validationSchema,
             </Modal.Header>
             <Modal.Body>
               <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                <label className="form-label m-0">Usuario activo</label>
-                <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" />
+                <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
+                  <CsLineIcons icon="email" /><span>  Restablecer Contraseña</span>
+                </Button>      
               </Col>
-              <Col className="d-flex flex-column justify-content-between align-items-left mb-3">
-                <Dropzone
-                  getUploadParams={getUploadParams}
-                  PreviewComponent={DropzonePreview}
-                  submitButtonContent={null}
-                  accept="image/*"
-                  submitButtonDisabled
-                  SubmitButtonComponent={null}
-                  inputWithFilesContent={null}
-                  onChangeStatus={onChangeStatus}
-                  classNames={{ inputLabelWithFiles: defaultClassNames.inputLabel }}
-                  inputContent="Imagen de usuario"
-                />
+              <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
+                <label className="form-label m-0">Usuario activo</label>
+                <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ activeUser } onChange={() => setActiveUser(!activeUser)}/>
+              </Col>
+              <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
+                <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage}/>
               </Col>
               <div className="mb-3">
                 <label className="form-label">Role</label>

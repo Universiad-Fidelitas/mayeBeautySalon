@@ -15,6 +15,9 @@ const UsuariosItemListHeader = ({ tableInstance }) => {
               <Row className="g-0 h-100 align-content-center custom-sort">
                 {headerGroups.map((headerGroup, headerIndex) =>
                   headerGroup.headers.map((column) => {
+                    if (column.hideColumn) {
+                      return null;
+                    }
                     return (
                       <div key={`header.${headerIndex}`} className={column.headerClassName} {...column.getHeaderProps(column.getSortByToggleProps())}>
                         <div

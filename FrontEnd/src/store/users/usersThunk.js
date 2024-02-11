@@ -36,10 +36,10 @@ const postUser = (newUser) => {
   };
 };
 
-const editUser = ({ user_id, role_id, id_card, first_name, last_name, email, phone, activated, image }) => {
+const editUser = ({formData, userId}) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/users/${user_id}`, { role_id, id_card, first_name, last_name, email, phone, activated, image });
+      const { data } = await baseApi.patch(`/users/${userId}`, formData);
       const { success, message } = data;
       if (success) {
         dispatch(getUsers({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
