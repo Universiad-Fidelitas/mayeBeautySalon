@@ -60,7 +60,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
 
   useEffect(() => {
     if(selectedFlatRows.length === 1){
-      handleImageFromUrl(`http://localhost:4000/v1/api/${selectedFlatRows[0].values.image}`)
+      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`)
     }
   }, [selectedFlatRows])
   
@@ -69,7 +69,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
   useEffect(() => {
     if(selectedFlatRows.length === 1){
       setUserRolSelected(rolDataDropdown.find((rol) => rol.value === selectedFlatRows[0].values.role_id));
-      setProfileImage([{ dataurl: `http://localhost:4000/v1/api/${selectedFlatRows[0].values.image}` }]);
+      setProfileImage([{ dataurl: `${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}` }]);
       setActiveUser(selectedFlatRows[0].values.activated);
     } else {
       setActiveUser(true);

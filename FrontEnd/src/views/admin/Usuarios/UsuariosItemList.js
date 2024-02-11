@@ -23,7 +23,7 @@ const UsuariosItemList = ({ tableInstance }) => {
             <Card key={`card.${i}`} {...row.getRowProps()} className={classNames('mb-2', { selected: row.isSelected })}>
               <Row className="g-0 h-100 sh-lg-9 position-relative" onClick={(event) => clickedForEdit(event, row)}>
                 <Col className="col-auto position-relative view-click">
-                  <img src={`http://localhost:4000/v1/api/${image}`} alt={id_card} className="card-img card-img-horizontal sw-11 h-100 h-100 sh-lg-9 thumb" id="contactThumb" />
+                  <img src={`${process.env.REACT_APP_BASE_API_URL}/${image}`} alt={id_card} className="card-img card-img-horizontal sw-11 h-100 h-100 sh-lg-9 thumb" id="contactThumb" />
                 </Col>
                 <Col className="py-3 py-sm-3">
                   <Card.Body className="ps-5 pe-4 pt-0 pb-0 h-100">
