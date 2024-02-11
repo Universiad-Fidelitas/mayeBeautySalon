@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
@@ -8,14 +8,15 @@ import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 import { useCategories } from 'hooks/react-query/useCategories';
 import { useBrands } from 'hooks/react-query/useBrands';
 import { useProviders } from 'hooks/react-query/useProviders';
+import { ProductosImageUploader } from 'components/ImageUploading/ProductsImageUploader';
 import classNames from 'classnames';
 
 export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  console.log(selectedFlatRows);
+  console.log('Joe', selectedFlatRows);
   const { isLoading, data: categoriesData } = useCategories();
   const { data: providersData } = useProviders();
-
+  const [productImage, setProductImage] = useState([]);
   const { data: brandsData } = useBrands();
   const categoryDataDropdown = useMemo(
     () =>
@@ -39,15 +40,34 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
     [providersData]
   );
   const onSubmit = (values) => {
+    const formData = new FormData();
+    const productSchema = {
+      ...values,
+      image: productImage[0].file,
+    };
+    Object.entries(productSchema).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
     if (selectedFlatRows.length === 1) {
-      console.log('ValuesCategories', values);
-      editItem({ ...selectedFlatRows[0].original, ...values });
+      editItem({ formData, product_id: selectedFlatRows[0].original.product_id });
     } else {
-      addItem(values);
+      addItem(formData);
     }
     setIsOpenAddEditModal(false);
   };
 
+  const handleImageFromUrl = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const filename = url.substring(url.lastIndexOf('/') + 1);
+    setProductImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url }]);
+  };
+
+  useEffect(() => {
+    if (selectedFlatRows.length === 1) {
+      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
+    }
+  }, [selectedFlatRows]);
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -56,6 +76,9 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
             <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
+              <ProductosImageUploader initialImages={productImage} setImageState={setProductImage} />
+            </Col>
             {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
