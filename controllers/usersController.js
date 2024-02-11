@@ -6,7 +6,7 @@ const { hashPassword } = require('../helpers/bcrypt');
 const getByIdUser = async (req, res = response) => {
     const { user_id } = req.params;
     try {
-        const [userFound] = await dbService.query('SELECT * FROM users WHERE activated = 1 AND user_id = ?', [user_id]);
+        const [userFound] = await dbService.query('SELECT * FROM users AND user_id = ?', [user_id]);
         res.json({userFound, status: true, message: 'Se ha encontrado el usuario exitosamente.' });
     }
     catch(error) {
@@ -20,7 +20,7 @@ const getUser = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select * from users where activated = 1';
+        let baseQuery = 'select * from users';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
@@ -61,14 +61,14 @@ const getUser = async (req, res = response) => {
 
 
 const postUser = async (req, res = response) => {
-    const { role_id, cedula, first_name, last_name, email, phone, password } = req.body;
+    const { role_id, id_card, first_name, last_name, email, phone } = req.body;
     try {
         const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, cedula, first_name, last_name, email, phone, 1, req.file.path ]);
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file.path]);
  
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
-            const { affectedRows } = await dbService.query(userQuery, [insertId, await hashPassword(password) ]);
+            const { affectedRows } = await dbService.query(userQuery, [insertId, await hashPassword('123456789') ]);
             if (affectedRows > 0) {
                 res.status(200).json({
                     user_id: insertId,
@@ -88,12 +88,15 @@ const postUser = async (req, res = response) => {
 }
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;
-    const { name, permissions } = req.body;
-   /* try {
-        const userQuery = `CALL sp_user('update', ?, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [user_id, name, permissions ]);
+    const { role_id, id_card, first_name, last_name, email, activated, phone } = req.body;
+    console.log(user_id, role_id, id_card, first_name, last_name, email, phone, req.file.path)
+    try {
+         
+        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ? WHERE user_id = ?';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id]);
         res.status(200).json({
             role_id: insertId,
+            affectedRows:affectedRows,
             success: true,
             message: "¡El usuario ha sido editado exitosamente!"
         })
@@ -104,8 +107,9 @@ const putUser = async (req, res = response) => {
             message: "¡Se ha producido un error al editar la acción.!",
             error: error
         })
-    }*/
+    }
 }
+
 
 
 const deleteUser = async (req, res = response) => {

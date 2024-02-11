@@ -5,7 +5,7 @@ const helper = require('../helpers/dbHelpers');
 const getById = async (req, res = response) => {
     const { product_id } = req.params;
     try {
-        const rows = await dbService.query(`SELECT * FROM products WHERE product_id=${ product_id }`);
+        const rows = await dbService.query(`SELECT * FROM product_info WHERE product_id=${ product_id } AND activated=1`);
         const data = helper.emptyOrRows(rows);
         res.json(data);
     }
@@ -19,10 +19,10 @@ const getProducts = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT * FROM products';
+        let baseQuery = 'SELECT * FROM product_info WHERE activated=1';
 
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%'`;
         }
 
         const orderByClauses = [];
@@ -64,16 +64,11 @@ const getProducts = async (req, res = response) => {
 }
 
 const postProducts = async (req, res = response) => {
-    const { name } = req.body;
-    const { brand } = req.body;
-    const { price } = req.body;
-    const { image } = req.body;
-    const { activated } = req.body;
-    const { provider_id } = req.body;
-    const { category_id } = req.body;
+    const { name, brand_id, price, size, provider_id, category_id } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO products (name, brand, price, image, activated, provider_id, category_id) VALUES ("${ name }", "${ brand }", "${ price }", "${ image }", "${ activated }", "${ provider_id }", "${ category_id }")`);
-        const { insertId } = helper.emptyOrRows(rows);
+        
+        const userQuery= `call sp_product ('create', '0', ?, ?, ?, ?, ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [name, brand_id, price, size, req.file.path, provider_id, category_id]);
 
         res.status(200).json({
             product_id: insertId,
@@ -84,61 +79,59 @@ const postProducts = async (req, res = response) => {
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar un producto duplicado!"
+            message: "¡No es posible agregar un producto duplicado!",
+            error: error
         })
     }
 }
 
 const putProducts = async (req, res = response) => {
     const { product_id } = req.params;
-    const { name } = req.body;
-    const { brand } = req.body;
-    const { price } = req.body;
-    const { image } = req.body;
-    const { activated } = req.body;
-    const { provider_id } = req.body;
-    const { category_id } = req.body;
+    const { name, brand_id, price, size, provider_id, category_id } = req.body;
 
-    try {
-        const rows = await dbService.query(`UPDATE products SET name="${ name }", brand="${ brand }", price="${price },"image="${ image }", activated="${activated }", provider_id="${provider_id }", category_id="${category_id }" WHERE product_id=${ product_id }`);
-        const { affectedRows } = helper.emptyOrRows(rows);
-        res.status(200).json({
-            affectedRows,
-            success: true,
-            message: "¡El producto ha sido editado exitosamente!"
-        })
-    }
-    catch(error) {
-        res.status(200).json({
-            success: false,
-            message: "¡Se ha producido un error al ejecutar la acción.!"
-        })
-    }
-}
-
-const deleteProducts = async (req, res = response) => {
-    const { Products_ids } = req.body;
-    try {
-        const rows = await dbService.query(`DELETE FROM products WHERE product_id IN (${Products_ids.join(',')})`);
-        const { affectedRows } = helper.emptyOrRows(rows);
-        if( affectedRows === 1 ) {
+        try {
+            const userQuery= `call sp_product ('update', ?, ?, ?, ?, ?, ?, ?, ?);`;
+            const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, req.file.path, provider_id, category_id]);
             res.status(200).json({
+                category_id: insertId,
                 success: true,
-                message: "¡El producto ha sido eliminado exitosamente!"
-            });
-        } else {
-            res.status(200).json({
-                success: true,
-                message: "¡Los productos han sido eliminados exitosamente!"
-            });
+                message: "¡El producto ha sido editado exitosamente!"
+            })
         }
-    } catch (error) {
-        res.status(200).json({
-            success: false,
-            message: "¡Se ha producido un error al ejecutar la acción.!"
-        })
+        catch(error) {
+            res.status(200).json({
+                success: false,
+                message: "¡Se ha producido un error al editar el producto!",
+                error: error
+            })
+        }
     }
-};
+
+    const deleteProducts = async (req, res = response) => {
+        const { product_id } = req.body;
+        try {
+            const userQuery = `call sp_product ('delete', ?, '', 0, 0, '', '', 0, 0);`;
+            const rows = await dbService.query(userQuery, [product_id]);
+            const { affectedRows } = helper.emptyOrRows(rows);
+            if( affectedRows === 1 ) {
+                res.status(200).json({
+                    success: true,
+                    message: "¡El producto ha sido eliminado exitosamente!"
+                });
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: "¡Los productos han sido eliminados exitosamente!"
+                });
+            }
+        } catch (error) {
+            res.status(200).json({
+                success: false,
+                message: "¡Se ha producido un error al ejecutar la acción.!"
+            })
+        }
+    };
+    
 
 module.exports = {
     getProducts,

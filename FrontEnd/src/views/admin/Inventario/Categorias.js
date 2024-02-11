@@ -37,12 +37,6 @@ const Categorias = () => {
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'ID',
-        accessor: 'category_id',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
@@ -73,7 +67,7 @@ const Categorias = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['category_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -84,7 +78,6 @@ const Categorias = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
     dispatch(getCategories({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);

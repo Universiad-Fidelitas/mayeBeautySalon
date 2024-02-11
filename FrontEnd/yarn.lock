@@ -10529,6 +10529,11 @@ react-image-lightbox@^5.1.4:
     prop-types "^15.7.2"
     react-modal "^3.11.1"
 
+react-images-uploading@^3.1.7:
+  version "3.1.7"
+  resolved "https://registry.npmjs.org/react-images-uploading/-/react-images-uploading-3.1.7.tgz"
+  integrity sha512-woET50eCezm645iIeP4gCoN7HjdR3T64UXC5l53yd+2vHFp+pwABH8Z/aAO5IXDeC1aP6doQ+K738L701zswAw==
+
 react-input-autosize@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/react-input-autosize/-/react-input-autosize-3.0.0.tgz"

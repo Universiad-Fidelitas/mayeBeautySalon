@@ -33,10 +33,24 @@ const Usuarios = () => {
   const columns = React.useMemo(() => {
     return [
       {
+        Header: 'user_id',
+        accessor: 'user_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
+      },
+      {
         Header: 'Nombre',
         accessor: 'first_name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+      },
+      {
+        Header: 'Apellidos',
+        accessor: 'last_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
       },
       {
         Header: 'Cédula',
@@ -49,7 +63,6 @@ const Usuarios = () => {
         accessor: 'email',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
-        hideColumn: true,
       },
       {
         Header: 'Teléfono',
@@ -64,14 +77,19 @@ const Usuarios = () => {
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
       },
       {
-        Header: '',
-        id: 'action',
-        headerClassName: 'empty w-10',
-        Cell: ({ row }) => {
-          const { checked, onChange } = row.getToggleRowSelectedProps();
-          return <Form.Check className="form-check float-end mt-1" type="checkbox" checked={checked} onChange={onChange} />;
-        },
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
       },
+      {
+        Header: 'role_id',
+        accessor: 'role_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
+      }
     ];
   }, []);
 
@@ -129,9 +147,25 @@ const Usuarios = () => {
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string()
-    .required('Nombre es requerido')
-    .min(3, 'Nombre debe tener al menos 3 caracteres')
-    .max(15, 'Nombre no puede tener más de 15 caracteres'),
+    .required('El nombre es requerido')
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .max(15, 'El nombre no puede tener más de 15 caracteres'),
+    last_name: Yup.string()
+    .required('El apellido es requerido')
+    .min(3, 'El apellido debe tener al menos 3 caracteres')
+    .max(15, 'El apellido no puede tener más de 15 caracteres'),
+    id_card: Yup.string()
+    .matches(/^\d+$/, 'La cédula debe ser un número')
+    .min(9, 'La cédula debe tener al menos 3 números')
+    .max(15, 'La cédula no puede tener más de 10 números')
+    .required('La cédula es requerida'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    phone: Yup.string()
+    .matches(/^\d+$/, 'El teléfono debe ser un número')
+    .min(8, 'El teléfono debe tener al menos 8 números')
+    .max(10, 'El teléfono no puede tener más de 10 números')
+    .required('El teléfono es requerido'),
+    
   });
 
   const formFields = [
@@ -146,7 +180,7 @@ const Usuarios = () => {
       type: 'text',
     },
     {
-      id:'cedula',
+      id:'id_card',
       label: 'Cédula',
       type: 'text',
     },
@@ -198,9 +232,6 @@ const Usuarios = () => {
                   }
                   {
                     userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />
-                  }
-                  {
-                    userHasPermission('D_USERS') && <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
                   }
                 </div>
                 <div className="d-inline-block">

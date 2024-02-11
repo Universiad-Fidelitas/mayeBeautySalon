@@ -59,9 +59,10 @@ const getRoles = async (req, res = response) => {
 
 const postRole = async (req, res = response) => {
     const { name, permissions } = req.body;
+    console.log('permissions',permissions)
     try {
         const userQuery = `CALL sp_role('create', 0, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [name, permissions ]);
+        const { insertId } = await dbService.query(userQuery, [name, JSON.stringify(permissions) ]);
 
                 res.status(200).json({
                     role_id: insertId,
