@@ -5,6 +5,11 @@ const path = require('path');
 const emailService = async (email, subject, resetLink) => {
     try {
         const transporter = nodemailer.createTransport({
+            pool: true,
+            maxConnections: 1,
+            maxMessages: 1,
+            rateDelta: 3000,
+            rateLimit: 1,
             host: 'smtp.office365.com',
             port: 587,
             secure: false,
@@ -12,6 +17,7 @@ const emailService = async (email, subject, resetLink) => {
                user: 'noreply@mayebeautysalon.com',
                pass: 'Waj55523'
             },
+
         });
         
         // point to the template folder
