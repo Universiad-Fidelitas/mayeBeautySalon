@@ -5,7 +5,7 @@ import { DB_TABLE_ROLS } from 'data/rolsData';
 import { useExportAllPermissions } from 'hooks/useUserPermissions';
 
 export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const [permissionsList, setPermissionsList] = useState([]);
   const [allSwitchChangeStatus, setAllSwitchChangeStatus] = useState(false);
  const fullPermissionsList  = useExportAllPermissions();
