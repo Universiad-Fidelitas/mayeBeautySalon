@@ -233,9 +233,6 @@ const Usuarios = () => {
                   {
                     userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />
                   }
-                  {
-                    userHasPermission('D_USERS') && <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
-                  }
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

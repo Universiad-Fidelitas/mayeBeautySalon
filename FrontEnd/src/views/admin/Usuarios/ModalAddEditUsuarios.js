@@ -15,7 +15,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { isLoading, data: rolesData } = useRoles();
   const [userRolSelected, setUserRolSelected] = useState();
-  const initialData = { first_name: 'dsada', last_name: 'asdasd', id_card: '10753992', email: 'das@df.com', phone: '99595446' };
+  const initialData = { first_name: '', last_name: '', id_card: '', email: '', phone: '' };
   const [profileImage, setProfileImage] = useState([]);
   const [activeUser, setActiveUser] = useState(false);
   const dispatch = useDispatch();
@@ -103,11 +103,15 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
               <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
-                  <CsLineIcons icon="email" /><span>  Restablecer Contraseña</span>
-                </Button>      
-              </Col>
+              {
+                selectedFlatRows.length === 1 && (
+                  <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
+                    <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
+                      <CsLineIcons icon="email" /><span>  Restablecer Contraseña</span>
+                    </Button>      
+                  </Col>
+                )
+              }
               <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
                 <label className="form-label m-0">Usuario activo</label>
                 <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ activeUser } onChange={() => setActiveUser(!activeUser)}/>
