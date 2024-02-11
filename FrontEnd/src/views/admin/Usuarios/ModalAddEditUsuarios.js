@@ -28,46 +28,46 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
     [rolesData]
   );
 
-
-  const onSubmit = useCallback((values) => {
-    const formData = new FormData();
-    const userSchema = {
-      ...values,
-      role_id: userRolSelected.value,
-      image: profileImage[0].file,
-      activated: activeUser ? 1 : 0
-    }
-    Object.entries(userSchema).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    if(selectedFlatRows.length === 1){
-      editItem({
-        formData,
-        userId: selectedFlatRows[0].values.user_id,
+  const onSubmit = useCallback(
+    (values) => {
+      const formData = new FormData();
+      const userSchema = {
+        ...values,
+        role_id: userRolSelected.value,
+        image: profileImage[0].file,
+        activated: activeUser ? 1 : 0,
+      };
+      Object.entries(userSchema).forEach(([key, value]) => {
+        formData.append(key, value);
       });
-    } else {
-      addItem(formData);
-    }
-    setIsOpenAddEditModal(false);
-  }, [profileImage, userRolSelected, selectedFlatRows, activeUser])
-  
+      if (selectedFlatRows.length === 1) {
+        editItem({
+          formData,
+          userId: selectedFlatRows[0].values.user_id,
+        });
+      } else {
+        addItem(formData);
+      }
+      setIsOpenAddEditModal(false);
+    },
+    [profileImage, userRolSelected, selectedFlatRows, activeUser]
+  );
+
   const handleImageFromUrl = async (url) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const filename = url.substring(url.lastIndexOf('/') + 1);
-    setProfileImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url}]);
+    setProfileImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url }]);
   };
 
   useEffect(() => {
-    if(selectedFlatRows.length === 1){
-      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`)
+    if (selectedFlatRows.length === 1) {
+      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
     }
-  }, [selectedFlatRows])
-  
-
+  }, [selectedFlatRows]);
 
   useEffect(() => {
-    if(selectedFlatRows.length === 1){
+    if (selectedFlatRows.length === 1) {
       setUserRolSelected(rolDataDropdown.find((rol) => rol.value === selectedFlatRows[0].values.role_id));
       setProfileImage([{ dataurl: `${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}` }]);
       setActiveUser(selectedFlatRows[0].values.activated);
@@ -76,20 +76,19 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       setUserRolSelected('');
       setProfileImage([]);
     }
-  }, [selectedFlatRows])
+  }, [selectedFlatRows]);
 
   const enviarEmail = async () => {
-    if(selectedFlatRows.length === 1){
+    if (selectedFlatRows.length === 1) {
       const { status, message } = await dispatch(forgotPassword(selectedFlatRows[0].values.email));
       if (status) {
-        toast(<IconNotification title="Enlace enviado" description={message} toastType="success"/>, { className: 'success' });
+        toast(<IconNotification title="Enlace enviado" description={message} toastType="success" />, { className: 'success' });
       } else {
-        toast(<IconNotification title="No encontrado" description={message} toastType="danger"/>, { className: 'danger' });
+        toast(<IconNotification title="No encontrado" description={message} toastType="danger" />, { className: 'danger' });
       }
     }
   };
 
-  
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
@@ -103,21 +102,20 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
               <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {
-                selectedFlatRows.length === 1 && (
-                  <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                    <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
-                      <CsLineIcons icon="email" /><span>  Restablecer Contraseña</span>
-                    </Button>      
-                  </Col>
-                )
-              }
+              {selectedFlatRows.length === 1 && (
+                <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
+                  <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
+                    <CsLineIcons icon="email" />
+                    <span> Restablecer Contraseña</span>
+                  </Button>
+                </Col>
+              )}
               <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
                 <label className="form-label m-0">Usuario activo</label>
-                <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ activeUser } onChange={() => setActiveUser(!activeUser)}/>
+                <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={activeUser} onChange={() => setActiveUser(!activeUser)} />
               </Col>
               <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
-                <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage}/>
+                <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage} />
               </Col>
               <div className="mb-3">
                 <label className="form-label">Role</label>

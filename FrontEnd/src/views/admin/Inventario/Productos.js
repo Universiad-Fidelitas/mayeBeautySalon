@@ -188,11 +188,6 @@ const Productos = () => {
       label: 'Precio',
       type: 'decimal',
     },
-    {
-      id: 'image',
-      label: 'Imagen',
-      type: 'text',
-    },
   ];
 
   return (
