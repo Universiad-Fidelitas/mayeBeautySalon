@@ -13,7 +13,6 @@ import classNames from 'classnames';
 
 export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  console.log('Joe', selectedFlatRows);
   const { isLoading, data: categoriesData } = useCategories();
   const { data: providersData } = useProviders();
   const [productImage, setProductImage] = useState([]);

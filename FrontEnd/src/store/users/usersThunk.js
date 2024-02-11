@@ -7,9 +7,8 @@ const getUsers = (tableStatus) => {
     try {
       dispatch(setLoadingUsers());
       const { data } = await baseApi.post('/users', tableStatus);
-      console.log("setLoadedUsers", data);
+      console.log('setLoadedUsers', data);
       if (data.items) {
-        
         dispatch(setUsers(data));
         dispatch(setLoadedUsers());
       }
@@ -36,10 +35,10 @@ const postUser = (newUser) => {
   };
 };
 
-const editUser = ({formData, userId}) => {
+const editUser = ({ formData, userId }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.patch(`/users/${userId}`, formData);
+      const { data } = await baseApi.put(`/users/${userId}`, formData);
       const { success, message } = data;
       if (success) {
         dispatch(getUsers({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
@@ -50,7 +49,6 @@ const editUser = ({formData, userId}) => {
     }
   };
 };
-
 
 const deleteUsers = (user_ids) => {
   return async (dispatch) => {
@@ -66,4 +64,4 @@ const deleteUsers = (user_ids) => {
     }
   };
 };
-export { getUsers, postUser,editUser, deleteUsers };
+export { getUsers, postUser, editUser, deleteUsers };

@@ -10,15 +10,15 @@ import { forgotPassword } from 'store/slices/authThunk';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { IconNotification } from 'components/notifications/IconNotification';
+import 'react-dropzone-uploader/dist/styles.css';
+import DropzonePreview from 'components/dropzone/DropzonePreview';
+import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 
 export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+
   const { isLoading, data: rolesData } = useRoles();
-  const [userRolSelected, setUserRolSelected] = useState();
-  const initialData = { first_name: '', last_name: '', id_card: '', email: '', phone: '' };
   const [profileImage, setProfileImage] = useState([]);
-  const [activeUser, setActiveUser] = useState(false);
-  const dispatch = useDispatch();
 
   const rolDataDropdown = useMemo(
     () =>
@@ -27,18 +27,20 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }),
     [rolesData]
   );
+  const [activeUser, setActiveUser] = useState(false);
+  const dispatch = useDispatch();
 
   const onSubmit = useCallback(
     (values) => {
       const formData = new FormData();
       const userSchema = {
         ...values,
-        role_id: userRolSelected.value,
         image: profileImage[0].file,
-        activated: activeUser ? 1 : 0,
       };
       Object.entries(userSchema).forEach(([key, value]) => {
-        formData.append(key, value);
+        if (key !== 'user_id') {
+          formData.append(key, value);
+        }
       });
       if (selectedFlatRows.length === 1) {
         editItem({
@@ -50,7 +52,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }
       setIsOpenAddEditModal(false);
     },
-    [profileImage, userRolSelected, selectedFlatRows, activeUser]
+    [profileImage, selectedFlatRows, activeUser]
   );
 
   const handleImageFromUrl = async (url) => {
@@ -63,18 +65,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
   useEffect(() => {
     if (selectedFlatRows.length === 1) {
       handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
-    }
-  }, [selectedFlatRows]);
-
-  useEffect(() => {
-    if (selectedFlatRows.length === 1) {
-      setUserRolSelected(rolDataDropdown.find((rol) => rol.value === selectedFlatRows[0].values.role_id));
-      setProfileImage([{ dataurl: `${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}` }]);
-      setActiveUser(selectedFlatRows[0].values.activated);
-    } else {
-      setActiveUser(true);
-      setUserRolSelected('');
-      setProfileImage([]);
     }
   }, [selectedFlatRows]);
 
@@ -92,11 +82,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
-        <Formik
-          initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : initialData}
-          onSubmit={onSubmit}
-          validationSchema={validationSchema}
-        >
+        <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
           <Form>
             <Modal.Header>
               <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
@@ -110,24 +96,33 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                   </Button>
                 </Col>
               )}
-              <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                <label className="form-label m-0">Usuario activo</label>
-                <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={activeUser} onChange={() => setActiveUser(!activeUser)} />
-              </Col>
+              <div className="mb-3">
+                <label className="form-label">Activo</label>
+                <Field className="form-control" as="select" id="activated" name="activated">
+                  <option value="1">Activado</option>
+                  <option value="0">Desactivado</option>
+                </Field>
+                <ErrorMessage name="activated" component="div" />
+              </div>
               <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
                 <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage} />
               </Col>
-              <div className="mb-3">
-                <label className="form-label">Role</label>
-                <Select
-                  classNamePrefix="react-select"
-                  options={rolDataDropdown}
-                  value={userRolSelected}
-                  onChange={setUserRolSelected}
-                  placeholder="Seleccione el rol del usuario"
-                />
-                <ErrorMessage name="role_id" component="div" />
-              </div>
+              {rolDataDropdown && (
+                <>
+                  <div className="mb-3">
+                    <label className="form-label">Roles</label>
+                    <Field className="form-control" as="select" id="role_id" name="role_id">
+                      {rolDataDropdown.map(({ value, label }, length) => (
+                        <option key={length} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </Field>
+                    <ErrorMessage name="role_id" component="div" />
+                  </div>
+                </>
+              )}
+
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
