@@ -75,7 +75,7 @@ const forgotPassword = async (req, res) => {
                 res.json({resetLink, status: true, message: 'Hemos enviado con éxito el enlace de restablecimiento a tu dirección de correo electrónico.' });
             }
         } else {
-            res.json({ status: false, message: 'Lo sentimos, no hemos encontrado el email del usuario. Por favor, verifica la información e intenta nuevamente.' });
+            res.json({resetLink, status: true, message: 'Hemos enviado con éxito el enlace de restablecimiento a tu dirección de correo electrónico.' });
         }
     } catch (error) {
         res.json({ status: false, message: 'Lo sentimos, no hemos encontrado el email del usuario. Por favor, verifica la información e intenta nuevamente.', error});

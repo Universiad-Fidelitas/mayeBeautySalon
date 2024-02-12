@@ -16,6 +16,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
   const { isLoading, data: categoriesData } = useCategories();
   const { data: providersData } = useProviders();
   const [productImage, setProductImage] = useState([]);
+
   const { data: brandsData } = useBrands();
   const categoryDataDropdown = useMemo(
     () =>
@@ -42,11 +43,20 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
     const formData = new FormData();
     const productSchema = {
       ...values,
-      image: productImage[0].file,
     };
-    Object.entries(productSchema).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
+
+    if (productImage[0]?.dataurl.startsWith('data:')) {
+      Object.entries(productSchema).forEach(([key, value]) => {
+        if (key !== 'image') {
+          formData.append(key, value);
+        }
+      });
+      formData.append('image', productImage[0].file);
+    } else {
+      Object.entries(productSchema).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+    }
     if (selectedFlatRows.length === 1) {
       editItem({ formData, product_id: selectedFlatRows[0].original.product_id });
     } else {

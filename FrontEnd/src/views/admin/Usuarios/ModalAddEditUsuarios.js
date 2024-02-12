@@ -32,16 +32,24 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
 
   const onSubmit = useCallback(
     (values) => {
+      console.log(values);
       const formData = new FormData();
       const userSchema = {
         ...values,
-        image: profileImage[0].file,
       };
-      Object.entries(userSchema).forEach(([key, value]) => {
-        if (key !== 'user_id') {
+
+      if (profileImage[0]?.dataurl.startsWith('data:')) {
+        Object.entries(userSchema).forEach(([key, value]) => {
+          if (key !== 'image') {
+            formData.append(key, value);
+          }
+        });
+        formData.append('image', profileImage[0].file);
+      } else {
+        Object.entries(userSchema).forEach(([key, value]) => {
           formData.append(key, value);
-        }
-      });
+        });
+      }
       if (selectedFlatRows.length === 1) {
         editItem({
           formData,

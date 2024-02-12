@@ -41,6 +41,7 @@ const routesAndMenuItems = {
       path: `${appRoot}/trabajadores`,
       label: 'menu.trabajadores',
       icon: 'laptop',
+      protected: true,
       subs: [
         { path: '/users', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
         { path: '/roles', icon: 'diagram-1', label: 'menu.roles', roles: 'R_ROLES', component: Roles },
@@ -50,6 +51,7 @@ const routesAndMenuItems = {
       path: `${appRoot}/inventariado`,
       label: 'Inventariado',
       icon: 'database',
+      protected: true,
       subs: [
         /// //// { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },

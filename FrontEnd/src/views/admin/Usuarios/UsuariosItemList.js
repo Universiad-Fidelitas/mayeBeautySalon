@@ -20,8 +20,8 @@ const UsuariosItemList = ({ tableInstance }) => {
           console.log('karo', row.original);
           const { email, activated, first_name, last_name, phone, image, id_card, role_id: userCurrentRoleId } = row.original;
           const { checked, onChange } = row.getToggleRowSelectedProps();
-          const { isLoading, data: rolesData } = useRoles();
-          console.log('karo', rolesData);
+          //  const { isLoading, data: rolesData } = useRoles();
+          // console.log('karo', rolesData);
           // console.log('rolesData', rolesData.items.find((rol) => rol.role_id === userCurrentRoleId).name)
 
           return (
