@@ -85,7 +85,7 @@ const putRole = async (req, res = response) => {
     const { name, permissions } = req.body;
     try {
         const userQuery = `CALL sp_role('update', ?, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [role_id, name, permissions ]);
+        const { insertId } = await dbService.query(userQuery, [role_id, name, JSON.stringify(permissions) ]);
         res.status(200).json({
             role_id: insertId,
             success: true,

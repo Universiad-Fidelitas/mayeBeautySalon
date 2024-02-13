@@ -203,7 +203,12 @@ const Roles = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  <ControlsDelete 
+                    tableInstance={tableInstance}
+                    deleteItems={deleteItems}
+                    modalTitle='¿Desea eliminar el rol seleccionado?'
+                    modalDescription='El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo.'
+                  />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
