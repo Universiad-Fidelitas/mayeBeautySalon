@@ -171,7 +171,7 @@ const Roles = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre del producto',
+      label: 'Nombre del rol',
     },
   ];
 

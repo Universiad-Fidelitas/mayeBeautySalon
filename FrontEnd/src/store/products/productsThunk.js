@@ -17,10 +17,11 @@ const getProducts = (tableStatus) => {
   };
 };
 
-const postProduct = (newProduct) => {
+const postProduct = (formData) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.post('/products/add', newProduct);
+      console.log('ffd', formData);
+      const { data } = await baseApi.post('/products/add', formData);
       const { success, message } = data;
       if (success) {
         dispatch(getProducts({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
@@ -34,10 +35,10 @@ const postProduct = (newProduct) => {
   };
 };
 
-const editProduct = ({ product_id, name, brand_id, price, size, image, provider_id, category_id }) => {
+const editProduct = ({ product_id, formData }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/products/${product_id}`, { name, brand_id, price, size, image, provider_id, category_id });
+      const { data } = await baseApi.put(`/products/${product_id}`, formData);
       const { success, message } = data;
       if (success) {
         dispatch(getProducts({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));

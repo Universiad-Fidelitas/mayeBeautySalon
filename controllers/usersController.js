@@ -89,17 +89,28 @@ const postUser = async (req, res = response) => {
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;
     const { role_id, id_card, first_name, last_name, email, activated, phone } = req.body;
-    console.log(user_id, role_id, id_card, first_name, last_name, email, phone, req.file.path)
-    try {
-         
+    if ('image' in req.body) {
+        ({ image } = req.body);
+    }
+    try { 
         const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ? WHERE user_id = ?';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id]);
+        if ('image' in req.body) {
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image, user_id]);
         res.status(200).json({
             role_id: insertId,
             affectedRows:affectedRows,
             success: true,
             message: "¡El usuario ha sido editado exitosamente!"
-        })
+        });
+        }else{
+            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id]);
+            res.status(200).json({
+                role_id: insertId,
+                affectedRows:affectedRows,
+                success: true,
+                message: "¡El usuario ha sido editado exitosamente!"
+            });
+        }
     }
     catch(error) {
         res.status(200).json({
