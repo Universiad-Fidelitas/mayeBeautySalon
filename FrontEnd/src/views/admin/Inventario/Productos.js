@@ -59,7 +59,8 @@ const Productos = () => {
         Header: 'Imagen',
         accessor: 'image',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
       },
       {
         Header: 'Marca',
@@ -218,7 +219,12 @@ const Productos = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  <ControlsDelete
+                    tableInstance={tableInstance}
+                    deleteItems={deleteItems}
+                    modalTitle="¿Desea eliminar el producto seleccionado?"
+                    modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                  />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
