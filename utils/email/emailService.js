@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const hbs = require('nodemailer-express-handlebars');
 const path = require('path');
 
-const emailService = async (email, subject, resetLink) => {
+const emailService = async (template, email, subject, emailParams) => {
     try {
         const transporter = nodemailer.createTransport({
             pool: true,
@@ -34,16 +34,13 @@ const emailService = async (email, subject, resetLink) => {
 
         await transporter.sendMail({
             from: 'noreply@mayebeautysalon.com',
-            template: 'passwordRecoveryEmail',
+            template,
             to: email,
             subject: subject,
             context: {
-                resetLink
-              },
+                ...emailParams
+            },
         });
-
-
-        console.log("email sent sucessfully");
     } catch (error) {
         console.log(error, "email not sent");
     }
