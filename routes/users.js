@@ -7,7 +7,7 @@ const router = Router();
 router.post('/', getUser)
 router.post('/add', upload.single('image'), uploadMiddleware, postUser)
 router.get('/:users_id', [ param('user_id').isNumeric().withMessage('user_id must be a number')], getByIdUser)
-router.patch('/:user_id', upload.single('image'), uploadMiddleware, putUser)
+router.put('/:user_id', upload.single('image'), uploadMiddleware, putUser)
 router.post('/delete', [ param('user_id').isNumeric().withMessage('user_id must be a number')], deleteUser)
 
 module.exports = router;

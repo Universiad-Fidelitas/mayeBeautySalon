@@ -11,23 +11,22 @@ import Proveedores from 'views/admin/Inventario/Proveedores';
 import Servicios from 'views/admin/Inventario/Servicios';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
+import { HomeView } from 'views/publicViews/HomeView';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
 const routesAndMenuItems = {
   mainMenuItems: [
     {
-      path: DEFAULT_PATHS.APP,
-      exact: true,
-      redirect: true,
-      to: `${appRoot}/dashboard`,
-    },
-    {
       path: `${appRoot}/dashboard`,
       label: 'menu.dashboard',
       icon: 'dashboard-1',
       component: Dashboard,
       protected: true,
+    },
+    {
+      path: `${appRoot}`,
+      component: HomeView,
     },
     {
       path: `${appRoot}/citas`,
@@ -41,6 +40,7 @@ const routesAndMenuItems = {
       path: `${appRoot}/trabajadores`,
       label: 'menu.trabajadores',
       icon: 'laptop',
+      protected: true,
       subs: [
         { path: '/users', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
         { path: '/roles', icon: 'diagram-1', label: 'menu.roles', roles: 'R_ROLES', component: Roles },
@@ -50,6 +50,7 @@ const routesAndMenuItems = {
       path: `${appRoot}/inventariado`,
       label: 'Inventariado',
       icon: 'database',
+      protected: true,
       subs: [
         /// //// { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },

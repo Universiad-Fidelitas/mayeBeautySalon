@@ -10,15 +10,15 @@ import { forgotPassword } from 'store/slices/authThunk';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { IconNotification } from 'components/notifications/IconNotification';
+import 'react-dropzone-uploader/dist/styles.css';
+import DropzonePreview from 'components/dropzone/DropzonePreview';
+import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 
 export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+
   const { isLoading, data: rolesData } = useRoles();
-  const [userRolSelected, setUserRolSelected] = useState();
-  const initialData = { first_name: '', last_name: '', id_card: '', email: '', phone: '' };
   const [profileImage, setProfileImage] = useState([]);
-  const [activeUser, setActiveUser] = useState(false);
-  const dispatch = useDispatch();
 
   const rolDataDropdown = useMemo(
     () =>
@@ -27,109 +27,110 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }),
     [rolesData]
   );
+  const [activeUser, setActiveUser] = useState(false);
+  const dispatch = useDispatch();
 
+  const onSubmit = useCallback(
+    (values) => {
+      console.log(values);
+      const formData = new FormData();
+      const userSchema = {
+        ...values,
+      };
 
-  const onSubmit = useCallback((values) => {
-    const formData = new FormData();
-    const userSchema = {
-      ...values,
-      role_id: userRolSelected.value,
-      image: profileImage[0].file,
-      activated: activeUser ? 1 : 0
-    }
-    Object.entries(userSchema).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-    if(selectedFlatRows.length === 1){
-      editItem({
-        formData,
-        userId: selectedFlatRows[0].values.user_id,
-      });
-    } else {
-      addItem(formData);
-    }
-    setIsOpenAddEditModal(false);
-  }, [profileImage, userRolSelected, selectedFlatRows, activeUser])
-  
+      if (profileImage[0]?.dataurl.startsWith('data:')) {
+        Object.entries(userSchema).forEach(([key, value]) => {
+          if (key !== 'image') {
+            formData.append(key, value);
+          }
+        });
+        formData.append('image', profileImage[0].file);
+      } else {
+        Object.entries(userSchema).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+      }
+      if (selectedFlatRows.length === 1) {
+        editItem({
+          formData,
+          userId: selectedFlatRows[0].values.user_id,
+        });
+      } else {
+        addItem(formData);
+      }
+      setIsOpenAddEditModal(false);
+    },
+    [profileImage, selectedFlatRows, activeUser]
+  );
+
   const handleImageFromUrl = async (url) => {
     const response = await fetch(url);
     const blob = await response.blob();
     const filename = url.substring(url.lastIndexOf('/') + 1);
-    setProfileImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url}]);
+    setProfileImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url }]);
   };
 
   useEffect(() => {
-    if(selectedFlatRows.length === 1){
-      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`)
+    if (selectedFlatRows.length === 1) {
+      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
     }
-  }, [selectedFlatRows])
-  
-
-
-  useEffect(() => {
-    if(selectedFlatRows.length === 1){
-      setUserRolSelected(rolDataDropdown.find((rol) => rol.value === selectedFlatRows[0].values.role_id));
-      setProfileImage([{ dataurl: `${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}` }]);
-      setActiveUser(selectedFlatRows[0].values.activated);
-    } else {
-      setActiveUser(true);
-      setUserRolSelected('');
-      setProfileImage([]);
-    }
-  }, [selectedFlatRows])
+  }, [selectedFlatRows]);
 
   const enviarEmail = async () => {
-    if(selectedFlatRows.length === 1){
+    if (selectedFlatRows.length === 1) {
       const { status, message } = await dispatch(forgotPassword(selectedFlatRows[0].values.email));
       if (status) {
-        toast(<IconNotification title="Enlace enviado" description={message} toastType="success"/>, { className: 'success' });
+        toast(<IconNotification title="Enlace enviado" description={message} toastType="success" />, { className: 'success' });
       } else {
-        toast(<IconNotification title="No encontrado" description={message} toastType="danger"/>, { className: 'danger' });
+        toast(<IconNotification title="No encontrado" description={message} toastType="danger" />, { className: 'danger' });
       }
     }
   };
 
-  
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
-        <Formik
-          initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : initialData}
-          onSubmit={onSubmit}
-          validationSchema={validationSchema}
-        >
+        <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
           <Form>
             <Modal.Header>
               <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {
-                selectedFlatRows.length === 1 && (
-                  <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                    <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
-                      <CsLineIcons icon="email" /><span>  Restablecer Contraseña</span>
-                    </Button>      
-                  </Col>
-                )
-              }
-              <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                <label className="form-label m-0">Usuario activo</label>
-                <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ activeUser } onChange={() => setActiveUser(!activeUser)}/>
-              </Col>
-              <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
-                <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage}/>
-              </Col>
+              {selectedFlatRows.length === 1 && (
+                <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
+                  <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
+                    <CsLineIcons icon="email" />
+                    <span> Restablecer Contraseña</span>
+                  </Button>
+                </Col>
+              )}
               <div className="mb-3">
-                <label className="form-label">Role</label>
-                <Select
-                  classNamePrefix="react-select"
-                  options={rolDataDropdown}
-                  value={userRolSelected}
-                  onChange={setUserRolSelected}
-                  placeholder="Seleccione el rol del usuario"
-                />
-                <ErrorMessage name="role_id" component="div" />
+                <label className="form-label">Activo</label>
+                <Field className="form-control" as="select" id="activated" name="activated">
+                  <option value="1">Activado</option>
+                  <option value="0">Desactivado</option>
+                </Field>
+                <ErrorMessage name="activated" component="div" />
               </div>
+              <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
+                <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage} />
+              </Col>
+              {rolDataDropdown && (
+                <>
+                  <div className="mb-3">
+                    <label className="form-label">Roles</label>
+                    <Field className="form-control" as="select" id="role_id" name="role_id">
+                      {rolDataDropdown.map(({ value, label }, length) => (
+                        <option key={length} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </Field>
+                    <ErrorMessage name="role_id" component="div" />
+                  </div>
+                </>
+              )}
+
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
