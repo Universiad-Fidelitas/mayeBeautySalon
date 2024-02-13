@@ -62,23 +62,22 @@ const tokenValidation = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-    try {
-        const { email } = req.body;
-        const [userFound] = await dbService.query('SELECT * FROM users WHERE email = ?', [email]);
-        if (userFound) {
-            const {user_id} = userFound;
-            const resetToken = uuidv4();
-            const { affectedRows } = await dbService.query('INSERT INTO ps_tokens (user_id, token, expired) VALUES (?, ?, ?)', [user_id, resetToken, 0]);
-            const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
-            if (affectedRows > 0) {
-                await sendEmail(email, "Password reset", resetLink);
-                res.json({resetLink, status: true, message: 'Hemos enviado con éxito el enlace de restablecimiento a tu dirección de correo electrónico.' });
-            }
-        } else {
+    const { email } = req.body;
+    const [userFound] = await dbService.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (userFound) {
+        const {user_id} = userFound;
+        const resetToken = uuidv4();
+        const { affectedRows } = await dbService.query('INSERT INTO ps_tokens (user_id, token, expired) VALUES (?, ?, ?)', [user_id, resetToken, 0]);
+        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+        if (affectedRows > 0) {
             res.json({resetLink, status: true, message: 'Hemos enviado con éxito el enlace de restablecimiento a tu dirección de correo electrónico.' });
+            await sendEmail('passwordRecoveryEmail', email, "Restablecimiento de contraseña", {
+                resetLink,
+                nombreUsuario: userFound.first_name
+            });
         }
-    } catch (error) {
-        res.json({ status: false, message: 'Lo sentimos, no hemos encontrado el email del usuario. Por favor, verifica la información e intenta nuevamente.', error});
+    } else {
+        res.json({ status: false, message: 'Lo sentimos, no hemos encontrado el email del usuario. Por favor, verifica la información e intenta nuevamente.' });
     }
 };
 
