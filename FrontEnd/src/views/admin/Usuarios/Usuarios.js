@@ -1,5 +1,15 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ModalAddEdit, ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
+import {
+  ModalAddEdit,
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+} from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUsers, editUser, getUsers, postUser } from 'store/users';
@@ -20,14 +30,14 @@ const Usuarios = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/users', text: f({ id: 'menu.trabajadores' })},
+    { to: 'trabajadores/users', text: f({ id: 'menu.trabajadores' }) },
     { to: 'trabajadores/roles', title: 'Usuarios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isUsersLoading, users, pageCount } = useSelector((state) => state.users)
+  const { isUsersLoading, users, pageCount } = useSelector((state) => state.users);
   const { userHasPermission } = useUserPermissions();
 
   const columns = React.useMemo(() => {
@@ -89,7 +99,7 @@ const Usuarios = () => {
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
         hideColumn: true,
-      }
+      },
     ];
   }, []);
 
@@ -119,27 +129,35 @@ const Usuarios = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getUsers({ term, sortBy, pageIndex, pageSize }))
-  }, [sortBy, pageIndex, pageSize, term])
+    dispatch(getUsers({ term, sortBy, pageIndex, pageSize }));
+  }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (users.length > 0){
+    if (users.length > 0) {
       setData(users);
     }
-  }, [isUsersLoading])
-  
-  const deleteItems = useCallback(async (values) => {
-    dispatch(deleteUsers(values))
-  }, [sortBy, pageIndex, pageSize]);
+  }, [isUsersLoading]);
 
+  const deleteItems = useCallback(
+    async (values) => {
+      dispatch(deleteUsers(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
 
-  const editItem = useCallback(async (values) => {
-    dispatch(editUser(values))
-  }, [sortBy, pageIndex, pageSize]);
-  
-  const addItem = useCallback(async (values) => {
-    dispatch(postUser(values))
-  }, [sortBy, pageIndex, pageSize]);
+  const editItem = useCallback(
+    async (values) => {
+      dispatch(editUser(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
+
+  const addItem = useCallback(
+    async (values) => {
+      dispatch(postUser(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
@@ -147,55 +165,54 @@ const Usuarios = () => {
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string()
-    .required('El nombre es requerido')
-    .min(3, 'El nombre debe tener al menos 3 caracteres')
-    .max(15, 'El nombre no puede tener más de 15 caracteres'),
+      .required('El nombre es requerido')
+      .min(3, 'El nombre debe tener al menos 3 caracteres')
+      .max(15, 'El nombre no puede tener más de 15 caracteres'),
     last_name: Yup.string()
-    .required('El apellido es requerido')
-    .min(3, 'El apellido debe tener al menos 3 caracteres')
-    .max(15, 'El apellido no puede tener más de 15 caracteres'),
+      .required('El apellido es requerido')
+      .min(3, 'El apellido debe tener al menos 3 caracteres')
+      .max(15, 'El apellido no puede tener más de 15 caracteres'),
     id_card: Yup.string()
-    .matches(/^\d+$/, 'La cédula debe ser un número')
-    .min(9, 'La cédula debe tener al menos 3 números')
-    .max(15, 'La cédula no puede tener más de 10 números')
-    .required('La cédula es requerida'),
+      .matches(/^\d+$/, 'La cédula debe ser un número')
+      .min(9, 'La cédula debe tener al menos 9 números')
+      .max(15, 'La cédula no puede tener más de 15 números')
+      .required('La cédula es requerida'),
     email: Yup.string().email('Invalid email').required('Email is required'),
     phone: Yup.string()
-    .matches(/^\d+$/, 'El teléfono debe ser un número')
-    .min(8, 'El teléfono debe tener al menos 8 números')
-    .max(10, 'El teléfono no puede tener más de 10 números')
-    .required('El teléfono es requerido'),
-    
+      .matches(/^\d+$/, 'El teléfono debe ser un número')
+      .min(8, 'El teléfono debe tener al menos 8 números')
+      .max(10, 'El teléfono no puede tener más de 10 números')
+      .required('El teléfono es requerido'),
   });
 
   const formFields = [
     {
-      id:'first_name',
+      id: 'first_name',
       label: 'Nombre',
       type: 'text',
-    }, 
+    },
     {
-      id:'last_name',
+      id: 'last_name',
       label: 'Apellidos',
       type: 'text',
     },
     {
-      id:'id_card',
+      id: 'id_card',
       label: 'Cédula',
       type: 'text',
     },
     {
-      id:'email',
+      id: 'email',
       label: 'Correo Electrónico',
       type: 'text',
     },
     {
-      id:'phone',
+      id: 'phone',
       label: 'Teléfono',
       type: 'text',
     },
-  ]
-  
+  ];
+
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -208,13 +225,11 @@ const Usuarios = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              {
-                userHasPermission('C_USERS') &&
+              {userHasPermission('C_USERS') && (
                 <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
                   <ButtonsAddNew tableInstance={tableInstance} />
                 </Col>
-              }
-
+              )}
             </Row>
           </div>
 
@@ -227,12 +242,8 @@ const Usuarios = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  {
-                    userHasPermission('C_USERS') && <ControlsAdd tableInstance={tableInstance} />
-                  }
-                  {
-                    userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />
-                  }
+                  {userHasPermission('C_USERS') && <ControlsAdd tableInstance={tableInstance} />}
+                  {userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
@@ -243,7 +254,13 @@ const Usuarios = () => {
           <UsuariosItemListHeader tableInstance={tableInstance} />
           <UsuariosItemList tableInstance={tableInstance} />
           <UsuariosItemListPagination tableInstance={tableInstance} />
-          <ModalAddEditUsuarios tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields}/>
+          <ModalAddEditUsuarios
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>
