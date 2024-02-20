@@ -179,5 +179,36 @@ const enMessages = {
 
   'menu.items': 'Items',
   'menu.addNew': 'Add New',
+
+  'helper.cancel': 'Cancel',
+  'helper.done': 'Done',
+  'helper.add': 'Add',
+  'helper.delete': 'Delete',
+  'helper.edit': 'Edit',
+  'helper.activated': 'Activated',
+  'helper.inactivated': 'Inactivated',
+
+  'inventory.title': 'Inventory',
+  
+  'services.title': 'Services',
+  'services.description': 'Services provided by the MayeBeautySalon',
+  'services.serviceName': 'Service Name',
+  'services.serviceState': 'State',
+  'services.serviceTime': 'Time',
+  'services.servicePrice': 'Price',
+  'services.hours': 'Hours',
+  'services.minutes': 'Minutes',
+  'services.successAdd': 'The service has been added successfully!',
+  'services.errorAdd': 'The service has not been added!',
+  'services.successEdit': 'The service has been edited successfully!',
+  'services.errorEdit': 'The service has not been edited!',
+  'services.successDelete': 'The service has been deleted successfully!',
+  'services.errorDelete': 'The service has not been deleted!',
+  'services.serviceNameRequired': 'Service Name is required',
+  'services.serviceNameMinLength': 'Service Name must be at least 3 characters',
+  'services.serviceNameMaxLength': 'Service Name must be at most 20 characters',
+  'services.servicePriceRequired': 'Service Price is required',
+  'services.servicePriceType': 'Price must be a number',
+  'services.servicePricePositive': 'Price must be a positive number',
 };
 export default enMessages;
