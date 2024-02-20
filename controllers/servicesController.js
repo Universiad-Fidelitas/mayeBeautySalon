@@ -20,11 +20,9 @@ const getServices = async (req, res = response) => {
         const offset = pageIndex * pageSize;
 
         let baseQuery = 'SELECT * FROM services';
-
         if (term) {
             baseQuery += ` WHERE name LIKE '%${term}%'`;
         }
-
         const orderByClauses = [];
 
         if (Array.isArray(sortBy)) {
@@ -39,7 +37,6 @@ const getServices = async (req, res = response) => {
         if (orderByClauses.length > 0) {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
-
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
 
         const rows = await dbService.query(query);
@@ -64,70 +61,63 @@ const getServices = async (req, res = response) => {
 }
 
 const postServices = async (req, res = response) => {
-    const { name } = req.body;
-    const { duration } = req.body;
-    const { price } = req.body;
     try {
-        const rows = await dbService.query(`INSERT INTO services (name, time, price) VALUES ("${ name }", "${ duration }"), "${ price }")`);
-        const { insertId } = helper.emptyOrRows(rows);
-
+        const { name, duration, price, activated } = req.body;
+        const { insertId } = await dbService.query(`INSERT INTO services (name, duration, price, activated) VALUES (?, ?, ?, ?)`, [name, duration, price, activated]);
         res.status(200).json({
-            service_id: insertId,
             success: true,
-            message: "¡El servicio ha sido agregado exitosamente!"
+            insertId,
+            message: "services.successAdd"
         })
     }
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar un servicio duplicado!"
+            message: "services.errorAdd",
+            error: error.message
         })
     }
 }
 
 const putServices = async (req, res = response) => {
-    const { service_id } = req.params;
-    const { name } = req.body;
-    const { duration } = req.body;
-    const { price } = req.body;
-
     try {
-        const rows = await dbService.query(`UPDATE services SET name="${ name }", duration="${duration }", price="${price }" WHERE service_id=${ service_id }`);
-        const { affectedRows } = helper.emptyOrRows(rows);
+        const { service_id } = req.params;
+        const { name, duration, price, activated} = req.body;
+        const  { changedRows }  = await dbService.query('UPDATE services SET name = ?, duration = ?, price = ?, activated = ? WHERE service_id = ?', [name, duration, price, activated, service_id]);
+        
         res.status(200).json({
-            affectedRows,
             success: true,
-            message: "¡El servicio ha sido editado exitosamente!"
+            changedRows,
+            message: "services.successEdit"
         })
     }
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "¡Se ha producido un error al ejecutar la acción.!"
+            message: "services.errorEdit",
+            error: error.message
         })
     }
 }
 
 const deleteServices = async (req, res = response) => {
-    const { Services_ids } = req.body;
+
     try {
-        const rows = await dbService.query(`DELETE FROM services WHERE service_id IN (${Services_ids.join(',')})`);
-        const { affectedRows } = helper.emptyOrRows(rows);
-        if( affectedRows === 1 ) {
-            res.status(200).json({
-                success: true,
-                message: "¡El servicio ha sido eliminado exitosamente!"
-            });
-        } else {
-            res.status(200).json({
-                success: true,
-                message: "¡Los servicios han sido eliminados exitosamente!"
-            });
-        }
-    } catch (error) {
+        const { service_ids } = req.body;
+        const placeholders = service_ids.map(() => '?').join(',');
+        const { affectedRows } = await dbService.query(`DELETE FROM services WHERE service_id IN (${placeholders})`, service_ids);
+        
+        res.status(200).json({
+            success: true,
+            affectedRows,
+            message: "services.successDelete",
+        })
+    }
+    catch(error) {
         res.status(200).json({
             success: false,
-            message: "¡Se ha producido un error al ejecutar la acción.!"
+            message: "services.errorDelete",
+            error: error.message
         })
     }
 };

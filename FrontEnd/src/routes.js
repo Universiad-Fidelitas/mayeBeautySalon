@@ -5,10 +5,9 @@ import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
 import Categorias from 'views/admin/Inventario/Categorias';
 import Marcas from 'views/admin/Inventario/Marcas';
-// import Inventario from 'views/admin/Inventario/Inventario';
 import Productos from 'views/admin/Inventario/Productos';
 import Proveedores from 'views/admin/Inventario/Proveedores';
-import Servicios from 'views/admin/Inventario/Servicios';
+import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 
@@ -56,7 +55,7 @@ const routesAndMenuItems = {
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
-        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: Servicios },
+        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
       ],
     },
     {
