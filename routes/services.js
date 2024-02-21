@@ -1,9 +1,10 @@
 const { Router } = require('express');
-const { getServices, postServices } = require('../controllers/servicesController');
+const { getServices, postServices, putServices, deleteServices } = require('../controllers/servicesController');
 const router = Router();
 
-router.get('/', getServices)
-
-router.post('/', postServices)
+router.post('/', getServices)
+router.post('/add', postServices)
+router.put('/:service_id', putServices)
+router.post('/delete', deleteServices)
 
 module.exports = router;

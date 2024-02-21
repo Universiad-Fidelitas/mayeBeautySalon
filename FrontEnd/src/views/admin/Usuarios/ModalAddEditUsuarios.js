@@ -19,7 +19,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
 
   const { isLoading, data: rolesData } = useRoles();
   const [profileImage, setProfileImage] = useState([]);
-
   const rolDataDropdown = useMemo(
     () =>
       rolesData?.items.map(({ role_id, name }) => {
@@ -58,6 +57,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       } else {
         addItem(formData);
       }
+      setProfileImage([]);
       setIsOpenAddEditModal(false);
     },
     [profileImage, selectedFlatRows, activeUser]
@@ -73,8 +73,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
   useEffect(() => {
     if (selectedFlatRows.length === 1) {
       handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
+    } else {
+      setProfileImage([]);
     }
   }, [selectedFlatRows]);
+
+  useEffect(() => {
+    if (!isOpenAddEditModal) {
+      setProfileImage([]);
+    }
+  }, [isOpenAddEditModal]);
 
   const enviarEmail = async () => {
     if (selectedFlatRows.length === 1) {
@@ -107,6 +115,9 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
               <div className="mb-3">
                 <label className="form-label">Activo</label>
                 <Field className="form-control" as="select" id="activated" name="activated">
+                  <option value="" disabled selected>
+                    Elige una opción
+                  </option>
                   <option value="1">Activado</option>
                   <option value="0">Desactivado</option>
                 </Field>
@@ -120,6 +131,9 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                   <div className="mb-3">
                     <label className="form-label">Roles</label>
                     <Field className="form-control" as="select" id="role_id" name="role_id">
+                      <option value="" disabled selected>
+                        Elige una opción
+                      </option>
                       {rolDataDropdown.map(({ value, label }, length) => (
                         <option key={length} value={value}>
                           {label}
@@ -141,10 +155,10 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
-                Cancel
+                Cancelar
               </Button>
               <Button variant="primary" type="submit">
-                {selectedFlatRows.length === 1 ? 'Done' : 'Add'}
+                {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
               </Button>
             </Modal.Footer>
           </Form>

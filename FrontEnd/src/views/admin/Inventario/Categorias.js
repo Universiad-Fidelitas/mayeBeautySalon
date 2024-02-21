@@ -114,7 +114,10 @@ const Categorias = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    name: Yup.string()
+      .required('El nombre es requerido')
+      .min(3, 'El nombre debe tener al menos 3 caracteres')
+      .max(15, 'El nombre no puede tener más de 15 caracteres'),
   });
 
   const formFields = [
@@ -153,7 +156,12 @@ const Categorias = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  <ControlsDelete
+                    tableInstance={tableInstance}
+                    deleteItems={deleteItems}
+                    modalTitle="¿Desea eliminar la categoria seleccionada?"
+                    modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                  />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

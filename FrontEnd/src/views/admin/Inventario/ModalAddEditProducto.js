@@ -62,6 +62,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
     } else {
       addItem(formData);
     }
+    setProductImage([]);
     setIsOpenAddEditModal(false);
   };
 
@@ -75,8 +76,17 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
   useEffect(() => {
     if (selectedFlatRows.length === 1) {
       handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
+    } else {
+      setProductImage([]);
     }
   }, [selectedFlatRows]);
+
+  useEffect(() => {
+    if (!isOpenAddEditModal) {
+      setProductImage([]);
+    }
+  }, [isOpenAddEditModal]);
+
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -91,7 +101,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
             {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
-                <Field className="form-control" type={type} id={id} name={id} />
+                <Field className="form-control" type={type} id={id} name={id} required />
                 <ErrorMessage name={id} component="div" />
               </div>
             ))}
@@ -99,7 +109,10 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
               <>
                 <div className="mb-3">
                   <label className="form-label">Categorias</label>
-                  <Field className="form-control" as="select" id="category_id" name="category_id">
+                  <Field className="form-control" as="select" id="category_id" name="category_id" required>
+                    <option value="" disabled selected>
+                      Elige una opción
+                    </option>
                     {categoryDataDropdown.map(({ value, label }, length) => (
                       <option key={length} value={value}>
                         {label}
@@ -110,7 +123,10 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Brands</label>
-                  <Field className="form-control" as="select" id="brand_id" name="brand_id">
+                  <Field className="form-control" as="select" id="brand_id" name="brand_id" required>
+                    <option value="" disabled selected>
+                      Elige una opción
+                    </option>
                     {brandDataDropdown.map(({ value, label }, length) => (
                       <option key={length} value={value}>
                         {label}
@@ -121,7 +137,10 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Providers</label>
-                  <Field className="form-control" as="select" id="provider_id" name="provider_id">
+                  <Field className="form-control" as="select" id="provider_id" name="provider_id" required>
+                    <option value="" disabled selected>
+                      Elige una opción
+                    </option>
                     {providerDataDropdown.map(({ value, label }, length) => (
                       <option key={length} value={value}>
                         {label}
@@ -135,7 +154,10 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
 
             <div className="mb-3">
               <label className="form-label">Tamaño</label>
-              <Field className="form-control" as="select" id="size" name="size">
+              <Field className="form-control" as="select" id="size" name="size" required>
+                <option value="" disabled selected>
+                  Elige una opción
+                </option>
                 <option value="pequeño">Pequeño</option>
                 <option value="mediano">Mediano</option>
                 <option value="grande">Grande</option>
@@ -145,10 +167,10 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
-              Cancel
+              Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              {selectedFlatRows.length === 1 ? 'Done' : 'Add'}
+              {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
             </Button>
           </Modal.Footer>
         </Form>
