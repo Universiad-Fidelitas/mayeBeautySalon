@@ -114,7 +114,10 @@ const Categorias = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    name: Yup.string()
+      .required('El nombre es requerido')
+      .min(3, 'El nombre debe tener al menos 3 caracteres')
+      .max(15, 'El nombre no puede tener más de 15 caracteres'),
   });
 
   const formFields = [
