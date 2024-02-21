@@ -22,7 +22,7 @@ const getUser = async (req, res = response) => {
 
         let baseQuery = 'select * from users';
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += ` AND first_name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 

@@ -8,8 +8,7 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const [permissionsList, setPermissionsList] = useState([]);
   const [allSwitchChangeStatus, setAllSwitchChangeStatus] = useState(false);
- const fullPermissionsList  = useExportAllPermissions();
- 
+  const fullPermissionsList = useExportAllPermissions();
 
   useEffect(() => {
     if (selectedFlatRows.length === 1) {
@@ -17,23 +16,21 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
     } else {
       setPermissionsList([]);
     }
-  }, [selectedFlatRows])
-
+  }, [selectedFlatRows]);
 
   useEffect(() => {
     if (permissionsList.length === fullPermissionsList.length) {
-      setAllSwitchChangeStatus(true)
+      setAllSwitchChangeStatus(true);
     } else {
-      setAllSwitchChangeStatus(false)
+      setAllSwitchChangeStatus(false);
     }
-  }, [permissionsList])
-  
+  }, [permissionsList]);
 
   const onSubmit = (values) => {
     if (selectedFlatRows.length === 1) {
-      editItem({ ...selectedFlatRows[0].values, ...values, permissions: permissionsList});
+      editItem({ ...selectedFlatRows[0].values, ...values, permissions: permissionsList });
     } else {
-      addItem({...values, permissions: permissionsList});
+      addItem({ ...values, permissions: permissionsList });
     }
     setIsOpenAddEditModal(false);
   };
@@ -41,15 +38,15 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
   const onSwitchChange = (permissionKeyName) => {
     const permissionOnList = permissionsList.some((permission) => permission === permissionKeyName.toUpperCase());
     if (permissionOnList) {
-        const updatedPermissions = permissionsList.filter(permission => permission !== permissionKeyName.toUpperCase());
-        setPermissionsList(updatedPermissions);
+      const updatedPermissions = permissionsList.filter((permission) => permission !== permissionKeyName.toUpperCase());
+      setPermissionsList(updatedPermissions);
     } else {
-        setPermissionsList([...permissionsList, permissionKeyName.toUpperCase()]);
+      setPermissionsList([...permissionsList, permissionKeyName.toUpperCase()]);
     }
   };
 
   const onAllSwitchChange = () => {
-    if(allSwitchChangeStatus){
+    if (allSwitchChangeStatus) {
       setPermissionsList([]);
     } else {
       setPermissionsList(fullPermissionsList);
@@ -74,41 +71,59 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
             ))}
             <Col className="d-flex flex-row justify-content-between align-items-center">
               <p className="h6">Todos los roles</p>
-              <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ allSwitchChangeStatus } onChange={() => onAllSwitchChange()}/>
+              <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={allSwitchChangeStatus} onChange={() => onAllSwitchChange()} />
             </Col>
-            {
-              DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
-                  <div className="mb-3" key={index}>
-                      <Col className="d-flex flex-row justify-content-between align-items-center">
-                          <p className="h6 text-primary">{ permissionName }</p>
-                      </Col>
-                      <Col className="d-flex flex-row justify-content-between align-items-center">
-                          <label className="form-label m-0">Crear</label>
-                          <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ permissionsList.includes(`C_${permissionKey}`) } onChange={() => onSwitchChange(`C_${permissionKey}`)}/>
-                      </Col>
-                      <Col className="d-flex flex-row justify-content-between align-items-center">
-                          <label className="form-label m-0">Obtener</label>
-                          <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ permissionsList.includes(`R_${permissionKey}`) } onChange={() => onSwitchChange(`R_${permissionKey}`)}/>
-                      </Col>
-                      <Col className="d-flex flex-row justify-content-between align-items-center">
-                          <label className="form-label m-0">Actualizar</label>
-                          <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ permissionsList.includes(`U_${permissionKey}`) } onChange={() => onSwitchChange(`U_${permissionKey}`)}/>
-                      </Col>
-                      <Col className="d-flex flex-row justify-content-between align-items-center">
-                          <label className="form-label m-0">Eliminar</label>
-                          <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={ permissionsList.includes(`D_${permissionKey}`) } onChange={() => onSwitchChange(`D_${permissionKey}`)}/>
-                      </Col>
-                      <hr/>
-                  </div>
-              ))
-            }
+            {DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
+              <div className="mb-3" key={index}>
+                <Col className="d-flex flex-row justify-content-between align-items-center">
+                  <p className="h6 text-primary">{permissionName}</p>
+                </Col>
+                <Col className="d-flex flex-row justify-content-between align-items-center">
+                  <label className="form-label m-0">Crear</label>
+                  <FormCheck
+                    className="form-check mt-2 ps-7 ps-md-2"
+                    type="switch"
+                    checked={permissionsList.includes(`C_${permissionKey}`)}
+                    onChange={() => onSwitchChange(`C_${permissionKey}`)}
+                  />
+                </Col>
+                <Col className="d-flex flex-row justify-content-between align-items-center">
+                  <label className="form-label m-0">Obtener</label>
+                  <FormCheck
+                    className="form-check mt-2 ps-7 ps-md-2"
+                    type="switch"
+                    checked={permissionsList.includes(`R_${permissionKey}`)}
+                    onChange={() => onSwitchChange(`R_${permissionKey}`)}
+                  />
+                </Col>
+                <Col className="d-flex flex-row justify-content-between align-items-center">
+                  <label className="form-label m-0">Actualizar</label>
+                  <FormCheck
+                    className="form-check mt-2 ps-7 ps-md-2"
+                    type="switch"
+                    checked={permissionsList.includes(`U_${permissionKey}`)}
+                    onChange={() => onSwitchChange(`U_${permissionKey}`)}
+                  />
+                </Col>
+                <Col className="d-flex flex-row justify-content-between align-items-center">
+                  <label className="form-label m-0">Eliminar</label>
+                  <FormCheck
+                    className="form-check mt-2 ps-7 ps-md-2"
+                    type="switch"
+                    checked={permissionsList.includes(`D_${permissionKey}`)}
+                    onChange={() => onSwitchChange(`D_${permissionKey}`)}
+                  />
+                </Col>
+                <hr />
+              </div>
+            ))}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
-              Cancel
+              Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              {selectedFlatRows.length === 1 ? 'Done' : 'Add'}
+              {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
             </Button>
           </Modal.Footer>
         </Form>
