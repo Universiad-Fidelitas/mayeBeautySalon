@@ -38,6 +38,13 @@ const Productos = () => {
   const columns = React.useMemo(() => {
     return [
       {
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
+      },
+      {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
@@ -54,13 +61,6 @@ const Productos = () => {
         accessor: 'size',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Imagen',
-        accessor: 'image',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
-        hideColumn: true,
       },
       {
         Header: 'Marca',

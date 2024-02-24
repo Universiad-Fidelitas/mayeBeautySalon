@@ -122,7 +122,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
                   <ErrorMessage name="category_id" component="div" />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Brands</label>
+                  <label className="form-label">Marcas</label>
                   <Field className="form-control" as="select" id="brand_id" name="brand_id" required>
                     <option value="" disabled selected>
                       Elige una opción
@@ -136,7 +136,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
                   <ErrorMessage name="brand_id" component="div" />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Providers</label>
+                  <label className="form-label">Proveedores</label>
                   <Field className="form-control" as="select" id="provider_id" name="provider_id" required>
                     <option value="" disabled selected>
                       Elige una opción

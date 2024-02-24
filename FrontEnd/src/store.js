@@ -19,6 +19,7 @@ import usersReducer from 'store/users/usersSlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
 import productsReducer from 'store/products/productsSlice';
 import providersReducer from 'store/providers/providersSlice';
+import stockReducer from 'store/stock/stockSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -39,6 +40,7 @@ const persistedReducer = persistReducer(
     auth: authReducer,
     rols: rolsReducer,
     brands: brandsReducer,
+    stock: stockReducer,
     users: usersReducer,
     products: productsReducer,
     providers: providersReducer,

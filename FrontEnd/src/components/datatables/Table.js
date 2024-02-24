@@ -22,7 +22,7 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                       sorting_desc: column.isSortedDesc,
                       sorting_asc: column.isSorted && !column.isSortedDesc,
                       sorting: column.sortable,
-                    })} 
+                    })}
                   >
                     {column.render('Header')}
                   </th>
@@ -42,43 +42,50 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                     const hours = cell.value.split('.')[0];
                     const minutes = cell.value.split('.')[1];
                     return (
-                      <td
-                        key={`td.${cellIndex}`}
-                        {...cell.getCellProps()}
-                        onClick={() => row.toggleRowSelected()}
-                      >
-                       <span>{hours}h {minutes}m</span>
+                      <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
+                        <span>
+                          {hours}h {minutes}m
+                        </span>
+                      </td>
+                    );
+                  }
+                  if (cell.column.id === 'image') {
+                    return (
+                      <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
+                        <img
+                          src={`${process.env.REACT_APP_BASE_API_URL}/${cell.value}`}
+                          alt="image"
+                          className="card-img card-img-horizontal sw-11 h-100 h-100 sh-lg-9 thumb"
+                          id="contactThumb"
+                        />
                       </td>
                     );
                   }
                   if (cell.column.id === 'price') {
                     return (
-                      <td
-                        key={`td.${cellIndex}`}
-                        {...cell.getCellProps()}
-                        onClick={() => row.toggleRowSelected()}
-                      >
-                        {parseFloat(cell.value).toLocaleString('es-CR', { style: 'currency', currency: 'CRC', minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
+                        {parseFloat(cell.value).toLocaleString('es-CR', {
+                          style: 'currency',
+                          currency: 'CRC',
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 0,
+                        })}
                       </td>
                     );
                   }
                   if (cell.column.id === 'activated') {
                     return (
-                      <td
-                        key={`td.${cellIndex}`}
-                        {...cell.getCellProps()}
-                        onClick={() => row.toggleRowSelected()}
-                      >
-                         {cell.value ? <span className="badge bg-outline-success">{f({ id: 'helper.activated' })}</span> : <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>}
+                      <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
+                        {cell.value ? (
+                          <span className="badge bg-outline-success">{f({ id: 'helper.activated' })}</span>
+                        ) : (
+                          <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>
+                        )}
                       </td>
                     );
                   }
                   return (
-                    <td
-                      key={`td.${cellIndex}`}
-                      {...cell.getCellProps()}
-                      onClick={() => row.toggleRowSelected()}
-                    >
+                    <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
                       {cell.render('Cell')}
                     </td>
                   );
