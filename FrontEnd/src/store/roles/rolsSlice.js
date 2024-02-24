@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isRolesLoading: false,
   rols: {},
-  pageCount: 0
+  pageCount: 0,
 };
 
 const rolsSlice = createSlice({

@@ -41,7 +41,7 @@ const getProducts = async (req, res = response) => {
         }
 
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
-
+        console.log("Karo,", query)
         const rows = await dbService.query(query);
 
         const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_products`);
