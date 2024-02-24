@@ -122,10 +122,29 @@ const deleteServices = async (req, res = response) => {
     }
 };
 
+const getAllServices = async (req, res = response) => {
+    try {
+        const services = await dbService.query('SELECT * FROM services WHERE activated = 1');
+        res.status(200).json({
+            success: true,
+            services,
+            message: "services.successAdd"
+        })
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "services.errorAdd",
+            error: error.message
+        })
+    }
+}
+
 module.exports = {
     getServices,
     postServices,
     putServices,
     deleteServices,
-    getById
+    getById,
+    getAllServices
 }
