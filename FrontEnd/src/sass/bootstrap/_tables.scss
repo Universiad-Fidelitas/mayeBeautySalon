@@ -30,3 +30,21 @@
 .table-bordered > :not(caption) > * {
   border-color: var(--separator);
 }
+
+
+.appointments-table {
+  .table-cell {
+    text-align: center;
+    &.selectedCellDate {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    &.firstchild {
+      border-radius: 20px 20px 0 0;
+    }
+    &.lastchild {
+      border-radius: 0 0 20px 20px;
+    }
+  }
+
+}

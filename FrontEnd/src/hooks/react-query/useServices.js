@@ -135,3 +135,11 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
     deleteServices: deleteServices()
   }
 };
+
+export const useGetAllServices = () => {
+  const getAllServices = async () => {
+    const { data } = await baseApi.get('/services/all');
+      return data;
+  };
+  return useQuery(['client-services'], getAllServices)
+}
