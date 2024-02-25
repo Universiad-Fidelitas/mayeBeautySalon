@@ -16,6 +16,7 @@ import authReducer from 'store/slices/authSlice';
 import rolsReducer from 'store/roles/rolsSlice';
 import brandsReducer from 'store/brands/brandsSlice';
 import usersReducer from 'store/users/usersSlice';
+import inventoryReducer from 'store/inventory/inventorySlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
 import productsReducer from 'store/products/productsSlice';
 import providersReducer from 'store/providers/providersSlice';
@@ -42,6 +43,7 @@ const persistedReducer = persistReducer(
     brands: brandsReducer,
     stock: stockReducer,
     users: usersReducer,
+    inventory: inventoryReducer,
     products: productsReducer,
     providers: providersReducer,
     categories: categoriesReducer,
