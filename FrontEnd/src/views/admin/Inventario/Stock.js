@@ -111,10 +111,6 @@ const Stock = () => {
     setTerm(val || undefined);
   }, 200);
 
-  const updateTable = useAsyncDebounce((val) => {
-    setCategory(val || undefined);
-  }, 200);
-
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -134,7 +130,7 @@ const Stock = () => {
                   <select
                     value={category}
                     onChange={(e) => {
-                      updateTable(e.target.value);
+                      setCategory(e.target.value);
                     }}
                   >
                     <option value="">Elija una categoria</option>
