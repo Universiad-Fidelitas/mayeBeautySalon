@@ -24,6 +24,7 @@ import stockReducer from 'store/stock/stockSlice';
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
 import calendarReducer from 'views/admin/Citas/calendarSlice';
+import appointmentsReducer from 'store/appointments/appointmentsSlice';
 
 const persistConfig = {
   key: REDUX_PERSIST_KEY,
@@ -49,6 +50,7 @@ const persistedReducer = persistReducer(
     notification: notificationReducer,
     scrollspy: scrollspyReducer,
     calendar: calendarReducer,
+    appointments: appointmentsReducer,
   })
 );
 const store = configureStore({
