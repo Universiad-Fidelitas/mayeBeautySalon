@@ -10,6 +10,15 @@ const getById = async (req, res = response) => {
         res.status(200).json({product_found, status: true, message: 'Se ha encontrado el producto exitosamente.' });
     }
     catch(error) {
+        try {
+            const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('getone', 'getone error', 'stocks', NOW(), ?, ?)
+            `;
+            await dbService.query(logQuery, [error.message, 1]);
+        } catch (logError) {
+            console.error('Error al insertar en la tabla de Logs:', logError);
+        }
         res.status(500).json({message: error.message})
     }
 }
@@ -67,6 +76,15 @@ const getStock = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
+        try {
+            const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('get', 'get error', 'stocks', NOW(), ?, ?)
+            `;
+            await dbService.query(logQuery, [error.message, 1]);
+        } catch (logError) {
+            console.error('Error al insertar en la tabla de Logs:', logError);
+        }
         res.status(500).json({ message: error.message });
     }
 }
