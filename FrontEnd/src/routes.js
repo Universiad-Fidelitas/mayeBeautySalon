@@ -11,6 +11,7 @@ import Proveedores from 'views/admin/Inventario/Proveedores';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
+import Logs from 'views/admin/Logs/Logs';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
@@ -28,6 +29,13 @@ const routesAndMenuItems = {
       label: 'menu.dashboard',
       icon: 'dashboard-1',
       component: Dashboard,
+      protected: true,
+    },
+    {
+      path: `${appRoot}/logs`,
+      label: 'menu.logs',
+      icon: 'logs-1',
+      component: Logs,
       protected: true,
     },
     {
