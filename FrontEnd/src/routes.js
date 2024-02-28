@@ -31,13 +31,7 @@ const routesAndMenuItems = {
       component: Dashboard,
       protected: true,
     },
-    {
-      path: `${appRoot}/logs`,
-      label: 'menu.logs',
-      icon: 'logs-1',
-      component: Logs,
-      protected: true,
-    },
+ 
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -85,6 +79,13 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: AppointmentsClient,
       protected: false,
+    },
+    {
+      path: `${appRoot}/logs`,
+      label: 'Logs',
+      icon: 'logs-1',
+      component: Logs,
+      protected: true,
     },
   ],
   sidebarItems: [],

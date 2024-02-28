@@ -16,7 +16,7 @@ const getById = async (req, res = response) => {
                 VALUES ('getone', 'getone error', 'brands', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
+        } catch (error) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
         res.status(500).json({message: error.message})
