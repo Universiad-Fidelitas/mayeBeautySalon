@@ -8,6 +8,7 @@ import Marcas from 'views/admin/Inventario/Marcas';
 import Productos from 'views/admin/Inventario/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores';
+import Inventario from 'views/admin/Inventario/Inventario';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
@@ -52,7 +53,7 @@ const routesAndMenuItems = {
       label: 'Inventariado',
       icon: 'database',
       subs: [
-        /// //// { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
+        { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },

@@ -127,7 +127,7 @@ const Roles = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  console.log('Table:', tableInstance);
+
   useEffect(() => {
     dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
