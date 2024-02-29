@@ -177,7 +177,7 @@ const Usuarios = () => {
       .min(9, 'La cédula debe tener al menos 9 números')
       .max(15, 'La cédula no puede tener más de 15 números')
       .required('La cédula es requerida'),
-    email: Yup.string().email('Invalid email').required('Email is required'),
+    email: Yup.string().email('Email invalido').required('Email es requerido'),
     phone: Yup.string()
       .matches(/^\d+$/, 'El teléfono debe ser un número')
       .min(8, 'El teléfono debe tener al menos 8 números')
