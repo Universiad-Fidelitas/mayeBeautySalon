@@ -13,32 +13,65 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
     dataToInsert: [{ product_id: '', amount: '' }],
   });
   const { isLoading, data: productsData } = useProducts();
-  const productDataDropdown = productsData?.items.map(({ product_id, name }) => ({ value: product_id, label: name }));
+  const productDataDropdown = productsData?.items.map(({ product_id, name, price }) => ({ value: product_id, label: name, label2: price }));
   const resetForms = () => {
     setForms({
       action: '',
       description: '',
+      precio: '',
       dataToInsert: [{ product_id: '', amount: '' }],
     });
   };
+  function GetProduct(product, id) {
+    id = parseInt(id, 10);
+    if (product.value === id) {
+      return product;
+    }
+  }
+
   const handleChange = (index, e) => {
     const { name, value } = e.target;
-    setForms((prevForms) => ({
-      ...prevForms,
-      dataToInsert: prevForms.dataToInsert.map((item, idx) => {
-        if (idx === index) {
-          return {
-            ...item,
-            [name]: value,
-          };
-        }
-        return item;
-      }),
-    }));
+
+    if (e.target.id === 'amount') {
+      forms.dataToInsert.forEach((v, i) => {
+        let { product_id } = v;
+        const { amount } = v;
+        product_id = parseInt(product_id, 10);
+
+        const product = productDataDropdown.find((product2) => GetProduct(product2, product_id));
+        const Total = product.label2 * Number(amount);
+
+        setForms((prevForms) => ({
+          ...prevForms,
+          precio: Total,
+          dataToInsert: prevForms.dataToInsert.map((item, idx) => {
+            if (idx === index) {
+              return {
+                ...item,
+                [name]: value,
+              };
+            }
+            return item;
+          }),
+        }));
+      });
+    } else {
+      setForms((prevForms) => ({
+        ...prevForms,
+        dataToInsert: prevForms.dataToInsert.map((item, idx) => {
+          if (idx === index) {
+            return {
+              ...item,
+              [name]: value,
+            };
+          }
+          return item;
+        }),
+      }));
+    }
   };
   const handleChange2 = (e) => {
     const { id, value } = e.target;
-    console.log('audi', value);
     setForms((prevForms) => ({
       ...prevForms,
       action: value,
@@ -57,7 +90,6 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
       ...prevForms,
       dataToInsert: [...prevForms.dataToInsert, { product_id: '', amount: '' }],
     }));
-    console.log('mau', forms);
   };
 
   const removeFormField = (index) => {
@@ -85,7 +117,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
           <Modal.Body>
             <div className="mb-3">
               <label className="form-label">Acción</label>
-              <Field className="form-control" as="select" id="action" name="action" required onChange={(e) => handleChange2(e)}>
+              <Field className="form-control" as="select" id="action" required name="action" onChange={(e) => handleChange2(e)}>
                 <option value="" disabled selected>
                   Elige una opción
                 </option>
@@ -94,25 +126,11 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
               </Field>
               <ErrorMessage name="action" component="div" />
             </div>
-            <div className="mb-3">
-              <label className="form-label">Precio</label>
-              <Field
-                className="form-control"
-                type="text"
-                id="precio"
-                name="precio"
-                required
-                readOnly
-                onChange={(event) => {
-                  event.target.readOnly = false;
-                }}
-              />
-              <ErrorMessage name="precio" component="div" />
-            </div>
+
             {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
-                <Field className="form-control" type={type} id={id} name={id} onChange={(e) => handleChange3(e)} />
+                <Field className="form-control" type={type} id={id} required name={id} onChange={(e) => handleChange3(e)} />
                 <ErrorMessage name={id} component="div" />
               </div>
             ))}
@@ -124,6 +142,8 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
                     className="form-control"
                     as="select"
                     name="product_id"
+                    id="product_id"
+                    required
                     onChange={(e) => handleChange(index, e)}
                     value={forms.dataToInsert[index].product_id}
                   >
@@ -131,12 +151,13 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
                       Elige una opción
                     </option>
                     {productDataDropdown &&
-                      productDataDropdown.map(({ value, label }) => (
-                        <option key={value} value={value}>
+                      productDataDropdown.map(({ value, label, label2 }) => (
+                        <option key={value} value={value} name={label2}>
                           {label}
                         </option>
                       ))}
                   </Field>
+                  <ErrorMessage name="product_id" component="div" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Cantidad</label>
@@ -144,10 +165,14 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
                     className="form-control"
                     type="number"
                     name="amount"
+                    id="amount"
+                    required
                     onChange={(e) => handleChange(index, e)}
                     value={forms.dataToInsert[index].amount}
+                    disabled={!forms.dataToInsert[index].product_id}
                   />
                 </div>
+                <ErrorMessage name="amount" component="div" />
                 {index !== 0 && (
                   <Button variant="danger" onClick={() => removeFormField(index)}>
                     Remover Producto
@@ -156,7 +181,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
               </div>
             ))}
             <Button variant="primary" onClick={addFormFields}>
-              Agregar Producto
+              Agreggar Producto
             </Button>
           </Modal.Body>
           <Modal.Footer>
