@@ -20,6 +20,7 @@ import inventoryReducer from 'store/inventory/inventorySlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
 import productsReducer from 'store/products/productsSlice';
 import providersReducer from 'store/providers/providersSlice';
+import notificationsReducer from 'store/notifications/notificationsSlice';
 import stockReducer from 'store/stock/stockSlice';
 
 // import persist key
@@ -50,6 +51,7 @@ const persistedReducer = persistReducer(
     categories: categoriesReducer,
     menu: menuReducer,
     notification: notificationReducer,
+    notifications: notificationsReducer,
     scrollspy: scrollspyReducer,
     calendar: calendarReducer,
     appointments: appointmentsReducer,
