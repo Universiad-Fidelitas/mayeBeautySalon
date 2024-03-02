@@ -84,7 +84,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
           </Modal.Header>
           <Modal.Body>
             <div className="mb-3">
-              <label className="form-label">Accion</label>
+              <label className="form-label">Acción</label>
               <Field className="form-control" as="select" id="action" name="action" required onChange={(e) => handleChange2(e)}>
                 <option value="" disabled selected>
                   Elige una opción
@@ -150,13 +150,13 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
                 </div>
                 {index !== 0 && (
                   <Button variant="danger" onClick={() => removeFormField(index)}>
-                    Remove
+                    Remover Producto
                   </Button>
                 )}
               </div>
             ))}
             <Button variant="primary" onClick={addFormFields}>
-              Add Product
+              Agregar Producto
             </Button>
           </Modal.Body>
           <Modal.Footer>
