@@ -61,7 +61,7 @@ const Inventory = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Descripcion',
+        Header: 'Descripción',
         accessor: 'description',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -91,7 +91,7 @@ const Inventory = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Tamano',
+        Header: 'Tamaño',
         accessor: 'size',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -161,16 +161,18 @@ const Inventory = () => {
       .required('El nombre es requerido')
       .min(3, 'El nombre debe tener al menos 3 caracteres')
       .max(15, 'El nombre no puede tener más de 15 caracteres'),
+      
   });
 
   const formFields = [
     {
       id: 'description',
-      label: 'Descripcion',
+      label: 'Descripción',
       type: 'text',
     },
   ];
 
+  
   return (
     <>
       <HtmlHead title={title} description={description} />
