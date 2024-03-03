@@ -130,7 +130,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
             {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
-                <Field className="form-control" type={type} id={id} required name={id} onChange={(e) => handleChange3(e)} />
+                <Field className="form-control" type={type} id={id} required name={id} onChange={(e) => handleChange3(e)} disabled={!forms.action} />
                 <ErrorMessage name={id} component="div" />
               </div>
             ))}
@@ -145,6 +145,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
                     id="product_id"
                     required
                     onChange={(e) => handleChange(index, e)}
+                    disabled={!forms.description}
                     value={forms.dataToInsert[index].product_id}
                   >
                     <option value="" disabled>
@@ -181,7 +182,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
               </div>
             ))}
             <Button variant="primary" onClick={addFormFields}>
-              Agreggar Producto
+              Agregar Producto
             </Button>
           </Modal.Body>
           <Modal.Footer>

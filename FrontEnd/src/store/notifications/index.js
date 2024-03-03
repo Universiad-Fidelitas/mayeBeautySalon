@@ -1,2 +1,2 @@
 export * from './notificationsSlice';
-export * from './brandsThunk';
+export * from './notificationsThunk';
