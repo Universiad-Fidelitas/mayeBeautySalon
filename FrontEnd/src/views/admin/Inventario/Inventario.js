@@ -27,7 +27,7 @@ const Inventory = () => {
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/inventory', title: 'Inventory' },
+    { to: '/inventariado/inventory', title: 'Invantario' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -156,13 +156,7 @@ const Inventory = () => {
     setTerm(val || undefined);
   }, 200);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('El nombre es requerido')
-      .min(3, 'El nombre debe tener al menos 3 caracteres')
-      .max(15, 'El nombre no puede tener más de 15 caracteres'),
-      
-  });
+  const validationSchema = Yup.object().shape({});
 
   const formFields = [
     {
@@ -172,7 +166,6 @@ const Inventory = () => {
     },
   ];
 
-  
   return (
     <>
       <HtmlHead title={title} description={description} />

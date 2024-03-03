@@ -8,6 +8,7 @@ import { MENU_PLACEMENT } from 'constants.js';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
 import { fetchNotifications } from './notificationSlice';
+import { getNotifications } from '../../../store/notifications/notificationsThunk';
 
 const NotificationsDropdownToggle = React.memo(
   React.forwardRef(({ onClick, expanded = false }, ref) => (
@@ -30,12 +31,12 @@ const NotificationsDropdownToggle = React.memo(
     </a>
   ))
 );
-const NotificationItem = ({ img = '', link = '', detail = '' }) => (
+const NotificationItem = ({ name = '', amount = '' }) => (
   <li className="mb-3 pb-3 border-bottom border-separator-light d-flex">
-    <img src={img} className="me-3 sw-4 sh-4 rounded-xl align-self-center" alt="notification" />
     <div className="align-self-center">
-      <NavLink to={link} activeClassName="">
-        {detail}
+      <NavLink to="/inventariado/notifications" activeClassName="">
+        <h5>El producto {name} esta bajo de stock</h5>
+        <p>La cantidad actual del producto es menor a {amount} </p>
       </NavLink>
     </div>
   </li>
@@ -43,6 +44,7 @@ const NotificationItem = ({ img = '', link = '', detail = '' }) => (
 
 const NotificationsDropdownMenu = React.memo(
   React.forwardRef(({ style, className, labeledBy, items }, ref) => {
+    console.log('items', items);
     return (
       <div ref={ref} style={style} className={classNames('wide notification-dropdown scroll-out', className)} aria-labelledby={labeledBy}>
         <OverlayScrollbarsComponent
@@ -53,9 +55,9 @@ const NotificationsDropdownMenu = React.memo(
           className="scroll"
         >
           <ul className="list-unstyled border-last-none">
-            {items.map((item, itemIndex) => (
-              <NotificationItem key={`notificationItem.${itemIndex}`} detail={item.detail} link={item.link} img={item.img} />
-            ))}
+            {items.map((item, itemIndex) =>
+              item.activated === 1 ? <NotificationItem key={`notificationItem.${itemIndex}`} name={item.name} amount={item.amount} /> : null
+            )}
           </ul>
         </OverlayScrollbarsComponent>
       </div>
@@ -75,11 +77,11 @@ const Notifications = () => {
     attrMenuAnimate,
   } = useSelector((state) => state.menu);
   const { color } = useSelector((state) => state.settings);
-  const { items } = useSelector((state) => state.notification);
+  const { notifications } = useSelector((state) => state.notifications);
   const { showingNavMenu } = useSelector((state) => state.layout);
 
   useEffect(() => {
-    dispatch(fetchNotifications());
+    dispatch(getNotifications());
     return () => {};
     // eslint-disable-next-line
   }, []);
@@ -95,7 +97,7 @@ const Notifications = () => {
     // eslint-disable-next-line
   }, [attrMenuAnimate, behaviourHtmlData, attrMobile, color]);
 
-  if (items && items.length > 0) {
+  if (notifications && notifications.length > 0) {
     return (
       <Dropdown
         as="li"
@@ -107,7 +109,7 @@ const Notifications = () => {
         <Dropdown.Toggle as={NotificationsDropdownToggle} />
         <Dropdown.Menu
           as={NotificationsDropdownMenu}
-          items={items}
+          items={notifications}
           popperConfig={{
             modifiers: [
               {
