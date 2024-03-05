@@ -10,15 +10,6 @@ const getById = async (req, res = response) => {
         res.json(data);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'services', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(500).json({message: error.message})
     }
 }
@@ -65,15 +56,6 @@ const getServices = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'services', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(500).json({ message: error.message });
     }
 }
@@ -89,15 +71,6 @@ const postServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('insert', 'insert error', 'services', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -119,15 +92,6 @@ const putServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('put', 'put error', 'services', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "services.errorEdit",
@@ -150,15 +114,6 @@ const deleteServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'services', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "services.errorDelete",
@@ -177,15 +132,6 @@ const getAllServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getall', 'getall error', 'services', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "services.errorAdd",

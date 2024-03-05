@@ -10,15 +10,6 @@ const getById = async (req, res = response) => {
         res.json(data);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getOne', 'getOne error', 'products', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(500).json({message: error.message})
     }
 }
@@ -68,15 +59,6 @@ const getProducts = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'products', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(500).json({ message: error.message });
     }
 }
@@ -95,15 +77,6 @@ const postProducts = async (req, res = response) => {
         })
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'products', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar un producto duplicado!",
@@ -137,15 +110,6 @@ const putProducts = async (req, res = response) => {
         }
     }
         catch(error) {
-            try {
-                const logQuery = `
-                    INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('update', 'update error', 'products', NOW(), ?, ?)
-                `;
-                await dbService.query(logQuery, [error.message, 1]);
-            } catch (logError) {
-                console.error('Error al insertar en la tabla de Logs:', logError);
-            }
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al editar el producto!",
@@ -172,15 +136,6 @@ const putProducts = async (req, res = response) => {
                 });
             }
         } catch (error) {
-            try {
-                const logQuery = `
-                    INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('delete', 'delete error', 'products', NOW(), ?, ?)
-                `;
-                await dbService.query(logQuery, [error.message, 1]);
-            } catch (logError) {
-                console.error('Error al insertar en la tabla de Logs:', logError);
-            }
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al ejecutar la acción.!"

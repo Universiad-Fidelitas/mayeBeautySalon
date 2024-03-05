@@ -10,15 +10,6 @@ const getByIdUser = async (req, res = response) => {
         res.json({userFound, status: true, message: 'Se ha encontrado el usuario exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'users', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(500).json({message: error.message})
     }
 }
@@ -88,15 +79,6 @@ const postUser = async (req, res = response) => {
         }
     }
     catch({ message }) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'users', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar usuario!",
@@ -131,15 +113,6 @@ const putUser = async (req, res = response) => {
         }
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'users', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la acción.!",
@@ -170,15 +143,6 @@ const deleteUser = async (req, res = response) => {
             });
         }
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'users', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"
