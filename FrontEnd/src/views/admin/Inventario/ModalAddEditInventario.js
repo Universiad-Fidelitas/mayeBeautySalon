@@ -195,7 +195,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
             >
               Cancelar
             </Button>
-            <Button variant="primary" onClick={() => onSubmit(forms)}>
+            <Button variant="primary" onClick={() => onSubmit(forms)} disabled={!forms.dataToInsert[0].amount}>
               {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
             </Button>
           </Modal.Footer>

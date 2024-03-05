@@ -156,7 +156,15 @@ const Inventory = () => {
     setTerm(val || undefined);
   }, 200);
 
-  const validationSchema = Yup.object().shape({});
+  const validationSchema = Yup.object().shape({
+    // description: Yup.string()
+    //   .required(<span style={{ color: 'red' }}>La descripcion es requerida</span>)
+    //   .min(3, <span style={{ color: 'red' }}>La descripcion debe tener al menos 3 caracteres</span>)
+    //   .max(100, <span style={{ color: 'red' }}>La descripcion no puede tener más de 100 caracteres</span>),
+    // amount: Yup.number()
+    //   .required(<span style={{ color: 'red' }}>La cantidad es requerida</span>)
+    //   .min(1, <span style={{ color: 'red' }}>La no puede ser negativa</span>),
+  });
 
   const formFields = [
     {
