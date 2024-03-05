@@ -28,7 +28,7 @@ const getInventory = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select inventory_id, action, date, price from inventory';
+        let baseQuery = 'select * from inventory_view';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
@@ -77,15 +77,21 @@ const getInventory = async (req, res = response) => {
 }
 
 const postInventory = async (req, res = response) => {
-    const { action, date, price } = req.body;
+    const { action, dataToInsert , description } = req.body;
+    let insertIds = []; 
     try {
-        const userQuery = `CALL SP_inventory('create','0', ?, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [action, price, date]);
-
+        const userQuery = `INSERT INTO inventory ( action, price, date, description) VALUES (?, ?, CURRENT_TIMESTAMP, ?);`;
+        const { insertId: inventoryInsertId } = await dbService.query(userQuery, [action, 0 , description]);
+        for (const data of dataToInsert) {
+            const query = 'INSERT INTO `inventory_products` (amount, inventory_id, product_id) VALUES (?, ?, ?);';
+            const { insertId } = await dbService.query(query, [data.amount, inventoryInsertId, data.product_id]);
+            insertIds.push(insertId);
+        }
                 res.status(200).json({
-                    role_id: insertId,
+                    inventory_id: inventoryInsertId,
+                    product_ids: insertIds,
                     success: true,
-                    message: "¡El inventario ha sido agregado exitosamente!"
+                    message: "¡El movimiento de inventario ha sido agregado exitosamente!"
                 })
 
     }
@@ -101,7 +107,7 @@ const postInventory = async (req, res = response) => {
         }
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar inventario!",
+            message: "¡No es posible agregar el movimiento de inventario!",
             error: message
         })
     }
@@ -113,3 +119,5 @@ module.exports = {
     postInventory,
     getById
 }
+
+

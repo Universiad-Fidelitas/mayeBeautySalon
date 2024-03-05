@@ -1,23 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProviders, postProvider, editProvider, deleteProviders } from 'store/providers/providersThunk';
+import { getNotifications, postNotification, editNotification, deleteNotifications } from 'store/notifications/notificationsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { ModalAddEditNotificacion } from './ModalAddEditNotificacion';
 
 const Marcas = () => {
   const { formatMessage: f } = useIntl();
@@ -26,25 +17,37 @@ const Marcas = () => {
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/providers', title: 'Marcas' },
+    { to: '/inventariado/notifications', title: 'Marcas' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isProvidersLoading, providers, pageCount } = useSelector((state) => state.providers);
+  const { isNotificationsLoading, notifications, pageCount } = useSelector((state) => state.notifications);
 
   const columns = React.useMemo(() => {
     return [
       {
         Header: 'ID',
-        accessor: 'provider_id',
+        accessor: 'notification_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Nombre',
+        Header: 'Producto',
         accessor: 'name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Producto ID',
+        accessor: 'product_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Cantidad',
+        accessor: 'amount',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -73,7 +76,7 @@ const Marcas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['provider_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'product_id', desc: false }], hiddenColumns: ['notification_id', 'product_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -85,32 +88,32 @@ const Marcas = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
   useEffect(() => {
-    dispatch(getProviders({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getNotifications({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (providers.length > 0) {
-      setData(providers);
+    if (notifications.length > 0) {
+      setData(notifications);
     }
-  }, [isProvidersLoading]);
+  }, [isNotificationsLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteProviders(values));
+      dispatch(deleteNotifications(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editProvider(values));
+      dispatch(editNotification(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postProvider(values));
+      dispatch(postNotification(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -120,21 +123,16 @@ const Marcas = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(  <span style={{ color: 'red' }}>
-        'El nombre es requerido'
-      </span>)
-      .min(3, <span style={{ color: 'red' }}>
-        'El nombre debe tener al menos 3 caracteres'</span> )
-      .max(15, <span style={{ color: 'red' }}>
-        'El nombre no puede tener más de 15 caracteres',</span>)
+    amount: Yup.number()
+      .required(<span style={{ color: 'red' }}>Cantidad es requerida</span>)
+      .min(1, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 1</span>),
   });
 
   const formFields = [
     {
-      id: 'name',
-      label: 'Nombre de la marca',
-      type: 'text',
+      id: 'amount',
+      label: 'Cantidad',
+      type: 'number',
     },
   ];
 
@@ -169,8 +167,8 @@ const Marcas = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el proveedor seleccionado?"
-                    modalDescription="El proveedor seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalTitle="¿Desea eliminar la marca seleccionada?"
+                    modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                   />
                 </div>
                 <div className="d-inline-block">
@@ -187,7 +185,13 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditNotificacion
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>

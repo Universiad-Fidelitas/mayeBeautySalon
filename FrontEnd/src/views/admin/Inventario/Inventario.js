@@ -1,4 +1,12 @@
-/* import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { useDispatch, useSelector } from 'react-redux';
+import { getInventory, postInventory } from 'store/inventory/inventoryThunk';
+import { Col, Form, Row } from 'react-bootstrap';
+import { useIntl } from 'react-intl';
+import HtmlHead from 'components/html-head/HtmlHead';
+import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
+import * as Yup from 'yup';
 import {
   ModalAddEdit,
   ButtonsAddNew,
@@ -10,50 +18,90 @@ import {
   Table,
   TablePagination,
 } from 'components/datatables';
-import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
-import { Col, Form, Row } from 'react-bootstrap';
-import { useIntl } from 'react-intl';
-import HtmlHead from 'components/html-head/HtmlHead';
-import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { ModalAddEditInventario } from './ModalAddEditInventario';
 
-const Inventario = () => {
+const Inventory = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Inventario';
+  const title = 'Inventory';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'Inventario/Inventario', text: f({ id: 'Inventario' }) },
-    { to: 'Inventario/Inventario', title: 'Inventario' },
+    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado/inventory', title: 'Invantario' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+  const { isInventoryLoading, inventory, pageCount } = useSelector((state) => state.inventory);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'Inventory_Id',
+        accessor: 'inventory_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
-        Header: 'Accion',
-        accessor: 'name',
+        Header: 'Producto',
+        accessor: 'product_name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: '',
-        id: 'action',
-        headerClassName: 'empty w-10',
-        Cell: ({ row }) => {
-          const { checked, onChange } = row.getToggleRowSelectedProps();
-          return <Form.Check className="form-check float-end mt-1" type="checkbox" checked={checked} onChange={onChange} />;
-        },
+        Header: 'Fecha',
+        accessor: 'date',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tipo de Movimiento',
+        accessor: 'action',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Descripción',
+        accessor: 'description',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Precio',
+        accessor: 'inventory_price',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Precio Producto',
+        accessor: 'product_price',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+
+      {
+        Header: 'Inventory_products_id',
+        accessor: 'inventory_products_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
+      },
+      {
+        Header: 'Cantidad',
+        accessor: 'amount',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tamaño',
+        accessor: 'size',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Product_id',
+        accessor: 'product_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
     ];
   }, []);
@@ -71,7 +119,12 @@ const Inventario = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+        sortBy: [{ id: 'product_name', desc: false }],
+        hiddenColumns: ['inventory_products_id', 'inventory_id', 'product_id', 'product_price'],
+      },
     },
     useGlobalFilter,
     useSortBy,
@@ -82,34 +135,19 @@ const Inventario = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getInventory({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
+    if (inventory.length > 0) {
+      setData(inventory);
     }
-  }, [isRolesLoading]);
-
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteRols(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editRol(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  }, [isInventoryLoading]);
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postInventory(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -118,34 +156,13 @@ const Inventario = () => {
     setTerm(val || undefined);
   }, 200);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
-  });
+  const validationSchema = Yup.object().shape({});
 
   const formFields = [
     {
-      id: 'action',
-      label: 'Accion',
-    },
-    {
-      id: 'size',
-      label: 'Tamaño',
-    },
-    {
-      id: 'amount',
-      label: 'Cantidad',
-    },
-    {
-      id: 'product_id',
-      label: 'ID Producto',
-    },
-    {
-      id: 'price',
-      label: 'Precio',
-    },
-    {
-      id: 'date',
-      label: 'Fecha',
+      id: 'description',
+      label: 'Descripción',
+      type: 'text',
     },
   ];
 
@@ -176,8 +193,7 @@ const Inventario = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  <ControlsAdd tableInstance={tableInstance} />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
@@ -193,11 +209,10 @@ const Inventario = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditInventario tableInstance={tableInstance} addItem={addItem} validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>
   );
 };
-export default Inventario;
-*/
+export default Inventory;
