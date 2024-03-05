@@ -12,7 +12,6 @@ import Inventario from 'views/admin/Inventario/Inventario';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
-import Logs from 'views/admin/Logs/Logs';
 import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 
@@ -33,7 +32,6 @@ const routesAndMenuItems = {
       component: Dashboard,
       protected: true,
     },
- 
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -82,13 +80,6 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: AppointmentsClient,
       protected: false,
-    },
-    {
-      path: `${appRoot}/logs`,
-      label: 'Logs',
-      icon: 'logs-1',
-      component: Logs,
-      protected: true,
     },
   ],
   sidebarItems: [],
