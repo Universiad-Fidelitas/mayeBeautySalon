@@ -15,6 +15,7 @@ export const AppointmentsClient = () => {
     const forms = [createRef(null), createRef(null)];
     const [bottomNavHidden, setBottomNavHidden] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [fields, setFields] = useState(false);
   
     const onClickNext = (goToNext, steps, step) => {
       if (steps.length - 1 <= steps.indexOf(step)) {
@@ -22,21 +23,23 @@ export const AppointmentsClient = () => {
       }
       const formIndex = steps.indexOf(step);
       const form = forms[formIndex].current;
+
   
       form.submitForm().then(() => {
         if (!form.isDirty && form.isValid) {
-          // const newFields = { ...fields, ...form.values };
-          // setFields(newFields);
+          const newFields = { ...fields, ...form.values };
+
+          setFields(newFields);
+      console.log('newFields', newFields)
   
-          // if (steps.length - 2 <= steps.indexOf(step)) {
-          //   // done
-          //   setBottomNavHidden(true);
-          //   setLoading(true);
-          //   console.log(newFields);
-          //   setTimeout(() => {
-          //     setLoading(false);
-          //   }, 3000);
-          // }
+          if (steps.length - 2 <= steps.indexOf(step)) {
+            // done
+            setBottomNavHidden(true);
+            setLoading(true);
+            setTimeout(() => {
+              setLoading(false);
+            }, 3000);
+          }
           goToNext();
           step.isDone = true;
         }
@@ -90,12 +93,13 @@ export const AppointmentsClient = () => {
         />
         <Steps>
           <Step id="step1" name="Primer Paso" desc="Elegir el servicio">
-          <FirstDataRequestTap formRef={forms}/>
+
+
+          <SecondDataRequestTap formRef={forms} />
 
           </Step>
           <Step id="step2" name="Segundo Paso" desc="Información del cliente">
-
-                          <SecondDataRequestTap formRef={forms} />
+          <FirstDataRequestTap formRef={forms}/>
           </Step>
           <Step id="step3" hideTopNav>
             <div className="sh-30 d-flex flex-column justify-content-center align-items-center">

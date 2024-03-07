@@ -107,7 +107,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
   return (
     <div>
     <Formik 
-      innerRef={formRef[0]}
+      innerRef={formRef[1]}
       initialValues={{}}
       onSubmit={() => {
         console.log('onSubmit', { appointmentDateTime, selectedService })
