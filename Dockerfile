@@ -15,7 +15,7 @@ COPY . .
 COPY --from=build /usr/src/app ./FrontEnd
 
 # Expose the port your app will run on
-EXPOSE 80
+EXPOSE 443
 
 # Start the application
 CMD ["npm", "run", "start-prod"]
