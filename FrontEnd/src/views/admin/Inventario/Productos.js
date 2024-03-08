@@ -38,6 +38,13 @@ const Productos = () => {
   const columns = React.useMemo(() => {
     return [
       {
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
+      },
+      {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
@@ -54,13 +61,6 @@ const Productos = () => {
         accessor: 'size',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Imagen',
-        accessor: 'image',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
-        hideColumn: true,
       },
       {
         Header: 'Marca',
@@ -176,15 +176,18 @@ const Productos = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required('El nombre es requerido')
-      .min(3, 'El nombre debe tener al menos 3 caracteres')
-      .max(15, 'El nombre no puede tener más de 15 caracteres'),
+      .required(<span style={{ color: 'red' }}>'El nombre es requerido'</span>)
+      .min(3, <span style={{ color: 'red' }}>'El nombre debe tener al menos 3 caracteres'</span>)
+      .max(15, <span style={{ color: 'red' }}>'El nombre no puede tener más de 15 caracteres',</span>),
+    price: Yup.number()
+      .required(<span style={{ color: 'red' }}>'El precio es requerido'</span>)
+      .min(3, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
   });
 
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre de la marca',
+      label: 'Nombre del producto',
       type: 'text',
     },
     {

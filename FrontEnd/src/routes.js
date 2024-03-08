@@ -6,10 +6,15 @@ import Transacciones from 'views/admin/Facturas/Transacciones';
 import Categorias from 'views/admin/Inventario/Categorias';
 import Marcas from 'views/admin/Inventario/Marcas';
 import Productos from 'views/admin/Inventario/Productos';
+import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores';
+import Inventario from 'views/admin/Inventario/Inventario';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
+import Logs from 'views/admin/Logs/Logs';
+import Notificaciones from 'views/admin/Inventario/Notificacion';
+import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
@@ -28,6 +33,7 @@ const routesAndMenuItems = {
       component: Dashboard,
       protected: true,
     },
+ 
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -50,12 +56,14 @@ const routesAndMenuItems = {
       label: 'Inventariado',
       icon: 'database',
       subs: [
-        /// //// { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
+        { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
         { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
+        { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_PRODUCTS', component: Stock },
+        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
       ],
     },
     {
@@ -67,6 +75,20 @@ const routesAndMenuItems = {
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
         { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
       ],
+    },
+    {
+      path: `${appRoot}/cliente/citas`,
+      label: 'Agende Cita',
+      icon: 'check-square',
+      component: AppointmentsClient,
+      protected: false,
+    },
+    {
+      path: `${appRoot}/logs`,
+      label: 'Logs',
+      icon: 'logs-1',
+      component: Logs,
+      protected: true,
     },
   ],
   sidebarItems: [],

@@ -187,6 +187,14 @@ const enMessages = {
   'helper.edit': 'Edit',
   'helper.activated': 'Activated',
   'helper.inactivated': 'Inactivated',
+  'helper.selected': 'Selected',
+  'helper.monday': 'Monday',
+  'helper.tuesday': 'Tuesday',
+  'helper.wednesday': 'Wednesday',
+  'helper.thursday': 'Thursday',
+  'helper.friday': 'Friday',
+  'helper.saturday': 'Saturday',
+  'helper.sunday': 'Sunday',
 
   'inventory.title': 'Inventory',
   
