@@ -43,7 +43,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/mauricio.granados/Documents/Personal/Repositories/mayeBeautySalon/FrontEnd/build
+      device: /home/MauricioGrM/mayeBeautySalon/FrontEnd/build
       o: bind
 networks:
   myDatabaseNetwork:
