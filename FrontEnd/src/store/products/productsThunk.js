@@ -20,7 +20,6 @@ const getProducts = (tableStatus) => {
 const postProduct = (formData) => {
   return async (dispatch) => {
     try {
-      console.log('ffd', formData);
       const { data } = await baseApi.post('/products/add', formData);
       const { success, message } = data;
       if (success) {

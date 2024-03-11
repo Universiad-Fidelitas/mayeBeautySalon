@@ -22,7 +22,6 @@ const stockSlice = createSlice({
     },
   },
 });
-console.log('prueba loading', stockSlice);
 export const { setStock, setLoadedStock, setLoadingStock } = stockSlice.actions;
 const stockReducer = stockSlice.reducer;
 

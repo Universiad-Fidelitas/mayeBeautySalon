@@ -17,7 +17,7 @@ const Stock = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
     { to: '/inventariado/stock', title: 'Stock' },
   ];
   const [data, setData] = useState([]);

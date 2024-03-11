@@ -49,7 +49,7 @@ const routesAndMenuItems = {
     },
     {
       path: `${appRoot}/inventariado`,
-      label: 'Inventariado',
+      label: 'inventory.title',
       icon: 'database',
       subs: [
         /// //// { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
@@ -73,7 +73,7 @@ const routesAndMenuItems = {
     },
     {
       path: `${appRoot}/cliente/citas`,
-      label: 'Agende Cita',
+      label: 'appointments.menuTitle',
       icon: 'check-square',
       component: AppointmentsClient,
       protected: false,

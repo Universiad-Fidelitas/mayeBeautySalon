@@ -103,7 +103,6 @@ export const ServicesView = () => {
   }, [isServicesDataSuccess, servicesData])
 
   const deleteItems = useCallback(async (values) => {
-      console.log('deleteItems', values)
       deleteServices.mutateAsync({service_ids: values});
   },[pageIndex, pageSize]);
 

@@ -7,7 +7,6 @@ const getProviders = (tableStatus) => {
     try {
       dispatch(setLoadingProviders());
       const { data } = await baseApi.post('/providers', tableStatus);
-      console.log('Providers', data);
       if (data) {
         dispatch(setProviders(data));
         dispatch(setLoadedProviders());

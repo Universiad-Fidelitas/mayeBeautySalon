@@ -6,7 +6,6 @@ const getById = async (req, res = response) => {
     const { category_id } = req.params;
     try {
         const [categoryFound] = await dbService.query('SELECT * FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
-        console.log(categoryFound)
         res.status(500).json({categoryFound, status: true, message: 'Se ha encontrado la categoria exitosamente.' });
     }
     catch(error) {

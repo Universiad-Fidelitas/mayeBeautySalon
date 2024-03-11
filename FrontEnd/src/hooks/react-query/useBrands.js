@@ -11,7 +11,6 @@ export const useBrands = () => {
   return useQuery(['project-brands'], getBrand, {
     refetchOnWindowFocus: false,
     onError: () => {
-      // console.log('first')
     },
   });
 };

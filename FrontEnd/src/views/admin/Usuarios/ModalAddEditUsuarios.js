@@ -31,7 +31,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
 
   const onSubmit = useCallback(
     (values) => {
-      console.log(values);
       const formData = new FormData();
       const userSchema = {
         ...values,

@@ -1,13 +1,18 @@
-import React, { createRef, useState } from 'react';
+import React, { createRef, useMemo, useState } from 'react';
 import HtmlHead from 'components/html-head/HtmlHead';
 import useCustomLayout from 'hooks/useCustomLayout';
 import { Wizard, Steps, Step, WithWizard } from 'react-albus';
-import { Button, Form, Spinner } from 'react-bootstrap';
-import { Formik, Field } from 'formik';
+import { Button, Spinner } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
-import { MENU_PLACEMENT } from '../../constants';
+import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
+import { baseApi } from 'api/apiConfig';
 import { FirstDataRequestTap } from './Appointments/FirstDataRequestTap';
 import { SecondDataRequestTap } from './Appointments/SecondDataRequestTap';
+import { MENU_PLACEMENT } from '../../constants';
+import { ThanksTap } from './Appointments/ThanksTap';
+
+
 
 export const AppointmentsClient = () => {
     const title = 'Horizontal Menu';
@@ -16,6 +21,9 @@ export const AppointmentsClient = () => {
     const [bottomNavHidden, setBottomNavHidden] = useState(false);
     const [loading, setLoading] = useState(false);
     const [fields, setFields] = useState(false);
+    const [savingData, setSavingData] = useState()
+    const { formatMessage: f } = useIntl();
+    const custumerInfo  = useSelector((state) => state.appointments);
   
     const onClickNext = (goToNext, steps, step) => {
       if (steps.length - 1 <= steps.indexOf(step)) {
@@ -24,26 +32,30 @@ export const AppointmentsClient = () => {
       const formIndex = steps.indexOf(step);
       const form = forms[formIndex].current;
 
+      if(form) {
+        form.submitForm().then(async () => {
+          if (!form.isDirty && form.isValid) {
+            const newFields = { ...fields, ...form.values };
   
-      form.submitForm().then(() => {
-        if (!form.isDirty && form.isValid) {
-          const newFields = { ...fields, ...form.values };
-
-          setFields(newFields);
-      console.log('newFields', newFields)
-  
-          if (steps.length - 2 <= steps.indexOf(step)) {
-            // done
-            setBottomNavHidden(true);
-            setLoading(true);
-            setTimeout(() => {
-              setLoading(false);
-            }, 3000);
+            setFields(newFields);
+    
+            if (steps.length - 2 <= steps.indexOf(step)) {
+              const { data } = await baseApi.post('/appointments/save-appointment', {...newFields, ...custumerInfo.selectedAppointments});
+              setSavingData({
+                isLoaded: true,
+                ...data
+              })
+              setBottomNavHidden(true);
+              setLoading(true);
+              setTimeout(() => {
+                setLoading(false);
+              }, 3000);
+            }
+            goToNext();
+            step.isDone = true;
           }
-          goToNext();
-          step.isDone = true;
-        }
-      });
+        });
+      }
     };
   
     const onClickPrev = (goToPrev, steps, step) => {
@@ -70,7 +82,7 @@ export const AppointmentsClient = () => {
   return (
     <>
         <HtmlHead title={title} description={description} />
-        <div className="wizard wizard-default">
+        <div className="wizard wizard-default mt-3">
       <Wizard>
         <WithWizard
           render={({ next, previous, step, steps, go, push }) => (
@@ -92,32 +104,16 @@ export const AppointmentsClient = () => {
           )}
         />
         <Steps>
-          <Step id="step1" name="Primer Paso" desc="Elegir el servicio">
-
-
-          <SecondDataRequestTap formRef={forms} />
+          <Step id="step1" name="Primer Paso" desc={f({ id: 'appointments.FirstTaptitle' })}>
+          <FirstDataRequestTap formRef={forms}/>
+          {/* <ThanksTap /> */}
 
           </Step>
           <Step id="step2" name="Segundo Paso" desc="Información del cliente">
-          <FirstDataRequestTap formRef={forms}/>
+            <SecondDataRequestTap formRef={forms} />
           </Step>
           <Step id="step3" hideTopNav>
-            <div className="sh-30 d-flex flex-column justify-content-center align-items-center">
-              {loading ? (
-                <div className="text-center">
-                  <Spinner animation="border" variant="primary" />
-                  <p>Creating account...</p>
-                </div>
-              ) : (
-                <div className="text-center">
-                  <h3 className="mb-2">Thank You!</h3>
-                  <p>Your registration completed successfully!</p>
-                  <Button variant="primary" className="btn-icon btn-icon-end">
-                    <span>Login</span> <CsLineIcons icon="user" />
-                  </Button>
-                </div>
-              )}
-            </div>
+          <ThanksTap savingData={savingData} />
           </Step>
         </Steps>
         <WithWizard
@@ -130,7 +126,7 @@ export const AppointmentsClient = () => {
                   onClickPrev(previous, steps, step);
                 }}
               >
-                <CsLineIcons icon="chevron-left" /> <span>Back</span>
+                <CsLineIcons icon="chevron-left" /> <span>{f({ id: 'helper.Back' })}</span>
               </Button>
               <Button
                 variant="outline-primary"
@@ -139,7 +135,7 @@ export const AppointmentsClient = () => {
                   onClickNext(next, steps, step);
                 }}
               >
-                <span>Next</span> <CsLineIcons icon="chevron-right" />
+                <span>{f({ id: 'helper.Next' })}</span> <CsLineIcons icon="chevron-right" />
               </Button>
             </div>
           )}

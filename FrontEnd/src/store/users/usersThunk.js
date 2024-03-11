@@ -7,7 +7,6 @@ const getUsers = (tableStatus) => {
     try {
       dispatch(setLoadingUsers());
       const { data } = await baseApi.post('/users', tableStatus);
-      console.log('setLoadedUsers', data);
       if (data.items) {
         dispatch(setUsers(data));
         dispatch(setLoadedUsers());
