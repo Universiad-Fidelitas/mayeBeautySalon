@@ -92,66 +92,72 @@ export const FirstDataRequestTap = ({ formRef }) => {
       })
     },[setappointmentDateTime])
   
-    const OnSelectButton = ({dayDate, dayTime}) => {
+
+    const OnSelectButton = useCallback(({dayDate, dayTime}) => {
       if (appointmentDateTime?.date === dayDate && appointmentDateTime?.time === dayTime) {
-        return <Button variant='success'>Seleccionado</Button>
+        return <Button variant='success'>{ f({ id: 'helper.selected' }) }</Button>
       }
         if (isDateTimeSelected(dayDate, dayTime)) {
-        return <Button variant='warning'>Ocupado</Button>
+        return <Button variant='warning'>{ f({ id: 'helper.unavailable' }) }</Button>
       } 
-      return <Button variant={dayDate === moment(serviceDate).format('YYYY-MM-DD') ? 'outline-white' : 'outline-primary' } onClick={() => onAppointmentSelected(dayDate, dayTime)}>Disponible</Button>
-    }
+      return <Button variant={dayDate === moment(serviceDate).format('YYYY-MM-DD') ? 'outline-white' : 'outline-primary' } onClick={() => onAppointmentSelected(dayDate, dayTime)}>{ f({ id: 'helper.available' }) }</Button>
+    }, [appointmentDateTime, isDateTimeSelected, onAppointmentSelected, serviceDate, f])
 
     const timeslots = useMemo(() => generateTimeSlots(), [generateTimeSlots]);
 
   return (
     <div>
     <Formik 
-      innerRef={formRef[1]}
+      innerRef={formRef[0]}
       initialValues={{}}
       onSubmit={() => {
-        console.log('onSubmit', { appointmentDateTime, selectedService })
         dispatch(setServiceDateTime({ appointmentDateTime, selectedService }));
       }}
     >
       {() => (
         <Form>
-          <h5 className="card-title">Servicio</h5>
-          <p className="card-text text-alternate mb-4">Descriocion </p>
-          <Select className='w-50 mb-3' classNamePrefix="react-select" options={serviceOptions} value={selectedService} onChange={setSelectedService} placeholder='Seleccione Servicio' />
-          <DatePicker className="form-control mb-5" dateFormat='MMMM d, yyyy' selected={serviceDate} onChange={(date) => setServiceDate(date)} placeholderText="Seleccione el dia"/>
+          <h5 className="card-title">{f({ id: 'appointments.FirstTaptitle' })}</h5>
+          <p className="card-text text-alternate mb-4">{f({ id: 'appointments.FirstTapDescription' })} </p>
+          <Select className='w-20 mb-3' classNamePrefix="react-select" options={serviceOptions} value={selectedService} onChange={setSelectedService} placeholder='Seleccione Servicio' />
+         
           {
             selectedService?.value && (
-              <section className="scroll-section">
-                <h2 className="small-title">Citas disponibles</h2>
-                <Card body className="mb-5">
-                  <Table striped hover className='appointments-table'>
-                    <thead>
-                      <tr>
-                        <th>Time</th>
-                        {daysWithDate.map((day) => (
-                          <th key={day.name}  className={classNames('table-cell firstchild', { selectedCellDate: day.date.toDateString() === serviceDate.toDateString() },)}>
-                            <h5 className={`m-0 text-center ${day.date.toDateString() === serviceDate.toDateString() ? 'text-white' : 'text-black'}`}>{ f({ id: `helper.${day.name}` }) }</h5>
-                            <p className={`m-0 text-center ${day.date.toDateString() === serviceDate.toDateString() ? 'text-white' : 'text-primary'}`}>{formatDate(day.date, { month: 'long', day: 'numeric' })}</p>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {timeslots.map((timeslot, index) => (
-                        <tr key={timeslot.time}>
-                          <td>{timeslot.time}</td>
-                          {daysWithDate.map(day => (
-                            <td key={`${day}-${timeslot.time}`} className={classNames('table-cell', { selectedCellDate: day.date.toDateString() === serviceDate.toDateString(), lastchild:  (index === timeslots.length - 1) && day.date.toDateString() === serviceDate.toDateString()})}>
-                              <OnSelectButton dayDate={moment(day.date).format('YYYY-MM-DD')} dayTime={moment(timeslot.time, 'h:mm A').format('HH:mm:ss')} />
-                            </td>
+              <>
+                <DatePicker className="form-control mb-5 w-20" dateFormat='MMMM d, yyyy' selected={serviceDate} onChange={(date) => setServiceDate(date)} placeholderText="Seleccione el dia"/>
+                <section className="scroll-section">
+                  <h2 className="small-title">Citas disponibles</h2>
+                  <Card body className="mb-5">
+                    <Table striped hover className='appointments-table'>
+                      <thead>
+                        <tr>
+                          <th>{ f({ id: 'helper.time' })}</th>
+                          {daysWithDate.map((day) => (
+                            <th key={day.name}  className={classNames('table-cell firstchild', { selectedCellDate: day.date.toDateString() === serviceDate.toDateString() },)}>
+                              <h5 className={`m-0 text-center ${day.date.toDateString() === serviceDate.toDateString() ? 'text-white' : 'text-black'}`}>{ f({ id: `helper.${day.name}` }) }</h5>
+                              <p className={`m-0 text-center ${day.date.toDateString() === serviceDate.toDateString() ? 'text-white' : 'text-primary'}`}>{formatDate(day.date, { month: 'long', day: 'numeric' })}</p>
+                            </th>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </Card>
-              </section>
+                      </thead>
+                      <tbody>
+                        {timeslots.map((timeslot, index) => (
+                          <tr key={timeslot.time}>
+                            <td>{timeslot.time}</td>
+                            {daysWithDate.map(day => (
+                              <td key={`${day}-${timeslot.time}`} className={classNames('table-cell', { selectedCellDate: day.date.toDateString() === serviceDate.toDateString(), lastchild:  (index === timeslots.length - 1) && day.date.toDateString() === serviceDate.toDateString()})}>
+                                <OnSelectButton dayDate={moment(day.date).format('YYYY-MM-DD')} dayTime={moment(timeslot.time, 'h:mm A').format('HH:mm:ss')} />
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Card>
+                </section>
+              
+              </>
+              
+
             )
           }
         </Form>

@@ -180,6 +180,11 @@ const enMessages = {
   'menu.items': 'Items',
   'menu.addNew': 'Add New',
 
+  'helper.available': 'Available',
+  'helper.unavailable': 'Unavailable',
+  'helper.time': 'Time',
+  'helper.Next': 'Next',
+  'helper.Back': 'Back',
   'helper.cancel': 'Cancel',
   'helper.done': 'Done',
   'helper.add': 'Add',
@@ -195,6 +200,33 @@ const enMessages = {
   'helper.friday': 'Friday',
   'helper.saturday': 'Saturday',
   'helper.sunday': 'Sunday',
+  'helper.idcard': 'Id Card',
+  'helper.name': 'Name',
+  'helper.lastname': 'Last Name',
+  'helper.phone': 'Phone',
+  'helper.email': 'Email',
+  
+  'helper.idCardRequired': 'Id Card is required',
+  'helper.idCardOnlyNumbers': 'Id Card needs to be only numbers',
+  'helper.idCardMinSize': 'Id Card must be at least 9 digits',
+  'helper.idCardMaxSize': 'Id Card must be at most 12 digits',
+
+  'helper.nameRequired': 'Name is required',
+  'helper.nameMinLength': 'Name must be at least 3 characters',
+  'helper.nameMaxLength': 'Name must be at most 20 characters',
+  
+  'helper.lastnameRequired': 'Lastname is required',
+  'helper.lastnameMinLength': 'Lastname must be at least 3 characters',
+  'helper.lastnameMaxLength': 'Lastname must be at most 20 characters',
+
+  'helper.emailInvalid': 'Email is invalid',
+  'helper.emailRequired': 'Email is required',
+
+  'helper.phoneOnlyNumbers': 'Phone must be only numbers',
+  'helper.phoneMinLength': 'Phone must be at least 8 characters',
+  'helper.phoneMaxLength': 'Phone must be at most 10 characters',
+  'helper.phoneRequired': 'Phone is required',
+
 
   'inventory.title': 'Inventory',
   
@@ -218,5 +250,14 @@ const enMessages = {
   'services.servicePriceRequired': 'Service Price is required',
   'services.servicePriceType': 'Price must be a number',
   'services.servicePricePositive': 'Price must be a positive number',
+
+  'appointments.menuTitle': 'Schedule Appointment',
+
+  'appointments.FirstTaptitle': 'Choose Service',
+  'appointments.FirstTapDescription': 'Please chose the service and date for the appointment',
+
+  'appointments.SecondTaptitle': 'Customer Information',
+  'appointments.SecondTapDescription': 'Please fill in the following information',
+  'appointments.findUserInformation': 'Find User Information',
 };
 export default enMessages;

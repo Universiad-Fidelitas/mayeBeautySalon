@@ -5,7 +5,6 @@ import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
 export const ProductosImageUploader = ({ initialImages, setImageState }) => {
   const onChange = (imageList, addUpdateIndex) => {
-    console.log('profileImage', imageList, addUpdateIndex);
     setImageState(imageList);
   };
 

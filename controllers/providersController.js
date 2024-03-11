@@ -6,7 +6,6 @@ const getById = async (req, res = response) => {
     const { provider_id } = req.params;
     try {
         const [providerFound] = await dbService.query('SELECT * FROM providers WHERE activated = 1 AND provider_id = ?', [provider_id]);
-        console.log(providerFound)
         res.status(500).json({providerFound, status: true, message: 'Se ha encontrado la marca exitosamente.' });
     }
     catch(error) {

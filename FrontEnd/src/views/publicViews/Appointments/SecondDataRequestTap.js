@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
-import { ErrorMessage, Field, Formik } from 'formik';
+import { Button, Spinner } from 'react-bootstrap';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useIntl } from 'react-intl';
 import * as Yup from 'yup';
 import { baseApi } from 'api/apiConfig';
-import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCustumerInfo } from 'store/appointments/appointmentsSlice';
 
@@ -13,127 +12,135 @@ export const SecondDataRequestTap = ({ formRef }) => {
   const { custumerInfo } = useSelector((state) => state.appointments);
   const { formatMessage: f } = useIntl();
   const [initialValues, setInitialValues] = useState({
-    id_card: custumerInfo ? custumerInfo.id_card : '',
+    id_card: '',
     first_name: '',
     last_name: '',
     email: '',
     phone: '',
   })
-  const [userIdCard, setUserIdCard] = useState();
   const [userPrefilled, setuserPrefilled] = useState(false);
-  const [showUserInfo, setshowUserInfo] = useState(false);
+  const [showUserInfoForm, setShowUserInfoForm] = useState(false);
+  const [isFindingCustomer, setIsFindingCustomer] = useState(false);
 
   useEffect(() => {
-    console.log('custumerInfomAU', custumerInfo)
-    if (custumerInfo.length) {
-      setUserIdCard(custumerInfo.id_card)
+    if (custumerInfo.id_card) {
       setInitialValues(custumerInfo)
+      setShowUserInfoForm(true)
       setuserPrefilled(true)
-      setshowUserInfo(true)
     }
   }, [custumerInfo])
 
-
-
   const validationSchema = useMemo(() => Yup.object().shape({
-    first_name: Yup.string().required(f({ id: 'services.serviceNameRequired' })).min(3, f({ id: 'services.serviceNameMinLength' })).max(20, f({ id: 'services.serviceNameMaxLength' })),
-    last_name: Yup.string().required(f({ id: 'services.serviceNameRequired' })).min(3, f({ id: 'services.serviceNameMinLength' })).max(20, f({ id: 'services.serviceNameMaxLength' })),
-    // id_card: Yup.string()
-    // .required('Costa Rican ID number is required')
-    // .matches(/^\d+$/, 'Costa Rican ID number must contain only numbers')
-    // .min(9, 'Costa Rican ID number must be at least 9 digits')
-    // .max(12, 'Costa Rican ID number must be at most 12 digits'),
-    email: Yup.string().email('Invalid email').required('Email is required'),
+    first_name: Yup.string().required(f({ id: 'helper.nameRequired' })).min(3, f({ id: 'helper.nameMinLength' })).max(20, f({ id: 'helper.nameMaxLength' })),
+    last_name: Yup.string().required(f({ id: 'helper.lastnameRequired' })).min(3, f({ id: 'helper.lastnameMinLength' })).max(20, f({ id: 'helper.lastnameMaxLength' })),
+    email: Yup.string().email(f({ id: 'helper.emailInvalid' })).required(f({ id: 'helper.emailRequired' })),
     phone: Yup.string()
-      .matches(/^\d+$/, 'El teléfono debe ser un número')
-      .min(8, 'El teléfono debe tener al menos 8 números')
-      .max(10, 'El teléfono no puede tener más de 10 números')
-      .required('El teléfono es requerido'),
-
+      .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
+      .min(8, f({ id: 'helper.phoneMinLength' }))
+      .max(10, f({ id: 'helper.phoneMaxLength' }))
+      .required(f({ id: 'helper.phoneRequired' }))
   }),[f])
 
-  const onSearchUser = useCallback(async () => {
-    if(userIdCard && userIdCard.length > 7){
-      const { data } = await baseApi.post('/appointments/user-prefill', { id_card: userIdCard });
-      const { userPrefillData } = data;
-      console.log('useGetPrefillData', )
+  const validationSchemaCard = useMemo(() => Yup.object().shape({
+    id_card: Yup.string()
+    .required(f({ id: 'helper.idCardRequired' }))
+    .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))
+    .min(9, f({ id: 'helper.idCardMinSize' }))
+    .max(12, f({ id: 'helper.idCardMaxSize' })),
+  }),[f])
+
+  const onSearchUser = useCallback(async (id_card) => {
+    setIsFindingCustomer(true)
+    const { data } = await baseApi.post('/appointments/user-prefill', { id_card });
+    const { userPrefillData } = data;
       if (userPrefillData.length) {
         setInitialValues(userPrefillData[0]);
         setuserPrefilled(true)
+        setIsFindingCustomer(false)
+        setShowUserInfoForm(true)
       } else {
         setInitialValues({
-          id_card: userIdCard,
+          id_card,
           first_name: '',
           last_name: '',
           email: '',
           phone: '',
         })
+        setIsFindingCustomer(false)
         setuserPrefilled(false)
+        setShowUserInfoForm(true)
       }
-      setshowUserInfo(true)
-    }
-  }, [userIdCard])
-console.log(userIdCard, 'userIdCard')
+  }, [setIsFindingCustomer, setInitialValues, setuserPrefilled])
+
+  const onCustomerFinder = useCallback(({ id_card }) => {
+    onSearchUser(id_card)
+  }, [onSearchUser])
+
+  const onFormSubmit = useCallback(() => {
+    dispatch(setCustumerInfo(initialValues))
+  }, [initialValues])
 
   return (
-    <Formik
-      innerRef={formRef[0]}
-      initialValues={initialValues}
-      validateOnMount
-      validationSchema={validationSchema}
-      enableReinitialize
-      onSubmit={(values) => {
-        console.log('SUBMITmau', values)
-        dispatch(setCustumerInfo(values));
-      }}
-    >
-      {({ errors, touched }) => (
-        <Form>
-          <h5 className="card-title">Second Title</h5>
-          <p className="card-text text-alternate mb-4">Pastry wafer icing icing marshmallow dessert jelly-o apple pie lollipop.</p>
-          <div className='w-30 mb-3'>
-            <div className="mb-3">
-              <Form.Label>Cedúla</Form.Label>
-              <div className="d-flex gap-2">
-                <Field className="form-control w-40" value={userIdCard} onChange={(e) => setUserIdCard(e.target.value)} id='id_card' name='id_card'/>
-                <Button variant="outline-primary" onClick={onSearchUser}>
-                  Obtener datos
-                </Button>
-              </div>
-              <ErrorMessage className='text-danger' name='id_card' component="div" />
-            </div>
-            {
-              showUserInfo && (
-                <>
-                  <div className="d-flex gap-3 mb-3">
-                    <div className=" w-100">
-                      <Form.Label>Nombre</Form.Label>
-                      <Field className="form-control" id='first_name' name='first_name' disabled={userPrefilled}/>
-                      <ErrorMessage className='text-danger' name='first_name' component="div" />
-                    </div>
-                    <div className="w-100">
-                      <Form.Label>Apellido</Form.Label>
-                      <Field className="form-control" id='last_name' name='last_name' disabled={userPrefilled}/>
-                      <ErrorMessage className='text-danger' name='last_name' component="div" />
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <Form.Label>Teléfono</Form.Label>
-                    <Field className="form-control w-60" id='phone' name='phone' disabled={userPrefilled}/>
-                    <ErrorMessage className='text-danger' name='phone' component="div" />
-                  </div>
-                  <div >
-                    <Form.Label>Email</Form.Label>
-                    <Field className="form-control" id='email' name='email' disabled={userPrefilled}/>
-                    <ErrorMessage className='text-danger' name='email' component="div" />
-                  </div>
-                </>
-              )
-            }
+    <>
+      <h5 className="card-title">{f({ id: 'appointments.SecondTaptitle' })}</h5>
+      <p className="card-text text-alternate mb-4">{f({ id: 'appointments.SecondTapDescription' })}</p>
 
+      <Formik initialValues={{ id_card: '305300042'}} onSubmit={onCustomerFinder} validationSchema={validationSchemaCard}>
+        <Form>
+          <div className='w-30 mb-3'>
+            <label className='form-label'>{f({ id: 'helper.idcard' })}</label>
+            <div className='d-flex gap-2'>
+              <Field className='form-control w-40' id='id_card' name='id_card' disabled={isFindingCustomer}/>
+              <Button variant='outline-primary' type='submit' disabled={isFindingCustomer}>
+                {
+                  isFindingCustomer
+                  ? <Spinner size='sm' animation='border' variant='primary' className='m-0' />
+                  : <span>{f({ id: 'appointments.findUserInformation' })}</span>
+                }                
+              </Button>
+            </div>
+            <ErrorMessage className='text-danger' name='id_card' component='div' />
           </div>
         </Form>
-      )}
-    </Formik>
+      </Formik>
+      { showUserInfoForm && (
+        <Formik
+          innerRef={formRef[1]}
+          validateOnMount
+          initialValues={initialValues}
+          onSubmit={onFormSubmit}
+          validationSchema={validationSchema}
+          enableReinitialize
+          >
+          <Form>
+            <div className='w-30 mb-3'>
+              <div className="d-flex gap-3 mb-3">
+                <div className=" w-100">
+                  <label className='form-label'>{f({ id: 'helper.name' })}</label>
+                  <Field className="form-control" id='first_name' name='first_name' disabled={userPrefilled}/>
+                  <ErrorMessage className='text-danger' name='first_name' component="div" />
+                </div>
+                <div className="w-100">
+                  <label className='form-label'>{f({ id: 'helper.lastname' })}</label>
+                  <Field className="form-control" id='last_name' name='last_name' disabled={userPrefilled}/>
+                  <ErrorMessage className='text-danger' name='last_name' component="div" />
+                </div>
+              </div>
+              <div className="mb-3">
+                <label className='form-label'>{f({ id: 'helper.phone' })}</label>
+                <Field className="form-control w-60" id='phone' name='phone' disabled={userPrefilled}/>
+                <ErrorMessage className='text-danger' name='phone' component="div" />
+              </div>
+              <div >
+                <label className='form-label'>{f({ id: 'helper.email' })}</label>
+                <Field className="form-control" id='email' name='email' disabled={userPrefilled}/>
+                <ErrorMessage className='text-danger' name='email' component="div" />
+              </div>
+            </div>
+          </Form>
+        </Formik>
+        )
+      }
+    </>
   )
 }

@@ -179,6 +179,11 @@ const enMessages = {
   'menu.items': 'Elementos',
   'menu.addNew': 'Agregar Nuevo',
 
+  'helper.available': 'Disponible',
+  'helper.unavailable': 'No Disponible',
+  'helper.time': 'Tiempo',
+  'helper.Next': 'Siguiente',
+  'helper.Back': 'Atrás',
   'helper.cancel': 'Cancelar',
   'helper.done': 'Listo',
   'helper.add': 'Agregar',
@@ -194,6 +199,32 @@ const enMessages = {
   'helper.friday': 'Viernes',
   'helper.saturday': 'Sábado',
   'helper.sunday': 'Domingo',
+  'helper.idcard': 'Cédula',
+  'helper.name': 'Nombre',
+  'helper.lastname': 'Apellido',
+  'helper.phone': 'Teléfono',
+  'helper.email': 'Correo Electrónico',
+
+  'helper.idCardRequired': 'Cédula es requerida',
+  'helper.idCardOnlyNumbers': 'Cédula debe contener solo números',
+  'helper.idCardMinSize': 'Cédula debe tener al menos 9 dígitos',
+  'helper.idCardMaxSize': 'Cédula debe tener como máximo 12 dígitos',
+
+  'helper.nameRequired': 'Nombre es requerido',
+  'services.nameMinLength': 'Nombre debe tener al menos 3 caracteres',
+  'services.nameMaxLength': 'Nombre debe tener como máximo 20 caracteres',
+  
+  'helper.lastnameRequired': 'Apellido es requerido',
+  'services.lastnameMinLength': 'Apellido debe tener al menos 3 caractere',
+  'services.lastnameMaxLength': 'Apellido debe tener como máximo 20 caracteres',
+
+  'helper.emailInvalid': 'Correo Electrónico es inválido',
+  'helper.emailRequired': 'Correo Electrónico es requerido',
+
+  'helper.phoneOnlyNumbers': 'Teléfono debe contener solo números',
+  'helper.phoneMinLength': 'Teléfono debe tener al menos 8 caracteres',
+  'helper.phoneMaxLength': 'Teléfono debe tener como máximo 10 caracteres',
+  'helper.phoneRequired': 'Teléfono es requerido',
 
   'inventory.title': 'Inventario',
   
@@ -217,5 +248,14 @@ const enMessages = {
   'services.servicePriceRequired': 'Precio del Servicio es requerido',
   'services.servicePriceType': 'El precio debe ser un número',
   'services.servicePricePositive': 'El precio debe ser un número positivo',
+
+  'appointments.menuTitle': 'Agendar Cita',
+
+  'appointments.FirstTaptitle': 'Elegir Servicio',
+  'appointments.FirstTapDescription': 'Por favor, elija el servicio y la fecha para la cita',
+
+  'appointments.SecondTaptitle': 'Información del Cliente',
+  'appointments.SecondTapDescription': 'Por favor, complete la información del cliente',
+  'appointments.findUserInformation': 'Buscar Información del Usuario',
 };
 export default enMessages;
