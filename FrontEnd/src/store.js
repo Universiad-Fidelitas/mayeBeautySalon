@@ -16,10 +16,13 @@ import authReducer from 'store/slices/authSlice';
 import rolsReducer from 'store/roles/rolsSlice';
 import brandsReducer from 'store/brands/brandsSlice';
 import usersReducer from 'store/users/usersSlice';
+import inventoryReducer from 'store/inventory/inventorySlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
 import productsReducer from 'store/products/productsSlice';
 import providersReducer from 'store/providers/providersSlice';
+import notificationsReducer from 'store/notifications/notificationsSlice';
 import stockReducer from 'store/stock/stockSlice';
+import logsReducer from 'store/logs/logsSlice';
 
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -43,11 +46,14 @@ const persistedReducer = persistReducer(
     brands: brandsReducer,
     stock: stockReducer,
     users: usersReducer,
+    logs: logsReducer,
+    inventory: inventoryReducer,
     products: productsReducer,
     providers: providersReducer,
     categories: categoriesReducer,
     menu: menuReducer,
     notification: notificationReducer,
+    notifications: notificationsReducer,
     scrollspy: scrollspyReducer,
     calendar: calendarReducer,
     appointments: appointmentsReducer,

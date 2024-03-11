@@ -1,12 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getInventory, postInventory } from 'store/inventory/inventoryThunk';
-import { Col, Form, Row } from 'react-bootstrap';
-import { useIntl } from 'react-intl';
-import HtmlHead from 'components/html-head/HtmlHead';
-import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
 import {
   ModalAddEdit,
   ButtonsAddNew,
@@ -18,90 +10,79 @@ import {
   Table,
   TablePagination,
 } from 'components/datatables';
-import { ModalAddEditInventario } from './ModalAddEditInventario';
+import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLogs, postLog } from 'store/logs/logsThunk'; // Update with your actual imports
+import { Col, Form, Row } from 'react-bootstrap';
+import { useIntl } from 'react-intl';
+import HtmlHead from 'components/html-head/HtmlHead';
+import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
+import * as Yup from 'yup';
 
-const Inventory = () => {
+const Logs = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Inventory';
-  const description = 'Server side api implementation.';
+  const title = 'Logs';
+  const description = 'Server side API implementation for logging.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/inventory', title: 'Invantario' },
+    { to: '/admin', text: f({ id: 'Admin' }) },
+    { to: '/admin/logs', title: 'Logs' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isInventoryLoading, inventory, pageCount } = useSelector((state) => state.inventory);
+  const { isLogsLoading, logs, pageCount } = useSelector((state) => state.logs || {}); // Ensure state.logs is defined
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Inventory_Id',
-        accessor: 'inventory_id',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-        hideColumn: true,
-      },
-      {
-        Header: 'Producto',
-        accessor: 'product_name',
+        Header: 'ID',
+        accessor: 'log_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Fecha',
-        accessor: 'date',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Tipo de Movimiento',
+        Header: 'Action',
         accessor: 'action',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Descripción',
-        accessor: 'description',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Precio',
-        accessor: 'inventory_price',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Precio Producto',
-        accessor: 'product_price',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-
-      {
-        Header: 'Inventory_products_id',
-        accessor: 'inventory_products_id',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-        hideColumn: true,
-      },
-      {
-        Header: 'Cantidad',
-        accessor: 'amount',
+        Header: 'Activity',
+        accessor: 'activity',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Tamaño',
-        accessor: 'size',
+        Header: 'Affected Table',
+        accessor: 'affected_table',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Product_id',
-        accessor: 'product_id',
+        Header: 'Date',
+        accessor: 'date',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
-        hideColumn: true,
+        Cell: ({ value }) => {
+          const dateObject = new Date(value);
+          const dateString = dateObject.toLocaleDateString();
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `${dateString} ${timeString}`;
+        },
+      },
+      {
+        Header: 'Error Message',
+        accessor: 'error_message',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'User',
+        accessor: 'user_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
     ];
   }, []);
@@ -119,12 +100,7 @@ const Inventory = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: {
-        pageIndex: 0,
-        pageSize: 5,
-        sortBy: [{ id: 'product_name', desc: false }],
-        hiddenColumns: ['inventory_products_id', 'inventory_id', 'product_id', 'product_price'],
-      },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'timestamp', desc: true }], hiddenColumns: ['log_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -135,19 +111,21 @@ const Inventory = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
+
   useEffect(() => {
-    dispatch(getInventory({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getLogs({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (inventory.length > 0) {
-      setData(inventory);
+    if (logs.length > 0) {
+      setData(logs);
     }
-  }, [isInventoryLoading]);
+  }, [isLogsLoading]);
+
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postInventory(values));
+      dispatch(postLog(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -157,19 +135,16 @@ const Inventory = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    // description: Yup.string()
-    //   .required(<span style={{ color: 'red' }}>La descripcion es requerida</span>)
-    //   .min(3, <span style={{ color: 'red' }}>La descripcion debe tener al menos 3 caracteres</span>)
-    //   .max(100, <span style={{ color: 'red' }}>La descripcion no puede tener más de 100 caracteres</span>),
-    // amount: Yup.number()
-    //   .required(<span style={{ color: 'red' }}>La cantidad es requerida</span>)
-    //   .min(1, <span style={{ color: 'red' }}>La no puede ser negativa</span>),
+    message: Yup.string()
+      .required('El mensaje es requerido')
+      .min(3, 'El mensaje debe tener al menos 3 caracteres')
+      .max(255, 'El mensaje no puede tener más de 255 caracteres'),
   });
 
   const formFields = [
     {
-      id: 'description',
-      label: 'Descripción',
+      id: 'message',
+      label: 'Mensaje del log',
       type: 'text',
     },
   ];
@@ -201,7 +176,8 @@ const Inventory = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} />
+                  <ControlsAdd tableInstance={tableInstance} />{' '}
+                 
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
@@ -217,10 +193,11 @@ const Inventory = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEditInventario tableInstance={tableInstance} addItem={addItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEdit tableInstance={tableInstance} addItem={addItem}  validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>
   );
 };
-export default Inventory;
+
+export default Logs;

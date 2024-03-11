@@ -2,94 +2,54 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { getNotifications, postNotification, editNotification, deleteNotifications } from 'store/notifications/notificationsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
-import { DB_TABLE_ROLS } from 'data/rolsData';
-import { ModalEditPermissions } from './ModalEditPermissions';
+import { ModalAddEditNotificacion } from './ModalAddEditNotificacion';
 
-const Roles = () => {
+const Marcas = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Roles de usuario';
+  const title = 'Marcas';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' }) },
-    { to: 'trabajadores/roles', title: 'Roles' },
+    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado/notifications', title: 'Marcas' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
-
-  const returnColorName = (permissionType) => {
-    if (permissionType === 'C') {
-      return 'success';
-    }
-    if (permissionType === 'R') {
-      return 'info';
-    }
-    if (permissionType === 'U') {
-      return 'warning';
-    }
-    return 'danger';
-  };
-
-  const returnPermissionTypeName = (permissionType) => {
-    if (permissionType === 'C') {
-      return 'Crear';
-    }
-    if (permissionType === 'R') {
-      return 'Obtener';
-    }
-    if (permissionType === 'U') {
-      return 'Actualizar';
-    }
-    return 'Eliminar';
-  };
-
-  const PermissionRowList = ({ permissionsList }) => {
-    return DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
-      <div className={`${index !== DB_TABLE_ROLS.length - 1 ? 'mb-3' : 'mb-1'}`} key={index}>
-        <Col className="d-flex flex-row justify-content-between align-items-center">
-          <p className="h6 text-primary m-0">{permissionName}</p>
-        </Col>
-        {['C', 'R', 'U', 'D'].map((permissionType, indexItem) => {
-          return (
-            permissionsList.includes(`${permissionType}_${permissionKey}`) && (
-              <span key={indexItem} className={`me-1 badge bg-outline-${returnColorName(permissionType)}`}>{`${returnPermissionTypeName(
-                permissionType
-              )} ${permissionName.toLocaleLowerCase()}`}</span>
-            )
-          );
-        })}
-      </div>
-    ));
-  };
+  const { isNotificationsLoading, notifications, pageCount } = useSelector((state) => state.notifications);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'role_id',
-        accessor: 'role_id',
+        Header: 'ID',
+        accessor: 'notification_id',
+        sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
-        hideColumn: true,
       },
       {
-        Header: 'Nombre del rol',
+        Header: 'Producto',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Permisos',
-        accessor: 'permissions',
+        Header: 'Producto ID',
+        accessor: 'product_id',
+        sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
-        Cell: ({ row }) => <PermissionRowList permissionsList={JSON.parse(row.values.permissions)} />,
+      },
+      {
+        Header: 'Cantidad',
+        accessor: 'amount',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
         Header: '',
@@ -116,7 +76,7 @@ const Roles = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['role_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'product_id', desc: false }], hiddenColumns: ['notification_id', 'product_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -127,35 +87,33 @@ const Roles = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
+  useEffect(() => {
+    dispatch(getNotifications({ term, sortBy, pageIndex, pageSize }));
+  }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
-  useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
-    } else {
-      setData([]);
+    if (notifications.length > 0) {
+      setData(notifications);
     }
-  }, [isRolesLoading]);
+  }, [isNotificationsLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      dispatch(deleteNotifications(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      dispatch(editNotification(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postNotification(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -164,30 +122,17 @@ const Roles = () => {
     setTerm(val || undefined);
   }, 200);
 
-
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(
-        <span style={{ color: 'red' }}>El nombre es requerido</span>
-      )
-      .min(
-        3,
-        <span style={{ color: 'red' }}>
-          El nombre debe tener al menos 3 caracteres
-        </span>
-      )
-      .max(
-        15,
-        <span style={{ color: 'red' }}>
-          El nombre no puede tener más de 15 caracteres
-        </span>
-      ),
+    amount: Yup.number()
+      .required(<span style={{ color: 'red' }}>Cantidad es requerida</span>)
+      .min(1, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 1</span>),
   });
 
   const formFields = [
     {
-      id: 'name',
-      label: 'Nombre del rol',
+      id: 'amount',
+      label: 'Cantidad',
+      type: 'number',
     },
   ];
 
@@ -222,8 +167,8 @@ const Roles = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el rol seleccionado?"
-                    modalDescription="El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalTitle="¿Desea eliminar la marca seleccionada?"
+                    modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                   />
                 </div>
                 <div className="d-inline-block">
@@ -240,7 +185,7 @@ const Roles = () => {
               </Col>
             </Row>
           </div>
-          <ModalEditPermissions
+          <ModalAddEditNotificacion
             tableInstance={tableInstance}
             addItem={addItem}
             editItem={editItem}
@@ -252,5 +197,4 @@ const Roles = () => {
     </>
   );
 };
-
-export default Roles;
+export default Marcas;

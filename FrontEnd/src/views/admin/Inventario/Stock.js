@@ -111,10 +111,6 @@ const Stock = () => {
     setTerm(val || undefined);
   }, 200);
 
-  const updateTable = useAsyncDebounce((val) => {
-    setCategory(val || undefined);
-  }, 200);
-
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -131,10 +127,12 @@ const Stock = () => {
             {categoryDataDropdown && (
               <>
                 <div className="mb-3">
+                  <label className="form-label">Filtrar por categoria</label>
                   <select
+                    className="form-control"
                     value={category}
                     onChange={(e) => {
-                      updateTable(e.target.value);
+                      setCategory(e.target.value);
                     }}
                   >
                     <option value="">Elija una categoria</option>
@@ -147,6 +145,7 @@ const Stock = () => {
                 </div>
               </>
             )}
+
             <Row className="mb-3">
               <Col sm="12" md="5" lg="3" xxl="2">
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
