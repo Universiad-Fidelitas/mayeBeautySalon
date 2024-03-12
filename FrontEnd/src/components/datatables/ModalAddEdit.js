@@ -18,7 +18,7 @@ export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchem
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
         <Form>
           <Modal.Header>
-            <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
+            <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {formFields.map(({ id, label, type }) => (
@@ -31,10 +31,10 @@ export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchem
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
-              Cancel
+              Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              {selectedFlatRows.length === 1 ? 'Done' : 'Add'}
+              {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
             </Button>
           </Modal.Footer>
         </Form>

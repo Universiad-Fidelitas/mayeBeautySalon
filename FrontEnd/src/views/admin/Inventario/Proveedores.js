@@ -26,7 +26,7 @@ const Marcas = () => {
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/providers', title: 'Marcas' },
+    { to: '/inventariado/providers', title: 'Proveedores' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -121,9 +121,9 @@ const Marcas = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required(<span style={{ color: 'red' }}>'El nombre es requerido'</span>)
-      .min(3, <span style={{ color: 'red' }}>'El nombre debe tener al menos 3 caracteres'</span>)
-      .max(15, <span style={{ color: 'red' }}>'El nombre no puede tener más de 15 caracteres',</span>),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
   });
 
   const formFields = [

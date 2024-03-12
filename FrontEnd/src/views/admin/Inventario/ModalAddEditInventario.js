@@ -112,7 +112,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
         <Form>
           <Modal.Header>
-            <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
+            <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="mb-3">
