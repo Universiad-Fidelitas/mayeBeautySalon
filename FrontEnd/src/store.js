@@ -23,7 +23,8 @@ import providersReducer from 'store/providers/providersSlice';
 import notificationsReducer from 'store/notifications/notificationsSlice';
 import stockReducer from 'store/stock/stockSlice';
 import logsReducer from 'store/logs/logsSlice';
-
+import reportsReducer from 'store/reports/reportsSlice';
+import reports2Reducer from 'store/reports/reports2Slice';
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
 import calendarReducer from 'views/admin/Citas/calendarSlice';
@@ -51,6 +52,8 @@ const persistedReducer = persistReducer(
     products: productsReducer,
     providers: providersReducer,
     categories: categoriesReducer,
+    reports: reportsReducer,
+    reports2: reports2Reducer,
     menu: menuReducer,
     notification: notificationReducer,
     notifications: notificationsReducer,

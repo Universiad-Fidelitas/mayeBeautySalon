@@ -151,6 +151,7 @@ const Productos = () => {
 
   const deleteItems = useCallback(
     async (values) => {
+      console.log('profe', values);
       dispatch(deleteProducts(values));
     },
     [sortBy, pageIndex, pageSize]
@@ -230,6 +231,7 @@ const Productos = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el producto seleccionado?"
                     modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="product"
                   />
                 </div>
                 <div className="d-inline-block">

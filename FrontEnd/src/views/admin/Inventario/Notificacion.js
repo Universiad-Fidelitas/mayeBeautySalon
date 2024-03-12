@@ -12,12 +12,12 @@ import { ModalAddEditNotificacion } from './ModalAddEditNotificacion';
 
 const Marcas = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Marcas';
+  const title = 'Notificaciones';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/notifications', title: 'Marcas' },
+    { to: '/inventariado/notifications', title: 'Notificaciones' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -168,7 +168,8 @@ const Marcas = () => {
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar la marca seleccionada?"
-                    modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="notification"
                   />
                 </div>
                 <div className="d-inline-block">

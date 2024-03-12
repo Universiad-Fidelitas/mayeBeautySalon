@@ -100,6 +100,13 @@ const Usuarios = () => {
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
+      {
+        Header: 'Salario',
+        accessor: 'salary',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
+      },
     ];
   }, []);
 
@@ -165,72 +172,28 @@ const Usuarios = () => {
 
   const validationSchema = Yup.object().shape({
     first_name: Yup.string()
-      .required(
-        <span style={{ color: 'red' }}>El nombre es requerido</span>
-      )
-      .min(
-        3,
-        <span style={{ color: 'red' }}>
-          El nombre debe tener al menos 3 caracteres
-        </span>
-      )
-      .max(
-        15,
-        <span style={{ color: 'red' }}>
-          El nombre no puede tener más de 15 caracteres
-        </span>
-      ),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
     last_name: Yup.string()
-      .required(
-        <span style={{ color: 'red' }}>El apellido es requerido</span>
-      )
-      .min(
-        3,
-        <span style={{ color: 'red' }}>
-          El apellido debe tener al menos 3 caracteres
-        </span>
-      )
-      .max(
-        15,
-        <span style={{ color: 'red' }}>
-          El apellido no puede tener más de 15 caracteres
-        </span>
-      ),
+      .required(<span style={{ color: 'red' }}>El apellido es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El apellido debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El apellido no puede tener más de 15 caracteres</span>),
     id_card: Yup.string()
       .matches(/^\d+$/, <span style={{ color: 'red' }}>La cédula debe ser un número</span>)
-      .min(
-        9,
-        <span style={{ color: 'red' }}>
-          La cédula debe tener al menos 9 números
-        </span>
-      )
-      .max(
-        15,
-        <span style={{ color: 'red' }}>
-          La cédula no puede tener más de 15 números
-        </span>
-      )
+      .min(9, <span style={{ color: 'red' }}>La cédula debe tener al menos 9 números</span>)
+      .max(15, <span style={{ color: 'red' }}>La cédula no puede tener más de 15 números</span>)
       .required(<span style={{ color: 'red' }}>La cédula es requerida</span>),
     email: Yup.string()
       .email(<span style={{ color: 'red' }}>Email inválido</span>)
       .required(<span style={{ color: 'red' }}>Email es requerido</span>),
     phone: Yup.string()
       .matches(/^\d+$/, <span style={{ color: 'red' }}>El teléfono debe ser un número</span>)
-      .min(
-        8,
-        <span style={{ color: 'red' }}>
-          El teléfono debe tener al menos 8 números
-        </span>
-      )
-      .max(
-        10,
-        <span style={{ color: 'red' }}>
-          El teléfono no puede tener más de 10 números
-        </span>
-      )
+      .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
+      .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
       .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
   });
-  
+
   const formFields = [
     {
       id: 'first_name',

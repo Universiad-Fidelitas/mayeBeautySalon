@@ -161,6 +161,7 @@ const Categorias = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar la categoria seleccionada?"
                     modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="category"
                   />
                 </div>
                 <div className="d-inline-block">

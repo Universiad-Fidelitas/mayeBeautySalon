@@ -33,7 +33,7 @@ const routesAndMenuItems = {
       component: Dashboard,
       protected: true,
     },
- 
+
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -67,8 +67,8 @@ const routesAndMenuItems = {
       ],
     },
     {
-      path: `${appRoot}/factuación`,
-      label: 'Factuación',
+      path: `${appRoot}/facturación`,
+      label: 'Facturación',
       icon: 'book',
       protected: true,
       subs: [
