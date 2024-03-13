@@ -5,6 +5,7 @@ import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
 import Categorias from 'views/admin/Inventario/Categorias';
 import Marcas from 'views/admin/Inventario/Marcas';
+import Gastos from 'views/admin/Facturas/Gastos';
 import Productos from 'views/admin/Inventario/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores';
@@ -72,6 +73,7 @@ const routesAndMenuItems = {
       icon: 'book',
       protected: true,
       subs: [
+        { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
         { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
       ],
