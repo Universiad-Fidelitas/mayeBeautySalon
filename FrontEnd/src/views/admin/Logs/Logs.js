@@ -160,9 +160,6 @@ const Logs = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
             </Row>
           </div>
 
