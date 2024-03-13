@@ -167,6 +167,7 @@ const Marcas = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar la marca seleccionada?"
                     modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="brand"
                   />
                 </div>
                 <div className="d-inline-block">

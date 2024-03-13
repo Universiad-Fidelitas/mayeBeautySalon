@@ -122,7 +122,6 @@ const Logs = () => {
     }
   }, [isLogsLoading]);
 
-
   const addItem = useCallback(
     async (values) => {
       dispatch(postLog(values));
@@ -161,9 +160,6 @@ const Logs = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
             </Row>
           </div>
 
@@ -175,10 +171,6 @@ const Logs = () => {
                 </div>
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
-                <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} />{' '}
-                 
-                </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
                 </div>
@@ -193,7 +185,7 @@ const Logs = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem}  validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>

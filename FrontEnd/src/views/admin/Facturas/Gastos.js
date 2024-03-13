@@ -1,53 +1,56 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
+import {
+  ModalAddEdit,
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+} from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotifications, postNotification, editNotification, deleteNotifications } from 'store/notifications/notificationsThunk';
+import { getExpenses, postExpense, editExpense, deleteExpenses } from 'store/expenses/expensesThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
-import { ModalAddEditNotificacion } from './ModalAddEditNotificacion';
 
-const Marcas = () => {
+const Gastos = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Notificaciones';
+  const title = 'Gastos';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/notifications', title: 'Notificaciones' },
+    { to: '/facturas', text: f({ id: 'facturas' }) },
+    { to: '/facturas/expenses', title: 'Gastos' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isNotificationsLoading, notifications, pageCount } = useSelector((state) => state.notifications);
+  const { isExpensesLoading, expenses, pageCount } = useSelector((state) => state.expenses);
 
   const columns = React.useMemo(() => {
     return [
       {
         Header: 'ID',
-        accessor: 'notification_id',
+        accessor: 'expense_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Producto',
-        accessor: 'name',
+        Header: 'Nombre',
+        accessor: 'expense_type',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Producto ID',
-        accessor: 'product_id',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Cantidad',
-        accessor: 'amount',
+        Header: 'Precio',
+        accessor: 'price',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -76,7 +79,7 @@ const Marcas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'product_id', desc: false }], hiddenColumns: ['notification_id', 'product_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'expense_type', desc: false }], hiddenColumns: ['expense_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -88,32 +91,32 @@ const Marcas = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
   useEffect(() => {
-    dispatch(getNotifications({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getExpenses({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (notifications.length > 0) {
-      setData(notifications);
+    if (expenses.length > 0) {
+      setData(expenses);
     }
-  }, [isNotificationsLoading]);
+  }, [isExpensesLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteNotifications(values));
+      dispatch(deleteExpenses(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editNotification(values));
+      dispatch(editExpense(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postNotification(values));
+      dispatch(postExpense(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -123,15 +126,27 @@ const Marcas = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number()
-      .required(<span style={{ color: 'red' }}>Cantidad es requerida</span>)
-      .min(1, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 1</span>),
+    expense_type: Yup.string().required(<span style={{ color: 'red' }}>El Tipo de gasto es requerido</span>),
+    price: Yup.number()
+      .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
+      .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
   });
 
   const formFields = [
     {
-      id: 'amount',
-      label: 'Cantidad',
+      id: 'expense_type',
+      label: 'Nombre de; gasto',
+      type: 'select',
+      options: [
+        { value: 'Recibo de Internet', label: 'Recibo de Internet' },
+        { value: 'Recibo de Luz', label: 'Recibo de Luz' },
+        { value: 'Recibo de Agua', label: 'Recibo de Agua' },
+        { value: 'Renta', label: 'Renta' },
+      ],
+    },
+    {
+      id: 'price',
+      label: 'Precio',
       type: 'number',
     },
   ];
@@ -167,9 +182,9 @@ const Marcas = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la marca seleccionada?"
-                    modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="notification"
+                    modalTitle="¿Desea eliminar la gasto seleccionada?"
+                    modalDescription="La gasto seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="expense"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -186,16 +201,10 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEditNotificacion
-            tableInstance={tableInstance}
-            addItem={addItem}
-            editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
-          />
+          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>
   );
 };
-export default Marcas;
+export default Gastos;
