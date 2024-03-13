@@ -15,6 +15,7 @@ import scrollspyReducer from 'components/scrollspy/scrollspySlice';
 import authReducer from 'store/slices/authSlice';
 import rolsReducer from 'store/roles/rolsSlice';
 import brandsReducer from 'store/brands/brandsSlice';
+import expensesReducer from 'store/expenses/expensesSlice';
 import usersReducer from 'store/users/usersSlice';
 import inventoryReducer from 'store/inventory/inventorySlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
@@ -47,6 +48,7 @@ const persistedReducer = persistReducer(
     brands: brandsReducer,
     stock: stockReducer,
     users: usersReducer,
+    expenses: expensesReducer,
     logs: logsReducer,
     inventory: inventoryReducer,
     products: productsReducer,
