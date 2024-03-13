@@ -164,24 +164,11 @@ const Roles = () => {
     setTerm(val || undefined);
   }, 200);
 
-
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required(
-        <span style={{ color: 'red' }}>El nombre es requerido</span>
-      )
-      .min(
-        3,
-        <span style={{ color: 'red' }}>
-          El nombre debe tener al menos 3 caracteres
-        </span>
-      )
-      .max(
-        15,
-        <span style={{ color: 'red' }}>
-          El nombre no puede tener más de 15 caracteres
-        </span>
-      ),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
   });
 
   const formFields = [
@@ -224,6 +211,7 @@ const Roles = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el rol seleccionado?"
                     modalDescription="El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="role"
                   />
                 </div>
                 <div className="d-inline-block">

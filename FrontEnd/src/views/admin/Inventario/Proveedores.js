@@ -167,6 +167,7 @@ const Marcas = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el proveedor seleccionado?"
                     modalDescription="El proveedor seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="provider"
                   />
                 </div>
                 <div className="d-inline-block">

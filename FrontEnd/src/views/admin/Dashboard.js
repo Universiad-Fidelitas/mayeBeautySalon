@@ -5,6 +5,8 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
+import { useReports } from 'hooks/react-query/useReports';
+import { useReports2 } from 'hooks/react-query/useReports2';
 import ChartCustomHorizontalTooltip from './chart/ChartCustomHorizontalTooltip';
 import ChartSmallLine1 from './chart/ChartSmallLine1';
 import ChartSmallLine2 from './chart/ChartSmallLine2';
@@ -17,6 +19,7 @@ import ChartSmallDoughnutChart3 from './chart/ChartSmallDoughnutChart3';
 import ChartSmallDoughnutChart4 from './chart/ChartSmallDoughnutChart4';
 import ChartSmallDoughnutChart5 from './chart/ChartSmallDoughnutChart5';
 import ChartSmallDoughnutChart6 from './chart/ChartSmallDoughnutChart6';
+import { CardReport } from './Inventario/CardReport';
 
 const Dashboard = () => {
   const title = 'Analytic Dashboard';
@@ -26,6 +29,20 @@ const Dashboard = () => {
     { to: '', text: 'Home' },
     { to: 'dashboards', text: 'Dashboards' },
   ];
+  const { data: reportsData } = useReports();
+  const { data: reports2Data } = useReports2();
+  let formFields;
+  if (reportsData) {
+    formFields = reportsData.items;
+    console.log('reportsData1', reportsData);
+  } else {
+    console.log('reportsData is undefined');
+  }
+  if (reports2Data) {
+    console.log('reportsData2', reports2Data);
+  } else {
+    console.log('reportsData is undefined');
+  }
 
   return (
     <>
@@ -47,21 +64,11 @@ const Dashboard = () => {
         <Col lg="6">
           {/* Stats Start */}
           <div className="d-flex">
-            <Dropdown>
-              <Dropdown.Toggle className="small-title p-0 align-top h-auto me-2" variant="link">
-                Hoy
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item>Semanal</Dropdown.Item>
-                <Dropdown.Item>Mensual</Dropdown.Item>
-                <Dropdown.Item>Anual</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-            <h2 className="small-title">Estadísticas</h2>
+            <h2 className="small-title">Citas</h2>
           </div>
           <div className="mb-5">
             <Row className="g-2">
-              <Col sm="6">
+              <Col sm="12">
                 <Card className="sh-11 hover-scale-up cursor-pointer">
                   <Card.Body className="h-100 py-3 align-items-center">
                     <Row className="g-0 h-100 align-items-center">
@@ -73,10 +80,10 @@ const Dashboard = () => {
                       <Col>
                         <Row className="gx-2 d-flex align-content-center">
                           <Col xs="12" className="col-12 d-flex">
-                            <div className="d-flex align-items-center lh-1-25">Shipped Orders</div>
+                            <div className="d-flex align-items-center lh-1-25">Ganancias Mensuales</div>
                           </Col>
                           <Col xl="auto" className="col-12">
-                            <div className="cta-2 text-primary">22</div>
+                            <Row>{reports2Data ? <div className="cta-2 text-primary">{reports2Data.items[0].Ganancias}</div> : null}</Row>
                           </Col>
                         </Row>
                       </Col>
@@ -96,10 +103,10 @@ const Dashboard = () => {
                       <Col>
                         <Row className="gx-2 d-flex align-content-center">
                           <Col xs="12" className="col-12 d-flex">
-                            <div className="d-flex align-items-center lh-1-25">Delivered Orders</div>
+                            <div className="d-flex align-items-center lh-1-25">Citas del día</div>
                           </Col>
                           <Col xl="auto" className="col-12">
-                            <div className="cta-2 text-primary">35</div>
+                            <Row>{reports2Data ? <div className="cta-2 text-primary">{reports2Data.items[0].Conteo_Hoy}</div> : null}</Row>
                           </Col>
                         </Row>
                       </Col>
@@ -119,10 +126,10 @@ const Dashboard = () => {
                       <Col>
                         <Row className="gx-2 d-flex align-content-center">
                           <Col xs="12" className="col-12 d-flex">
-                            <div className="d-flex align-items-center lh-1-25">Pending Orders</div>
+                            <div className="d-flex align-items-center lh-1-25">Citas de la semana</div>
                           </Col>
                           <Col xl="auto" className="col-12">
-                            <div className="cta-2 text-primary">22</div>
+                            <Row>{reports2Data ? <div className="cta-2 text-primary">{reports2Data.items[0].Conteo_Semana}</div> : null}</Row>
                           </Col>
                         </Row>
                       </Col>
@@ -136,16 +143,39 @@ const Dashboard = () => {
                     <Row className="g-0 h-100 align-items-center">
                       <Col xs="auto" className="pe-3">
                         <div className="bg-gradient-light sh-5 sw-5 rounded-xl d-flex justify-content-center align-items-center">
-                          <CsLineIcons icon="sync-horizontal" className="text-white" />
+                          <CsLineIcons icon="bitcoin" className="text-white" />
                         </div>
                       </Col>
                       <Col>
                         <Row className="gx-2 d-flex align-content-center">
                           <Col xs="12" className="col-12 d-flex">
-                            <div className="d-flex align-items-center lh-1-25">Unconfirmed Orders</div>
+                            <div className="d-flex align-items-center lh-1-25">Citas del mes</div>
                           </Col>
                           <Col xl="auto" className="col-12">
-                            <div className="cta-2 text-primary">3</div>
+                            <Row>{reports2Data ? <div className="cta-2 text-primary">{reports2Data.items[0].Conteo_Mes}</div> : null}</Row>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col sm="6">
+                <Card className="sh-11 hover-scale-up cursor-pointer">
+                  <Card.Body className="h-100 py-3 align-items-center">
+                    <Row className="g-0 h-100 align-items-center">
+                      <Col xs="auto" className="pe-3">
+                        <div className="bg-gradient-light sh-5 sw-5 rounded-xl d-flex justify-content-center align-items-center">
+                          <CsLineIcons icon="calendar" className="text-white" />
+                        </div>
+                      </Col>
+                      <Col>
+                        <Row className="gx-2 d-flex align-content-center">
+                          <Col xs="12" className="col-12 d-flex">
+                            <div className="d-flex align-items-center lh-1-25">Citas pendientes</div>
+                          </Col>
+                          <Col xl="auto" className="col-12">
+                            <Row>{reports2Data ? <div className="cta-2 text-primary">{reports2Data.items[0].Conteo_Futuro}</div> : null}</Row>
                           </Col>
                         </Row>
                       </Col>
@@ -362,6 +392,7 @@ const Dashboard = () => {
           </div>
         </Col>
       </Row>
+      <Row>{formFields ? <CardReport formFields={formFields} /> : null}</Row>
 
       <Row>
         {/* Logs Start */}

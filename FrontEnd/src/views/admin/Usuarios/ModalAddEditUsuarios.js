@@ -147,10 +147,19 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
+
                   <Field className="form-control" type={type} id={id} name={id} />
+
                   <ErrorMessage name={id} component="div" />
                 </div>
               ))}
+
+              <div className="mb-3">
+                <label className="form-label">Salario</label>
+                <Field className="form-control" type="number" id="salary" name="salary" />
+
+                <ErrorMessage name="salary" component="div" />
+              </div>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>

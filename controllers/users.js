@@ -16,10 +16,10 @@ const getUsers = async (req, res = response) => {
 
 
 const postUser = async (req, res = response) => {
-    const { rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password } = req.body;
+    const { rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password, salary } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (rol_id, cedula, first_name, last_name, email, phone, activated, imagen ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [rol_id, cedula, first_name, last_name, email, phone, activated, imagen ]);
+        const userQuery = 'INSERT INTO users (rol_id, cedula, first_name, last_name, email, phone, activated, imagen,salary ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [rol_id, cedula, first_name, last_name, email, phone, activated, imagen, salary ]);
 
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
@@ -45,8 +45,8 @@ const putUser = async (req, res = response) => {
     const { user_id } = req.params;
     const {  rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password } = req.body;
     try {
-        const userQuery = `CALL sp_user('update', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [user_id, rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password ]);
+        const userQuery = `CALL sp_user('update', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [user_id, rol_id, cedula, first_name, last_name, email, phone, activated, imagen, password, salary ]);
         res.status(200).json({
             role_id: insertId,
             success: true,
