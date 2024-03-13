@@ -177,12 +177,12 @@ const Productos = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required(<span style={{ color: 'red' }}>'El nombre es requerido'</span>)
-      .min(3, <span style={{ color: 'red' }}>'El nombre debe tener al menos 3 caracteres'</span>)
-      .max(15, <span style={{ color: 'red' }}>'El nombre no puede tener más de 15 caracteres',</span>),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
     price: Yup.number()
-      .required(<span style={{ color: 'red' }}>'El precio es requerido'</span>)
-      .min(3, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
   });
 
   const formFields = [

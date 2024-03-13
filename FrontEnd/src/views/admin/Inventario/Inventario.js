@@ -22,12 +22,12 @@ import { ModalAddEditInventario } from './ModalAddEditInventario';
 
 const Inventory = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Inventory';
+  const title = 'Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/inventory', title: 'Invantario' },
+    { to: '/inventariado/inventory', title: 'Inventario' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
