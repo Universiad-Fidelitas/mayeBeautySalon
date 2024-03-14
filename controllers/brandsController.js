@@ -86,7 +86,11 @@ const postBrand = async (req, res = response) => {
                     success: true,
                     message: "¡La marca ha sido agregada exitosamente!"
                 })
-
+                const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('create', ?, 'brands', NOW(), '', ?)
+            `;
+            await dbService.query(logQuery, ['crete brand | new one: ' + name, 11]);
     }
     catch({ message }) {
         try {
@@ -111,13 +115,22 @@ const putBrand = async (req, res = response) => {
     const { brand_id } = req.params;
     const { name } = req.body;
     try {
+       const [brandBeforeUpdate] = await dbService.query('SELECT name FROM brands WHERE activated = 1 AND brand_id = ?', [brand_id]);
+        const brandNameBeforeUpdate = brandBeforeUpdate ? brandBeforeUpdate.name : "Desconocido"; 
         const userQuery = `CALL sp_brand('update', ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [brand_id, name ]);
+     
         res.status(200).json({
             brand_id: insertId,
             success: true,
             message: "¡La marca ha sido editada exitosamente!"
         })
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('update', ?, 'brands', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['update brand | previus: ' + brandNameBeforeUpdate + ' | new one: ' + name, 11]);
+    
     }
     catch(error) {
         try {
@@ -125,7 +138,7 @@ const putBrand = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('update', 'update error', 'brands', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -140,6 +153,8 @@ const putBrand = async (req, res = response) => {
 const deleteBrand = async (req, res = response) => {
     const { brand_id } = req.body;
     try {
+        const [brandBeforeUpdate] = await dbService.query('SELECT name FROM brands WHERE activated = 1 AND brand_id = ?', [brand_id]);
+        const brandNameBeforeUpdate = brandBeforeUpdate ? brandBeforeUpdate.name : "Desconocido"; 
         const userQuery = `CALL sp_brand('delete', ?, '');`;
         const rows = await dbService.query(userQuery, [brand_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
@@ -148,12 +163,19 @@ const deleteBrand = async (req, res = response) => {
                 success: true,
                 message: "¡La marca ha sido eliminado exitosamente!"
             });
+          
         } else {
             res.status(200).json({
                 success: true,
                 message: "¡Las marcas han sido eliminados exitosamente!"
             });
         }
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('delete', ?, 'brands', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['delete brand | old one: ' + brandNameBeforeUpdate, 11]);
+        
     } catch (error) {
         try {
             const logQuery = `
