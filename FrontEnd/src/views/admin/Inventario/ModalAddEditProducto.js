@@ -86,7 +86,16 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
       setProductImage([]);
     }
   }, [isOpenAddEditModal]);
-
+  const CustomSelect = ({ field, form, options }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options}
+      name={field.name}
+      value={options ? options.find((option) => option.value === field.value) : ''}
+      onChange={(option) => form.setFieldValue(field.name, option.value)}
+      placeholder="Seleccione una opcion"
+    />
+  );
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -109,44 +118,19 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
               <>
                 <div className="mb-3">
                   <label className="form-label">Categorias</label>
-                  <Field className="form-control" as="select" id="category_id" name="category_id" required>
-                    <option value="" disabled selected>
-                      Elige una opción
-                    </option>
-                    {categoryDataDropdown.map(({ value, label }, length) => (
-                      <option key={length} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </Field>
+
+                  <Field className="form-control" id="category_id" name="category_id" component={CustomSelect} options={categoryDataDropdown} required />
                   <ErrorMessage name="category_id" component="div" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Marcas</label>
-                  <Field className="form-control" as="select" id="brand_id" name="brand_id" required>
-                    <option value="" disabled selected>
-                      Elige una opción
-                    </option>
-                    {brandDataDropdown.map(({ value, label }, length) => (
-                      <option key={length} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </Field>
+                  <Field className="form-control" id="brand_id" name="brand_id" component={CustomSelect} options={brandDataDropdown} required />
                   <ErrorMessage name="brand_id" component="div" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Proveedores</label>
-                  <Field className="form-control" as="select" id="provider_id" name="provider_id" required>
-                    <option value="" disabled selected>
-                      Elige una opción
-                    </option>
-                    {providerDataDropdown.map(({ value, label }, length) => (
-                      <option key={length} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </Field>
+
+                  <Field className="form-control" id="provider_id" name="provider_id" component={CustomSelect} options={providerDataDropdown} required />
                   <ErrorMessage name="provider_id" component="div" />
                 </div>
               </>
