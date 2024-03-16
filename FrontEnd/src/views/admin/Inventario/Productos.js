@@ -51,8 +51,14 @@ const Productos = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Precio',
+        Header: 'Precio de venta',
         accessor: 'price',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Precio de compra',
+        accessor: 'price_buy',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -182,7 +188,17 @@ const Productos = () => {
       .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
     price: Yup.number()
       .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
+    price_buy: Yup.number()
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
+      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
+    size: Yup.string()
+      .matches(/^\d+$/, <span style={{ color: 'red' }}>El tamaño debe ser un número</span>)
+      .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
+      .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
+      .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),
   });
 
   const formFields = [
@@ -193,8 +209,13 @@ const Productos = () => {
     },
     {
       id: 'price',
-      label: 'Precio',
-      type: 'decimal',
+      label: 'Precio de Venta',
+      type: 'number',
+    },
+    {
+      id: 'price_buy',
+      label: 'Precio de Compra',
+      type: 'number',
     },
   ];
 

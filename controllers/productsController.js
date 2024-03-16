@@ -81,11 +81,11 @@ const getProducts = async (req, res = response) => {
 }
 
 const postProducts = async (req, res = response) => {
-    const { name, brand_id, price, size, provider_id, category_id } = req.body;
+    const { name, brand_id, price, size, provider_id, category_id, price_buy } = req.body;
     try {
         
-        const userQuery= `call sp_product ('create', '0', ?, ?, ?, ?, ?, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [name, brand_id, price, size, req.file.path, provider_id, category_id]);
+        const userQuery= `call sp_product ('create', '0', ?, ?, ?, ?, ?, ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [name, brand_id, price, size, req.file.path, provider_id, category_id, price_buy]);
 
         res.status(200).json({
             product_id: insertId,
@@ -113,21 +113,21 @@ const postProducts = async (req, res = response) => {
 
 const putProducts = async (req, res = response) => {
     const { product_id } = req.params;
-    const { name, brand_id, price, size, provider_id, category_id } = req.body;
+    const { name, brand_id, price, size, provider_id, category_id, price_buy } = req.body;
     if ('image' in req.body) {
         ({ image } = req.body);
     }
     try {
-        const userQuery = `call sp_product ('update', ?, ?, ?, ?, ?, ?, ?, ?);`;
+        const userQuery = `call sp_product ('update', ?, ?, ?, ?, ?, ?, ?, ?,?);`;
         if ('image' in req.body) {
-            const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, image, provider_id, category_id]);
+            const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, image, provider_id, category_id, price_buy]);
             res.status(200).json({
                 category_id: insertId,
                 success: true,
                 message: "¡El producto ha sido editado exitosamente!"
             });
         } else {
-            const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, req.file.path, provider_id, category_id]);
+            const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, req.file.path, provider_id, category_id, price_buy]);
             res.status(200).json({
                 category_id: insertId,
                 success: true,
@@ -156,7 +156,7 @@ const putProducts = async (req, res = response) => {
     const deleteProducts = async (req, res = response) => {
         const { product_id } = req.body;
         try {
-            const userQuery = `call sp_product ('delete', ?, '', 0, 0, '', '', 0, 0);`;
+            const userQuery = `call sp_product ('delete', ?, '', 0, 0, '', '', 0, 0, 0);`;
             const rows = await dbService.query(userQuery, [product_id]);
             const { affectedRows } = helper.emptyOrRows(rows);
             if( affectedRows === 1 ) {

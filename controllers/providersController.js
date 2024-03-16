@@ -27,7 +27,7 @@ const getProviders = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select provider_id, name from providers where activated = 1';
+        let baseQuery = 'select provider_id, name, phone from providers where activated = 1';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
@@ -76,10 +76,10 @@ const getProviders = async (req, res = response) => {
 }
 
 const postProvider = async (req, res = response) => {
-    const { name } = req.body;
+    const { name, phone } = req.body;
     try {
-        const userQuery = `CALL sp_provider('create', '0', ?);`;
-        const { insertId } = await dbService.query(userQuery, [name]);
+        const userQuery = `CALL sp_provider('create', '0', ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [name, phone]);
 
                 res.status(200).json({
                     provider_id: insertId,
@@ -109,10 +109,10 @@ const postProvider = async (req, res = response) => {
 
 const putProvider = async (req, res = response) => {
     const { provider_id } = req.params;
-    const { name } = req.body;
+    const { name, phone } = req.body;
     try {
-        const userQuery = `CALL sp_provider('update', ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [provider_id, name ]);
+        const userQuery = `CALL sp_provider('update', ?, ?,?);`;
+        const { insertId } = await dbService.query(userQuery, [provider_id, name, phone ]);
         res.status(200).json({
             provider_id: insertId,
             success: true,

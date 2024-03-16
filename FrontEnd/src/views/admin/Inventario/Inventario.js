@@ -168,6 +168,7 @@ const Inventory = () => {
           product_id: Yup.string().required(<span style={{ color: 'red' }}>El producto es requerido</span>),
           amount: Yup.number()
             .min(0, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 0</span>)
+            .typeError(<span style={{ color: 'red' }}>La cantidad solo acepta números</span>)
             .required(<span style={{ color: 'red' }}>La cantidad es requerido</span>),
         })
       )

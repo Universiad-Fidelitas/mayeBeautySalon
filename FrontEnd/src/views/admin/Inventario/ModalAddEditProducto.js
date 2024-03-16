@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import { Button, Row, Card, Col, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import 'react-dropzone-uploader/dist/styles.css';
@@ -40,6 +40,8 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
     [providersData]
   );
   const onSubmit = (values) => {
+    values.size += values.size_m;
+    delete values.size_m;
     const formData = new FormData();
     const productSchema = {
       ...values,
@@ -96,6 +98,11 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
       placeholder="Seleccione una opcion"
     />
   );
+  const options = [
+    { value: 'ml', label: 'ml' },
+    { value: 'L', label: 'L' },
+    { value: 'Unidad', label: 'Unidad' },
+  ];
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -110,7 +117,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
             {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
-                <Field className="form-control" type={type} id={id} name={id} required />
+                <Field className="form-control" type={type} id={id} name={id} />
                 <ErrorMessage name={id} component="div" />
               </div>
             ))}
@@ -136,16 +143,17 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
               </>
             )}
 
-            <div className="mb-3">
+            <div className="mb-3" key="size">
               <label className="form-label">Tamaño</label>
-              <Field className="form-control" as="select" id="size" name="size" required>
-                <option value="" disabled selected>
-                  Elige una opción
-                </option>
-                <option value="pequeño">Pequeño</option>
-                <option value="mediano">Mediano</option>
-                <option value="grande">Grande</option>
-              </Field>
+              <Row>
+                <Col sm="6">
+                  <Field className="form-control" type="text" id="size" name="size" />
+                </Col>
+                <Col sm="6">
+                  <Field className="form-control" id="size_m" name="size_m" component={CustomSelect} options={options} required />
+                </Col>
+              </Row>
+
               <ErrorMessage name="size" component="div" />
             </div>
           </Modal.Body>
