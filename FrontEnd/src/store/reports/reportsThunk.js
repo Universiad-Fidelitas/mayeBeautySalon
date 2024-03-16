@@ -2,6 +2,7 @@ import { baseApi } from 'api/apiConfig';
 import { toast } from 'react-toastify';
 import { setLoadedReports, setLoadingReports, setReports } from './reportsSlice';
 import { setReports2, setLoadedReports2, setLoadingReports2 } from './reports2Slice';
+import { setReports3, setLoadedReports3, setLoadingReports3 } from './reports3Slice';
 
 const getReport1 = () => {
   return async (dispatch) => {
@@ -32,5 +33,19 @@ const getReport2 = () => {
     }
   };
 };
+const getReport3 = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(setLoadingReports3());
+      const { data } = await baseApi.get('/reports/report3');
+      if (data) {
+        dispatch(setReports3(data));
+        dispatch(setLoadedReports3());
+      }
+    } catch (error) {
+      dispatch(setLoadedReports3());
+    }
+  };
+};
 
-export { getReport1, getReport2 };
+export { getReport1, getReport2, getReport3 };

@@ -129,6 +129,7 @@ const Gastos = () => {
     expense_type: Yup.string().required(<span style={{ color: 'red' }}>El Tipo de gasto es requerido</span>),
     price: Yup.number()
       .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
+      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
   });
 

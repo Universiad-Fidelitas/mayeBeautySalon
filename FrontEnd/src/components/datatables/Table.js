@@ -61,7 +61,7 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                       </td>
                     );
                   }
-                  if (cell.column.id === 'price') {
+                  if (cell.column.id === 'price' || cell.column.id === 'price_buy') {
                     return (
                       <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
                         {parseFloat(cell.value).toLocaleString('es-CR', {
