@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import Select from 'react-select';
 
 export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
@@ -13,7 +14,16 @@ export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchem
     }
     setIsOpenAddEditModal(false);
   };
-
+  const CustomSelect = ({ field, form, options }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options}
+      name={field.name}
+      value={options ? options.find((option) => option.value === field.value) : ''}
+      onChange={(option) => form.setFieldValue(field.name, option.value)}
+      placeholder="Seleccione una opcion"
+    />
+  );
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -26,16 +36,8 @@ export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchem
               type === 'select' ? (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
-                  <Field name={id} component={type} className="form-control" id={id}>
-                    <option value="" disabled selected>
-                      Elige una opción
-                    </option>
-                    {options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </Field>
+
+                  <Field className="form-control" name={id} id={id} component={CustomSelect} options={options} />
                   <ErrorMessage name={id} component="div" />
                 </div>
               ) : (

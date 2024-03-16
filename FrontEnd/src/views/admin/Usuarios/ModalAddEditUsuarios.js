@@ -93,7 +93,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }
     }
   };
-
+  const CustomSelect = ({ field, form, options }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options}
+      name={field.name}
+      value={options ? options.find((option) => option.value === field.value) : ''}
+      onChange={(option) => form.setFieldValue(field.name, option.value)}
+      placeholder="Seleccione una opcion"
+    />
+  );
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
@@ -129,16 +138,8 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                 <>
                   <div className="mb-3">
                     <label className="form-label">Roles</label>
-                    <Field className="form-control" as="select" id="role_id" name="role_id">
-                      <option value="" disabled selected>
-                        Elige una opción
-                      </option>
-                      {rolDataDropdown.map(({ value, label }, length) => (
-                        <option key={length} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </Field>
+
+                    <Field className="form-control" id="role_id" name="role_id" component={CustomSelect} options={rolDataDropdown} required />
                     <ErrorMessage name="role_id" component="div" />
                   </div>
                 </>

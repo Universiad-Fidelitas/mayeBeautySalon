@@ -10,6 +10,7 @@ import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useCategories } from 'hooks/react-query/useCategories';
+import Select from 'react-select';
 
 const Stock = () => {
   const { formatMessage: f } = useIntl();
@@ -110,7 +111,14 @@ const Stock = () => {
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
+  const CustomSelect = ({ value, onChange, options }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options}
+      value={options ? options.find((option) => option.label === value) : ''}
+      onChange={(option) => onChange(option.label)}
+    />
+  );
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -128,20 +136,12 @@ const Stock = () => {
               <>
                 <div className="mb-3">
                   <label className="form-label">Filtrar por categoria</label>
-                  <select
+                  <CustomSelect
                     className="form-control"
                     value={category}
-                    onChange={(e) => {
-                      setCategory(e.target.value);
-                    }}
-                  >
-                    <option value="">Elija una categoria</option>
-                    {categoryDataDropdown.map(({ value, label }, length) => (
-                      <option key={length} value={label}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(value) => setCategory(value)}
+                    options={[{ value: '', label: 'Elija una categoria' }, ...categoryDataDropdown]}
+                  />
                 </div>
               </>
             )}

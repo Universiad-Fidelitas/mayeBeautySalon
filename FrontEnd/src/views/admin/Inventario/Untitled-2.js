@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, FieldArray, ErrorMessage } from 'formik';
-import 'react-dropzone-uploader/dist/styles.css';
-import { useProducts } from 'hooks/react-query/useProducts';
 import Select from 'react-select';
+import 'react-dropzone-uploader/dist/styles.css';
+import DropzonePreview from 'components/dropzone/DropzonePreview';
+import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
+import { useProducts } from 'hooks/react-query/useProducts';
+import classNames from 'classnames';
 
 export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
@@ -26,20 +29,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
 
     setIsOpenAddEditModal(false);
   };
-  const CustomSelect = ({ field, form, options }) => (
-    <Select
-      classNamePrefix="react-select"
-      options={options}
-      name={field.name}
-      value={options ? options.find((option) => option.value === field.value) : ''}
-      onChange={(option) => form.setFieldValue(field.name, option.value)}
-      placeholder="Seleccione una opcion"
-    />
-  );
-  const options = [
-    { value: 'add', label: 'Agregar' },
-    { value: 'remove', label: 'Remover' },
-  ];
+
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -51,8 +41,13 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
             <Modal.Body>
               <div className="mb-3">
                 <label className="form-label">Acción</label>
-                <Field className="form-control" name="action" id="action" component={CustomSelect} options={options} />
-
+                <Field className="form-control" as="select" id="action" name="action">
+                  <option value="" disabled selected>
+                    Elige una opción
+                  </option>
+                  <option value="add">Agregar</option>
+                  <option value="remove">Remover</option>
+                </Field>
                 <ErrorMessage name="action" component="div" className="field-error" />
               </div>
               {formFields.map(({ id, label, type }) => (
@@ -73,14 +68,16 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                               <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
                                 Products
                               </label>
-
-                              <Field
-                                className="form-control"
-                                name={`dataToInsert.${index}.product_id`}
-                                id="product_id"
-                                component={CustomSelect}
-                                options={productsDataDropdown}
-                              />
+                              <Field className="form-control" as="select" id="product_id" name={`dataToInsert.${index}.product_id`}>
+                                <option value="" disabled selected>
+                                  Elige una opción
+                                </option>
+                                {productsDataDropdown.map(({ value, label }, length) => (
+                                  <option key={length} value={value}>
+                                    {label}
+                                  </option>
+                                ))}
+                              </Field>
                               <ErrorMessage name={`dataToInsert.${index}.product_id`} className="field-error" component="div" />
                             </div>
                           </>
@@ -92,13 +89,11 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                           <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
                           <ErrorMessage name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
                         </div>
-                        {index > 0 && (
-                          <div className="mb-3">
-                            <Button variant="danger" onClick={() => remove(index)}>
-                              Remover Producto
-                            </Button>
-                          </div>
-                        )}
+                        <div className="mb-3">
+                          <Button variant="danger" onClick={() => remove(index)}>
+                            Remover Producto
+                          </Button>
+                        </div>
                       </div>
                     ))}
 
