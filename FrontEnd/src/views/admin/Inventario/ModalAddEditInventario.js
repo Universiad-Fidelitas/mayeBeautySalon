@@ -2,19 +2,20 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, FieldArray, ErrorMessage } from 'formik';
 import 'react-dropzone-uploader/dist/styles.css';
-import { useProducts } from 'hooks/react-query/useProducts';
+import { useStock } from 'hooks/react-query/useStock';
 import Select from 'react-select';
 
 export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { isLoading, data: productsData } = useProducts();
+  const { isLoading, data: productsData } = useStock();
   const productsDataDropdown = useMemo(
     () =>
-      productsData?.items.map(({ product_id, name }) => {
-        return { value: product_id, label: name };
+      productsData?.items.map(({ product_id, name, total_amount }) => {
+        return { value: product_id, label: name, amount: total_amount };
       }),
     [productsData]
   );
+  console.log('karoIng', productsDataDropdown);
   const initialValues = {
     action: '',
     description: '',
@@ -22,9 +23,23 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
   };
 
   const onSubmit = (values) => {
-    addItem(values);
+    let isValid = true;
+    console.log('values', values);
+    values.dataToInsert.forEach((item, index) => {
+      if (values.action === 'remove') {
+        const product = productsDataDropdown.find((p) => p.value === item.product_id);
+        console.log('product', product);
+        if (product && Number(product.amount) < item.amount) {
+          isValid = false;
+          alert(`El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.`);
+        }
+      }
+    });
 
-    setIsOpenAddEditModal(false);
+    if (isValid) {
+      addItem(values);
+      setIsOpenAddEditModal(false);
+    }
   };
   const CustomSelect = ({ field, form, options }) => (
     <Select
@@ -71,7 +86,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                           <>
                             <div className="mb-3">
                               <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
-                                Products
+                                Productos
                               </label>
 
                               <Field
@@ -87,7 +102,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                         )}
                         <div className="mb-3">
                           <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
-                            Amount
+                            Cantidad
                           </label>
                           <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
                           <ErrorMessage name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
@@ -103,7 +118,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                     ))}
 
                     <Button variant="primary" onClick={() => push({ product_id: '', amount: '' })}>
-                      Add Product
+                      Agregar Producto
                     </Button>
                   </div>
                 )}

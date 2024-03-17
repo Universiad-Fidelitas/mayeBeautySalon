@@ -78,7 +78,7 @@ const ChartLargeLineSales = () => {
       labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Today'],
       datasets: [
         {
-          label: 'Sales',
+          label: 'Profits',
           data: [23, 24, 26, 30, 27],
           icons: ['arrow-top', 'arrow-top', 'arrow-top', 'arrow-top', 'arrow-bottom'],
           borderColor: themeValues.primary,

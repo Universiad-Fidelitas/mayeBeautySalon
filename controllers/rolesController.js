@@ -75,7 +75,7 @@ const postRole = async (req, res = response) => {
                 res.status(200).json({
                     role_id: insertId,
                     success: true,
-                    message: "¡El role ha sido agregado exitosamente!"
+                    message: "¡El rol ha sido agregado exitosamente!"
                 })
 
     }

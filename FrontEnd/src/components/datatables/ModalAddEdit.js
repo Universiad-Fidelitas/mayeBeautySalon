@@ -38,13 +38,13 @@ export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchem
                   <label className="form-label">{label}</label>
 
                   <Field className="form-control" name={id} id={id} component={CustomSelect} options={options} />
-                  <ErrorMessage name={id} component="div" />
+                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
                 </div>
               ) : (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
                   <Field className="form-control" type={type} id={id} name={id} />
-                  <ErrorMessage name={id} component="div" />
+                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
                 </div>
               )
             )}
