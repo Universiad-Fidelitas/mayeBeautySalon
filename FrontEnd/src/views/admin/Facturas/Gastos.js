@@ -129,13 +129,14 @@ const Gastos = () => {
     expense_type: Yup.string().required(<span style={{ color: 'red' }}>El Tipo de gasto es requerido</span>),
     price: Yup.number()
       .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
+      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
   });
 
   const formFields = [
     {
       id: 'expense_type',
-      label: 'Nombre de; gasto',
+      label: 'Nombre de gasto',
       type: 'select',
       options: [
         { value: 'Recibo de Internet', label: 'Recibo de Internet' },
@@ -182,8 +183,8 @@ const Gastos = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la gasto seleccionada?"
-                    modalDescription="La gasto seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalTitle="¿Desea eliminar el gasto seleccionado?"
+                    modalDescription="El gasto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="expense"
                   />
                 </div>

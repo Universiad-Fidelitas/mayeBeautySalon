@@ -6,7 +6,8 @@ import ReactDOM from 'react-dom';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
-const ChartLargeLineStock = () => {
+const ChartLargeLineStock = ({ profits }) => {
+  console.log('profits test', profits);
   const { themeValues } = useSelector((state) => state.settings);
   const chartContainer = useRef(null);
   const tooltipRef = useRef(null);
@@ -18,6 +19,7 @@ const ChartLargeLineStock = () => {
         if (tooltip.getActiveElements().length === 0) {
           const meta = chart.getDatasetMeta(0);
           const rect = chart.canvas.getBoundingClientRect();
+          console.log('debug', meta.data);
           const point = meta.data[meta.data.length - 1].getCenterPoint();
           tooltip.setActiveElements(
             [
@@ -35,11 +37,27 @@ const ChartLargeLineStock = () => {
       },
     };
   }, []);
+  function generateLastSixMonths() {
+    const date = new Date();
+    date.setMonth(date.getMonth() + 1); // Start from next month
+    const months = [];
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    /* eslint no-plusplus: ["error", { "allowForLoopAfterthoughts": true }] */
 
+    for (let i = 0; i < 6; i++) {
+      date.setMonth(date.getMonth() - 1);
+      const month = monthNames[date.getMonth()]; // JavaScript months are 0-based
+      const year = date.getFullYear();
+      months.push(`${month} ${year}`);
+    }
+    return months;
+  }
+  const dynamicLabels = generateLastSixMonths();
+  console.log('largeline', dynamicLabels);
   const ExternalTooltip = React.useCallback(({ chart, tooltip }) => {
     let text = '';
     let value = '';
-    let icon = '';
+    const icon = '';
     const positionY = chart.canvas.offsetTop;
     const positionX = chart.canvas.offsetLeft;
 
@@ -49,16 +67,18 @@ const ChartLargeLineStock = () => {
     }
 
     const left = `${positionX + tooltip.dataPoints[0].element.x - 75}px`;
+    const right = `${positionX + tooltip.dataPoints[0].element.x + 75}px`;
     const top = `${positionY + tooltip.caretY}px`;
 
     if (tooltip.body) {
       const { dataIndex, datasetIndex } = tooltip.dataPoints[0];
       text = chart.data.labels[dataIndex];
       value = chart.data.datasets[datasetIndex].data[dataIndex];
-      icon = chart.data.datasets[datasetIndex].icons[dataIndex];
+      // icon = chart.data.datasets[datasetIndex].icons[dataIndex];
     }
 
     tooltipRef.current.style.left = left;
+    tooltipRef.current.style.right = right;
     tooltipRef.current.style.top = top;
 
     ReactDOM.render(
@@ -75,12 +95,13 @@ const ChartLargeLineStock = () => {
 
   const data = React.useMemo(() => {
     return {
-      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Today'],
+      labels: dynamicLabels.reverse(),
       datasets: [
         {
           label: 'Stock',
-          data: [44, 49, 45, 33, 52],
-          icons: ['arrow-top', 'arrow-top', 'arrow-bottom', 'arrow-bottom', 'arrow-top'],
+
+          data: profits,
+          icons: ['arrow-top', 'arrow-top', 'arrow-bottom', 'arrow-bottom', 'arrow-top', 'arrow-top'],
           borderColor: themeValues.secondary,
           pointBackgroundColor: themeValues.secondary,
           pointBorderColor: themeValues.secondary,
@@ -104,8 +125,8 @@ const ChartLargeLineStock = () => {
       options: {
         layout: {
           padding: {
-            left: 15,
-            right: 15,
+            left: 35,
+            right: 35,
             top: 35,
             bottom: 0,
           },
@@ -187,18 +208,9 @@ const ChartLargeLineStock = () => {
   return (
     <>
       <Col xs="12" sm="auto" className="d-flex flex-column justify-content-between custom-tooltip pe-0 pe-sm-4">
-        <p className="heading title mb-1">Stock</p>
+        <p className="heading title mb-1">Ganancias del mes</p>
+
         <div ref={tooltipRef} />
-        <Row>
-          <Col xs="auto">
-            <div className="cta-3 text-alternate">51</div>
-            <div className="text-small text-muted mb-1">THIS WEEK</div>
-          </Col>
-          <Col>
-            <div className="cta-3 text-alternate">553</div>
-            <div className="text-small text-muted mb-1">THIS MONTH</div>
-          </Col>
-        </Row>
       </Col>
       <Col xs="12" className="col-sm sh-17">
         <canvas ref={chartContainer} />

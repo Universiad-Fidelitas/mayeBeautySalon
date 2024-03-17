@@ -34,10 +34,10 @@ const postProvider = (newProvider) => {
   };
 };
 
-const editProvider = ({ provider_id, name }) => {
+const editProvider = ({ provider_id, name, phone }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/providers/${provider_id}`, { name });
+      const { data } = await baseApi.put(`/providers/${provider_id}`, { name, phone });
       const { success, message } = data;
       if (success) {
         dispatch(getProviders({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
