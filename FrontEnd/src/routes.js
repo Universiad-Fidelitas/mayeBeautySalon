@@ -41,7 +41,6 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: Citas,
       protected: true,
-      roles: 'R_CITAS',
     },
     {
       path: `${appRoot}/trabajadores`,

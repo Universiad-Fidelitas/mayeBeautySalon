@@ -21,7 +21,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
   const { services } = data || {};
   const dispatch = useDispatch();
   const { selectedAppointments } = useSelector((state) => state.appointments);
-  const serviceOptions = useMemo(() => data?.services.map((service) => { return { value: service.service_id, label: service.name }}), [data])
+  const serviceOptions = useMemo(() => data?.services?.map((service) => { return { value: service.service_id, label: service.name }}), [data])
   const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     
   useEffect(() => {
@@ -90,7 +90,12 @@ export const FirstDataRequestTap = ({ formRef }) => {
         time: dayTime,
         date: dayDate
       })
-    },[setappointmentDateTime])
+      
+      dispatch(setServiceDateTime({ ...selectedAppointments, appointmentDateTime: {
+        time: dayTime,
+        date: dayDate
+      }}));
+    },[setappointmentDateTime, selectedAppointments])
   
 
     const OnSelectButton = useCallback(({dayDate, dayTime}) => {
@@ -105,6 +110,13 @@ export const FirstDataRequestTap = ({ formRef }) => {
 
     const timeslots = useMemo(() => generateTimeSlots(), [generateTimeSlots]);
 
+    const onSelectedService = useCallback((service) => {
+      console.log('onSelectedService', service)
+      setappointmentDateTime(null)
+      setSelectedService(service);
+      dispatch(setServiceDateTime({ selectedService: service }));
+    }, []);
+
   return (
     <div>
     <Formik 
@@ -118,7 +130,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
         <Form>
           <h5 className="card-title">{f({ id: 'appointments.FirstTaptitle' })}</h5>
           <p className="card-text text-alternate mb-4">{f({ id: 'appointments.FirstTapDescription' })} </p>
-          <Select className='w-20 mb-3' classNamePrefix="react-select" options={serviceOptions} value={selectedService} onChange={setSelectedService} placeholder='Seleccione Servicio' />
+          <Select className='w-20 mb-3' classNamePrefix="react-select" options={serviceOptions} value={selectedService} onChange={onSelectedService} placeholder='Seleccione Servicio' />
          
           {
             selectedService?.value && (
