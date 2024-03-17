@@ -136,7 +136,7 @@ const Gastos = () => {
   const formFields = [
     {
       id: 'expense_type',
-      label: 'Nombre de; gasto',
+      label: 'Nombre de gasto',
       type: 'select',
       options: [
         { value: 'Recibo de Internet', label: 'Recibo de Internet' },
@@ -183,8 +183,8 @@ const Gastos = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la gasto seleccionada?"
-                    modalDescription="La gasto seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalTitle="¿Desea eliminar el gasto seleccionado?"
+                    modalDescription="El gasto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="expense"
                   />
                 </div>

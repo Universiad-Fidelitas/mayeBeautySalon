@@ -86,7 +86,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                           <>
                             <div className="mb-3">
                               <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
-                                Products
+                                Productos
                               </label>
 
                               <Field
@@ -102,7 +102,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                         )}
                         <div className="mb-3">
                           <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
-                            Amount
+                            Cantidad
                           </label>
                           <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
                           <ErrorMessage name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
@@ -118,7 +118,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                     ))}
 
                     <Button variant="primary" onClick={() => push({ product_id: '', amount: '' })}>
-                      Add Product
+                      Agregar Producto
                     </Button>
                   </div>
                 )}

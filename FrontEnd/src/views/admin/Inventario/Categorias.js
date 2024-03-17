@@ -123,7 +123,7 @@ const Categorias = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre de la categoria',
+      label: 'Nombre de la categoría',
       type: 'text',
     },
   ];

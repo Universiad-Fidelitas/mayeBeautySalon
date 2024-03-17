@@ -157,11 +157,11 @@ const Inventory = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    action: Yup.string().required(<span style={{ color: 'red' }}>La accion es requerida</span>),
+    action: Yup.string().required(<span style={{ color: 'red' }}>La acción es requerida</span>),
     description: Yup.string()
-      .required(<span style={{ color: 'red' }}>La descripcion es requerida</span>)
-      .min(3, <span style={{ color: 'red' }}>La descripcion debe tener al menos 3 caracteres</span>)
-      .max(100, <span style={{ color: 'red' }}>La descripcion no puede tener más de 100 caracteres</span>),
+      .required(<span style={{ color: 'red' }}>La descripción es requerida</span>)
+      .min(3, <span style={{ color: 'red' }}>La descripción debe tener al menos 3 caracteres</span>)
+      .max(100, <span style={{ color: 'red' }}>La descripción no puede tener más de 100 caracteres</span>),
     dataToInsert: Yup.array()
       .of(
         Yup.object().shape({
@@ -169,7 +169,7 @@ const Inventory = () => {
           amount: Yup.number()
             .min(0, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 0</span>)
             .typeError(<span style={{ color: 'red' }}>La cantidad solo acepta números</span>)
-            .required(<span style={{ color: 'red' }}>La cantidad es requerido</span>),
+            .required(<span style={{ color: 'red' }}>La cantidad es requerida</span>),
         })
       )
       .required('Must have product')
