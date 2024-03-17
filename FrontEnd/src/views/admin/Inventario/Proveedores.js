@@ -25,8 +25,8 @@ const Marcas = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/providers', title: 'Marcas' },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
+    { to: '/inventariado/providers', title: 'Proveedores' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -45,6 +45,12 @@ const Marcas = () => {
       {
         Header: 'Nombre',
         accessor: 'name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Número de telefono',
+        accessor: 'phone',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -121,15 +127,25 @@ const Marcas = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required(<span style={{ color: 'red' }}>'El nombre es requerido'</span>)
-      .min(3, <span style={{ color: 'red' }}>'El nombre debe tener al menos 3 caracteres'</span>)
-      .max(15, <span style={{ color: 'red' }}>'El nombre no puede tener más de 15 caracteres',</span>),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
+    phone: Yup.string()
+      .matches(/^\d+$/, "El teléfono debe ser un número")
+      .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
+      .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
+      .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
   });
 
   const formFields = [
     {
       id: 'name',
       label: 'Nombre del proveedor',
+      type: 'text',
+    },
+    {
+      id: 'phone',
+      label: 'Número del proveedor',
       type: 'text',
     },
   ];
@@ -167,6 +183,7 @@ const Marcas = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el proveedor seleccionado?"
                     modalDescription="El proveedor seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="provider"
                   />
                 </div>
                 <div className="d-inline-block">

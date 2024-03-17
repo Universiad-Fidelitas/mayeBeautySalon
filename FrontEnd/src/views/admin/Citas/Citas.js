@@ -138,7 +138,6 @@ const Citas = () => {
       const { id, start, title, end, extendedProps } = event;
       dispatch(updateEvent({ id, start, end, title, category: extendedProps.category, color: extendedProps.color }));
     } catch (e) {
-      console.log('This action could not be completed');
       changeInfo.revert();
     }
   };

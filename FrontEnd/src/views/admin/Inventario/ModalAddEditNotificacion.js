@@ -27,13 +27,22 @@ export const ModalAddEditNotificacion = ({ tableInstance, addItem, editItem, val
     }
     setIsOpenAddEditModal(false);
   };
-
+  const CustomSelect = ({ field, form, options }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options}
+      name={field.name}
+      value={options ? options.find((option) => option.value === field.value) : ''}
+      onChange={(option) => form.setFieldValue(field.name, option.value)}
+      placeholder="Seleccione una opcion"
+    />
+  );
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
         <Form>
           <Modal.Header>
-            <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
+            <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {formFields.map(({ id, label, type }) => (
@@ -46,17 +55,9 @@ export const ModalAddEditNotificacion = ({ tableInstance, addItem, editItem, val
             {productsDataDropdown && (
               <>
                 <div className="mb-3">
-                  <label className="form-label">Products</label>
-                  <Field className="form-control" as="select" id="product_id" name="product_id" required>
-                    <option value="" disabled selected>
-                      Elige una opción
-                    </option>
-                    {productsDataDropdown.map(({ value, label }, length) => (
-                      <option key={length} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </Field>
+                  <label className="form-label">Productos</label>
+
+                  <Field className="form-control" id="product_id" name="product_id" component={CustomSelect} options={productsDataDropdown} />
                   <ErrorMessage name="product_id" component="div" />
                 </div>
               </>

@@ -51,6 +51,8 @@ class Server {
         this.app.use('/v1/api/stock', require('../routes/stock'));
         this.app.use('/v1/api/notifications', require('../routes/notifications'));
         this.app.use('/v1/api/appointments', require('../routes/appointments'));
+        this.app.use('/v1/api/expenses', require('../routes/expenses'));
+        this.app.use('/v1/api/reports', require('../routes/reports'));
         this.app.use('/v1/api/logs', require('../routes/logs'));
 
         // // Serve the static files for the React app

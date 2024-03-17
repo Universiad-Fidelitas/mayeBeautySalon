@@ -6,7 +6,6 @@ const getById = async (req, res = response) => {
     const { product_id } = req.params;
     try {
         const [product_found] = await dbService.query('SELECT * FROM products WHERE activated = 1 AND product_id = ?', [product_id]);
-        console.log(product_found)
         res.status(200).json({product_found, status: true, message: 'Se ha encontrado el producto exitosamente.' });
     }
     catch(error) {
@@ -30,7 +29,7 @@ const getInventory = async (req, res = response) => {
 
         let baseQuery = 'select * from inventory_view';
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += ` WHERE product_name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 

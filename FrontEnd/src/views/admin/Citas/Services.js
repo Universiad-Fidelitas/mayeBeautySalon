@@ -120,6 +120,10 @@ const Servicio = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    price: Yup.number()
+      .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
+      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
+      .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
   });
 
   const formFields = [
@@ -165,7 +169,7 @@ const Servicio = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} type="service" />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

@@ -6,7 +6,6 @@ const getStock = (tableStatus) => {
     try {
       dispatch(setLoadingStock());
       const { data } = await baseApi.post('/stock', tableStatus);
-      console.log('jose-thunk', data);
       if (data) {
         dispatch(setStock(data));
         dispatch(setLoadedStock());

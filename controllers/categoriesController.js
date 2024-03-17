@@ -6,8 +6,7 @@ const getById = async (req, res = response) => {
     const { category_id } = req.params;
     try {
         const [categoryFound] = await dbService.query('SELECT * FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
-        console.log(categoryFound)
-        res.status(500).json({categoryFound, status: true, message: 'Se ha encontrado la categoria exitosamente.' });
+        res.status(500).json({categoryFound, status: true, message: 'Se ha encontrado la categoría exitosamente.' });
     }
     catch(error) {
         try {
@@ -85,7 +84,7 @@ const postCategory = async (req, res = response) => {
                 res.status(200).json({
                     category_id: insertId,
                     success: true,
-                    message: "¡La categoria ha sido agregada exitosamente!"
+                    message: "¡La categoría ha sido agregada exitosamente!"
                 })
 
     }
@@ -101,7 +100,7 @@ const postCategory = async (req, res = response) => {
         }
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar la categoria!",
+            message: "¡No es posible agregar la categoría!",
             error: message
         })
     }
@@ -117,7 +116,7 @@ const putCategory = async (req, res = response) => {
         res.status(200).json({
             category_id: insertId,
             success: true,
-            message: "¡La categoria ha sido editada exitosamente!"
+            message: "¡La categoría ha sido editada exitosamente!"
         })
     }
     catch(error) {
@@ -147,7 +146,7 @@ const deleteCategory = async (req, res = response) => {
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
-                message: "¡La categoria ha sido eliminada exitosamente!"
+                message: "¡La categoría ha sido eliminada exitosamente!"
             });
         } else {
             res.status(200).json({

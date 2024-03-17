@@ -11,7 +11,6 @@ export const useRoles = () => {
   return useQuery(['project-roles'], getRols, {
     refetchOnWindowFocus: false,
     onError: () => {
-      // console.log('first')
     },
   });
 };

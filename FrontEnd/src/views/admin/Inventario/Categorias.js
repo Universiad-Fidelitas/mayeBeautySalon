@@ -25,7 +25,7 @@ const Categorias = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
     { to: '/inventariado/categories', title: 'Categorias' },
   ];
   const [data, setData] = useState([]);
@@ -123,7 +123,7 @@ const Categorias = () => {
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre de la categoria',
+      label: 'Nombre de la categoría',
       type: 'text',
     },
   ];
@@ -161,6 +161,7 @@ const Categorias = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar la categoria seleccionada?"
                     modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="category"
                   />
                 </div>
                 <div className="d-inline-block">

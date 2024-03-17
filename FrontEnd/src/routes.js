@@ -5,6 +5,7 @@ import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
 import Categorias from 'views/admin/Inventario/Categorias';
 import Marcas from 'views/admin/Inventario/Marcas';
+import Gastos from 'views/admin/Facturas/Gastos';
 import Productos from 'views/admin/Inventario/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores';
@@ -33,7 +34,7 @@ const routesAndMenuItems = {
       component: Dashboard,
       protected: true,
     },
- 
+
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -53,7 +54,7 @@ const routesAndMenuItems = {
     },
     {
       path: `${appRoot}/inventariado`,
-      label: 'Inventariado',
+      label: 'inventory.title',
       icon: 'database',
       subs: [
         { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
@@ -67,18 +68,19 @@ const routesAndMenuItems = {
       ],
     },
     {
-      path: `${appRoot}/factuación`,
-      label: 'Factuación',
+      path: `${appRoot}/facturación`,
+      label: 'Facturación',
       icon: 'book',
       protected: true,
       subs: [
+        { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
         { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
       ],
     },
     {
       path: `${appRoot}/cliente/citas`,
-      label: 'Agende Cita',
+      label: 'appointments.menuTitle',
       icon: 'check-square',
       component: AppointmentsClient,
       protected: false,

@@ -7,7 +7,6 @@ const getProviders = (tableStatus) => {
     try {
       dispatch(setLoadingProviders());
       const { data } = await baseApi.post('/providers', tableStatus);
-      console.log('Providers', data);
       if (data) {
         dispatch(setProviders(data));
         dispatch(setLoadedProviders());
@@ -35,10 +34,10 @@ const postProvider = (newProvider) => {
   };
 };
 
-const editProvider = ({ provider_id, name }) => {
+const editProvider = ({ provider_id, name, phone }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/providers/${provider_id}`, { name });
+      const { data } = await baseApi.put(`/providers/${provider_id}`, { name, phone });
       const { success, message } = data;
       if (success) {
         dispatch(getProviders({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));

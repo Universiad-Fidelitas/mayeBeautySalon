@@ -63,7 +63,42 @@ const getUserDataPrefill = async (req, res = response) => {
     }
 }
 
+const saveAppointment = async (req, res = response) => {
+    try {
+        const { selectedService, appointmentDateTime, email } = req.body;
+        const queryGetServiceInfo = 'SELECT * FROM services WHERE service_id = ?';
+        const serviceInfo = await dbService.query(queryGetServiceInfo, [selectedService.value]);
+
+        const endTime = moment(appointmentDateTime.time, 'HH:mm:ss')
+        .add(parseInt(serviceInfo[0].duration.split('.')[0]), 'hours')
+        .add(parseInt(serviceInfo[0].duration.split('.')[1]), 'minutes')
+        .format('HH:mm:ss');
+
+        
+        const queryAddAppointment = 'INSERT INTO appointments (appointment_id, date, start_time, end_time, activated, price) VALUES (NULL, ?, ?, ?, ?, ?);';
+        const AppointmentResult = await dbService.query(queryAddAppointment, [appointmentDateTime.date, appointmentDateTime.time, endTime, 1, serviceInfo[0].price]);
+        
+        res.status(200).json({
+            success: true,
+            date: appointmentDateTime.date,
+            start_time: appointmentDateTime.time,
+            price: serviceInfo[0].price,
+            serviceName: serviceInfo[0].name,
+            email,
+            message: "services.successAdd"
+        });
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "services.errorAdd",
+            error: error.message
+        })
+    }
+}
+
 module.exports = {
     getServiceStatus,
-    getUserDataPrefill
+    getUserDataPrefill,
+    saveAppointment
 }

@@ -10,7 +10,6 @@ export const useGetResetPassTokenState = (tokenLinkInformation) => {
     return useQuery(['resetPassTokenState'], getResetPassTokenState, {
     refetchOnWindowFocus: false,
         onError: () => {
-            console.log('first')
         },
     });
 }

@@ -81,7 +81,9 @@ const Notifications = () => {
   const { showingNavMenu } = useSelector((state) => state.layout);
 
   useEffect(() => {
-    dispatch(getNotifications());
+    const tableStatus = { term: '', sortBy: [{ id: 'product_id', desc: false }], pageIndex: 0, pageSize: 5 };
+    console.log('table', tableStatus);
+    dispatch(getNotifications(tableStatus));
     return () => {};
     // eslint-disable-next-line
   }, []);

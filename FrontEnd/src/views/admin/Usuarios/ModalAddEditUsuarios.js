@@ -31,7 +31,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
 
   const onSubmit = useCallback(
     (values) => {
-      console.log(values);
       const formData = new FormData();
       const userSchema = {
         ...values,
@@ -94,14 +93,23 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }
     }
   };
-
+  const CustomSelect = ({ field, form, options }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options}
+      name={field.name}
+      value={options ? options.find((option) => option.value === field.value) : ''}
+      onChange={(option) => form.setFieldValue(field.name, option.value)}
+      placeholder="Seleccione una opcion"
+    />
+  );
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
         <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
           <Form>
             <Modal.Header>
-              <Modal.Title>{selectedFlatRows.length === 1 ? 'Edit' : 'Add'}</Modal.Title>
+              <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {selectedFlatRows.length === 1 && (
@@ -121,7 +129,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                   <option value="1">Activado</option>
                   <option value="0">Desactivado</option>
                 </Field>
-                <ErrorMessage name="activated" component="div" />
+                <ErrorMessage style={{ color: 'red' }} name="activated" component="div" />
               </div>
               <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
                 <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage} />
@@ -130,17 +138,9 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                 <>
                   <div className="mb-3">
                     <label className="form-label">Roles</label>
-                    <Field className="form-control" as="select" id="role_id" name="role_id">
-                      <option value="" disabled selected>
-                        Elige una opción
-                      </option>
-                      {rolDataDropdown.map(({ value, label }, length) => (
-                        <option key={length} value={value}>
-                          {label}
-                        </option>
-                      ))}
-                    </Field>
-                    <ErrorMessage name="role_id" component="div" />
+
+                    <Field className="form-control" id="role_id" name="role_id" component={CustomSelect} options={rolDataDropdown} required />
+                    <ErrorMessage style={{ color: 'red' }} name="role_id" component="div" />
                   </div>
                 </>
               )}
@@ -148,10 +148,19 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
+
                   <Field className="form-control" type={type} id={id} name={id} />
-                  <ErrorMessage name={id} component="div" />
+
+                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
                 </div>
               ))}
+
+              <div className="mb-3">
+                <label className="form-label">Salario</label>
+                <Field className="form-control" type="number" id="salary" name="salary" />
+
+                <ErrorMessage style={{ color: 'red' }} name="salary" component="div" />
+              </div>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
