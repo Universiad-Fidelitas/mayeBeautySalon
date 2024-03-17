@@ -92,7 +92,11 @@ const postInventory = async (req, res = response) => {
                     success: true,
                     message: "¡El movimiento de inventario ha sido agregado exitosamente!"
                 })
-
+                const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('create', ?, 'categories', NOW(), '', ?)
+            `;
+            await dbService.query(logQuery, ['crete inventory | new one: ' + description, 11]);
     }
     catch({ message }) {
         try {

@@ -15,7 +15,7 @@ const getById = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('getone', 'getone error', 'services', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -70,7 +70,7 @@ const getServices = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('get', 'get error', 'services', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -87,6 +87,11 @@ const postServices = async (req, res = response) => {
             insertId,
             message: "services.successAdd"
         })
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('create', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['crete services | new one: ' + name, 11]);
     }
     catch(error) {
         try {
@@ -94,7 +99,7 @@ const postServices = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('insert', 'insert error', 'services', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -110,6 +115,8 @@ const putServices = async (req, res = response) => {
     try {
         const { service_id } = req.params;
         const { name, duration, price, activated} = req.body;
+        const [serviceBeforeUpdate] = await dbService.query('SELECT name FROM services WHERE service_id = ?', [service_id]);
+        const serviceNameBeforeUpdate = serviceBeforeUpdate ? serviceBeforeUpdate.name : "Desconocido";
         const  { changedRows }  = await dbService.query('UPDATE services SET name = ?, duration = ?, price = ?, activated = ? WHERE service_id = ?', [name, duration, price, activated, service_id]);
         
         res.status(200).json({
@@ -117,6 +124,11 @@ const putServices = async (req, res = response) => {
             changedRows,
             message: "services.successEdit"
         })
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('update', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['update services | previus: ' + serviceNameBeforeUpdate + ' | new one: ' + name, 11]);
     }
     catch(error) {
         try {
@@ -124,7 +136,7 @@ const putServices = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('put', 'put error', 'services', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -141,6 +153,7 @@ const deleteServices = async (req, res = response) => {
     try {
         const { service_ids } = req.body;
         const placeholders = service_ids.map(() => '?').join(',');
+ 
         const { affectedRows } = await dbService.query(`DELETE FROM services WHERE service_id IN (${placeholders})`, service_ids);
         
         res.status(200).json({
@@ -148,6 +161,7 @@ const deleteServices = async (req, res = response) => {
             affectedRows,
             message: "services.successDelete",
         })
+     
     }
     catch(error) {
         try {
@@ -155,7 +169,7 @@ const deleteServices = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('delete', 'delete error', 'services', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -182,7 +196,7 @@ const getAllServices = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('getall', 'getall error', 'services', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
