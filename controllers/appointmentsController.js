@@ -76,7 +76,14 @@ const saveAppointment = async (req, res = response) => {
 
         
         const queryAddAppointment = 'INSERT INTO appointments (appointment_id, date, start_time, end_time, activated, price) VALUES (NULL, ?, ?, ?, ?, ?);';
-        const AppointmentResult = await dbService.query(queryAddAppointment, [appointmentDateTime.date, appointmentDateTime.time, endTime, 1, serviceInfo[0].price]);
+        const { insertId } = await dbService.query(queryAddAppointment, [appointmentDateTime.date, appointmentDateTime.time, endTime, 1, serviceInfo[0].price]);
+
+        
+
+        const queryAddServiceAppointment = "INSERT INTO `services-appointments` (`service_appointment_id`, service_id, appointment_id, extra, extra_description) VALUES (NULL, ?, ?, ?, ?);";
+        const serviceAppointmentResult = await dbService.query(queryAddServiceAppointment, [selectedService.value, insertId, 0, '']);
+
+        console.log(selectedService.value, insertId, 0, '')
         
         res.status(200).json({
             success: true,
@@ -85,6 +92,83 @@ const saveAppointment = async (req, res = response) => {
             price: serviceInfo[0].price,
             serviceName: serviceInfo[0].name,
             email,
+            serviceAppointmentResult,
+            message: "services.successAdd"
+        });
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "services.errorAdd",
+            error: error.message
+        })
+    }
+}
+
+const getAppointments = async (req, res = response) => {
+    try {
+        const { monthNumber } = req.body;
+        const queryActiveAppointments = 'SELECT * FROM appointments_info WHERE MONTH(start) IN (?, ?, ?)';
+        const monthAppointments = await dbService.query(queryActiveAppointments, [monthNumber - 1, monthNumber, monthNumber + 1]);
+    
+        res.status(200).json({
+            success: true,
+            monthAppointments,
+            monthNumber,
+            message: "services.successAdd"
+        });
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "services.errorAdd",
+            error: error.message
+        })
+    }
+}
+
+const updateAppointment = async (req, res = response) => {
+    try {
+        const { id, start, end, service_appointment_id, service_id, extra, extra_description }  = req.body;
+
+        const queryUpdateAppointment = 'UPDATE appointments SET date = ?, start_time = ?, end_time = ?, activated = ? WHERE appointment_id = ?';
+        const updatedAppointment = await dbService.query(queryUpdateAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 0 , id]);
+    
+        const queryActiveAppointments = 'UPDATE `services-appointments` SET service_id = ?, extra = ?, extra_description = ? WHERE service_appointment_id = ?';
+        const monthAppointments = await dbService.query(queryActiveAppointments, [service_id, extra, extra_description, service_appointment_id]);
+        
+        res.status(200).json({
+            success: true,
+            updatedAppointment,
+            monthAppointments,
+            message: "services.successAdd"
+        });
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "services.errorAdd",
+            error: error.message
+        })
+    }
+}
+
+const addAppointment = async (req, res = response) => {
+    try {
+        const { start, end, service_id, extra, extra_description, service_price }  = req.body;
+
+        const queryAddAppointment = 'INSERT INTO appointments (appointment_id, date, start_time, end_time, activated, price) VALUES (NULL, ?, ?, ?, ?, ?);';
+        const { insertId } = await dbService.query(queryAddAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 0 , service_price]);
+    
+        const queryAddServicesAppointmets = 'INSERT INTO `services-appointments` (service_appointment_id, service_id, appointment_id, extra, extra_description) VALUES (NULL, ?, ?, ?, ?)';
+        const addServicesAppointmets = await dbService.query(queryAddServicesAppointmets, [service_id, insertId, extra, extra_description]);
+
+        console.log(start, end, service_id, extra, extra_description)
+        
+        res.status(200).json({
+            success: true,
+            addAppointment,
+            addServicesAppointmets,
             message: "services.successAdd"
         });
     }
@@ -100,5 +184,9 @@ const saveAppointment = async (req, res = response) => {
 module.exports = {
     getServiceStatus,
     getUserDataPrefill,
-    saveAppointment
+    saveAppointment,
+    getAppointments,
+    updateAppointment,
+    addAppointment
 }
+

@@ -259,5 +259,25 @@ const enMessages = {
   'appointments.SecondTaptitle': 'Customer Information',
   'appointments.SecondTapDescription': 'Please fill in the following information',
   'appointments.findUserInformation': 'Find User Information',
+
+  'appointments.service': 'Service',
+  'appointments.appointmentDate': 'Appointment Date',
+  'appointments.startTime': 'Start Time',
+  'appointments.endTime': 'End Time',
+  'appointments.extra': 'Extra',
+  'appointments.extraDescription': 'Extra Description',
+  'appointments.saveAppointment': 'Save Appointment',
+  'appointments.addAppointment': 'Add Appointment',
+  'appointments.deleteAppointment': 'Delete Appointment',
+
+  'appointments.extraErrorRequired': 'Extra price is required',
+  'appointments.extraErrorBeNumber': 'Extra price must be a number',
+  'appointments.extraDescriptionRequired': 'Extra description is required',
+  'appointments.extraDescriptionMinLength': 'Extra description must be at least 3 characters',
+  'appointments.extraDescriptionMaxLength': 'Extra description must be at most 200 characters',
+  'appointments.serviceErrorRequired': 'Service is required',
+  'appointments.startTimeErrorRequired': 'Start Time is required',
+  'appointments.endTimeErrorRequired': 'End Time is required',
+
 };
 export default enMessages;
