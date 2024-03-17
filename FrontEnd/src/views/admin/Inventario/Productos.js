@@ -157,7 +157,6 @@ const Productos = () => {
 
   const deleteItems = useCallback(
     async (values) => {
-      console.log('profe', values);
       dispatch(deleteProducts(values));
     },
     [sortBy, pageIndex, pageSize]
@@ -195,7 +194,7 @@ const Productos = () => {
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
     size: Yup.string()
-      .matches(/^\d+$/, <span style={{ color: 'red' }}>El tamaño debe ser un número</span>)
+      .matches(/^\d+$/, "El tamaño debe ser un número")
       .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
       .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
       .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),

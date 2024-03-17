@@ -55,7 +55,7 @@ export const ModalAddEditNotificacion = ({ tableInstance, addItem, editItem, val
             {productsDataDropdown && (
               <>
                 <div className="mb-3">
-                  <label className="form-label">Products</label>
+                  <label className="form-label">Productos</label>
 
                   <Field className="form-control" id="product_id" name="product_id" component={CustomSelect} options={productsDataDropdown} />
                   <ErrorMessage name="product_id" component="div" />

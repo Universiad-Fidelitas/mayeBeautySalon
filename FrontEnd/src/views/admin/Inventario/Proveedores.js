@@ -49,7 +49,7 @@ const Marcas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Numero de telefono',
+        Header: 'Número de telefono',
         accessor: 'phone',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -131,7 +131,7 @@ const Marcas = () => {
       .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
       .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
     phone: Yup.string()
-      .matches(/^\d+$/, <span style={{ color: 'red' }}>El teléfono debe ser un número</span>)
+      .matches(/^\d+$/, "El teléfono debe ser un número")
       .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
       .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
       .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
@@ -145,7 +145,7 @@ const Marcas = () => {
     },
     {
       id: 'phone',
-      label: 'Numero del proveedor',
+      label: 'Número del proveedor',
       type: 'text',
     },
   ];

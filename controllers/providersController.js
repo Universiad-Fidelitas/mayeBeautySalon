@@ -6,7 +6,7 @@ const getById = async (req, res = response) => {
     const { provider_id } = req.params;
     try {
         const [providerFound] = await dbService.query('SELECT * FROM providers WHERE activated = 1 AND provider_id = ?', [provider_id]);
-        res.status(500).json({providerFound, status: true, message: 'Se ha encontrado la marca exitosamente.' });
+        res.status(500).json({providerFound, status: true, message: 'Se ha encontrado el proveedor exitosamente.' });
     }
     catch(error) {
         try {
@@ -84,7 +84,7 @@ const postProvider = async (req, res = response) => {
                 res.status(200).json({
                     provider_id: insertId,
                     success: true,
-                    message: "¡La marca ha sido agregada exitosamente!"
+                    message: "¡El proveedor ha sido agregado exitosamente!"
                 })
 
     }
@@ -100,7 +100,7 @@ const postProvider = async (req, res = response) => {
         }
         res.status(200).json({
             success: false,
-            message: "¡No es posible agregar la marca!",
+            message: "¡No es posible agregar el proveedor!",
             error: message
         })
     }
@@ -116,7 +116,7 @@ const putProvider = async (req, res = response) => {
         res.status(200).json({
             provider_id: insertId,
             success: true,
-            message: "¡La marca ha sido editada exitosamente!"
+            message: "¡El proveedor ha sido editado exitosamente!"
         })
     }
     catch(error) {
@@ -131,7 +131,7 @@ const putProvider = async (req, res = response) => {
         }
         res.status(200).json({
             success: false,
-            message: "¡Se ha producido un error al editar la marca!",
+            message: "¡Se ha producido un error al editar el proveedor!",
             error: error
         })
     }
@@ -140,18 +140,18 @@ const putProvider = async (req, res = response) => {
 const deleteProvider = async (req, res = response) => {
     const { provider_id } = req.body;
     try {
-        const userQuery = `CALL sp_provider('delete', ?, '');`;
+        const userQuery = `CALL sp_provider('delete', ?, '', '');`;
         const rows = await dbService.query(userQuery, [provider_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
-                message: "¡La marca ha sido eliminado exitosamente!"
+                message: "¡El proveedor ha sido eliminado exitosamente!"
             });
         } else {
             res.status(200).json({
                 success: true,
-                message: "¡Las marcas han sido eliminados exitosamente!"
+                message: "¡Los proveedores han sido eliminados exitosamente!"
             });
         }
     } catch (error) {

@@ -85,7 +85,7 @@ const postExpense = async (req, res = response) => {
                 res.status(200).json({
                     expense_id: insertId,
                     success: true,
-                    message: "¡El gasto ha sido agregada exitosamente!"
+                    message: "¡El gasto ha sido agregado exitosamente!"
                 })
 
     }
@@ -117,7 +117,7 @@ const putExpense = async (req, res = response) => {
         res.status(200).json({
             expense_id: insertId,
             success: true,
-            message: "¡El gasto ha sido editada exitosamente!"
+            message: "¡El gasto ha sido editado exitosamente!"
         })
     }
     catch(error) {
@@ -152,7 +152,7 @@ const deleteExpense = async (req, res = response) => {
         } else {
             res.status(200).json({
                 success: true,
-                message: "¡Las marcas han sido eliminados exitosamente!"
+                message: "¡Los gastos han sido eliminados exitosamente!"
             });
         }
     } catch (error) {

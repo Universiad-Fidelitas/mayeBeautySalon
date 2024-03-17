@@ -129,7 +129,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                   <option value="1">Activado</option>
                   <option value="0">Desactivado</option>
                 </Field>
-                <ErrorMessage name="activated" component="div" />
+                <ErrorMessage style={{ color: 'red' }} name="activated" component="div" />
               </div>
               <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
                 <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage} />
@@ -140,7 +140,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                     <label className="form-label">Roles</label>
 
                     <Field className="form-control" id="role_id" name="role_id" component={CustomSelect} options={rolDataDropdown} required />
-                    <ErrorMessage name="role_id" component="div" />
+                    <ErrorMessage style={{ color: 'red' }} name="role_id" component="div" />
                   </div>
                 </>
               )}
@@ -151,7 +151,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
 
                   <Field className="form-control" type={type} id={id} name={id} />
 
-                  <ErrorMessage name={id} component="div" />
+                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
                 </div>
               ))}
 
@@ -159,7 +159,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                 <label className="form-label">Salario</label>
                 <Field className="form-control" type="number" id="salary" name="salary" />
 
-                <ErrorMessage name="salary" component="div" />
+                <ErrorMessage style={{ color: 'red' }} name="salary" component="div" />
               </div>
             </Modal.Body>
             <Modal.Footer>

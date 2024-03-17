@@ -24,7 +24,7 @@ import ChartSmallDoughnutChart6 from './chart/ChartSmallDoughnutChart6';
 import { CardReport } from './Inventario/CardReport';
 
 const Dashboard = () => {
-  const title = 'Analytic Dashboard';
+  const title = 'Panel de control';
   const description = 'Analytic Dashboard';
 
   const breadcrumbs = [

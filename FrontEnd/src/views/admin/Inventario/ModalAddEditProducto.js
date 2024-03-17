@@ -118,7 +118,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
                 <Field className="form-control" type={type} id={id} name={id} />
-                <ErrorMessage name={id} component="div" />
+                <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
               </div>
             ))}
             {categoryDataDropdown && brandDataDropdown && providerDataDropdown && (
@@ -127,18 +127,18 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
                   <label className="form-label">Categorias</label>
 
                   <Field className="form-control" id="category_id" name="category_id" component={CustomSelect} options={categoryDataDropdown} required />
-                  <ErrorMessage name="category_id" component="div" />
+                  <ErrorMessage style={{ color: 'red' }} name="category_id" component="div" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Marcas</label>
                   <Field className="form-control" id="brand_id" name="brand_id" component={CustomSelect} options={brandDataDropdown} required />
-                  <ErrorMessage name="brand_id" component="div" />
+                  <ErrorMessage style={{ color: 'red' }} name="brand_id" component="div" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Proveedores</label>
 
                   <Field className="form-control" id="provider_id" name="provider_id" component={CustomSelect} options={providerDataDropdown} required />
-                  <ErrorMessage name="provider_id" component="div" />
+                  <ErrorMessage style={{ color: 'red' }} name="provider_id" component="div" />
                 </div>
               </>
             )}
@@ -154,7 +154,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
                 </Col>
               </Row>
 
-              <ErrorMessage name="size" component="div" />
+              <ErrorMessage style={{ color: 'red' }} name="size" component="div" />
             </div>
           </Modal.Body>
           <Modal.Footer>

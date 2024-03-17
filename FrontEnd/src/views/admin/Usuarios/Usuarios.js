@@ -188,7 +188,7 @@ const Usuarios = () => {
       .email(<span style={{ color: 'red' }}>Email inválido</span>)
       .required(<span style={{ color: 'red' }}>Email es requerido</span>),
     phone: Yup.string()
-      .matches(/^\d+$/, <span style={{ color: 'red' }}>El teléfono debe ser un número</span>)
+      .matches(/^\d+$/, "El teléfono debe ser un número")
       .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
       .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
       .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
