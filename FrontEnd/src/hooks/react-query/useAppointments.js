@@ -77,10 +77,55 @@ export const useAddAppointment = () => {
     
     return useMutation(addAppointment, {
         onMutate: async (newAppointment) => {
+            console.log('newAppointment', newAppointment)
             queryClient.setQueryData(['admin-appointments'], (oldData) => {
                 return {
                     ...oldData,
                     monthAppointments: [...oldData.monthAppointments, newAppointment]
+                };
+            });
+            return newAppointment;
+        },
+        onSuccess: (data, _, newAppointment) => {
+            const { insertId } = data;
+            queryClient.setQueryData(['admin-appointments'], (oldData) => {
+                return {
+                    ...oldData,
+                    monthAppointments: oldData.monthAppointments.map(appointment => {
+                        if (appointment === newAppointment) {
+                            return { ...appointment, id: insertId };
+                        }
+                        return appointment;
+                    })
+                };
+            });
+        },
+    });
+}
+
+
+
+export const useDeleteAppointment = () => {
+    const { formatMessage: f } = useIntl();
+    const queryClient = useQueryClient();
+
+    const deleteAppointment = useCallback(async (appointment) => {
+        const { data } = await baseApi.post('/appointments/disable-appointment', appointment);
+        const { success, message } = data;
+        if (success) {
+          toast(f({ id: message }), { className: 'success' });
+        } else {
+          toast(f({ id: message }), { className: 'danger' });
+        }
+        return data;
+    }, [])
+    
+    return useMutation(deleteAppointment, {
+        onMutate: async (newAppointment) => {
+            queryClient.setQueryData(['admin-appointments'], (oldData) => {
+                return {
+                    ...oldData,
+                    monthAppointments: oldData.monthAppointments.filter((appointment) => appointment.id !== newAppointment.id)
                 };
             });
           },

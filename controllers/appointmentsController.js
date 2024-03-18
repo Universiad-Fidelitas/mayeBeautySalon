@@ -141,13 +141,13 @@ const updateAppointment = async (req, res = response) => {
             success: true,
             updatedAppointment,
             monthAppointments,
-            message: "services.successAdd"
+            message: "appointments.successEdit"
         });
     }
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "services.errorAdd",
+            message: "appointments.errorEdit",
             error: error.message
         })
     }
@@ -169,14 +169,36 @@ const addAppointment = async (req, res = response) => {
         res.status(200).json({
             success: true,
             addAppointment,
-            addServicesAppointmets,
-            message: "services.successAdd"
+            insertId,
+            message: "appointments.successAdd"
         });
     }
     catch(error) {
         res.status(200).json({
             success: false,
-            message: "services.errorAdd",
+            message: "appointments.errorAdd",
+            error: error.message
+        })
+    }
+}
+
+const disableAppointment = async (req, res = response) => {
+    try {
+        const { id }  = req.body;
+
+        const queryUpdateAppointment = 'UPDATE appointments SET activated = 0 WHERE appointment_id = ?';
+        const updatedAppointment = await dbService.query(queryUpdateAppointment, [id]);
+        
+        res.status(200).json({
+            success: true,
+            updatedAppointment,
+            message: "appointments.successDelete"
+        });
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "appointments.errorDelete",
             error: error.message
         })
     }
@@ -188,6 +210,7 @@ module.exports = {
     saveAppointment,
     getAppointments,
     updateAppointment,
-    addAppointment
+    addAppointment,
+    disableAppointment
 }
 
