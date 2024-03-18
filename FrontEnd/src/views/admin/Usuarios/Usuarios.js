@@ -180,7 +180,7 @@ const Usuarios = () => {
       .min(3, <span style={{ color: 'red' }}>El apellido debe tener al menos 3 caracteres</span>)
       .max(15, <span style={{ color: 'red' }}>El apellido no puede tener más de 15 caracteres</span>),
     id_card: Yup.string()
-      .matches(/^\d+$/, <span style={{ color: 'red' }}>La cédula debe ser un número</span>)
+      .matches(/^\d+$/, 'La cédula debe ser un número')
       .min(9, <span style={{ color: 'red' }}>La cédula debe tener al menos 9 números</span>)
       .max(15, <span style={{ color: 'red' }}>La cédula no puede tener más de 15 números</span>)
       .required(<span style={{ color: 'red' }}>La cédula es requerida</span>),
