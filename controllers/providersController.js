@@ -98,7 +98,7 @@ const postProvider = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('insert', 'insert error', 'providers', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -115,15 +115,14 @@ const putProvider = async (req, res = response) => {
     const { provider_id } = req.params;
     const { name, phone } = req.body;
     try {
-<<<<<<< HEAD
+
         const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
         const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
-        const userQuery = `CALL sp_provider('update', ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [provider_id, name ]);
-=======
+   
+
         const userQuery = `CALL sp_provider('update', ?, ?,?);`;
         const { insertId } = await dbService.query(userQuery, [provider_id, name, phone ]);
->>>>>>> 85ce40b63dc841c703adc8fd89dc52f444caa189
+
         res.status(200).json({
             provider_id: insertId,
             success: true,
@@ -141,7 +140,7 @@ const putProvider = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('update', 'update error', 'providers', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }

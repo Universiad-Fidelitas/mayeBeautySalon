@@ -14,6 +14,7 @@ import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
+import Pagos from 'views/admin/Facturas/Pagos';
 import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 
@@ -75,6 +76,7 @@ const routesAndMenuItems = {
         { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
         { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
+        { path: '/pagos', icon: 'book-open', label: 'Pagos', component: Pagos },
       ],
     },
     {
