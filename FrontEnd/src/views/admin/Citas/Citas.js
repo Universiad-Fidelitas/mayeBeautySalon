@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, Button, Dropdown } from 'react-bootstrap';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -9,7 +9,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
-import { useGetAllServices } from 'hooks/react-query/useServices';
+import { useIntl } from 'react-intl';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ModalAddEdit from './components/ModalAddEdit';
 import { setSelectedEvent } from './calendarSlice';
@@ -37,12 +37,13 @@ const colorsMap = [
   { color: 'tertiary', category: 'Personal' },
 ];
 const Citas = () => {
-  const htmlTitle = 'Citas';
+  const { formatMessage: f } = useIntl();
+  const htmlTitle = f({ id: 'appointments.appointmentsTitle' });
   const htmlDescription = 'Implementation for a basic events and schedule application that built on top of Full Calendar plugin.';
 
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'citas', title: 'Citas' },
+    { to: 'citas', title: f({ id: 'appointments.appointmentsTitle' }) },
   ];
 
   const calendarRef = useRef(null);
@@ -66,22 +67,6 @@ const Citas = () => {
     });
   }, [getMonthData])
 
-  // useEffect(() => {
-  //   const coloredEvents = eventsNoColors.map((event) => {
-  //     const coloredEvent = { ...event };
-  //     if (event.category) {
-  //       const foundColor = colorsMap.find((x) => x.category === event.category);
-  //       if (foundColor) {
-  //         coloredEvent.color = themeValues[foundColor.color];
-  //       }
-  //     }
-  //     return coloredEvent;
-  //   });
-  //   setEvents(coloredEvents);
-
-  //   return () => {};
-  // }, [eventsNoColors, themeValues]);
-
   const onPrevButtonClick = () => {
     const calendarApi = calendarRef.current.getApi();
     calendarApi.prev();
@@ -95,6 +80,7 @@ const Citas = () => {
   };
   const onNewEventClick = () => {
     try {
+      dispatch(setSelectedEvent({ id: 0, title: 'New Event', start: '', end: '' }));
       setIsShowModalAddEdit(true);
     } catch (e) {
       console.log('This action could not be completed');
@@ -114,19 +100,14 @@ const Citas = () => {
       calendarRef.current.getApi().today();
     }
   };
-
-  // handlers for user actions
-  // ------------------------------------------------------------------------------------------
-  const handleDateSelect = (selectInfo) => {
+  
+  const handleDateSelect = useCallback(async (selectInfo) => {
     const calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect(); // clear date selection
-    try {
-      // dispatch(setSelectedEvent({ id: 0, title: 'New Event', start: selectInfo.startStr, end: selectInfo.endStr }));
-      setIsShowModalAddEdit(true);
-    } catch (e) {
-      console.log('This action could not be completed');
-    }
-  };
+    calendarApi.unselect();
+    dispatch(setSelectedEvent({ id: 0, title: 'New Event', startDate: selectInfo.startStr }));
+    setIsShowModalAddEdit(true);
+  }, [])
+  
 
   const handleEventClick = (clickInfo) => {
     const { id, url } = clickInfo.event;
@@ -186,7 +167,7 @@ const Citas = () => {
           </Col>
           <Col md="auto" className="d-flex align-items-start justify-content-end">
             <Button variant="outline-primary" className="btn-icon btn-icon-start ms-1 w-100 w-md-auto" onClick={onNewEventClick}>
-              <CsLineIcons icon="plus" /> <span>Agregar Cita</span>
+              <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
             </Button>
           </Col>
         </Row>

@@ -108,7 +108,7 @@ const saveAppointment = async (req, res = response) => {
 const getAppointments = async (req, res = response) => {
     try {
         const { monthNumber } = req.body;
-        const queryActiveAppointments = 'SELECT * FROM appointments_info WHERE MONTH(start) IN (?, ?, ?)';
+        const queryActiveAppointments = 'SELECT * FROM appointments_info WHERE MONTH(start) IN (?, ?, ?) AND activated = 1';
         const monthAppointments = await dbService.query(queryActiveAppointments, [monthNumber - 1, monthNumber, monthNumber + 1]);
     
         res.status(200).json({
@@ -132,7 +132,7 @@ const updateAppointment = async (req, res = response) => {
         const { id, start, end, service_appointment_id, service_id, extra, extra_description }  = req.body;
 
         const queryUpdateAppointment = 'UPDATE appointments SET date = ?, start_time = ?, end_time = ?, activated = ? WHERE appointment_id = ?';
-        const updatedAppointment = await dbService.query(queryUpdateAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 0 , id]);
+        const updatedAppointment = await dbService.query(queryUpdateAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 1 , id]);
     
         const queryActiveAppointments = 'UPDATE `services-appointments` SET service_id = ?, extra = ?, extra_description = ? WHERE service_appointment_id = ?';
         const monthAppointments = await dbService.query(queryActiveAppointments, [service_id, extra, extra_description, service_appointment_id]);
@@ -155,15 +155,16 @@ const updateAppointment = async (req, res = response) => {
 
 const addAppointment = async (req, res = response) => {
     try {
-        const { start, end, service_id, extra, extra_description, service_price }  = req.body;
+        const { start, end, service_id, extra, extra_description }  = req.body;
+
+        const queryServicePrice = 'SELECT price FROM services WHERE service_id = ?';
+        const servicePrice = await dbService.query(queryServicePrice, [service_id]);
 
         const queryAddAppointment = 'INSERT INTO appointments (appointment_id, date, start_time, end_time, activated, price) VALUES (NULL, ?, ?, ?, ?, ?);';
-        const { insertId } = await dbService.query(queryAddAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 0 , service_price]);
+        const { insertId } = await dbService.query(queryAddAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 1 , servicePrice[0].price]);
     
         const queryAddServicesAppointmets = 'INSERT INTO `services-appointments` (service_appointment_id, service_id, appointment_id, extra, extra_description) VALUES (NULL, ?, ?, ?, ?)';
         const addServicesAppointmets = await dbService.query(queryAddServicesAppointmets, [service_id, insertId, extra, extra_description]);
-
-        console.log(start, end, service_id, extra, extra_description)
         
         res.status(200).json({
             success: true,

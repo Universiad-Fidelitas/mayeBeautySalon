@@ -1,6 +1,8 @@
 import { baseApi } from 'api/apiConfig';
 import { useCallback } from 'react';
+import { useIntl } from 'react-intl';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { toast } from 'react-toastify';
 
 export const useGetWeekAppointments = (selectedDay) => {
     const getWeekAppointments = async () => {
@@ -23,10 +25,17 @@ export const useGetMonthAppointments = (selectedMonth) => {
 }
 
 export const useUpdateAppointment = () => {
+    const { formatMessage: f } = useIntl();
     const queryClient = useQueryClient();
 
     const updateAppointment = useCallback(async (appointment) => {
         const { data } = await baseApi.post('/appointments/update', appointment);
+        const { success, message } = data;
+        if (success) {
+          toast(f({ id: message }), { className: 'success' });
+        } else {
+          toast(f({ id: message }), { className: 'danger' });
+        }
         return data;
     }, [])
     
@@ -52,10 +61,17 @@ export const useUpdateAppointment = () => {
 }
 
 export const useAddAppointment = () => {
+    const { formatMessage: f } = useIntl();
     const queryClient = useQueryClient();
 
     const addAppointment = useCallback(async (appointment) => {
         const { data } = await baseApi.post('/appointments/add-appointment', appointment);
+        const { success, message } = data;
+        if (success) {
+          toast(f({ id: message }), { className: 'success' });
+        } else {
+          toast(f({ id: message }), { className: 'danger' });
+        }
         return data;
     }, [])
     
