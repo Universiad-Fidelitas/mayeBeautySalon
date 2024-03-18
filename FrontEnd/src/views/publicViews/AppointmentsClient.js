@@ -24,6 +24,17 @@ export const AppointmentsClient = () => {
     const [savingData, setSavingData] = useState()
     const { formatMessage: f } = useIntl();
     const custumerInfo  = useSelector((state) => state.appointments);
+
+  const isNextAble = useMemo(() => {
+    const { selectedService, appointmentDateTime } = custumerInfo.selectedAppointments
+    console.log('custumerInfo', selectedService && appointmentDateTime)
+    if (selectedService && appointmentDateTime) {
+      return false;
+    }
+    return true;
+    
+  }, [custumerInfo])
+  console.log('custumerInfo', isNextAble)
   
     const onClickNext = (goToNext, steps, step) => {
       if (steps.length - 1 <= steps.indexOf(step)) {
@@ -130,6 +141,7 @@ export const AppointmentsClient = () => {
               </Button>
               <Button
                 variant="outline-primary"
+                disabled={isNextAble}
                 className={`btn-icon btn-icon-end ${steps.indexOf(step) >= steps.length - 1 ? 'disabled' : ''}`}
                 onClick={() => {
                   onClickNext(next, steps, step);

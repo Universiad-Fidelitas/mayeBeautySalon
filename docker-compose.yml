@@ -16,13 +16,12 @@ services:
     container_name: webserver
     restart: unless-stopped
     ports:
-      - 443:443
+      - 80:80
     volumes:
       - web-root:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/lib/letsencrypt
-      - dhparam:/etc/ssl/certs
     depends_on:
       - backend
     networks:
@@ -36,7 +35,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email noreply@mayebeautysalon.com --agree-tos --no-eff-email --force-renewal -d www.mayebeautysalon.com -d www.mayebeautysalon.com 
+    command: certonly --webroot --webroot-path=/var/www/html --email noreply@mayebeautysalon.com --agree-tos --no-eff-email --staging -d www.mayebeautysalon.com -d www.mayebeautysalon.com 
 volumes:
   certbot-etc:
   certbot-var:
@@ -44,15 +43,8 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/MauricioGrM/mayeBeautySalon/FrontEnd/build/
-      o: bind
-  dhparam:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/MauricioGrM/mayeBeautySalon/dhparam/
+      device: /home/MauricioGrM/mayeBeautySalon/FrontEnd/build
       o: bind
 networks:
   myDatabaseNetwork:
     external: true
-

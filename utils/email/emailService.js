@@ -15,7 +15,7 @@ const emailService = async (template, email, subject, emailParams) => {
             secure: false,
             auth: {
                user: 'noreply@mayebeautysalon.com',
-               pass: 'Waj55523'
+               pass: 'Bux57614'
             },
 
         });

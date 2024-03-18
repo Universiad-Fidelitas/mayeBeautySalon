@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, Button, Dropdown } from 'react-bootstrap';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -9,9 +9,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
-
+import { useIntl } from 'react-intl';
+import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ModalAddEdit from './components/ModalAddEdit';
-import { getEvents, setSelectedEvent, updateEvent } from './calendarSlice';
+import { setSelectedEvent } from './calendarSlice';
+
+
 
 const CustomToggle = React.forwardRef(({ onClick }, ref) => (
   <Button
@@ -34,38 +37,35 @@ const colorsMap = [
   { color: 'tertiary', category: 'Personal' },
 ];
 const Citas = () => {
-  const htmlTitle = 'Citas';
+  const { formatMessage: f } = useIntl();
+  const htmlTitle = f({ id: 'appointments.appointmentsTitle' });
   const htmlDescription = 'Implementation for a basic events and schedule application that built on top of Full Calendar plugin.';
 
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'citas', title: 'Citas' },
+    { to: 'citas', title: f({ id: 'appointments.appointmentsTitle' }) },
   ];
 
   const calendarRef = useRef(null);
   const dispatch = useDispatch();
-  const { events: eventsNoColors } = useSelector((state) => state.calendar);
   const { themeValues } = useSelector((state) => state.settings);
-  const [events, setEvents] = useState('');
   const [dateTitle, setDateTitle] = useState('');
   const [selectedView, setSelectedView] = useState('dayGridMonth');
   const [isShowModalAddEdit, setIsShowModalAddEdit] = useState(false);
-
-  useEffect(() => {
-    const coloredEvents = eventsNoColors.map((event) => {
-      const coloredEvent = { ...event };
-      if (event.category) {
-        const foundColor = colorsMap.find((x) => x.category === event.category);
-        if (foundColor) {
-          coloredEvent.color = themeValues[foundColor.color];
-        }
-      }
-      return coloredEvent;
+  const { data: getMonthData, isSuccess: isGetMonthDataSuccess } = useGetMonthAppointments();
+  
+  const appointmentsData = useMemo(() => {
+    if (!isGetMonthDataSuccess) { 
+      return [];
+    }
+    const { monthAppointments } = getMonthData;
+    return monthAppointments.map((appointment) => {
+      return {
+        color: themeValues.primary,
+        ...appointment,
+      };
     });
-    setEvents(coloredEvents);
-
-    return () => {};
-  }, [eventsNoColors, themeValues]);
+  }, [getMonthData])
 
   const onPrevButtonClick = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -100,47 +100,25 @@ const Citas = () => {
       calendarRef.current.getApi().today();
     }
   };
-
-  // handlers for user actions
-  // ------------------------------------------------------------------------------------------
-  const handleDateSelect = (selectInfo) => {
+  
+  const handleDateSelect = useCallback(async (selectInfo) => {
     const calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect(); // clear date selection
-    try {
-      dispatch(setSelectedEvent({ id: 0, title: 'New Event', start: selectInfo.startStr, end: selectInfo.endStr }));
-      setIsShowModalAddEdit(true);
-    } catch (e) {
-      console.log('This action could not be completed');
-    }
-  };
+    calendarApi.unselect();
+    dispatch(setSelectedEvent({ id: 0, title: 'New Event', startDate: selectInfo.startStr }));
+    setIsShowModalAddEdit(true);
+  }, [])
+  
 
   const handleEventClick = (clickInfo) => {
     const { id, url } = clickInfo.event;
     if (!url) {
-      dispatch(setSelectedEvent(events.find((x) => x.id === id)));
+      console.log('handleEventClick', clickInfo.event.id)
+      dispatch(setSelectedEvent(appointmentsData.find((x) => x.id === Number(id))));
       setIsShowModalAddEdit(true);
     }
   };
   // handlers that initiate reads/writes via the 'action' props
   // ------------------------------------------------------------------------------------------
-
-  const handleDates = (rangeInfo) => {
-    try {
-      dispatch(getEvents(rangeInfo.startStr, rangeInfo.endStr));
-    } catch (e) {
-      console.log('This action could not be completed');
-    }
-  };
-
-  const handleEventChange = (changeInfo) => {
-    try {
-      const event = changeInfo.event.toPlainObject();
-      const { id, start, title, end, extendedProps } = event;
-      dispatch(updateEvent({ id, start, end, title, category: extendedProps.category, color: extendedProps.color }));
-    } catch (e) {
-      changeInfo.revert();
-    }
-  };
 
   const renderEventContent = (eventInfo) => {
     const { timeText, backgroundColor, borderColor } = eventInfo;
@@ -189,7 +167,7 @@ const Citas = () => {
           </Col>
           <Col md="auto" className="d-flex align-items-start justify-content-end">
             <Button variant="outline-primary" className="btn-icon btn-icon-start ms-1 w-100 w-md-auto" onClick={onNewEventClick}>
-              <CsLineIcons icon="plus" /> <span>Agregar Cita</span>
+              <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
             </Button>
           </Col>
         </Row>
@@ -249,12 +227,12 @@ const Citas = () => {
           selectMirror
           dayMaxEvents
           weekends
-          datesSet={handleDates}
+          // datesSet={handleDates}
           select={handleDateSelect}
-          events={events}
+          events={appointmentsData}
           eventContent={renderEventContent} // custom render function
           eventClick={handleEventClick}
-          eventChange={handleEventChange} // called for drag-n-drop/resize
+          // eventChange={handleEventChange} // called for drag-n-drop/resize
           viewDidMount={viewDidMount}
           eventTimeFormat={{
             hour: '2-digit',

@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
-import { Button, Form, Modal, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useCallback, useMemo, useState } from 'react';
+import { Button, Modal, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
-import Select from 'react-select';
-import DatePicker from 'react-datepicker';
-import { createEvent, deleteEvent, updateEvent } from '../calendarSlice';
-import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+import { useAddAppointment, useDeleteAppointment, useUpdateAppointment } from 'hooks/react-query/useAppointments';
+import { useGetAllServices } from 'hooks/react-query/useServices';
+import { Formik, Form, Field, ErrorMessage, useFormikContext } from 'formik';
+import * as Yup from 'yup';
+import { useIntl } from 'react-intl';
+import { DatepickerField } from 'components/DatepickerField';
+import { SelectField } from 'components/SelectField'; 
+
 
 const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
-  const dispatch = useDispatch();
+  const { formatMessage: f } = useIntl();
+  const updateAppointment = useUpdateAppointment();
+  const addAppointment = useAddAppointment();
+  const deleteAppointment = useDeleteAppointment();
+  
+  const { data, isSuccess: isServicesSuccess } = useGetAllServices();
+  const services = useMemo(() => data?.services?.map((service) => { return { value: service.service_id, label: service.name }}), [data]);
+
   const [isShowDeleteConfirmModal, setIsShowDeleteConfirmModal] = useState(false);
   const convertStringToDate = (dateStr, key) => {
     const date = dateStr && typeof dateStr === 'string' ? new Date(dateStr) : new Date();
@@ -19,166 +31,198 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
     return `${(typeof date === 'string' ? new Date(date) : date).toISOString().replace(/T.*$/, '')}T${time}:00`;
   };
   const { selectedEvent } = useSelector((state) => state.calendar);
-  const [selectedItem, setSelectedItem] = useState({
-    ...selectedEvent,
-    ...convertStringToDate(selectedEvent.start, 'start'),
-    ...convertStringToDate(selectedEvent.end, 'end'),
-  });
-
+  const selectedItem = useMemo(() => {
+    if (selectedEvent.start && selectedEvent.end) {
+      return {
+        ...selectedEvent,
+        ...convertStringToDate(selectedEvent.start, 'start'),
+        ...convertStringToDate(selectedEvent.end, 'end'),
+      };
+    }
+    return selectedEvent;
+  }, [selectedEvent])
+  
   const timeOptions = React.useMemo(() => {
     const options = [];
-    [...Array(24).keys()].map((h) => {
-      [0, 15, 30, 45].map((m) => {
-        const time = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+    for (let h = 6; h <= 18; h += 1) {
+      ['00', '15', '30', '45'].forEach((m) => {
+        const hour12 = h > 12 ? h - 12 : h;
+        const period = h >= 12 ? 'PM' : 'AM';
+        const time = `${hour12.toString().padStart(2, '0')}:${m} ${period}`;
         options.push({ value: time, label: time });
-        return m;
       });
-      return h;
-    });
+    }
     return options;
   }, []);
-
-  const categories = [
-    { value: 'Work', label: 'Work', color: 'border-primary' },
-    { value: 'Personal', label: 'Personal', color: 'border-tertiary' },
-    { value: 'Education', label: 'Education', color: 'border-secondary' },
-  ];
-
-  const formatOptionLabel = ({ label, color }) => (
-    <div>
-      <span className={`align-middle d-inline-block option-circle me-2 rounded-xl border ${color}`} />
-      <span className="align-middle d-inline-block lh-1">{label}</span>
-    </div>
-  );
-  const changeTitle = (event) => {
-    setSelectedItem({ ...selectedItem, title: event.target.value });
-  };
-  const changeCategory = (categoryItem) => {
-    setSelectedItem({ ...selectedItem, category: categoryItem.value });
-  };
-  const changeStartDate = (date) => {
-    if (date) setSelectedItem({ ...selectedItem, startDate: date, start: convertDateToString(date, selectedItem.startTime) });
-  };
-  const changeStartTime = (time) => {
-    if (time) setSelectedItem({ ...selectedItem, startTime: time.value, start: convertDateToString(selectedItem.start, time.value) });
-  };
-
-  const changeEndDate = (date) => {
-    if (date) setSelectedItem({ ...selectedItem, endDate: date, end: convertDateToString(date, selectedItem.endTime) });
-  };
-  const changeEndTime = (time) => {
-    if (time) setSelectedItem({ ...selectedItem, endTime: time.value, end: convertDateToString(selectedItem.end, time.value) });
-  };
-
-  const saveItem = () => {
-    const item = { ...selectedItem };
-    delete item.startDate;
-    delete item.startTime;
-    delete item.endDate;
-    delete item.endTime;
-
-    if (selectedItem.id !== 0) {
-      dispatch(updateEvent(item));
-    } else {
-      dispatch(createEvent(item));
-    }
-    onHide();
-  };
+  
   const deleteItem = () => {
     setIsShowDeleteConfirmModal(true);
   };
-  const deleteItemApprove = () => {
+
+  const onSubmit = useCallback(({ serviceDate, startTime, endTime, service, extraDescription, extra }) => {
     if (selectedItem.id !== 0) {
-      dispatch(deleteEvent(selectedItem.id));
+      const itemSubmit = {
+        id: selectedItem.id,
+        title: selectedItem.title,
+        start: convertDateToString(serviceDate, moment(startTime, 'hh:mm A').format('HH:mm')),
+        end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
+        service_id: service,
+        service_appointment_id: selectedItem.service_appointment_id,
+        extra_description: extraDescription,
+        extra
+      }
+      updateAppointment.mutateAsync(itemSubmit);
+    } else {
+      const itemSubmit = {
+        title: selectedItem.title,
+        start: convertDateToString(serviceDate, moment(startTime, 'hh:mm A').format('HH:mm')),
+        end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
+        service_id: service,
+        extra_description: extraDescription,
+        extra,
+      }
+      addAppointment.mutateAsync(itemSubmit);
     }
+    onHide();
+  }, [selectedItem]);
+  const validationSchema = Yup.object().shape({
+    extra: Yup.number().required(f({ id: 'appointments.extraErrorRequired' })).typeError(f({ id: 'appointments.extraErrorBeNumber' })),
+    extraDescription: Yup.string().required(f({ id: 'appointments.extraDescriptionRequired' })).min(3, f({ id: 'appointments.extraDescriptionMinLength' })).max(200, f({ id: 'appointments.extraDescriptionMaxLength' })),
+    service: Yup.string().required(f({ id: 'appointments.serviceErrorRequired' })),
+    startTime: Yup.string().required(f({ id: 'appointments.startTimeErrorRequired' })),
+    endTime: Yup.string().required(f({ id: 'appointments.endTimeErrorRequired' })),
+  });
+
+  const initialValues = useMemo(() => {
+    return {
+      title: selectedItem ? selectedItem.title : '',
+      service: selectedItem ? selectedItem.service_id : 0,
+      startTime: selectedItem.startTime && moment(selectedItem.startTime, 'HH:mm').format('hh:mm A'),
+      endTime: selectedItem.endTime && moment(selectedItem.endTime, 'HH:mm').format('hh:mm A'),
+      serviceDate: selectedItem.startDate ? selectedItem.startDate : new Date(),
+      extra: selectedItem ? selectedItem.extra : '',
+      extraDescription: selectedItem ? selectedItem.extra_description : ''
+    }
+  }, [selectedItem, services]);
+  
+
+  const ServicePriceField = () => {
+    const { values } = useFormikContext();
+    const servicePrice = useMemo(() => {
+      return parseFloat(values.service ? data?.services?.find((x) => x.service_id === values.service).price : 0 ).toLocaleString('es-CR', {
+        style: 'currency',
+        currency: 'CRC',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      });
+    }, [values])
+    return (
+      <div className="mb-3 top-label">
+        <label className="form-label bg-transparent">{f({ id: 'appointments.servicePrice' })}</label>
+        <input className="form-control" value={ servicePrice } disabled />
+      </div>
+    );
+  };
+
+  const deleteItemApprove = useCallback(() => {
     setIsShowDeleteConfirmModal(false);
     onHide();
-  };
+    deleteAppointment.mutateAsync(selectedItem);
+  }, [])
+  
+
+
+
+  if (!isServicesSuccess){
+    return <>Loading </>
+  }
 
   return (
     <>
       <Modal className="modal-right fade" show={show} onHide={onHide}>
-        <Modal.Header>
-          <Modal.Title>{selectedEvent.id !== 0 ? 'Edit Event' : 'Add Event'}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="d-flex flex-column">
+        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
           <Form>
-            <div className="mb-3 top-label">
-              <Form.Control type="text" defaultValue={selectedItem ? selectedItem.title : ''} onChange={changeTitle} />
-              <Form.Label>TITLE</Form.Label>
-            </div>
-            <div className="mb-3 top-label">
-              <Select
-                classNamePrefix="react-select"
-                options={categories}
-                formatOptionLabel={formatOptionLabel}
-                value={selectedItem ? categories.find((x) => x.value === selectedItem.category) : ''}
-                onChange={changeCategory}
-                placeholder=""
-              />
-              <span>CATEGORY</span>
-            </div>
-            <Row className="g-0">
-              <Col className="pe-2">
-                <div className="mb-3 top-label">
-                  <DatePicker className="form-control" selected={selectedItem.startDate} onChange={(date) => changeStartDate(date)} showFullMonthYearPicker />
-                  <span>START DATE</span>
-                </div>
-              </Col>
-              <div className="col-auto">
-                <div className="mb-3 top-label sw-12">
-                  <Select
-                    classNamePrefix="react-select"
-                    options={timeOptions}
-                    value={{ value: selectedItem.startTime, label: selectedItem.startTime }}
-                    onChange={changeStartTime}
-                    placeholder=""
-                  />
-                  <span>TIME</span>
-                </div>
+            <Modal.Header>
+              <Modal.Title>{selectedEvent.id !== 0 ? 'Edit Event' : 'Add Event'}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body className="d-flex flex-column">
+              <div className="mb-3 top-label">
+                <label className="form-label">Title</label>
+                <Field className="form-control" type="text" id="title" name="title" />
+                <ErrorMessage name="salary" component="div" />
               </div>
-            </Row>
-            <Row className="g-0">
-              <Col className="pe-2">
-                <div className="mb-3 top-label">
-                  <DatePicker className="form-control" selected={selectedItem.endDate} onChange={(date) => changeEndDate(date)} />
-                  <span>END DATE</span>
-                </div>
-              </Col>
-              <Col xs="auto">
-                <div className="mb-3 top-label sw-12">
-                  <Select
-                    classNamePrefix="react-select"
-                    options={timeOptions}
-                    value={{ value: selectedItem.endTime, label: selectedItem.endTime }}
-                    onChange={changeEndTime}
-                    placeholder=""
-                  />
-                  <span>TIME</span>
-                </div>
-              </Col>
-            </Row>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          {selectedEvent.id !== 0 ? (
-            <>
-              <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>Delete</Tooltip>} placement="top">
-                <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
-                  <CsLineIcons icon="bin" />
-                </Button>
-              </OverlayTrigger>
 
-              <Button className="btn-icon btn-icon-end" onClick={saveItem}>
-                <span>Save</span> <CsLineIcons icon="check" />
-              </Button>
-            </>
-          ) : (
-            <Button className="btn-icon btn-icon-start" onClick={saveItem}>
-              <CsLineIcons icon="plus" /> <span>Add</span>
-            </Button>
-          )}
-        </Modal.Footer>
+              <Row className="g-0 mb-3">
+                <DatepickerField
+                  label={f({ id: 'appointments.appointmentDate' })}
+                  name="serviceDate"
+                  showFullMonthYearPicker
+                />
+              </Row>
+              <Row className="g-3">
+                <Col className='col-8'>
+                  <SelectField
+                    label={f({ id: 'appointments.service' })}
+                    name="service"
+                    options={services}
+                  />
+                </Col>
+                <Col className='col-4'>
+                  <ServicePriceField />
+                </Col>
+              </Row>
+              <Row className="g-3">
+                <Col>
+                  <SelectField
+                    label={f({ id: 'appointments.startTime' })}
+                    name="startTime"
+                    options={timeOptions}
+                  />
+                </Col>
+                <Col>
+                  <SelectField
+                    label={f({ id: 'appointments.endTime' })}
+                    name="endTime"
+                    options={timeOptions}
+                  />
+                </Col>
+              </Row>
+              <Row className="g-0">
+                <div className="mb-3 top-label">
+                  <label className="form-label">{ f({ id: 'appointments.extra' }) }</label>
+                  <Field className="form-control" type="text" id="extra" name="extra"/>
+                  <ErrorMessage className='text-danger' name='extra' component="div" />
+                </div>
+              </Row>
+              <Row className="g-0">
+                <div className="mb-3 top-label">
+                  <label className="form-label">{ f({ id: 'appointments.extraDescription' }) }</label>
+                  <Field as="textarea" className="form-control" type="text" id="extraDescription" name="extraDescription"/>
+                  <ErrorMessage className='text-danger' name='extraDescription' component="div" />
+                </div>
+              </Row>
+            </Modal.Body>
+            <Modal.Footer>
+              {selectedEvent.id !== 0 ? (
+                <>
+                  <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>{ f({ id: 'appointments.deleteAppointment' }) }</Tooltip>} placement="top">
+                    <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
+                      <CsLineIcons icon="bin" />
+                    </Button>
+                  </OverlayTrigger>
+
+                  <Button className="btn-icon btn-icon-end" type='submit'>
+                    <span>{ f({ id: 'appointments.saveAppointment' }) }</span> <CsLineIcons icon="check" />
+                  </Button>
+                </>
+              ) : (
+                <Button className="btn-icon btn-icon-start" type='submit'>
+                  <CsLineIcons icon="plus" /> <span>{ f({ id: 'appointments.addAppointment' }) }</span>
+                </Button>
+              )}
+            </Modal.Footer>
+          </Form>
+        </Formik>
       </Modal>
 
       <Modal className="fade modal-close-out" show={isShowDeleteConfirmModal}>

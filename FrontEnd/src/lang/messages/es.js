@@ -257,5 +257,34 @@ const enMessages = {
   'appointments.SecondTaptitle': 'Información del Cliente',
   'appointments.SecondTapDescription': 'Por favor, complete la información del cliente',
   'appointments.findUserInformation': 'Buscar Información del Usuario',
+
+  'appointments.service': 'Servicio',
+  
+  'appointments.servicePrice': 'Precio',
+  'appointments.appointmentDate': 'Fecha de la Cita',
+  'appointments.startTime': 'Hora de Inicio',
+  'appointments.endTime': 'Hora de Finalización',
+  'appointments.extra': 'Extra',
+  'appointments.extraDescription': 'Descripción del Extra',
+  'appointments.saveAppointment': 'Guardar Cita',
+  'appointments.addAppointment': 'Agregar Cita',
+  'appointments.deleteAppointment': 'Eliminar Cita',
+
+  'appointments.extraErrorRequired': 'Extra es requerido',
+  'appointments.extraErrorBeNumber': 'Extra debe ser un número',
+  'appointments.extraDescriptionRequired': 'Descripción del Extra es requerido',
+  'appointments.extraDescriptionMinLength': 'Descripción del Extra debe tener al menos 3 caracteres',
+  'appointments.extraDescriptionMaxLength': 'Descripción del Extra debe tener como máximo 20 caracteres',
+  'appointments.serviceErrorRequired': 'Servicio es requerido',
+  'appointments.startTimeErrorRequired': 'Hora de Inicio es requerida',
+  'appointments.endTimeErrorRequired': 'Hora de Finalización es requerida',
+  'appointments.appointmentsTitle': 'Citas',
+
+  'appointments.errorDelete': '¡La cita no ha sido eliminada!',
+  'appointments.successDelete': '¡La cita ha sido eliminada exitosamente!',
+  'appointments.successAdd': '¡La cita ha sido agregada exitosamente!',
+  'appointments.errorAdd': '¡La cita no ha sido agregada!',
+  'appointments.successEdit': '¡La cita ha sido editada exitosamente!',
+  'appointments.errorEdit': '¡La cita no ha sido editada!',
 };
 export default enMessages;
