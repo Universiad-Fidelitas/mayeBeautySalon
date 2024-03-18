@@ -70,10 +70,10 @@ const getUser = async (req, res = response) => {
 
 
 const postUser = async (req, res = response) => {
-    const { role_id, id_card, first_name, last_name, email, phone } = req.body;
+    const { role_id, id_card, first_name, last_name, email, phone, salary } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file.path]);
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file.path, salary]);
  
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
@@ -106,14 +106,14 @@ const postUser = async (req, res = response) => {
 }
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;
-    const { role_id, id_card, first_name, last_name, email, activated, phone } = req.body;
+    const { role_id, id_card, first_name, last_name, email, activated, phone, salary } = req.body;
     if ('image' in req.body) {
         ({ image } = req.body);
     }
     try { 
-        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ? WHERE user_id = ?';
+        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ?, salary= ? WHERE user_id = ?';
         if ('image' in req.body) {
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image, user_id]);
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image,salary, user_id ]);
         res.status(200).json({
             role_id: insertId,
             affectedRows:affectedRows,
@@ -121,7 +121,7 @@ const putUser = async (req, res = response) => {
             message: "¡El usuario ha sido editado exitosamente!"
         });
         }else{
-            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id]);
+            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id, salary]);
             res.status(200).json({
                 role_id: insertId,
                 affectedRows:affectedRows,
@@ -155,7 +155,7 @@ const deleteUser = async (req, res = response) => {
     try {
         //const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
  
-        const userQuery = `CALL sp_user('delete', ?, '', '', '', 0, 0, '', 0, @inserted_id);`;
+        const userQuery = `CALL sp_user('delete', ?, '', '', '', 0, 0, '', 0, @inserted_id,0);`;
         const rows = await dbService.query(userQuery, [user_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
