@@ -8,7 +8,7 @@ export const DatepickerField = ({ label, ...props }) => {
 
     const { setValue } = helpers;
   return (
-    <div className="top-label">
+    <div className="mb-3 top-label">
       <label htmlFor={props.id || props.name}>{label}</label>
       <DatePicker
         {...field}

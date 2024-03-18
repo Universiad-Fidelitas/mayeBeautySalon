@@ -261,6 +261,8 @@ const enMessages = {
   'appointments.findUserInformation': 'Find User Information',
 
   'appointments.service': 'Service',
+  
+  'appointments.servicePrice': 'Service Price',
   'appointments.appointmentDate': 'Appointment Date',
   'appointments.startTime': 'Start Time',
   'appointments.endTime': 'End Time',
@@ -278,6 +280,7 @@ const enMessages = {
   'appointments.serviceErrorRequired': 'Service is required',
   'appointments.startTimeErrorRequired': 'Start Time is required',
   'appointments.endTimeErrorRequired': 'End Time is required',
+  'appointments.appointmentsTitle': 'Appointments',
 
 };
 export default enMessages;
