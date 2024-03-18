@@ -282,5 +282,11 @@ const enMessages = {
   'appointments.endTimeErrorRequired': 'End Time is required',
   'appointments.appointmentsTitle': 'Appointments',
 
+  'appointments.errorDelete': 'The appointment has not been deleted!',
+  'appointments.successDelete': 'The appointment has been deleted successfully!',
+  'appointments.successAdd': 'The appointment has been added successfully!',
+  'appointments.errorAdd': 'The appointment has not been added!',
+  'appointments.successEdit': 'The appointment has been edited successfully!',
+  'appointments.errorEdit': 'The appointment has not been edited!',
 };
 export default enMessages;

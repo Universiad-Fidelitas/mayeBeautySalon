@@ -112,7 +112,7 @@ const Citas = () => {
   const handleEventClick = (clickInfo) => {
     const { id, url } = clickInfo.event;
     if (!url) {
-      console.log(appointmentsData.find((x) => x.id === Number(id)))
+      console.log('handleEventClick', clickInfo.event.id)
       dispatch(setSelectedEvent(appointmentsData.find((x) => x.id === Number(id))));
       setIsShowModalAddEdit(true);
     }

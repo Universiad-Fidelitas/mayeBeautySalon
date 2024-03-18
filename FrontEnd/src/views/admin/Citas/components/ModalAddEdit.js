@@ -3,7 +3,7 @@ import { Button, Modal, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstra
 import { useSelector } from 'react-redux';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import moment from 'moment';
-import { useAddAppointment, useUpdateAppointment } from 'hooks/react-query/useAppointments';
+import { useAddAppointment, useDeleteAppointment, useUpdateAppointment } from 'hooks/react-query/useAppointments';
 import { useGetAllServices } from 'hooks/react-query/useServices';
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from 'formik';
 import * as Yup from 'yup';
@@ -16,6 +16,8 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
   const { formatMessage: f } = useIntl();
   const updateAppointment = useUpdateAppointment();
   const addAppointment = useAddAppointment();
+  const deleteAppointment = useDeleteAppointment();
+  
   const { data, isSuccess: isServicesSuccess } = useGetAllServices();
   const services = useMemo(() => data?.services?.map((service) => { return { value: service.service_id, label: service.name }}), [data]);
 
@@ -122,6 +124,15 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
     );
   };
 
+  const deleteItemApprove = useCallback(() => {
+    setIsShowDeleteConfirmModal(false);
+    onHide();
+    deleteAppointment.mutateAsync(selectedItem);
+  }, [])
+  
+
+
+
   if (!isServicesSuccess){
     return <>Loading </>
   }
@@ -214,22 +225,22 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
         </Formik>
       </Modal>
 
-          {/* <Modal className="fade modal-close-out" show={isShowDeleteConfirmModal}>
-            <Modal.Header>
-              <Modal.Title> Are you sure?</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="d-flex flex-column">
-              <p>
-                <span className="fw-bold">{selectedItem.title}</span> <span>will be deleted. Are you sure?</span>
-              </p>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={() => setIsShowDeleteConfirmModal(false)}>No</Button>
-              <Button variant="outline-primary" onClick={deleteItemApprove}>
-                Yes
-              </Button>
-            </Modal.Footer>
-      </Modal> */}
+      <Modal className="fade modal-close-out" show={isShowDeleteConfirmModal}>
+        <Modal.Header>
+          <Modal.Title> Are you sure?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="d-flex flex-column">
+          <p>
+            <span className="fw-bold">{selectedItem.title}</span> <span>will be deleted. Are you sure?</span>
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={() => setIsShowDeleteConfirmModal(false)}>No</Button>
+          <Button variant="outline-primary" onClick={deleteItemApprove}>
+            Yes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };
