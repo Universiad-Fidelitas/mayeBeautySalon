@@ -119,7 +119,10 @@ const Servicio = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    name: Yup.string()
+      .required('El nombre es requerido')
+      .min(3, 'El nombre debe tener al menos 3 caracteres')
+      .max(15, 'El nombre debe tener al máximo |5 caracteres'),
     price: Yup.number()
       .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
