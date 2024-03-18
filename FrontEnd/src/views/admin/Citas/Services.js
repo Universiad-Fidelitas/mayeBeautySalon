@@ -119,7 +119,10 @@ const Servicio = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    name: Yup.string()
+      .required('El nombre es requerido')
+      .min(3, 'El nombre debe tener al menos 3 caracteres')
+      .max(15, 'El nombre debe tener al máximo |5 caracteres'),
     price: Yup.number()
       .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
@@ -169,7 +172,13 @@ const Servicio = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} type="service" />
+                  <ControlsDelete
+                    tableInstance={tableInstance}
+                    deleteItems={deleteItems}
+                    type="service"
+                    modalTitle="¿Desea eliminar el servicio seleccionado?"
+                    modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                  />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
