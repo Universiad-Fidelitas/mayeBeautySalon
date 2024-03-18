@@ -11,7 +11,7 @@ const { hashPassword } = require('../helpers/bcrypt');
 const userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const query = "SELECT * FROM auth_login WHERE email = ?";
+        const query = "SELECT * FROM auth_login WHERE email = ? AND activated = 1";
         const rows = await dbService.query(query, [email]);
         const data = helper.emptyOrRows(rows);
 
@@ -63,7 +63,7 @@ const tokenValidation = async (req, res) => {
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
-    const [userFound] = await dbService.query('SELECT * FROM users WHERE email = ?', [email]);
+    const [userFound] = await dbService.query('SELECT * FROM users WHERE email = ? AND activated = 1', [email]);
     if (userFound) {
         const {user_id} = userFound;
         const resetToken = uuidv4();
