@@ -24,7 +24,7 @@ const postService = (newService) => {
       const { success, message } = data;
       if (success) {
         dispatch(getServices({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
-        toast(message, { className: 'success' });
+        toast('Acción realizada con éxito', { className: 'success' });
       } else {
         toast(message, { className: 'danger' });
       }
