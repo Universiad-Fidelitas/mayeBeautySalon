@@ -14,6 +14,7 @@ import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
+import Pagos from 'views/admin/Facturas/Pagos';
 import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 
@@ -62,8 +63,8 @@ const routesAndMenuItems = {
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
         { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
-        { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_STOCK', component: Stock },
-        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_NOTIFICATIONS', component: Notificaciones },
+        { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_PRODUCTS', component: Stock },
+        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
       ],
     },
     {
@@ -72,9 +73,10 @@ const routesAndMenuItems = {
       icon: 'book',
       protected: true,
       subs: [
-        { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_EXPENSES', component: Gastos },
+        { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
         { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
+        { path: '/pagos', icon: 'book-open', label: 'Pagos', component: Pagos },
       ],
     },
     {
@@ -83,7 +85,6 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: AppointmentsClient,
       protected: false,
-      roles: 'R_APPOINTMENTS',
     },
     {
       path: `${appRoot}/logs`,
@@ -91,7 +92,6 @@ const routesAndMenuItems = {
       icon: 'logs-1',
       component: Logs,
       protected: true,
-      roles: 'R_LOGS',
     },
   ],
   sidebarItems: [],

@@ -14,7 +14,7 @@ const getById = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('getone', 'getone error', 'providers', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -67,7 +67,7 @@ const getProviders = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('get', 'get error', 'providers', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -86,7 +86,11 @@ const postProvider = async (req, res = response) => {
                     success: true,
                     message: "¡El proveedor ha sido agregado exitosamente!"
                 })
-
+                const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('create', ?, 'categories', NOW(), '', ?)
+            `;
+            await dbService.query(logQuery, ['crete provider | new one: ' + name, 11]);
     }
     catch({ message }) {
         try {
@@ -94,7 +98,7 @@ const postProvider = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('insert', 'insert error', 'providers', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -111,13 +115,24 @@ const putProvider = async (req, res = response) => {
     const { provider_id } = req.params;
     const { name, phone } = req.body;
     try {
+
+        const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
+        const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
+   
+
         const userQuery = `CALL sp_provider('update', ?, ?,?);`;
         const { insertId } = await dbService.query(userQuery, [provider_id, name, phone ]);
+
         res.status(200).json({
             provider_id: insertId,
             success: true,
             message: "¡El proveedor ha sido editado exitosamente!"
         })
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('update', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['update providers | previus: ' + providerNameBeforeUpdate + ' | new one: ' + name, 11]);
     }
     catch(error) {
         try {
@@ -125,7 +140,7 @@ const putProvider = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('update', 'update error', 'providers', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -140,6 +155,8 @@ const putProvider = async (req, res = response) => {
 const deleteProvider = async (req, res = response) => {
     const { provider_id } = req.body;
     try {
+        const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
+        const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_provider('delete', ?, '', '');`;
         const rows = await dbService.query(userQuery, [provider_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
@@ -154,6 +171,11 @@ const deleteProvider = async (req, res = response) => {
                 message: "¡Los proveedores han sido eliminados exitosamente!"
             });
         }
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('delete', ?, 'providers', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['delete providers | old one: ' + providerNameBeforeUpdate, 11]);
     } catch (error) {
         try {
             const logQuery = `
