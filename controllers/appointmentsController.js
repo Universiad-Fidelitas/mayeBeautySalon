@@ -70,7 +70,7 @@ const saveAppointment = async (req, res = response) => {
         const queryGetServiceInfo = 'SELECT * FROM services WHERE service_id = ?';
         const serviceInfo = await dbService.query(queryGetServiceInfo, [selectedService.value]);
 
-        sendEmail('appointmentConfirmation', 'mgranadosmunoz@gmail.com', "Confirmación de cita", {
+        sendEmail('appointmentConfirmation', email, "Confirmación de cita", {
             selectedServiceName: serviceInfo[0].name,
             selectedDate: moment(appointmentDateTime.date).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
             selectedTime: moment(appointmentDateTime.time).format('hh:mm A'),
@@ -180,7 +180,10 @@ const updateAppointment = async (req, res = response) => {
         const queryServiceInformation = 'SELECT * FROM services WHERE service_id = ?';
         const serviceData = await dbService.query(queryServiceInformation, [service_id]);
 
-        sendEmail('appointmentConfirmation', 'mgranadosmunoz@gmail.com', "Confirmación de cita", {
+        const queryGetUserAppInfo = 'SELECT * FROM users WHERE user_id = ?';
+        const getUserAppInfo = await dbService.query(queryGetUserAppInfo, [user_id]);
+
+        sendEmail('appointmentConfirmation', getUserAppInfo[0].email, "Confirmación de cita", {
             selectedServiceName: serviceData[0].name,
             selectedDate: moment(start).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
             selectedTime: moment(start).format('hh:mm A'),
@@ -221,7 +224,10 @@ const addAppointment = async (req, res = response) => {
         const queryServiceInformation = 'SELECT * FROM services WHERE service_id = ?';
         const serviceData = await dbService.query(queryServiceInformation, [service_id]);
 
-        sendEmail('appointmentConfirmation', 'mgranadosmunoz@gmail.com', "Confirmación de cita", {
+        const queryGetUserAppInfo = 'SELECT * FROM users WHERE user_id = ?';
+        const getUserAppInfo = await dbService.query(queryGetUserAppInfo, [user_id]);
+
+        sendEmail('appointmentConfirmation', getUserAppInfo[0].email, "Confirmación de cita", {
             selectedServiceName: serviceData[0].name,
             selectedDate: moment(start).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
             selectedTime: moment(start).format('hh:mm A'),

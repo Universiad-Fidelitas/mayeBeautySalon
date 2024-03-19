@@ -62,7 +62,6 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
   };
 
   const onSubmit = useCallback(({ serviceDate, startTime, endTime, service, extraDescription, extra, activeUser }) => {
-    console.log('extra', extra.toString().length > 0 )
     if (selectedItem.id !== 0) {
       const itemSubmit = {
         id: selectedItem.id,
@@ -71,8 +70,8 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
         end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
         service_id: service,
         service_appointment_id: selectedItem.service_appointment_id,
-        extra_description: extraDescription,
-        extra: extra.toString().length > 0 ? extra : 0,
+        extra_description: extraDescription?.length > 0 ? extraDescription : '',
+        extra: extra?.toString().length > 0 ? extra : 0,
         user_id: activeUser
       }
       updateAppointment.mutateAsync(itemSubmit);
@@ -82,8 +81,8 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
         start: convertDateToString(serviceDate, moment(startTime, 'hh:mm A').format('HH:mm')),
         end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
         service_id: service,
-        extra_description: extraDescription,
-        extra: extra.toString().length > 0 ? extra : 0,
+        extra_description: extraDescription?.length > 0 ? extraDescription : '',
+        extra: extra?.toString().length > 0 ? extra : 0,
         user_id: activeUser
       }
       addAppointment.mutateAsync(itemSubmit);
@@ -116,7 +115,7 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
       startTime: selectedItem.startTime && moment(selectedItem.startTime, 'HH:mm').format('hh:mm A'),
       endTime: selectedItem.endTime && moment(selectedItem.endTime, 'HH:mm').format('hh:mm A'),
       serviceDate: selectedItem.startDate ? selectedItem.startDate : new Date(),
-      extra: (selectedItem && selectedItem.extra !== 0) ? selectedItem.extra : '',
+      extra: (selectedItem?.extra !== 0) ? selectedItem.extra : '',
       extraDescription: selectedItem ? selectedItem.extra_description : '',
       email: selectedItem ? selectedItem.email : '',
       phone: selectedItem ? selectedItem.phone : '',
