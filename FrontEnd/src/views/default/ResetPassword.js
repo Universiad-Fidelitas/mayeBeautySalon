@@ -26,7 +26,7 @@ const ResetPassword = () => {
       .required('La confirmación de contraseña es requerida')
       .oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales.'),
   });
-  const initialValues = { password: 'Mg110101', passwordConfirm: 'Mg110101' };
+  const initialValues = { password: '', passwordConfirm: '' };
   const onSubmit = async ({ password }) => {
     const { status, message } = await dispatch(
       updateUserPassword({

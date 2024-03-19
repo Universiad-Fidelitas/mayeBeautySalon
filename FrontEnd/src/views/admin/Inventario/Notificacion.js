@@ -124,7 +124,7 @@ const Marcas = () => {
 
   const validationSchema = Yup.object().shape({
     amount: Yup.number()
-      .required(<span style={{ color: 'red' }}>Cantidad es requerida</span>)
+      .required(<span style={{ color: 'red' }}>La cantidad es requerida</span>)
       .min(1, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 1</span>),
   });
 
@@ -167,7 +167,7 @@ const Marcas = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la marca seleccionada?"
+                    modalTitle="¿Desea eliminar la notificación seleccionada?"
                     modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="notification"
                   />
