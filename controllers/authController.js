@@ -68,7 +68,7 @@ const forgotPassword = async (req, res) => {
         const {user_id} = userFound;
         const resetToken = uuidv4();
         const { affectedRows } = await dbService.query('INSERT INTO ps_tokens (user_id, token, expired) VALUES (?, ?, ?)', [user_id, resetToken, 0]);
-        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+        const resetLink = `http://www.mayebeautysalon.com/reset-password/${resetToken}`;
         if (affectedRows > 0) {
             res.json({resetLink, status: true, message: 'Hemos enviado con éxito el enlace de restablecimiento a tu dirección de correo electrónico.' });
             await sendEmail('passwordRecoveryEmail', email, "Restablecimiento de contraseña", {

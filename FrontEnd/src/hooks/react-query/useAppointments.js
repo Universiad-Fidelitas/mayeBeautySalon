@@ -103,8 +103,6 @@ export const useAddAppointment = () => {
     });
 }
 
-
-
 export const useDeleteAppointment = () => {
     const { formatMessage: f } = useIntl();
     const queryClient = useQueryClient();
@@ -130,4 +128,12 @@ export const useDeleteAppointment = () => {
             });
           },
     });
+}
+
+export const useGetAppointmentUsers = () => {
+    const getWeekAppointments = async () => {
+        const { data } = await baseApi.post('/appointments/appointment-users');
+        return data;
+    };
+    return useQuery(['appointment-users'], getWeekAppointments)
 }
