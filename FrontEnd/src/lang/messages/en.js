@@ -295,5 +295,9 @@ const enMessages = {
   'appointments.phoneNumber': 'Phone Number',
   'appointments.editAppointment': 'Edit Appointment',
   'appointments.errorEndTime': 'End time must be greater than start time',
+  'appointments.month': 'Month',
+  'appointments.week': 'Week',
+  'appointments.day': 'Day',
+  'appointments.today': 'Today',
 };
 export default enMessages;

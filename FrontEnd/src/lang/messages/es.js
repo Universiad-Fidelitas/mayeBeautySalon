@@ -293,5 +293,9 @@ const enMessages = {
   'appointments.phoneNumber': 'Número de Teléfono',
   'appointments.editAppointment': 'Editar Cita',
   'appointments.errorEndTime': 'La hora de finalización debe ser mayor a la hora de inicio',
+  'appointments.month': 'Mes',
+  'appointments.week': 'Semana',
+  'appointments.day': 'Día',
+  'appointments.today': 'Hoy',
 };
 export default enMessages;

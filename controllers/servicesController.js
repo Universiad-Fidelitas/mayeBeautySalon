@@ -154,7 +154,7 @@ const deleteServices = async (req, res = response) => {
         const { service_ids } = req.body;
         const placeholders = service_ids.map(() => '?').join(',');
  
-        const { affectedRows } = await dbService.query(`DELETE FROM services WHERE service_id IN (${placeholders})`, service_ids);
+        const { affectedRows } = await dbService.query(`UPDATE services SET activated = 0 WHERE service_id IN (${placeholders})`, service_ids);
         
         res.status(200).json({
             success: true,
