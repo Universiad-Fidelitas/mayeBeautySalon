@@ -3,7 +3,7 @@ import { Button, Modal, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstra
 import { useSelector } from 'react-redux';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import moment from 'moment';
-import { useAddAppointment, useDeleteAppointment, useUpdateAppointment } from 'hooks/react-query/useAppointments';
+import { useAddAppointment, useDeleteAppointment, useGetAppointmentUsers, useUpdateAppointment } from 'hooks/react-query/useAppointments';
 import { useGetAllServices } from 'hooks/react-query/useServices';
 import { Formik, Form, Field, ErrorMessage, useFormikContext } from 'formik';
 import * as Yup from 'yup';
@@ -17,9 +17,11 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
   const updateAppointment = useUpdateAppointment();
   const addAppointment = useAddAppointment();
   const deleteAppointment = useDeleteAppointment();
+  const { data: usersData, isSuccess: isAppointmentUsersSuccess } = useGetAppointmentUsers();
   
   const { data, isSuccess: isServicesSuccess } = useGetAllServices();
   const services = useMemo(() => data?.services?.map((service) => { return { value: service.service_id, label: service.name }}), [data]);
+  const activeUsers = useMemo(() => usersData?.activeUsers.map((activeUser) => { return { value: activeUser.user_id, label: `${activeUser.first_name} ${activeUser.last_name}` }}), [data]);
 
   const [isShowDeleteConfirmModal, setIsShowDeleteConfirmModal] = useState(false);
   const convertStringToDate = (dateStr, key) => {
@@ -59,49 +61,68 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
     setIsShowDeleteConfirmModal(true);
   };
 
-  const onSubmit = useCallback(({ serviceDate, startTime, endTime, service, extraDescription, extra }) => {
+  const onSubmit = useCallback(({ serviceDate, startTime, endTime, service, extraDescription, extra, activeUser }) => {
+    console.log('extra', extra.toString().length > 0 )
     if (selectedItem.id !== 0) {
       const itemSubmit = {
         id: selectedItem.id,
-        title: selectedItem.title,
+        title: services.find((x) => x.value === service).label,
         start: convertDateToString(serviceDate, moment(startTime, 'hh:mm A').format('HH:mm')),
         end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
         service_id: service,
         service_appointment_id: selectedItem.service_appointment_id,
         extra_description: extraDescription,
-        extra
+        extra: extra.toString().length > 0 ? extra : 0,
+        user_id: activeUser
       }
       updateAppointment.mutateAsync(itemSubmit);
     } else {
       const itemSubmit = {
-        title: selectedItem.title,
+        title: services.find((x) => x.value === service).label,
         start: convertDateToString(serviceDate, moment(startTime, 'hh:mm A').format('HH:mm')),
         end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
         service_id: service,
         extra_description: extraDescription,
-        extra,
+        extra: extra.toString().length > 0 ? extra : 0,
+        user_id: activeUser
       }
       addAppointment.mutateAsync(itemSubmit);
     }
     onHide();
-  }, [selectedItem]);
+  }, [selectedItem, services]);
   const validationSchema = Yup.object().shape({
-    extra: Yup.number().required(f({ id: 'appointments.extraErrorRequired' })).typeError(f({ id: 'appointments.extraErrorBeNumber' })),
-    extraDescription: Yup.string().required(f({ id: 'appointments.extraDescriptionRequired' })).min(3, f({ id: 'appointments.extraDescriptionMinLength' })).max(200, f({ id: 'appointments.extraDescriptionMaxLength' })),
+    extra: Yup.number().typeError(f({ id: 'appointments.extraErrorBeNumber' })).min(0, f({ id: 'appointments.extraErrorBeNumber' })),
+    extraDescription: Yup.string().min(3, f({ id: 'appointments.extraDescriptionMinLength' })).max(200, f({ id: 'appointments.extraDescriptionMaxLength' })),
     service: Yup.string().required(f({ id: 'appointments.serviceErrorRequired' })),
     startTime: Yup.string().required(f({ id: 'appointments.startTimeErrorRequired' })),
-    endTime: Yup.string().required(f({ id: 'appointments.endTimeErrorRequired' })),
+    activeUser: Yup.string().required(f({ id: 'appointments.customerErrorRequired' })),
+    endTime: Yup.string()
+    .required(f({ id: 'appointments.endTimeErrorRequired' }))
+    .test('is-greater', f({ id: 'appointments.errorEndTime' }), (value, context) => {
+      const { startTime } = context.parent;
+      if (!startTime || !value) {
+        return true;
+      }
+      const startTimeMoment = moment(startTime, 'h:mm A');
+      const endTimeMoment = moment(value, 'h:mm A');
+      return endTimeMoment.isAfter(startTimeMoment);
+    }),
   });
 
   const initialValues = useMemo(() => {
     return {
-      title: selectedItem ? selectedItem.title : '',
+      title: selectedItem ? `${selectedItem.title} - ${selectedItem.first_name}` : '',
       service: selectedItem ? selectedItem.service_id : 0,
       startTime: selectedItem.startTime && moment(selectedItem.startTime, 'HH:mm').format('hh:mm A'),
       endTime: selectedItem.endTime && moment(selectedItem.endTime, 'HH:mm').format('hh:mm A'),
       serviceDate: selectedItem.startDate ? selectedItem.startDate : new Date(),
-      extra: selectedItem ? selectedItem.extra : '',
-      extraDescription: selectedItem ? selectedItem.extra_description : ''
+      extra: (selectedItem && selectedItem.extra !== 0) ? selectedItem.extra : '',
+      extraDescription: selectedItem ? selectedItem.extra_description : '',
+      email: selectedItem ? selectedItem.email : '',
+      phone: selectedItem ? selectedItem.phone : '',
+      first_name: selectedItem ? selectedItem.first_name : '',
+      last_name: selectedItem ? selectedItem.last_name : '',
+      activeUser: selectedItem ? selectedItem.user_id : 0,
     }
   }, [selectedItem, services]);
   
@@ -131,28 +152,38 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
   }, [])
   
 
+  const UserInformationField = () => {
+    const { values } = useFormikContext();
+    const selectedUser = usersData?.activeUsers?.find((x) => x.user_id === values.activeUser)
+    return (
+      <>
+        <div className="mb-3 top-label">
+          <label className="form-label bg-transparent">{f({ id: 'appointments.customerName' })}</label>
+          <input className="form-control" value={ `${selectedUser ? selectedUser.first_name : '' } ${selectedUser ? selectedUser.last_name: '' }` } disabled />
+        </div>
+        <div className="mb-3 top-label">
+          <label className="form-label bg-transparent">{f({ id: 'appointments.emailInformation' })}</label>
+          <input className="form-control" value={ selectedUser ? selectedUser.email : ''} disabled />
+        </div>
+        <div className="mb-3 top-label">
+          <label className="form-label bg-transparent">{f({ id: 'appointments.phoneNumber' })}</label>
+          <input className="form-control" value={ selectedUser ? selectedUser.phone : '' } disabled />
+        </div>
+      </>
+    );
+  };
 
-
-  if (!isServicesSuccess){
-    return <>Loading </>
-  }
-
+  if (isServicesSuccess && isAppointmentUsersSuccess){
   return (
     <>
       <Modal className="modal-right fade" show={show} onHide={onHide}>
         <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
           <Form>
             <Modal.Header>
-              <Modal.Title>{selectedEvent.id !== 0 ? 'Edit Event' : 'Add Event'}</Modal.Title>
+              <Modal.Title>{selectedEvent.id !== 0 ? f({ id: 'appointments.editAppointment' }) : f({ id: 'appointments.addAppointment' })}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="d-flex flex-column">
-              <div className="mb-3 top-label">
-                <label className="form-label">Title</label>
-                <Field className="form-control" type="text" id="title" name="title" />
-                <ErrorMessage name="salary" component="div" />
-              </div>
-
-              <Row className="g-0 mb-3">
+              <Row className="g-0">
                 <DatepickerField
                   label={f({ id: 'appointments.appointmentDate' })}
                   name="serviceDate"
@@ -194,13 +225,21 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
                   <ErrorMessage className='text-danger' name='extra' component="div" />
                 </div>
               </Row>
-              <Row className="g-0">
-                <div className="mb-3 top-label">
+              <Row className="g-0 mb-2">
+                <div className="top-label">
                   <label className="form-label">{ f({ id: 'appointments.extraDescription' }) }</label>
                   <Field as="textarea" className="form-control" type="text" id="extraDescription" name="extraDescription"/>
                   <ErrorMessage className='text-danger' name='extraDescription' component="div" />
                 </div>
               </Row>
+              <hr/>
+              <h4 className='mb-3'>{ f({ id: 'appointments.customerInformation' }) }</h4>
+                <SelectField
+                  label={f({ id: 'appointments.service' })}
+                  name="activeUser"
+                  options={activeUsers}
+                />
+              <UserInformationField/>
             </Modal.Body>
             <Modal.Footer>
               {selectedEvent.id !== 0 ? (
@@ -242,7 +281,8 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
         </Modal.Footer>
       </Modal>
     </>
-  );
+  ) }
+  return <p>cargando</p>
 };
 
 export default ModalAddEdit;
