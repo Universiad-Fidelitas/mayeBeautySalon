@@ -154,13 +154,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
                   <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
                 </div>
               ))}
-
-              <div className="mb-3">
-                <label className="form-label">Salario</label>
-                <Field className="form-control" type="number" id="salary" name="salary" />
-
-                <ErrorMessage style={{ color: 'red' }} name="salary" component="div" />
-              </div>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>

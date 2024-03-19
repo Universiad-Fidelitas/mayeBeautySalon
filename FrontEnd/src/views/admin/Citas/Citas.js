@@ -14,8 +14,6 @@ import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ModalAddEdit from './components/ModalAddEdit';
 import { setSelectedEvent } from './calendarSlice';
 
-
-
 const CustomToggle = React.forwardRef(({ onClick }, ref) => (
   <Button
     ref={ref}
@@ -53,9 +51,9 @@ const Citas = () => {
   const [selectedView, setSelectedView] = useState('dayGridMonth');
   const [isShowModalAddEdit, setIsShowModalAddEdit] = useState(false);
   const { data: getMonthData, isSuccess: isGetMonthDataSuccess } = useGetMonthAppointments();
-  
+
   const appointmentsData = useMemo(() => {
-    if (!isGetMonthDataSuccess) { 
+    if (!isGetMonthDataSuccess) {
       return [];
     }
     const { monthAppointments } = getMonthData;
@@ -65,7 +63,7 @@ const Citas = () => {
         ...appointment,
       };
     });
-  }, [getMonthData])
+  }, [getMonthData]);
 
   const onPrevButtonClick = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -100,19 +98,18 @@ const Citas = () => {
       calendarRef.current.getApi().today();
     }
   };
-  
+
   const handleDateSelect = useCallback(async (selectInfo) => {
     const calendarApi = selectInfo.view.calendar;
     calendarApi.unselect();
     dispatch(setSelectedEvent({ id: 0, title: 'New Event', startDate: selectInfo.startStr }));
     setIsShowModalAddEdit(true);
-  }, [])
-  
+  }, []);
 
   const handleEventClick = (clickInfo) => {
     const { id, url } = clickInfo.event;
     if (!url) {
-      console.log('handleEventClick', clickInfo.event.id)
+      console.log('handleEventClick', clickInfo.event.id);
       dispatch(setSelectedEvent(appointmentsData.find((x) => x.id === Number(id))));
       setIsShowModalAddEdit(true);
     }
