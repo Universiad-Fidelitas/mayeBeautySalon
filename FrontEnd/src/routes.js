@@ -10,13 +10,13 @@ import Productos from 'views/admin/Inventario/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores';
 import Inventario from 'views/admin/Inventario/Inventario';
-import Servicios from 'views/admin/Inventario/Services/ServicesView2';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
 import Pagos from 'views/admin/Facturas/Pagos';
 import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
+import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
@@ -62,7 +62,7 @@ const routesAndMenuItems = {
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
-        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: Servicios },
+        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
         { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_PRODUCTS', component: Stock },
         { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
       ],
