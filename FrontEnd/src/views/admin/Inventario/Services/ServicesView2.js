@@ -156,7 +156,7 @@ const Servicios = () => {
     },
     {
       id: 'price',
-      label: 'Nombre de el servicio',
+      label: 'Precio',
       type: 'number',
     },
   ];
