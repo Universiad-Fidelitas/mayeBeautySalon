@@ -73,7 +73,7 @@ const saveAppointment = async (req, res = response) => {
         sendEmail('appointmentConfirmation', email, "Confirmación de cita", {
             selectedServiceName: serviceInfo[0].name,
             selectedDate: moment(appointmentDateTime.date).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
-            selectedTime: moment(appointmentDateTime.time).format('hh:mm A'),
+            selectedTime: moment(appointmentDateTime.time, 'HH:mm:ss').format('hh:mmA'),
             servicePrice: serviceInfo[0].price,
         });
 
@@ -186,7 +186,7 @@ const updateAppointment = async (req, res = response) => {
         sendEmail('appointmentConfirmation', getUserAppInfo[0].email, "Confirmación de cita", {
             selectedServiceName: serviceData[0].name,
             selectedDate: moment(start).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
-            selectedTime: moment(start).format('hh:mm A'),
+            selectedTime: moment(start, 'HH:mm:ss').format('hh:mmA'),
             servicePrice: serviceData[0].price,
         });
         
@@ -230,7 +230,7 @@ const addAppointment = async (req, res = response) => {
         sendEmail('appointmentConfirmation', getUserAppInfo[0].email, "Confirmación de cita", {
             selectedServiceName: serviceData[0].name,
             selectedDate: moment(start).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
-            selectedTime: moment(start).format('hh:mm A'),
+            selectedTime: moment(start, 'HH:mm:ss').format('hh:mmA'),
             servicePrice: serviceData[0].price,
         });
         

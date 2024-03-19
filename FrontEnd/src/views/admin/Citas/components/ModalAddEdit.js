@@ -31,7 +31,7 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
       usersData?.activeUsers.map((activeUser) => {
         return { value: activeUser.user_id, label: `${activeUser.first_name} ${activeUser.last_name}` };
       }),
-    [data]
+    [usersData]
   );
 
   const [isShowDeleteConfirmModal, setIsShowDeleteConfirmModal] = useState(false);
