@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useServices } from 'hooks/react-query/useServices copy';
+import { useServices } from 'hooks/react-query/useServices';
 import { ModalAddEditServices } from './ModalAddEditServices';
 
 export const ServicesView = () => {

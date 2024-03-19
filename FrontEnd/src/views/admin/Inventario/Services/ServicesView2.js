@@ -143,7 +143,7 @@ const Servicios = () => {
       .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
       .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
       .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    price: Yup.string()
+    price: Yup.number()
       .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
       .min(1, <span style={{ color: 'red' }}>El precio debe ser al menos 1</span>),
   });
