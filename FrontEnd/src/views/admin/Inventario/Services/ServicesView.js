@@ -142,8 +142,8 @@ export const ServicesView = () => {
                 <ControlsDelete
                   tableInstance={tableInstance}
                   deleteItems={deleteItems}
-                  modalTitle="¿Desea eliminar el rol seleccionado?"
-                  modalDescription="El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                  modalTitle="¿Desea eliminar el servicio seleccionado?"
+                  modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                 />
               </div>
               <div className="d-inline-block">
