@@ -26,6 +26,7 @@ import stockReducer from 'store/stock/stockSlice';
 import logsReducer from 'store/logs/logsSlice';
 import reportsReducer from 'store/reports/reportsSlice';
 import reports2Reducer from 'store/reports/reports2Slice';
+import servicesReducer from 'store/services/servicesSlice';
 import reports3Reducer from 'store/reports/reports3Slice';
 // import persist key
 import { REDUX_PERSIST_KEY } from 'config.js';
@@ -63,6 +64,7 @@ const persistedReducer = persistReducer(
     notifications: notificationsReducer,
     scrollspy: scrollspyReducer,
     calendar: calendarReducer,
+    services: servicesReducer,
     appointments: appointmentsReducer,
   })
 );

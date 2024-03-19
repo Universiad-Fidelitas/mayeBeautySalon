@@ -7,6 +7,7 @@ export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDe
   const { formatMessage: f } = useIntl();
   const { selectedFlatRows } = tableInstance;
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  console.log('test', selectedFlatRows);
 
   const onClick = useCallback(() => {
     setConfirmDeleteModal(true);

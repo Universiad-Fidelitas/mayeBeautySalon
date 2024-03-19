@@ -118,7 +118,7 @@ const putExpense = async (req, res = response) => {
     const { expense_id } = req.params;
     const { expense_type, price } = req.body;
     try {
-        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM categories WHERE activated = 1 AND category_id = ?', [expense_id]);
+        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM expenses WHERE activated = 1 AND category_id = ?', [expense_id]);
         const userQuery = `CALL sp_expense('update', ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [expense_id, expense_type, price ]);
         res.status(200).json({
@@ -152,8 +152,9 @@ const putExpense = async (req, res = response) => {
 
 const deleteExpense = async (req, res = response) => {
     const { expense_id } = req.body;
+    console.log("delete",expense_id)
     try {
-        const userQuery = `CALL sp_expense('delete', ?, '','');`;
+        const userQuery = `CALL sp_expense('delete', ?, '',0);`;
         const rows = await dbService.query(userQuery, [expense_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {

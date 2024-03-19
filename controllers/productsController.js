@@ -169,6 +169,7 @@ const putProducts = async (req, res = response) => {
         const { product_id } = req.body;
         try {
              const [productBeforeUpdate] = await dbService.query('SELECT name FROM products WHERE product_id = ?', [product_id]);
+             const productNameBeforeUpdate = productBeforeUpdate ? productBeforeUpdate.name : "Desconocido";
             const userQuery = `call sp_product ('delete', ?, '', 0, 0, '', '', 0, 0, 0);`;
             const rows = await dbService.query(userQuery, [product_id]);
             const { affectedRows } = helper.emptyOrRows(rows);
@@ -187,7 +188,7 @@ const putProducts = async (req, res = response) => {
             INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
             VALUES ('delete', ?, 'products', NOW(), '', ?)
         `;
-        await dbService.query(logQuery, ['delete products | old one: ' + productBeforeUpdate, 11]);
+        await dbService.query(logQuery, ['delete products | old one: ' + productNameBeforeUpdate, 11]);
         } catch (error) {
             try {
                 const logQuery = `
