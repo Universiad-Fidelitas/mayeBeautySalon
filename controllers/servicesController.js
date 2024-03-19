@@ -28,9 +28,9 @@ const getServices = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT * FROM services';
+        let baseQuery = 'SELECT * FROM services where activated=1';
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
@@ -80,8 +80,8 @@ const getServices = async (req, res = response) => {
 
 const postServices = async (req, res = response) => {
     try {
-        const { name, duration, price, activated } = req.body;
-        const { insertId } = await dbService.query(`INSERT INTO services (name, duration, price, activated) VALUES (?, ?, ?, ?)`, [name, duration, price, activated]);
+        const { name, duration, price } = req.body;
+        const { insertId } = await dbService.query(`INSERT INTO services (name, duration, price, activated) VALUES (?, ?, ?, 1)`, [name, duration, price]);
         res.status(200).json({
             success: true,
             insertId,
@@ -114,10 +114,10 @@ const postServices = async (req, res = response) => {
 const putServices = async (req, res = response) => {
     try {
         const { service_id } = req.params;
-        const { name, duration, price, activated} = req.body;
+        const { name, duration, price} = req.body;
         const [serviceBeforeUpdate] = await dbService.query('SELECT name FROM services WHERE service_id = ?', [service_id]);
         const serviceNameBeforeUpdate = serviceBeforeUpdate ? serviceBeforeUpdate.name : "Desconocido";
-        const  { changedRows }  = await dbService.query('UPDATE services SET name = ?, duration = ?, price = ?, activated = ? WHERE service_id = ?', [name, duration, price, activated, service_id]);
+        const  { changedRows }  = await dbService.query('UPDATE services SET name = ?, duration = ?, price = ?, activated = 1 WHERE service_id = ?', [name, duration, price, service_id]);
         
         res.status(200).json({
             success: true,
@@ -151,11 +151,11 @@ const putServices = async (req, res = response) => {
 const deleteServices = async (req, res = response) => {
 
     try {
-        const { service_ids } = req.body;
-        const placeholders = service_ids.map(() => '?').join(',');
- 
-        const { affectedRows } = await dbService.query(`UPDATE services SET activated = 0 WHERE service_id IN (${placeholders})`, service_ids);
-        
+
+        const { service_id } = req.body;
+        const { affectedRows } = await dbService.query(`UPDATE services SET activated=0 WHERE FIND_IN_SET(service_id, ?);`,[service_id]);
+
+
         res.status(200).json({
             success: true,
             affectedRows,

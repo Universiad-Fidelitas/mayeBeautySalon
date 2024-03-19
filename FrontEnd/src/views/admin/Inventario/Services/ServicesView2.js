@@ -2,47 +2,68 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
   ModalAddEdit,
   ButtonsAddNew,
-  ContservicesPageSize,
-  ContservicesAdd,
-  ContservicesEdit,
-  ContservicesSearch,
-  ContservicesDelete,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
   Table,
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteServices, editService, getServices, postService } from 'store/services';
+import { getServices, postService, editService, deleteServices } from 'store/services/servicesThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { ModalAddEditServices2 } from './ModalAddEditServices2';
 
-const Servicio = () => {
+const Servicios = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Servicio';
+  const title = 'Servicios';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'citas/calendario', text: f({ id: 'citas' }) },
-    { to: 'citas/servicios', title: 'Servicios' },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
+    { to: '/inventariado/services', title: 'Servicios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isServiceesLoading, services, pageCount } = useSelector((state) => state.services);
+  const { isServicesLoading, services, pageCount } = useSelector((state) => state.services);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Servicio Id',
+        Header: 'ID',
         accessor: 'service_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Servicio',
+        Header: 'Nombre',
         accessor: 'name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tiempo',
+        accessor: 'duration',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Precio',
+        accessor: 'price',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Estado del Servicio',
+        accessor: 'activated',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -71,7 +92,7 @@ const Servicio = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['service_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'service_id', desc: false }], hiddenColumns: ['service_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -82,7 +103,6 @@ const Servicio = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
     dispatch(getServices({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
@@ -91,11 +111,10 @@ const Servicio = () => {
     if (services.length > 0) {
       setData(services);
     }
-  }, [isServiceesLoading]);
+  }, [isServicesLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      console.log('delete service', values);
       dispatch(deleteServices(values));
     },
     [sortBy, pageIndex, pageSize]
@@ -121,30 +140,27 @@ const Servicio = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required('El nombre es requerido')
-      .min(3, 'El nombre debe tener al menos 3 caracteres')
-      .max(15, 'El nombre debe tener al máximo |5 caracteres'),
-    price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
-      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
+    price: Yup.string()
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .min(1, <span style={{ color: 'red' }}>El precio debe ser al menos 1</span>),
   });
 
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre del servicio',
-    },
-    {
-      id: 'duration',
-      label: 'Duracion',
+      label: 'Nombre de el servicio',
+      type: 'text',
     },
     {
       id: 'price',
-      label: 'Precio',
+      label: 'Nombre de el servicio',
+      type: 'number',
     },
   ];
-
+  console.log('algo', tableInstance);
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -167,22 +183,22 @@ const Servicio = () => {
             <Row className="mb-3">
               <Col sm="12" md="5" lg="3" xxl="2">
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
-                  <ContservicesSearch tableInstance={tableInstance} onChange={searchItem} />
+                  <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ContservicesAdd tableInstance={tableInstance} /> <ContservicesEdit tableInstance={tableInstance} />{' '}
-                  <ContservicesDelete
+                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
+                  <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    type="service"
                     modalTitle="¿Desea eliminar el servicio seleccionado?"
                     modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="service"
                   />
                 </div>
                 <div className="d-inline-block">
-                  <ContservicesPageSize tableInstance={tableInstance} />
+                  <ControlsPageSize tableInstance={tableInstance} />
                 </div>
               </Col>
             </Row>
@@ -195,10 +211,16 @@ const Servicio = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditServices2
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>
   );
 };
-export default Servicio;
+export default Servicios;

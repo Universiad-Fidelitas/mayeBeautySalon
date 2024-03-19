@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useServices } from 'hooks/react-query/useServices';
+import { useServices } from 'hooks/react-query/useServices copy';
 import { ModalAddEditServices } from './ModalAddEditServices';
 
 export const ServicesView = () => {
@@ -24,7 +24,7 @@ export const ServicesView = () => {
   const [term, setTerm] = useState('');
   const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
-  
+
   const columns = useMemo(() => {
     return [
       {
@@ -94,40 +94,44 @@ export const ServicesView = () => {
 
   const { getServices, deleteServices } = useServices({ term, pageIndex, pageSize, sortBy });
   const { isSuccess: isServicesDataSuccess, data: servicesData } = getServices;
-  
-  useEffect(() => {
-    if(isServicesDataSuccess){
-      setData(servicesData.items)
-      setPageCount(servicesData.pageCount)
-    }
-  }, [isServicesDataSuccess, servicesData])
 
-  const deleteItems = useCallback(async (values) => {
-      deleteServices.mutateAsync({service_ids: values});
-  },[pageIndex, pageSize]);
+  useEffect(() => {
+    if (isServicesDataSuccess) {
+      setData(servicesData.items);
+      setPageCount(servicesData.pageCount);
+    }
+  }, [isServicesDataSuccess, servicesData]);
+
+  const deleteItems = useCallback(
+    async (values) => {
+      console.log('delete Serv', values);
+      deleteServices.mutateAsync({ service_ids: values });
+    },
+    [pageIndex, pageSize]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
 
-
   return (
     <>
-    <HtmlHead title={title} description={description} />
+      <HtmlHead title={title} description={description} />
 
-    <Row>
-      <Col>
-        <div className="page-title-container">
-          <Row>
-            <Col xs="12" md="7">
-              <h1 className="mb-0 pb-0 display-4">{title}</h1>
-              <BreadcrumbList items={breadcrumbs} />
-            </Col>
-            <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-              <ButtonsAddNew tableInstance={tableInstance} />
-            </Col>
-          </Row>
-        </div>
+      <Row>
+        <Col>
+          <div className="page-title-container">
+            <Row>
+              <Col xs="12" md="7">
+                <h1 className="mb-0 pb-0 display-4">{title}</h1>
+                <BreadcrumbList items={breadcrumbs} />
+              </Col>
+              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                <ButtonsAddNew tableInstance={tableInstance} />
+              </Col>
+            </Row>
+          </div>
+
 
         <div>
           <Row className="mb-3">

@@ -3,7 +3,7 @@ import { Button, FormCheck, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Select from 'react-select';
-import { useServices } from 'hooks/react-query/useServices';
+import { useServices } from 'hooks/react-query/useServices copy';
 import { useIntl } from 'react-intl';
 
 export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
