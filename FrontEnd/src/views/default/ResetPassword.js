@@ -15,30 +15,31 @@ import { IconNotification } from 'components/notifications/IconNotification';
 const ResetPassword = () => {
   const history = useHistory();
   const { resetToken } = useParams();
-  const { data: resetPassTokenState, isLoading } = useGetResetPassTokenState({resetToken});
+  const { data: resetPassTokenState, isLoading } = useGetResetPassTokenState({ resetToken });
   const dispatch = useDispatch();
 
   const title = 'Restablecer Contraseña';
   const description = 'Pagina para restablecer contraseña de usuario';
   const validationSchema = Yup.object().shape({
-    password: Yup.string().min(6, 'Must be at least 6 chars!').required('Password is required'),
+    password: Yup.string().min(6, 'Debe tener al menos 6 caracteres').required('La contraseña es requerida'),
     passwordConfirm: Yup.string()
-      .required('Password Confirm is required')
-      .oneOf([Yup.ref('password'), null], 'Must be same with password!'),
+      .required('La confirmación de contraseña es requerida')
+      .oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales.'),
   });
   const initialValues = { password: 'Mg110101', passwordConfirm: 'Mg110101' };
   const onSubmit = async ({ password }) => {
-    
-    const { status, message } = await dispatch(updateUserPassword({
-      password,
-      user_id: resetPassTokenState.user_id,
-      resetToken
-    }));
+    const { status, message } = await dispatch(
+      updateUserPassword({
+        password,
+        user_id: resetPassTokenState.user_id,
+        resetToken,
+      })
+    );
     if (status) {
-      toast(<IconNotification title="Contraseña Actualizada" description={message} toastType="success"/>, { className: 'success' });
+      toast(<IconNotification title="Contraseña Actualizada" description={message} toastType="success" />, { className: 'success' });
       history.push('/login');
     } else {
-      toast(<IconNotification title="Problema Encontrado" description={message} toastType="danger"/>, { className: 'danger' });
+      toast(<IconNotification title="Problema Encontrado" description={message} toastType="danger" />, { className: 'danger' });
     }
   };
 
@@ -52,8 +53,8 @@ const ResetPassword = () => {
             <h1 className="display-3 text-white">Maye Beauty Salón</h1>
           </div>
           <p className="h6 text-white lh-1-5 mb-5">
-           Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia exclusiva
-           y descubre un mundo de belleza hecho a tu medida
+            Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia
+            exclusiva y descubre un mundo de belleza hecho a tu medida
           </p>
           <div className="mb-5">
             <Button size="lg" variant="outline-white" href="/">
@@ -101,24 +102,24 @@ const ResetPassword = () => {
     </div>
   );
 
-useEffect(() => {
-  if(!isLoading && resetPassTokenState){
-    if(!resetPassTokenState.status) {
-      history.push('/login');
-      const Content = () => (
-        <>
-          <div className="mb-2">
-            <CsLineIcons icon="notification" width="20" height="20" className="cs-icon icon text-danger me-3 align-middle" />
-            <span className="align-middle text-danger heading font-heading">El token expiró!</span>
-          </div>
-          <div className="text-muted mb-2">Token de email no es correcto</div>
-        </>
-      );
+  useEffect(() => {
+    if (!isLoading && resetPassTokenState) {
+      if (!resetPassTokenState.status) {
+        history.push('/login');
+        const Content = () => (
+          <>
+            <div className="mb-2">
+              <CsLineIcons icon="notification" width="20" height="20" className="cs-icon icon text-danger me-3 align-middle" />
+              <span className="align-middle text-danger heading font-heading">El token expiró!</span>
+            </div>
+            <div className="text-muted mb-2">Token de email no es correcto</div>
+          </>
+        );
 
-      toast(<Content />, { className: 'danger' });
+        toast(<Content />, { className: 'danger' });
+      }
     }
-  }
-}, [isLoading, resetPassTokenState])
+  }, [isLoading, resetPassTokenState]);
 
   if (isLoading) {
     return <div>Loading...</div>;

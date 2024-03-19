@@ -1,59 +1,71 @@
-import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import HtmlHead from 'components/html-head/HtmlHead';
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import {
+  ModalAddEdit,
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+} from 'components/datatables';
+import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { useDispatch, useSelector } from 'react-redux';
+import { getServices, postService, editService, deleteServices } from 'store/services/servicesThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
-import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
-import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useServices } from 'hooks/react-query/useServices copy';
-import { ModalAddEditServices } from './ModalAddEditServices';
+import HtmlHead from 'components/html-head/HtmlHead';
+import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
+import * as Yup from 'yup';
+import { ModalAddEditServices2 } from './ModalAddEditServices2';
 
-export const ServicesView = () => {
+const Servicios = () => {
   const { formatMessage: f } = useIntl();
-  const title = f({ id: 'services.title' });
-  const description = f({ id: 'services.description' });
+  const title = 'Servicios';
+  const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: f({ id: 'menu.home' }) },
-    { to: '', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/servicios', title: f({ id: 'services.title' }) },
+    { to: '', text: 'Home' },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
+    { to: '/inventariado/services', title: 'Servicios' },
   ];
-
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
-  const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
+  const { isServicesLoading, services, pageCount } = useSelector((state) => state.services);
 
-  const columns = useMemo(() => {
+  const columns = React.useMemo(() => {
     return [
       {
+        Header: 'ID',
         accessor: 'service_id',
-        hideColumn: true,
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: f({ id: 'services.serviceName' }),
+        Header: 'Nombre',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-4',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: f({ id: 'services.serviceTime' }),
+        Header: 'Tiempo',
         accessor: 'duration',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-2',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: f({ id: 'services.servicePrice' }),
+        Header: 'Precio',
         accessor: 'price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-2',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: f({ id: 'services.serviceState' }),
+        Header: 'Estado del Servicio',
         accessor: 'activated',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-3',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
         Header: '',
@@ -65,7 +77,7 @@ export const ServicesView = () => {
         },
       },
     ];
-  }, [f]);
+  }, []);
 
   const tableInstance = useTable(
     {
@@ -80,7 +92,7 @@ export const ServicesView = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'service_id', desc: true }], hiddenColumns: ['service_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'service_id', desc: false }], hiddenColumns: ['service_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -91,29 +103,64 @@ export const ServicesView = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
-  const { getServices, deleteServices } = useServices({ term, pageIndex, pageSize, sortBy });
-  const { isSuccess: isServicesDataSuccess, data: servicesData } = getServices;
+  useEffect(() => {
+    dispatch(getServices({ term, sortBy, pageIndex, pageSize }));
+  }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (isServicesDataSuccess) {
-      setData(servicesData.items);
-      setPageCount(servicesData.pageCount);
+    if (services.length > 0) {
+      setData(services);
     }
-  }, [isServicesDataSuccess, servicesData]);
+  }, [isServicesLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      console.log('delete Serv', values);
-      deleteServices.mutateAsync({ service_ids: values });
+      dispatch(deleteServices(values));
     },
-    [pageIndex, pageSize]
+    [sortBy, pageIndex, pageSize]
+  );
+
+  const editItem = useCallback(
+    async (values) => {
+      dispatch(editService(values));
+    },
+    [sortBy, pageIndex, pageSize]
+  );
+
+  const addItem = useCallback(
+    async (values) => {
+      dispatch(postService(values));
+    },
+    [sortBy, pageIndex, pageSize]
   );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
 
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
+    price: Yup.string()
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .min(1, <span style={{ color: 'red' }}>El precio debe ser al menos 1</span>),
+  });
+
+  const formFields = [
+    {
+      id: 'name',
+      label: 'Nombre de el servicio',
+      type: 'text',
+    },
+    {
+      id: 'price',
+      label: 'Nombre de el servicio',
+      type: 'number',
+    },
+  ];
+  console.log('algo', tableInstance);
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -147,6 +194,7 @@ export const ServicesView = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el servicio seleccionado?"
                     modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="service"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -163,9 +211,16 @@ export const ServicesView = () => {
               </Col>
             </Row>
           </div>
-          {isOpenAddEditModal && <ModalAddEditServices tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />}
+          <ModalAddEditServices2
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>
   );
 };
+export default Servicios;
