@@ -164,18 +164,7 @@ const Logs = () => {
           </div>
 
           <div>
-            <Row className="mb-3">
-              <Col sm="12" md="5" lg="3" xxl="2">
-                <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
-                  <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
-                </div>
-              </Col>
-              <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
-                <div className="d-inline-block">
-                  <ControlsPageSize tableInstance={tableInstance} />
-                </div>
-              </Col>
-            </Row>
+         
             <Row>
               <Col xs="12">
                 <Table className="react-table rows" tableInstance={tableInstance} />
