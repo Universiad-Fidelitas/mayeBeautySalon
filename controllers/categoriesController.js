@@ -116,7 +116,7 @@ const putCategory = async (req, res = response) => {
     const { category_id } = req.params;
     const { name } = req.body;
     try {
-        const [categorieBeforeUpdate] = await dbService.query('SELECT name FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
+        const [categorieBeforeUpdate] = await dbService.query('SELECT name FROM categories WHERE  category_id = ?', [category_id]);
         const categorieNameBeforeUpdate = categorieBeforeUpdate ? categorieBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_category('update', ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [category_id, name ]);
