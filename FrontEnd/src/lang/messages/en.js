@@ -288,5 +288,16 @@ const enMessages = {
   'appointments.errorAdd': 'The appointment has not been added!',
   'appointments.successEdit': 'The appointment has been edited successfully!',
   'appointments.errorEdit': 'The appointment has not been edited!',
+  'appointments.customerErrorRequired': 'Customer is required',
+  'appointments.customerInformation': 'Customer Information', 
+  'appointments.customerName': 'Customer Name', 
+  'appointments.emailInformation': 'Email Information', 
+  'appointments.phoneNumber': 'Phone Number',
+  'appointments.editAppointment': 'Edit Appointment',
+  'appointments.errorEndTime': 'End time must be greater than start time',
+  'appointments.month': 'Month',
+  'appointments.week': 'Week',
+  'appointments.day': 'Day',
+  'appointments.today': 'Today',
 };
 export default enMessages;

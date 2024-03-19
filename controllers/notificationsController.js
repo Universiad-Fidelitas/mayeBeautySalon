@@ -19,7 +19,7 @@ const getNotifications = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications`';
+        let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications` where activated=1';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
@@ -121,7 +121,7 @@ const putNotification = async (req, res = response) => {
 const deleteNotification = async (req, res = response) => {
     const { notification_id } = req.body;
     try {
-        const userQuery = `CALL sp_notification('delete', ?, '', '');`;
+        const userQuery = `CALL sp_notification('delete', ?, '', 0);`;
         const rows = await dbService.query(userQuery, [notification_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {

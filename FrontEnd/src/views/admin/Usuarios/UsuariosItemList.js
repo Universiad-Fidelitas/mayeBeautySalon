@@ -29,6 +29,10 @@ const UsuariosItemList = ({ tableInstance }) => {
                     alt={id_card}
                     className="card-img card-img-horizontal sw-11 h-100 h-100 sh-lg-9 thumb"
                     id="contactThumb"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://t4.ftcdn.net/jpg/00/87/28/19/360_F_87281963_29bnkFXa6RQnJYWeRfrSpieagNxw1Rru.jpg';
+                    }}
                   />
                 </Col>
                 <Col className="py-3 py-sm-3">

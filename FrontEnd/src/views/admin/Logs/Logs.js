@@ -165,6 +165,13 @@ const Logs = () => {
 
           <div>
          
+            <Row className="mb-3">
+              <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
+                <div className="d-inline-block">
+                  <ControlsPageSize tableInstance={tableInstance} />
+                </div>
+              </Col>
+            </Row>
             <Row>
               <Col xs="12">
                 <Table className="react-table rows" tableInstance={tableInstance} />

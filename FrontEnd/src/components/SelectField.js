@@ -19,7 +19,7 @@ export const SelectField = ({ label, ...props }) => {
       classNamePrefix="react-select"
       onChange={handleChange}
       onBlur={() => field.onBlur(field.name)}
-      value={props.options.find(option => option.value === field.value)}
+      value={props?.options?.find(option => option.value === field.value)}
     />
     {meta.touched && meta.error ? (
       <ErrorMessage className='text-danger' name={props.name} component="div" />

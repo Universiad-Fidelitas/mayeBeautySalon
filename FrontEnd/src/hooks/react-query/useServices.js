@@ -8,18 +8,19 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
   const { formatMessage: f } = useIntl();
   const getServices = async () => {
     const { data } = await baseApi.post('/services', {
-        term,
-        pageIndex,
-        pageSize,
-        sortBy
-      });
-      return data;
+      term,
+      pageIndex,
+      pageSize,
+      sortBy,
+    });
+    return data;
   };
 
   const addServices = () => {
     const queryClient = useQueryClient();
-  
-    const addServicesApi = useCallback( async (newService) => {
+
+    const addServicesApi = useCallback(
+      async (newService) => {
         const { data } = await baseApi.post('/services/add', newService);
         const { success, message } = data;
         if (success) {
@@ -28,13 +29,15 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
           toast(f({ id: message }), { className: 'danger' });
         }
         return data;
-    },[f]);
-  
+      },
+      [f]
+    );
+
     return useMutation(addServicesApi, {
       onMutate: async (newService) => {
         await queryClient.cancelQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
         const previousData = queryClient.getQueryData(['project-services', { term, pageIndex, pageSize, sortBy }]);
-  
+
         queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => {
           const newItems = [newService, ...oldData.items.slice(0, 4)];
           return {
@@ -43,10 +46,10 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
             rowCount: newItems.length,
           };
         });
-  
+
         return { previousData };
       },
-  
+
       onSettled: async ({ pageCount }, error, _) => {
         await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
@@ -57,12 +60,13 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
         }
       },
     });
-  }
+  };
 
   const updateServices = () => {
     const queryClient = useQueryClient();
-  
-    const updateServicesApi = useCallback( async (newService) => {
+
+    const updateServicesApi = useCallback(
+      async (newService) => {
         const { data } = await baseApi.put(`/services/${newService.service_id}`, newService);
         const { success, message } = data;
         if (success) {
@@ -71,13 +75,15 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
           toast(f({ id: message }), { className: 'danger' });
         }
         return data;
-    },[f]);
-  
+      },
+      [f]
+    );
+
     return useMutation(updateServicesApi, {
       onMutate: async (newService) => {
         await queryClient.cancelQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
         const previousData = queryClient.getQueryData(['project-services', { term, pageIndex, pageSize, sortBy }]);
-  
+
         queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => {
           const newItems = oldData.items.map((item) => {
             if (item.service_id === newService.service_id) {
@@ -91,10 +97,10 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
             rowCount: newItems.length,
           };
         });
-  
+
         return { previousData };
       },
-  
+
       onSettled: async ({ pageCount }, error, _) => {
         await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
@@ -105,12 +111,13 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
         }
       },
     });
-  }
+  };
 
   const deleteServices = () => {
     const queryClient = useQueryClient();
-  
-    const deleteServicesApi = useCallback( async (service_ids) => {
+
+    const deleteServicesApi = useCallback(
+      async (service_ids) => {
         const { data } = await baseApi.post('/services/delete', service_ids);
         const { success, message } = data;
         if (success) {
@@ -119,27 +126,29 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
           toast(f({ id: message }), { className: 'danger' });
         }
         return data;
-    },[f]);
-  
+      },
+      [f]
+    );
+
     return useMutation(deleteServicesApi, {
       onSuccess: async () => {
         await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
       },
     });
-  }
+  };
 
-  return { 
+  return {
     getServices: useQuery(['project-services', { term, pageIndex, pageSize, sortBy }], getServices),
     addServices: addServices(),
     updateServices: updateServices(),
-    deleteServices: deleteServices()
-  }
+    deleteServices: deleteServices(),
+  };
 };
 
 export const useGetAllServices = () => {
   const getAllServices = async () => {
     const { data } = await baseApi.get('/services/all');
-      return data;
+    return data;
   };
-  return useQuery(['client-services'], getAllServices)
-}
+  return useQuery(['client-services'], getAllServices);
+};

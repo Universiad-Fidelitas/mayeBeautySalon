@@ -2,17 +2,17 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
   ModalAddEdit,
   ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
+  ContservicesPageSize,
+  ContservicesAdd,
+  ContservicesEdit,
+  ContservicesSearch,
+  ContservicesDelete,
   Table,
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { deleteServices, editService, getServices, postService } from 'store/services';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -32,13 +32,13 @@ const Servicio = () => {
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+  const { isServiceesLoading, services, pageCount } = useSelector((state) => state.services);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'Servicio Id',
+        accessor: 'service_id',
       },
       {
         Header: 'Servicio',
@@ -71,7 +71,7 @@ const Servicio = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['service_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -84,32 +84,33 @@ const Servicio = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getServices({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
+    if (services.length > 0) {
+      setData(services);
     }
-  }, [isRolesLoading]);
+  }, [isServiceesLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      console.log('delete service', values);
+      dispatch(deleteServices(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      dispatch(editService(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postService(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -166,13 +167,13 @@ const Servicio = () => {
             <Row className="mb-3">
               <Col sm="12" md="5" lg="3" xxl="2">
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
-                  <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
+                  <ContservicesSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
+                  <ContservicesAdd tableInstance={tableInstance} /> <ContservicesEdit tableInstance={tableInstance} />{' '}
+                  <ContservicesDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
                     type="service"
@@ -181,7 +182,7 @@ const Servicio = () => {
                   />
                 </div>
                 <div className="d-inline-block">
-                  <ControlsPageSize tableInstance={tableInstance} />
+                  <ContservicesPageSize tableInstance={tableInstance} />
                 </div>
               </Col>
             </Row>

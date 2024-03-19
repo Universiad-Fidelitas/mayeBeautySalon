@@ -72,8 +72,10 @@ const getUser = async (req, res = response) => {
 const postUser = async (req, res = response) => {
     const { role_id, id_card, first_name, last_name, email, phone, salary } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file.path, salary]);
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file ? req.file.path : '', salary]);
+        
+
  
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
@@ -89,8 +91,8 @@ const postUser = async (req, res = response) => {
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
         VALUES ('create', ?, 'users', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['crete user | new one: ' + first_name, 11]);
+        `;
+        await dbService.query(logQuery, ['crete user | new one: ' + first_name, 11]);
     }
     catch({ message }) {
         try {
@@ -98,7 +100,7 @@ const postUser = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('create', 'create error', 'users', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 11]);
+            await dbService.query(logQuery, [message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -127,7 +129,7 @@ const putUser = async (req, res = response) => {
             message: "¡El usuario ha sido editado exitosamente!"
         });
         }else{
-            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id, salary]);
+            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file ? req.file.path : '', salary, user_id]);
             res.status(200).json({
                 role_id: insertId,
                 affectedRows:affectedRows,

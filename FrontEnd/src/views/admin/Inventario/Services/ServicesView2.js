@@ -1,53 +1,69 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
+import {
+  ModalAddEdit,
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+} from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { getNotifications, postNotification, editNotification, deleteNotifications } from 'store/notifications/notificationsThunk';
+import { getServices, postService, editService, deleteServices } from 'store/services/servicesThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
-import { ModalAddEditNotificacion } from './ModalAddEditNotificacion';
+import { ModalAddEditServices2 } from './ModalAddEditServices2';
 
-const Marcas = () => {
+const Servicios = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Notificaciones';
+  const title = 'Servicios';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/notifications', title: 'Notificaciones' },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
+    { to: '/inventariado/services', title: 'Servicios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isNotificationsLoading, notifications, pageCount } = useSelector((state) => state.notifications);
+  const { isServicesLoading, services, pageCount } = useSelector((state) => state.services);
 
   const columns = React.useMemo(() => {
     return [
       {
         Header: 'ID',
-        accessor: 'notification_id',
+        accessor: 'service_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Producto',
+        Header: 'Nombre',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Producto ID',
-        accessor: 'product_id',
+        Header: 'Tiempo',
+        accessor: 'duration',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Cantidad',
-        accessor: 'amount',
+        Header: 'Precio',
+        accessor: 'price',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Estado del Servicio',
+        accessor: 'activated',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -76,7 +92,7 @@ const Marcas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: true }], hiddenColumns: ['notification_id', 'product_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'service_id', desc: false }], hiddenColumns: ['service_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -88,32 +104,32 @@ const Marcas = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
   useEffect(() => {
-    dispatch(getNotifications({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getServices({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
   useEffect(() => {
-    if (notifications.length > 0) {
-      setData(notifications);
+    if (services.length > 0) {
+      setData(services);
     }
-  }, [isNotificationsLoading]);
+  }, [isServicesLoading]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteNotifications(values));
+      dispatch(deleteServices(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editNotification(values));
+      dispatch(editService(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postNotification(values));
+      dispatch(postService(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -123,19 +139,28 @@ const Marcas = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number()
-      .required(<span style={{ color: 'red' }}>La cantidad es requerida</span>)
-      .min(1, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 1</span>),
+    name: Yup.string()
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
+    price: Yup.number()
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .min(1, <span style={{ color: 'red' }}>El precio debe ser al menos 1</span>),
   });
 
   const formFields = [
     {
-      id: 'amount',
-      label: 'Cantidad',
+      id: 'name',
+      label: 'Nombre de el servicio',
+      type: 'text',
+    },
+    {
+      id: 'price',
+      label: 'Nombre de el servicio',
       type: 'number',
     },
   ];
-
+  console.log('algo', tableInstance);
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -167,9 +192,9 @@ const Marcas = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la notificación seleccionada?"
-                    modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="notification"
+                    modalTitle="¿Desea eliminar el servicio seleccionado?"
+                    modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="service"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -186,7 +211,7 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEditNotificacion
+          <ModalAddEditServices2
             tableInstance={tableInstance}
             addItem={addItem}
             editItem={editItem}
@@ -198,4 +223,4 @@ const Marcas = () => {
     </>
   );
 };
-export default Marcas;
+export default Servicios;
