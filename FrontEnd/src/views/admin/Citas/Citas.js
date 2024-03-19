@@ -9,10 +9,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import bootstrapPlugin from '@fullcalendar/bootstrap';
+import moment from 'moment';
 import { useIntl } from 'react-intl';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ModalAddEdit from './components/ModalAddEdit';
 import { setSelectedEvent } from './calendarSlice';
+
 
 const CustomToggle = React.forwardRef(({ onClick }, ref) => (
   <Button
@@ -35,7 +37,7 @@ const colorsMap = [
   { color: 'tertiary', category: 'Personal' },
 ];
 const Citas = () => {
-  const { formatMessage: f } = useIntl();
+  const { formatMessage: f, formatDate } = useIntl();
   const htmlTitle = f({ id: 'appointments.appointmentsTitle' });
   const htmlDescription = 'Implementation for a basic events and schedule application that built on top of Full Calendar plugin.';
 
@@ -109,11 +111,18 @@ const Citas = () => {
   const handleEventClick = (clickInfo) => {
     const { id, url } = clickInfo.event;
     if (!url) {
-      console.log('handleEventClick', clickInfo.event.id);
       dispatch(setSelectedEvent(appointmentsData.find((x) => x.id === Number(id))));
       setIsShowModalAddEdit(true);
     }
   };
+
+  const month = useMemo(() => {
+    return formatDate(moment(dateTitle, 'MMMM YYYY').format('MM-DD-YYYY'), {
+      month: 'long',
+      year: 'numeric',
+    })
+  }, [dateTitle, formatDate])
+
   // handlers that initiate reads/writes via the 'action' props
   // ------------------------------------------------------------------------------------------
 
@@ -169,10 +178,11 @@ const Citas = () => {
           </Col>
         </Row>
       </div>
+
       {/* Title End */}
       {/* Calendar Title Start */}
       <div className="d-flex justify-content-between">
-        <h2 className="small-title">{dateTitle}</h2>
+        <h2 className="small-title">{ month.charAt(0).toUpperCase() + month.slice(1) }</h2>
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" />
           <Dropdown.Menu
@@ -195,17 +205,17 @@ const Citas = () => {
             }}
           >
             <Dropdown.Item eventKey="dayGridMonth" active={selectedView === 'dayGridMonth'} onClick={() => changeView('dayGridMonth')}>
-              Month
+              { f({ id: 'appointments.month' }) }
             </Dropdown.Item>
             <Dropdown.Item eventKey="timeGridWeek" active={selectedView === 'timeGridWeek'} onClick={() => changeView('timeGridWeek')}>
-              Week
+            { f({ id: 'appointments.week' }) }
             </Dropdown.Item>
             <Dropdown.Item eventKey="timeGridDay" active={selectedView === 'timeGridDay'} onClick={() => changeView('timeGridDay')}>
-              Day
+            { f({ id: 'appointments.day' }) }
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item eventKey="today" onClick={getToday}>
-              Today
+            { f({ id: 'appointments.today' }) }
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -236,6 +246,13 @@ const Citas = () => {
             minute: '2-digit',
             meridiem: false,
           }}
+          dayHeaderContent={({ date }) => {
+            const formattedDayName = formatDate(date, {
+              weekday: 'long'
+            });
+            return (
+            <b>{ formattedDayName.charAt(0).toUpperCase() + formattedDayName.slice(1) }</b>
+          )}}
         />
       </Card>
       {isShowModalAddEdit && (

@@ -11,7 +11,7 @@ const { hashPassword } = require('../helpers/bcrypt');
 const userLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const query = "SELECT * FROM auth_login WHERE email = ?";
+        const query = "SELECT * FROM auth_login WHERE email = ? and activated = 1";
         const rows = await dbService.query(query, [email]);
         const data = helper.emptyOrRows(rows);
 
