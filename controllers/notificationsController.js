@@ -19,7 +19,7 @@ const getNotifications = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications`';
+        let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications` where activated=1';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
