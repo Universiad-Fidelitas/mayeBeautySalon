@@ -76,7 +76,7 @@ const Marcas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'product_id', desc: false }], hiddenColumns: ['notification_id', 'product_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: true }], hiddenColumns: ['notification_id', 'product_id'] },
     },
     useGlobalFilter,
     useSortBy,
