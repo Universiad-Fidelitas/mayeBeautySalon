@@ -20,7 +20,7 @@ const ForgotPassword = () => {
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required('Email is required'),
   });
-  const initialValues = { email: 'mgranadosmunos@gmail.com' };
+  const initialValues = { email: '' };
   const onSubmit = async ({ email }) => {
     const { status, message } = await dispatch(forgotPassword(email));
     if (status) {

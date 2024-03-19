@@ -51,6 +51,7 @@ export const AppointmentsClient = () => {
             setFields(newFields);
     
             if (steps.length - 2 <= steps.indexOf(step)) {
+              console.log('custumerInfo', {...newFields, ...custumerInfo.selectedAppointments})
               const { data } = await baseApi.post('/appointments/save-appointment', {...newFields, ...custumerInfo.selectedAppointments});
               setSavingData({
                 isLoaded: true,

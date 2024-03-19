@@ -15,7 +15,7 @@ const getByIdUser = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('getone', 'getone error', 'users', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -70,10 +70,10 @@ const getUser = async (req, res = response) => {
 
 
 const postUser = async (req, res = response) => {
-    const { role_id, id_card, first_name, last_name, email, phone } = req.body;
+    const { role_id, id_card, first_name, last_name, email, phone, salary } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file.path]);
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file.path, salary]);
  
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
@@ -86,6 +86,11 @@ const postUser = async (req, res = response) => {
                 })
             }
         }
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('create', ?, 'users', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['crete user | new one: ' + first_name, 11]);
     }
     catch({ message }) {
         try {
@@ -93,7 +98,7 @@ const postUser = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('create', 'create error', 'users', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -106,14 +111,15 @@ const postUser = async (req, res = response) => {
 }
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;
-    const { role_id, id_card, first_name, last_name, email, activated, phone } = req.body;
+    const { role_id, id_card, first_name, last_name, email, activated, phone, salary } = req.body;
     if ('image' in req.body) {
         ({ image } = req.body);
     }
     try { 
-        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ? WHERE user_id = ?';
+        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ?, salary= ? WHERE user_id = ?';
+        const [userBeforeUpdate] = await dbService.query('SELECT first_name FROM users WHERE  user_id = ?', [user_id]);
         if ('image' in req.body) {
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image, user_id]);
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image,salary, user_id ]);
         res.status(200).json({
             role_id: insertId,
             affectedRows:affectedRows,
@@ -121,7 +127,7 @@ const putUser = async (req, res = response) => {
             message: "¡El usuario ha sido editado exitosamente!"
         });
         }else{
-            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id]);
+            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file.path, user_id, salary]);
             res.status(200).json({
                 role_id: insertId,
                 affectedRows:affectedRows,
@@ -129,6 +135,11 @@ const putUser = async (req, res = response) => {
                 message: "¡El usuario ha sido editado exitosamente!"
             });
         }
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('update', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['update categories | previus: ' + userBeforeUpdate + ' | new one: ' + first_name, 11]);
     }
     catch(error) {
         try {
@@ -136,7 +147,7 @@ const putUser = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('update', 'update error', 'users', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -154,7 +165,8 @@ const deleteUser = async (req, res = response) => {
     const { user_id } = req.body;
     try {
         //const rows = await dbService.query(`DELETE FROM rols WHERE rol_id IN (${rol_ids.join(',')})`);
- 
+        const [userBeforeUpdate] = await dbService.query('SELECT first_name FROM users WHERE  user_id = ?', [user_id]);
+        const userNameBeforeUpdate = userBeforeUpdate ? userBeforeUpdate.first_name : "Desconocido";
         const userQuery = `CALL sp_user('delete', ?, '', '', '', 0, 0, '', 0, @inserted_id);`;
         const rows = await dbService.query(userQuery, [user_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
@@ -169,13 +181,18 @@ const deleteUser = async (req, res = response) => {
                 message: "¡Los usuarios se han inactivado exitosamente!"
             });
         }
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('delete', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['delete categories | old one: ' + userNameBeforeUpdate, 11]);
     } catch (error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('delete', 'delete error', 'users', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }

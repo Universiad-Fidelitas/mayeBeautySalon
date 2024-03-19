@@ -61,7 +61,7 @@ const Logs = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Date',
+        Header: 'fecha',
         accessor: 'date',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -100,7 +100,7 @@ const Logs = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'timestamp', desc: true }], hiddenColumns: ['log_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'date', desc: true }], hiddenColumns: ['log_id'] },
     },
     useGlobalFilter,
     useSortBy,

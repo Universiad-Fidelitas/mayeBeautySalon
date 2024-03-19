@@ -86,6 +86,11 @@ const postCategory = async (req, res = response) => {
                     success: true,
                     message: "¡La categoría ha sido agregada exitosamente!"
                 })
+                const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('create', ?, 'categories', NOW(), '', ?)
+            `;
+            await dbService.query(logQuery, ['crete category | new one: ' + name, 11]);
 
     }
     catch({ message }) {
@@ -111,6 +116,8 @@ const putCategory = async (req, res = response) => {
     const { category_id } = req.params;
     const { name } = req.body;
     try {
+        const [categorieBeforeUpdate] = await dbService.query('SELECT name FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
+        const categorieNameBeforeUpdate = categorieBeforeUpdate ? categorieBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_category('update', ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [category_id, name ]);
         res.status(200).json({
@@ -118,6 +125,11 @@ const putCategory = async (req, res = response) => {
             success: true,
             message: "¡La categoría ha sido editada exitosamente!"
         })
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('update', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['update categories | previus: ' + categorieNameBeforeUpdate + ' | new one: ' + name, 11]);
     }
     catch(error) {
         try {
@@ -140,6 +152,8 @@ const putCategory = async (req, res = response) => {
 const deleteCategory = async (req, res = response) => {
     const { category_id } = req.body;
     try {
+        const [categorieBeforeUpdate] = await dbService.query('SELECT name FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
+        const categorieNameBeforeUpdate = categorieBeforeUpdate ? categorieBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_category('delete', ?, '');`;
         const rows = await dbService.query(userQuery, [category_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
@@ -153,7 +167,13 @@ const deleteCategory = async (req, res = response) => {
                 success: true,
                 message: "¡Las categorias han sido eliminadas exitosamente!"
             });
+           
         }
+        const logQuery = `
+        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+        VALUES ('delete', ?, 'categories', NOW(), '', ?)
+    `;
+    await dbService.query(logQuery, ['delete categories | old one: ' + categorieNameBeforeUpdate, 11]);
     } catch (error) {
         try {
             const logQuery = `

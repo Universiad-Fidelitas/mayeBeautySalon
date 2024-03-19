@@ -20,7 +20,7 @@ const Login = () => {
     email: Yup.string().email().required('El correo es requerido'),
     password: Yup.string().min(6, 'Debe tener al menos 6 caracteres!').required('La contraseña es requerida'),
   });
-  const initialValues = { email: 'mgranadosmunos@gmail.com', password: 'Mg1101012' };
+  const initialValues = { email: '', password: '' };
 
   const onSubmit = async (loginData) => {
     const result = await dispatch(loginUsuario(loginData));

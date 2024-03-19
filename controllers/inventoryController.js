@@ -14,7 +14,7 @@ const getById = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('getOne', 'getOne error', 'inventory', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }
@@ -92,7 +92,11 @@ const postInventory = async (req, res = response) => {
                     success: true,
                     message: "¡El movimiento de inventario ha sido agregado exitosamente!"
                 })
-
+                const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('create', ?, 'categories', NOW(), '', ?)
+            `;
+            await dbService.query(logQuery, ['crete inventory | new one: ' + description, 11]);
     }
     catch({ message }) {
         try {
@@ -100,7 +104,7 @@ const postInventory = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('create', 'create error', 'inventory', NOW(), ?, ?)
             `;
-            await dbService.query(logQuery, [error.message, 1]);
+            await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
             console.error('Error al insertar en la tabla de Logs:', logError);
         }

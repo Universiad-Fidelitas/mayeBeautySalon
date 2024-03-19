@@ -12,40 +12,69 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
+import { getPayments, postPayment, editPayment, deletePayments } from 'store/payments/paymentsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { ModalAddEditPagos } from './ModalAddEditPago';
 
-const Servicio = () => {
+const Pagos = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Servicio';
+  const title = 'Pagos';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'citas/calendario', text: f({ id: 'citas' }) },
-    { to: 'citas/servicios', title: 'Servicios' },
+    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
+    { to: '/inventariado/payments', title: 'Pagos' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
       },
       {
-        Header: 'Servicio',
-        accessor: 'name',
+        Header: 'Tipo',
+        accessor: 'payment_type',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
+      {
+        Header: 'Telefono',
+        accessor: 'sinpe_phone',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Estado',
+        accessor: 'status',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tamaño',
+        accessor: 'size',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Voucher',
+        accessor: 'voucher_path',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+   
       {
         Header: '',
         id: 'action',
@@ -70,8 +99,13 @@ const Servicio = () => {
       manualSortBy: true,
       autoResetPage: false,
       autoResetSortBy: false,
-      pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+   
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+        sortBy: [{ id: 'name', desc: false }],
+        hiddenColumns: ['payment_id'],
+      },
     },
     useGlobalFilter,
     useSortBy,
@@ -82,34 +116,29 @@ const Servicio = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
+    dispatch(getPayments({ term, sortBy, pageIndex, pageSize }));
   }, [sortBy, pageIndex, pageSize, term]);
 
-  useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
-    }
-  }, [isRolesLoading]);
+ 
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      dispatch(deletePayments(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      dispatch(editPayment(values));
     },
     [sortBy, pageIndex, pageSize]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      dispatch(postPayment(values));
     },
     [sortBy, pageIndex, pageSize]
   );
@@ -120,27 +149,39 @@ const Servicio = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required('El nombre es requerido')
-      .min(3, 'El nombre debe tener al menos 3 caracteres')
-      .max(15, 'El nombre debe tener al máximo |5 caracteres'),
+      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
+      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
     price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
+      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
+    price_buy: Yup.number()
+      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
+      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
+    size: Yup.string()
+      .matches(/^\d+$/, "El tamaño debe ser un número")
+      .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
+      .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
+      .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),
   });
 
   const formFields = [
     {
       id: 'name',
-      label: 'Nombre del servicio',
-    },
-    {
-      id: 'duration',
-      label: 'Duracion',
+      label: 'Tipo',
+      type: 'text',
     },
     {
       id: 'price',
-      label: 'Precio',
+      label: 'Telefono',
+      type: 'text',
+    },
+    {
+      id: 'price_buy',
+      label: 'Estado',
+      type: 'number',
     },
   ];
 
@@ -175,9 +216,9 @@ const Servicio = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    type="service"
-                    modalTitle="¿Desea eliminar el servicio seleccionado?"
-                    modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalTitle="¿Desea eliminar el Paymento seleccionado?"
+                    modalDescription="El Paymento seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="Payment"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -194,10 +235,16 @@ const Servicio = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditPagos
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>
   );
 };
-export default Servicio;
+export default Pagos;

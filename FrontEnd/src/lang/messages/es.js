@@ -286,5 +286,12 @@ const enMessages = {
   'appointments.errorAdd': '¡La cita no ha sido agregada!',
   'appointments.successEdit': '¡La cita ha sido editada exitosamente!',
   'appointments.errorEdit': '¡La cita no ha sido editada!',
+  'appointments.customerErrorRequired': 'Cliente es requerido', 
+  'appointments.customerInformation': 'Información del Cliente',
+  'appointments.customerName': 'Nombre del Cliente', 
+  'appointments.emailInformation': 'Información del Correo Electrónico', 
+  'appointments.phoneNumber': 'Número de Teléfono',
+  'appointments.editAppointment': 'Editar Cita',
+  'appointments.errorEndTime': 'La hora de finalización debe ser mayor a la hora de inicio',
 };
 export default enMessages;
