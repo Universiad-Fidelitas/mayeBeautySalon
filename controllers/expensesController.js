@@ -118,7 +118,7 @@ const putExpense = async (req, res = response) => {
     const { expense_id } = req.params;
     const { expense_type, price } = req.body;
     try {
-        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM expenses WHERE activated = 1 AND category_id = ?', [expense_id]);
+        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM expenses WHERE activated = 1 AND expense_id = ?', [expense_id]);
         const userQuery = `CALL sp_expense('update', ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [expense_id, expense_type, price ]);
         res.status(200).json({
