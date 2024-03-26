@@ -14,10 +14,10 @@ const expensesSlice = createSlice({
       state.expenses = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedExpenses(state, action) {
+    setLoadedExpenses(state) {
       state.isExpensesLoading = false;
     },
-    setLoadingExpenses(state, action) {
+    setLoadingExpenses(state) {
       state.isExpensesLoading = true;
     },
   },

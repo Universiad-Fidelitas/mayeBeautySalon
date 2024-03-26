@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { forgotPassword } from 'store/slices/authThunk';
 import { IconNotification } from 'components/notifications/IconNotification';
 import { toast } from 'react-toastify';
+import classNames from 'classnames';
 
 const ForgotPassword = () => {
   const title = 'Forgot Password';
@@ -24,10 +25,10 @@ const ForgotPassword = () => {
   const onSubmit = async ({ email }) => {
     const { status, message } = await dispatch(forgotPassword(email));
     if (status) {
-      toast(<IconNotification title="Enlace enviado" description={message} toastType="success"/>, { className: 'success' });
+      toast(<IconNotification title="Enlace enviado" description={message} toastType="success" />, { className: 'success' });
       history.push('/login');
     } else {
-      toast(<IconNotification title="No encontrado" description={message} toastType="danger"/>, { className: 'danger' });
+      toast(<IconNotification title="No encontrado" description={message} toastType="danger" />, { className: 'danger' });
     }
   };
 
@@ -43,8 +44,8 @@ const ForgotPassword = () => {
             <h1 className="display-3 text-white">Refleja tu belleza interior</h1>
           </div>
           <p className="h6 text-white lh-1-5 mb-5">
-           Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia exclusiva
-           y descubre un mundo de belleza hecho a tu medida....
+            Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia
+            exclusiva y descubre un mundo de belleza hecho a tu medida....
           </p>
           <div className="mb-5">
             <Button size="lg" variant="outline-white" href="/">
@@ -76,10 +77,19 @@ const ForgotPassword = () => {
         </div>
         <div>
           <form id="forgotPasswordForm" className="tooltip-end-bottom" onSubmit={handleSubmit}>
-            <div className="mb-3 filled form-group tooltip-end-top">
-              <CsLineIcons icon="email" />
-              <Form.Control type="text" name="email" placeholder="Email" value={values.email} onChange={handleChange} />
-              {errors.email && touched.email && <div className="d-block invalid-tooltip">{errors.email}</div>}
+            <div className="mb-3">
+              <div className="filled form-group tooltip-end-top">
+                <CsLineIcons icon="lock-off" />
+                <Form.Control
+                  type="email"
+                  name="email"
+                  className={classNames(errors.email && touched.email && 'border border-danger')}
+                  onChange={handleChange}
+                  value={values.email}
+                  placeholder="Email"
+                />
+              </div>
+              {errors.email && touched.email && <div className="text-danger">{errors.email}</div>}
             </div>
             <Button size="lg" type="submit">
               Enviar

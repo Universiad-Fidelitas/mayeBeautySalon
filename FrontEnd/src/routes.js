@@ -17,25 +17,20 @@ import Pagos from 'views/admin/Facturas/Pagos';
 import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
+import { HomeView } from 'views/publicViews/HomeView';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
 const routesAndMenuItems = {
   mainMenuItems: [
     {
-      path: DEFAULT_PATHS.APP,
-      exact: true,
-      redirect: true,
-      to: `${appRoot}/dashboard`,
-    },
-    {
       path: `${appRoot}/dashboard`,
       label: 'menu.dashboard',
       icon: 'dashboard-1',
       component: Dashboard,
       protected: true,
+      hideInMenu: true,
     },
-
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -46,6 +41,7 @@ const routesAndMenuItems = {
     {
       path: `${appRoot}/trabajadores`,
       label: 'menu.trabajadores',
+      protected: true,
       icon: 'laptop',
       subs: [
         { path: '/users', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
@@ -66,6 +62,7 @@ const routesAndMenuItems = {
         { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_PRODUCTS', component: Stock },
         { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
       ],
+      protected: true,
     },
     {
       path: `${appRoot}/facturación`,
@@ -84,7 +81,7 @@ const routesAndMenuItems = {
       label: 'appointments.menuTitle',
       icon: 'check-square',
       component: AppointmentsClient,
-      protected: false,
+      publicOnly: true,
     },
     {
       path: `${appRoot}/logs`,
@@ -92,6 +89,11 @@ const routesAndMenuItems = {
       icon: 'logs-1',
       component: Logs,
       protected: true,
+    },
+    {
+      path: '/',
+      component: HomeView,
+      publicOnly: true,
     },
   ],
   sidebarItems: [],

@@ -101,7 +101,7 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
       }
       onHide();
     },
-    [selectedItem, services]
+    [selectedItem, services, updateAppointment, addAppointment, onHide]
   );
   const validationSchema = Yup.object().shape({
     extra: Yup.number()
@@ -141,7 +141,7 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
       last_name: selectedItem ? selectedItem.last_name : '',
       activeUser: selectedItem ? selectedItem.user_id : 0,
     };
-  }, [selectedItem, services]);
+  }, [selectedItem]);
 
   const ServicePriceField = () => {
     const { values } = useFormikContext();
@@ -165,7 +165,7 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
     setIsShowDeleteConfirmModal(false);
     onHide();
     deleteAppointment.mutateAsync(selectedItem);
-  }, []);
+  }, [deleteAppointment, selectedItem, onHide, setIsShowDeleteConfirmModal]);
 
   const UserInformationField = () => {
     const { values } = useFormikContext();

@@ -1,1 +1,1 @@
-export * from "./cajuelaSlice";
+export * from './cajuelaSlice';

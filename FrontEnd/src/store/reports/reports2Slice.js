@@ -14,10 +14,10 @@ const reports2Slice = createSlice({
       state.reports2 = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedReports2(state, action) {
+    setLoadedReports2(state) {
       state.isReportsLoading = false;
     },
-    setLoadingReports2(state, action) {
+    setLoadingReports2(state) {
       state.isReportsLoading = true;
     },
   },

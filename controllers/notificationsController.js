@@ -6,7 +6,6 @@ const getById = async (req, res = response) => {
     const { notification_id } = req.params;
     try {
         const [notificationFound] = await dbService.query('SELECT * FROM notifications WHERE activated = 1 AND notification_id = ?', [notification_id]);
-        console.log(notificationFound)
         res.status(500).json({notificationFound, status: true, message: 'Se ha encontrado la notification exitosamente.' });
     }
     catch(error) {

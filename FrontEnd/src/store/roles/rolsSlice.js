@@ -14,10 +14,10 @@ const rolsSlice = createSlice({
       state.rols = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedRols(state, action) {
+    setLoadedRols(state) {
       state.isRolesLoading = false;
     },
-    setLoadingRols(state, action) {
+    setLoadingRols(state) {
       state.isRolesLoading = true;
     },
   },

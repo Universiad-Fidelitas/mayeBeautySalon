@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Row, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Row, Col, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import 'react-dropzone-uploader/dist/styles.css';
-import DropzonePreview from 'components/dropzone/DropzonePreview';
-import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 import { useCategories } from 'hooks/react-query/useCategories';
 import { useBrands } from 'hooks/react-query/useBrands';
 import { useProviders } from 'hooks/react-query/useProviders';
 import { ProductosImageUploader } from 'components/ImageUploading/ProductsImageUploader';
-import classNames from 'classnames';
 
 export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { isLoading, data: categoriesData } = useCategories();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { data: categoriesData } = useCategories();
   const { data: providersData } = useProviders();
   const [productImage, setProductImage] = useState([]);
 

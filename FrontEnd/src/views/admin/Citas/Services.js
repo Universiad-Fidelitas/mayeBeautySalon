@@ -14,18 +14,16 @@ import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useR
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteServices, editService, getServices, postService } from 'store/services';
 import { Col, Form, Row } from 'react-bootstrap';
-import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 
 const Servicio = () => {
-  const { formatMessage: f } = useIntl();
   const title = 'Servicio';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'citas/calendario', text: f({ id: 'citas' }) },
+    { to: 'citas/calendario', text: 'Citas' },
     { to: 'citas/servicios', title: 'Servicios' },
   ];
   const [data, setData] = useState([]);

@@ -1,23 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Row, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Button, Row, Col, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import 'react-dropzone-uploader/dist/styles.css';
-import DropzonePreview from 'components/dropzone/DropzonePreview';
-import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
-import { useBrands } from 'hooks/react-query/useBrands';
-import { useProviders } from 'hooks/react-query/useProviders';
 import { PagosImageUploader } from 'components/ImageUploading/PaymentsImageUploader';
-import classNames from 'classnames';
 
 export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
 
   const [paymentImage, setPaymentImage] = useState([]);
-
-  const { data: brandsData } = useBrands();
-
-
 
   const onSubmit = (values) => {
     values.size += values.size_m;
@@ -101,7 +92,7 @@ export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validation
                 <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
               </div>
             ))}
-      
+
             <div className="mb-3" key="size">
               <label className="form-label">Tamaño</label>
               <Row>

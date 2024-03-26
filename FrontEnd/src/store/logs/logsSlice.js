@@ -14,10 +14,10 @@ const logsSlice = createSlice({
       state.logs = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedLogs(state, action) {
+    setLoadedLogs(state) {
       state.isLogsLoading = false;
     },
-    setLoadingLogs(state, action) {
+    setLoadingLogs(state) {
       state.isLogsLoading = true;
     },
   },

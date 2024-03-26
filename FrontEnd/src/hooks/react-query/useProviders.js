@@ -10,7 +10,6 @@ export const useProviders = () => {
 
   return useQuery(['project-providers'], getProvider, {
     refetchOnWindowFocus: false,
-    onError: () => {
-    },
+    onError: () => {},
   });
 };

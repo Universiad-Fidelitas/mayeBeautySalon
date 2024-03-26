@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useMemo } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, FieldArray, ErrorMessage } from 'formik';
 import 'react-dropzone-uploader/dist/styles.css';
 import { useStock } from 'hooks/react-query/useStock';
 import Select from 'react-select';
 
-export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { isLoading, data: productsData } = useStock();
+export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchema, formFields }) => {
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { data: productsData } = useStock();
   const productsDataDropdown = useMemo(
     () =>
       productsData?.items.map(({ product_id, name, total_amount }) => {
@@ -31,7 +31,9 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
         console.log('product', product);
         if (product && Number(product.amount) < item.amount) {
           isValid = false;
-          alert(`El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.`);
+          // ARREGLAR ESTO USAR UN TOAST
+          console.log(index);
+          // alert(`El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.`);
         }
       }
     });

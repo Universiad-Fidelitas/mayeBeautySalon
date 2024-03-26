@@ -1,6 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SERVICE_URL } from 'config.js';
-import axios from 'axios';
 
 const initialState = {
   selectedEvent: {},

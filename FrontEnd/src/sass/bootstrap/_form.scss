@@ -157,17 +157,20 @@ textarea.form-control {
   -webkit-text-fill-color: var(--muted) !important; // for safari
 }
 
-.form-control:disabled ~ span, .form-control:disabled ~ label {
+.form-control:disabled ~ span,
+.form-control:disabled ~ label {
   background: transparent !important;
 }
 
 // Filled
 .filled {
   position: relative;
+  .email-field {
+    padding-right: 20px;
+  }
+
   .form-control {
     min-height: 44px;
-    border: 1px solid transparent;
-    background: var(--background-light);
     padding-left: 45px;
 
     &:focus {
@@ -261,7 +264,7 @@ textarea.form-control {
 .top-label > span:last-of-type {
   position: absolute;
   cursor: text;
-  font-size: 0.7em !important;
+  font-size: 0.9em !important;
   line-height: 1.1rem !important;
   opacity: 1;
   top: 0.5rem;
@@ -273,7 +276,7 @@ textarea.form-control {
 }
 .top-label label:not(.form-check-label)::after,
 .top-label > span::after {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   height: 2px;
@@ -445,7 +448,7 @@ select:-webkit-autofill:focus {
   }
 }
 
-.form-check-input[type="checkbox"] {
+.form-check-input[type='checkbox'] {
   border-radius: var(--border-radius-sm);
 }
 
@@ -509,7 +512,7 @@ select:-webkit-autofill:focus {
     opacity: 1;
 
     &:after {
-      font-family: "CS-Interface" !important;
+      font-family: 'CS-Interface' !important;
       font-style: normal;
       font-weight: normal;
       font-variant: normal;
@@ -518,12 +521,12 @@ select:-webkit-autofill:focus {
       -webkit-font-smoothing: antialiased;
       color: var(--primary) !important;
       opacity: 1;
-      content: "\e913";
+      content: '\e913';
     }
   }
 
-  .form-check-input[type="radio"]:checked:after {
-    content: "\e922";
+  .form-check-input[type='radio']:checked:after {
+    content: '\e922';
   }
 }
 
@@ -531,7 +534,7 @@ select:-webkit-autofill:focus {
   &:hover .form-check-label,
   .form-check-input:checked ~ .form-check-label {
     &::before {
-      content: "";
+      content: '';
       position: absolute;
       width: 100%;
       height: 100%;
@@ -563,7 +566,7 @@ select:-webkit-autofill:focus {
 
   &.form-check-label {
     &::before {
-      content: "";
+      content: '';
       position: absolute;
       width: 100%;
       height: 100%;
@@ -573,10 +576,10 @@ select:-webkit-autofill:focus {
   }
 }
 
-.custom-icon input[type="radio"] {
+.custom-icon input[type='radio'] {
   .form-check-label {
     &::after {
-      content: "\e9d3";
+      content: '\e9d3';
     }
   }
 }
@@ -691,7 +694,7 @@ textarea {
   line-height: 1.5;
 }
 
-.form-check-input[type="checkbox"]:indeterminate {
+.form-check-input[type='checkbox']:indeterminate {
   background-color: var(--primary);
   border-color: var(--primary);
 }
@@ -743,8 +746,7 @@ textarea {
 }
 
 .form-floating textarea.form-control ~ label {
-  transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0s ease-in-out,
-    height 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0s ease-in-out, height 0.1s ease-in-out;
 }
 .form-floating textarea.form-control:not(:placeholder-shown) ~ label,
 .form-floating textarea.form-control:focus ~ label {
@@ -755,8 +757,7 @@ textarea {
   height: auto;
   -webkit-transform: scale(0.85) translateY(1px) translateX(0.15rem);
   transform: scale(0.85) translateY(1px) translateX(0.15rem);
-  transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0.1s ease-in-out 0.1s,
-    height 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0.1s ease-in-out 0.1s, height 0.1s ease-in-out;
 }
 
 .form-floating .form-control,

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Chart, registerables } from 'chart.js';
-import { Col, Row } from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import ReactDOM from 'react-dom';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -117,7 +117,7 @@ const ChartLargeLineStock = ({ profits }) => {
         },
       ],
     };
-  }, [themeValues]);
+  }, [themeValues, profits, dynamicLabels]);
   const config = React.useMemo(() => {
     return {
       type: 'line',

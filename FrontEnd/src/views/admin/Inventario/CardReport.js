@@ -1,8 +1,5 @@
 import React from 'react';
-import { Button, Row, Col, Card, Dropdown, Badge } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
-import CsLineIcons from 'cs-line-icons/CsLineIcons';
+import { Row, Col, Card, Badge } from 'react-bootstrap';
 
 export const CardReport = ({ formFields }) => {
   console.log('karo', formFields);
@@ -30,7 +27,7 @@ export const CardReport = ({ formFields }) => {
       <div className="d-flex justify-content-between">
         <h2 className="small-title">Reporte Inventario</h2>
       </div>
-      {formFields.map(({ name, image, total_amount, product_id, stock_status, Sold_amount }) => (
+      {formFields.map(({ name, image, total_amount, stock_status, Sold_amount }) => (
         <div key={name} className="mb-2 card">
           <Card className="g-0 sh-14 sh-md-10 row">
             <Card.Body className="pt-0 pb-0 h-100">

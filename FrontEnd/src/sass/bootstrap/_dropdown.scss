@@ -123,7 +123,7 @@
   transform: rotate(135deg);
 }
 
-.dropdown-toggle[data-bs-toggle="collapse"]:not(.collapsed)::after {
+.dropdown-toggle[data-bs-toggle='collapse']:not(.collapsed)::after {
   transform: rotate(135deg);
 }
 

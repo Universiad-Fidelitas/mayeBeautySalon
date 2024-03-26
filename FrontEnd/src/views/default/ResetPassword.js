@@ -119,7 +119,7 @@ const ResetPassword = () => {
         toast(<Content />, { className: 'danger' });
       }
     }
-  }, [isLoading, resetPassTokenState]);
+  }, [isLoading, resetPassTokenState, history]);
 
   if (isLoading) {
     return <div>Loading...</div>;

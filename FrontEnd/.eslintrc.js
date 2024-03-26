@@ -77,7 +77,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     'jsx-a11y/anchor-is-valid': 'warn',
     'import/export': 0,
-    'camelcase': 'off',
+    camelcase: 'off',
     'prettier/prettier': [
       'warn',
       {

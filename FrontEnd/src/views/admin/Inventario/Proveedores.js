@@ -92,33 +92,33 @@ const Marcas = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getProviders({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (providers.length > 0) {
       setData(providers);
     }
-  }, [isProvidersLoading]);
+  }, [isProvidersLoading, providers]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteProviders(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editProvider(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postProvider(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {
@@ -131,7 +131,7 @@ const Marcas = () => {
       .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
       .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
     phone: Yup.string()
-      .matches(/^\d+$/, "El teléfono debe ser un número")
+      .matches(/^\d+$/, 'El teléfono debe ser un número')
       .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
       .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
       .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),

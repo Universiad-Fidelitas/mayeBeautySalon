@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 export const ButtonsAddNew = ({ tableInstance }) => {
   const { toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
   const { formatMessage: f } = useIntl();
-  
+
   const addButtonClick = () => {
     toggleAllPageRowsSelected(false);
     setIsOpenAddEditModal(true);

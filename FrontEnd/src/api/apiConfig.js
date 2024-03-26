@@ -15,7 +15,6 @@ const baseApi = axios.create({
   },
 });
 
-
 // Add a request interceptor to check token status
 baseApi.interceptors.request.use(async (config) => {
   const { token } = store.getState().auth.currentUser;
@@ -43,6 +42,5 @@ baseApi.interceptors.request.use(async (config) => {
 
   return config;
 });
-
 
 export { baseApi };

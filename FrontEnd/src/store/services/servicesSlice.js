@@ -14,10 +14,10 @@ const servicesSlice = createSlice({
       state.services = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedServices(state, action) {
+    setLoadedServices(state) {
       state.isServicesLoading = false;
     },
-    setLoadingServices(state, action) {
+    setLoadingServices(state) {
       state.isServicesLoading = true;
     },
   },

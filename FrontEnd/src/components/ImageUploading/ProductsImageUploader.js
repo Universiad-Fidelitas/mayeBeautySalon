@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ImageUploading from 'react-images-uploading';
-import { Button } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
 export const ProductosImageUploader = ({ initialImages, setImageState }) => {
-  const onChange = (imageList, addUpdateIndex) => {
+  const onChange = (imageList) => {
     setImageState(imageList);
   };
 
