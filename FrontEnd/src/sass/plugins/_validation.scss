@@ -24,7 +24,7 @@ div.error {
   line-height: 1.5;
   padding: calc(var(--card-spacing-xs) / 3 * 2) var(--card-spacing-xs);
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 50%;
     top: -4px;
@@ -92,7 +92,7 @@ div.error {
 
   &::before {
     margin-top: initial;
-    content: "";
+    content: '';
     position: absolute;
     top: initial;
     bottom: -4px;
@@ -111,7 +111,7 @@ div.error {
   right: 0;
 
   &::before {
-    content: "";
+    content: '';
     margin-top: initial;
     position: absolute;
     top: initial;
@@ -134,7 +134,7 @@ div.error {
   right: initial;
 
   &::before {
-    content: "";
+    content: '';
     margin-top: initial;
     position: absolute;
     top: initial;
@@ -155,7 +155,7 @@ div.error {
   bottom: initial;
   right: initial;
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     left: -5px;
     right: initial;

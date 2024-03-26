@@ -28,11 +28,12 @@ export const FirstDataRequestTap = ({ formRef }) => {
       }),
     [data]
   );
-  const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+
+  const daysOfWeek = useMemo(() => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'], []);
 
   useEffect(() => {
     refetch();
-  }, [serviceDate]);
+  }, [refetch]);
 
   useEffect(() => {
     if (selectedAppointments && selectedAppointments.appointmentDateTime) {
@@ -51,7 +52,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
       days.push({ name: dayName, date });
     });
     return days;
-  }, [serviceDate]);
+  }, [serviceDate, daysOfWeek]);
 
   const intervalInMinutes = useMemo(() => {
     if (isSuccess && selectedService?.value) {
@@ -111,7 +112,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
         })
       );
     },
-    [setappointmentDateTime, selectedAppointments]
+    [setappointmentDateTime, selectedAppointments, dispatch]
   );
 
   const OnSelectButton = useCallback(
@@ -136,12 +137,15 @@ export const FirstDataRequestTap = ({ formRef }) => {
 
   const timeslots = useMemo(() => generateTimeSlots(), [generateTimeSlots]);
 
-  const onSelectedService = useCallback((service) => {
-    console.log('onSelectedService', service);
-    setappointmentDateTime(null);
-    setSelectedService(service);
-    dispatch(setServiceDateTime({ selectedService: service }));
-  }, []);
+  const onSelectedService = useCallback(
+    (service) => {
+      console.log('onSelectedService', service);
+      setappointmentDateTime(null);
+      setSelectedService(service);
+      dispatch(setServiceDateTime({ selectedService: service }));
+    },
+    [dispatch]
+  );
 
   return (
     <div>

@@ -29,9 +29,9 @@ const getUser = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select * from users';
+        let baseQuery = 'SELECT * FROM users';
         if (term) {
-            baseQuery += ` AND first_name LIKE '%${term}%'`;
+            baseQuery += ` WHERE first_name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
@@ -48,8 +48,10 @@ const getUser = async (req, res = response) => {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
+
         const rows = await dbService.query(query);
-        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_users`);
+
+        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_services`);
         const totalRowCount = totalRowCountResult[0].count;
 
         const pageCount = Math.ceil(totalRowCount / pageSize);
@@ -64,10 +66,18 @@ const getUser = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
+        try {
+            const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('get', 'get error', 'services', NOW(), ?, ?)
+            `;
+            await dbService.query(logQuery, [error.message, 11]);
+        } catch (logError) {
+            console.error('Error al insertar en la tabla de Logs:', logError);
+        }
         res.status(500).json({ message: error.message });
     }
 }
-
 
 const postUser = async (req, res = response) => {
     const { role_id, id_card, first_name, last_name, email, phone, salary } = req.body;

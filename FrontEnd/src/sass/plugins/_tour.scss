@@ -74,8 +74,8 @@
 }
 
 .introjs-tooltipReferenceLayer {
-  i[class^="cs"] {
-    font-family: "CS-Interface" !important;
+  i[class^='cs'] {
+    font-family: 'CS-Interface' !important;
   }
 }
 
@@ -149,6 +149,8 @@
   }
 }
 
-.introjs-bullets ul li a.active, .introjs-bullets ul li a:focus, .introjs-bullets ul li a:hover {
+.introjs-bullets ul li a.active,
+.introjs-bullets ul li a:focus,
+.introjs-bullets ul li a:hover {
   width: 6px !important;
 }

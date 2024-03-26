@@ -14,10 +14,10 @@ const notificationsSlice = createSlice({
       state.notifications = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedNotifications(state, action) {
+    setLoadedNotifications(state) {
       state.isNotificationsLoading = false;
     },
-    setLoadingNotifications(state, action) {
+    setLoadingNotifications(state) {
       state.isNotificationsLoading = true;
     },
   },

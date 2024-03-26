@@ -85,33 +85,33 @@ const Transacciones = () => {
 
   useEffect(() => {
     dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (rols.length > 0) {
       setData(rols);
     }
-  }, [isRolesLoading]);
+  }, [isRolesLoading, rols]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteRols(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editRol(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postRol(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {

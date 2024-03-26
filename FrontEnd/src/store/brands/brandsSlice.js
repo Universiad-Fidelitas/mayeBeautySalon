@@ -14,10 +14,10 @@ const brandsSlice = createSlice({
       state.brands = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedBrands(state, action) {
+    setLoadedBrands(state) {
       state.isBrandsLoading = false;
     },
-    setLoadingBrands(state, action) {
+    setLoadingBrands(state) {
       state.isBrandsLoading = true;
     },
   },

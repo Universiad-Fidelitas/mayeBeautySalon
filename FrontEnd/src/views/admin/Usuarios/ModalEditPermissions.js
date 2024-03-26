@@ -24,7 +24,7 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
     } else {
       setAllSwitchChangeStatus(false);
     }
-  }, [permissionsList]);
+  }, [permissionsList, fullPermissionsList.length]);
 
   const onSubmit = (values) => {
     if (selectedFlatRows.length === 1) {

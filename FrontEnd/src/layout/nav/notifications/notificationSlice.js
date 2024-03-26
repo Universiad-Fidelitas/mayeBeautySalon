@@ -1,8 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { SERVICE_URL } from 'config.js';
 import { baseApi } from 'api/apiConfig';
-import { toast } from 'react-toastify';
 
 const initialState = {
   status: 'idle',

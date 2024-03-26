@@ -14,10 +14,10 @@ const providersSlice = createSlice({
       state.providers = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedProviders(state, action) {
+    setLoadedProviders(state) {
       state.isProvidersLoading = false;
     },
-    setLoadingProviders(state, action) {
+    setLoadingProviders(state) {
       state.isProvidersLoading = true;
     },
   },

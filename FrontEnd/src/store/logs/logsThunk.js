@@ -33,9 +33,4 @@ const postLog = (newLog) => {
     }
   };
 };
-
-
-
-
-
 export { getLogs, postLog };

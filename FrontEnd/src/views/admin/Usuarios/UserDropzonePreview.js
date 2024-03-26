@@ -7,7 +7,7 @@ const UserDropzonePreview = ({ meta, fileWithMeta }) => {
 
   return (
     <Row className="rounded-circle w-100 h-100 overflow-hidden">
-      <img src={previewUrl} alt="preview image" className="p-0"/>
+      <img src={previewUrl} alt="preview image" className="p-0" />
     </Row>
   );
 };

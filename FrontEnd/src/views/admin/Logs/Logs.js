@@ -1,19 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
-import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { ModalAddEdit, ControlsPageSize, Table, TablePagination } from 'components/datatables';
+import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getLogs, postLog } from 'store/logs/logsThunk'; // Update with your actual imports
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
@@ -30,7 +20,6 @@ const Logs = () => {
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
-  const [term, setTerm] = useState('');
   const dispatch = useDispatch();
   const { isLogsLoading, logs, pageCount } = useSelector((state) => state.logs || {}); // Ensure state.logs is defined
 
@@ -113,25 +102,21 @@ const Logs = () => {
   } = tableInstance;
 
   useEffect(() => {
-    dispatch(getLogs({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+    dispatch(getLogs({ sortBy, pageIndex, pageSize }));
+  }, [sortBy, pageIndex, pageSize, dispatch]);
 
   useEffect(() => {
     if (logs.length > 0) {
       setData(logs);
     }
-  }, [isLogsLoading]);
+  }, [isLogsLoading, logs]);
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postLog(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
-
-  const searchItem = useAsyncDebounce((val) => {
-    setTerm(val || undefined);
-  }, 200);
 
   const validationSchema = Yup.object().shape({
     message: Yup.string()
@@ -164,7 +149,6 @@ const Logs = () => {
           </div>
 
           <div>
-         
             <Row className="mb-3">
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block">

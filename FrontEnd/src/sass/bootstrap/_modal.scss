@@ -231,13 +231,15 @@
   }
 }
 
-
 .user-dropzone {
   border-radius: 50% !important;
   height: 200px !important;
   width: 200px !important;
   border: 3px solid var(--primary);
   position: relative;
+  &.is-invalid {
+    border-color: var(--danger);
+  }
   img {
     width: 100%;
     height: 100%;
@@ -247,7 +249,7 @@
     width: 100%;
     height: 100%;
     left: 0;
-    background: transparent; 
+    background: transparent;
     color: transparent;
     transition: all 0.3s ease;
     &:hover {
@@ -255,4 +257,32 @@
       color: #fff;
     }
   }
+}
+
+.sendPasswordButton,
+.activationSwitch {
+  width: 100%;
+  height: 52px;
+}
+.language-button {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  .lang-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  &:after {
+    color: var(--muted);
+    margin-bottom: -2px;
+  }
+}
+
+.home-page-hero {
+  padding-top: calc(var(--nav-size-slim) + var(--main-spacing-horizontal) / 2);
+  background: url('/img/background/background-blue.webp') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 500px;
+  display: flex;
 }

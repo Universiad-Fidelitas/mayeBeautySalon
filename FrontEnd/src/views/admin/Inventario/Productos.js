@@ -1,15 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProducts, postProduct, editProduct, deleteProducts } from 'store/products/productsThunk';
@@ -147,33 +137,33 @@ const Productos = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getProducts({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (products.length > 0) {
       setData(products);
     }
-  }, [isProductsLoading]);
+  }, [isProductsLoading, products]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteProducts(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editProduct(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postProduct(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {
@@ -194,7 +184,7 @@ const Productos = () => {
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
     size: Yup.string()
-      .matches(/^\d+$/, "El tamaño debe ser un número")
+      .matches(/^\d+$/, 'El tamaño debe ser un número')
       .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
       .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
       .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),

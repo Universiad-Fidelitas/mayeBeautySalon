@@ -80,33 +80,33 @@ const Categorias = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getCategories({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (categories.length > 0) {
       setData(categories);
     }
-  }, [isCategoriesLoading]);
+  }, [isCategoriesLoading, categories]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteCategories(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editCategory(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postCategory(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {

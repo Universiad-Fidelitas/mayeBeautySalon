@@ -14,10 +14,10 @@ const inventorySlice = createSlice({
       state.inventory = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedInventory(state, action) {
+    setLoadedInventory(state) {
       state.isInventoryLoading = false;
     },
-    setLoadingInventory(state, action) {
+    setLoadingInventory(state) {
       state.isInventoryLoading = true;
     },
   },

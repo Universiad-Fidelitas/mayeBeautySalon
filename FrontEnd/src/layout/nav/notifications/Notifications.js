@@ -7,7 +7,6 @@ import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import { MENU_PLACEMENT } from 'constants.js';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
-import { fetchNotifications } from './notificationSlice';
 import { getNotifications } from '../../../store/notifications/notificationsThunk';
 
 const NotificationsDropdownToggle = React.memo(

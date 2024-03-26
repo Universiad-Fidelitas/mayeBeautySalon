@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useMemo } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import 'react-dropzone-uploader/dist/styles.css';
-import DropzonePreview from 'components/dropzone/DropzonePreview';
-import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 import { useProducts } from 'hooks/react-query/useProducts';
-import classNames from 'classnames';
 
 export const ModalAddEditNotificacion = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { isLoading, data: productsData } = useProducts();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { data: productsData } = useProducts();
   const productsDataDropdown = useMemo(
     () =>
       productsData?.items.map(({ product_id, name }) => {

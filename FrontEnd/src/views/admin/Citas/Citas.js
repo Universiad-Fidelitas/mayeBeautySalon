@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, Button, Dropdown } from 'react-bootstrap';
 import HtmlHead from 'components/html-head/HtmlHead';
@@ -15,7 +15,6 @@ import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ModalAddEdit from './components/ModalAddEdit';
 import { setSelectedEvent } from './calendarSlice';
 
-
 const CustomToggle = React.forwardRef(({ onClick }, ref) => (
   <Button
     ref={ref}
@@ -31,11 +30,6 @@ const CustomToggle = React.forwardRef(({ onClick }, ref) => (
   </Button>
 ));
 
-const colorsMap = [
-  { color: 'primary', category: 'Work' },
-  { color: 'secondary', category: 'Education' },
-  { color: 'tertiary', category: 'Personal' },
-];
 const Citas = () => {
   const { formatMessage: f, formatDate } = useIntl();
   const htmlTitle = f({ id: 'appointments.appointmentsTitle' });
@@ -65,7 +59,7 @@ const Citas = () => {
         ...appointment,
       };
     });
-  }, [getMonthData]);
+  }, [getMonthData, isGetMonthDataSuccess, themeValues]);
 
   const onPrevButtonClick = () => {
     const calendarApi = calendarRef.current.getApi();
@@ -101,12 +95,15 @@ const Citas = () => {
     }
   };
 
-  const handleDateSelect = useCallback(async (selectInfo) => {
-    const calendarApi = selectInfo.view.calendar;
-    calendarApi.unselect();
-    dispatch(setSelectedEvent({ id: 0, title: 'New Event', startDate: selectInfo.startStr }));
-    setIsShowModalAddEdit(true);
-  }, []);
+  const handleDateSelect = useCallback(
+    async (selectInfo) => {
+      const calendarApi = selectInfo.view.calendar;
+      calendarApi.unselect();
+      dispatch(setSelectedEvent({ id: 0, title: 'New Event', startDate: selectInfo.startStr }));
+      setIsShowModalAddEdit(true);
+    },
+    [dispatch]
+  );
 
   const handleEventClick = (clickInfo) => {
     const { id, url } = clickInfo.event;
@@ -120,8 +117,8 @@ const Citas = () => {
     return formatDate(moment(dateTitle, 'MMMM YYYY').format('MM-DD-YYYY'), {
       month: 'long',
       year: 'numeric',
-    })
-  }, [dateTitle, formatDate])
+    });
+  }, [dateTitle, formatDate]);
 
   // handlers that initiate reads/writes via the 'action' props
   // ------------------------------------------------------------------------------------------
@@ -182,7 +179,7 @@ const Citas = () => {
       {/* Title End */}
       {/* Calendar Title Start */}
       <div className="d-flex justify-content-between">
-        <h2 className="small-title">{ month.charAt(0).toUpperCase() + month.slice(1) }</h2>
+        <h2 className="small-title">{month.charAt(0).toUpperCase() + month.slice(1)}</h2>
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" />
           <Dropdown.Menu
@@ -205,17 +202,17 @@ const Citas = () => {
             }}
           >
             <Dropdown.Item eventKey="dayGridMonth" active={selectedView === 'dayGridMonth'} onClick={() => changeView('dayGridMonth')}>
-              { f({ id: 'appointments.month' }) }
+              {f({ id: 'appointments.month' })}
             </Dropdown.Item>
             <Dropdown.Item eventKey="timeGridWeek" active={selectedView === 'timeGridWeek'} onClick={() => changeView('timeGridWeek')}>
-            { f({ id: 'appointments.week' }) }
+              {f({ id: 'appointments.week' })}
             </Dropdown.Item>
             <Dropdown.Item eventKey="timeGridDay" active={selectedView === 'timeGridDay'} onClick={() => changeView('timeGridDay')}>
-            { f({ id: 'appointments.day' }) }
+              {f({ id: 'appointments.day' })}
             </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item eventKey="today" onClick={getToday}>
-            { f({ id: 'appointments.today' }) }
+              {f({ id: 'appointments.today' })}
             </Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
@@ -248,11 +245,10 @@ const Citas = () => {
           }}
           dayHeaderContent={({ date }) => {
             const formattedDayName = formatDate(date, {
-              weekday: 'long'
+              weekday: 'long',
             });
-            return (
-            <b>{ formattedDayName.charAt(0).toUpperCase() + formattedDayName.slice(1) }</b>
-          )}}
+            return <b>{formattedDayName.charAt(0).toUpperCase() + formattedDayName.slice(1)}</b>;
+          }}
         />
       </Card>
       {isShowModalAddEdit && (

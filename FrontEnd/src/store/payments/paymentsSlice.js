@@ -14,10 +14,10 @@ const paymentsSlice = createSlice({
       state.products = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedPayments(state, action) {
+    setLoadedPayments(state) {
       state.isProductsLoading = false;
     },
-    setLoadingPayments(state, action) {
+    setLoadingPayments(state) {
       state.isProductsLoading = true;
     },
   },

@@ -6,7 +6,6 @@ const getById = async (req, res = response) => {
     const { expense_id } = req.params;
     try {
         const [expenseFound] = await dbService.query('SELECT * FROM expenses WHERE expense_id = ?', [expense_id]);
-        console.log(expenseFound)
         res.status(500).json({expenseFound, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
     }
     catch(error) {
@@ -152,7 +151,6 @@ const putExpense = async (req, res = response) => {
 
 const deleteExpense = async (req, res = response) => {
     const { expense_id } = req.body;
-    console.log("delete",expense_id)
     try {
         const userQuery = `CALL sp_expense('delete', ?, '',0);`;
         const rows = await dbService.query(userQuery, [expense_id]);

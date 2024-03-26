@@ -1,7 +1,5 @@
-/* eslint-disable jsx-a11y/no-onchange */
-/* eslint-disable react/jsx-no-comment-textnodes */
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { ButtonsAddNew, ControlsPageSize, ControlsSearch, Table, TablePagination } from 'components/datatables';
+import React, { useEffect, useState, useMemo } from 'react';
+import { ControlsPageSize, ControlsSearch, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStock } from 'store/stock/stockThunk';
@@ -24,7 +22,7 @@ const Stock = () => {
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isLoading, data: categoriesData } = useCategories();
+  const { data: categoriesData } = useCategories();
   const [category, setCategory] = useState('');
   const { isStockLoading, stock, pageCount } = useSelector((state) => state.stock);
   const categoryDataDropdown = useMemo(
@@ -100,13 +98,13 @@ const Stock = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getStock({ term, sortBy, pageIndex, pageSize, category }));
-  }, [sortBy, pageIndex, pageSize, term, category]);
+  }, [sortBy, pageIndex, pageSize, term, category, dispatch]);
 
   useEffect(() => {
     if (stock.length > 0) {
       setData(stock);
     }
-  }, [isStockLoading]);
+  }, [isStockLoading, stock]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);

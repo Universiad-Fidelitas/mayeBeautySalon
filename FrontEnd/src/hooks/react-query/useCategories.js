@@ -10,7 +10,6 @@ export const useCategories = () => {
 
   return useQuery(['project-categories'], getCategory, {
     refetchOnWindowFocus: false,
-    onError: () => {
-    },
+    onError: () => {},
   });
 };

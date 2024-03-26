@@ -89,33 +89,33 @@ const Marcas = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getNotifications({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (notifications.length > 0) {
       setData(notifications);
     }
-  }, [isNotificationsLoading]);
+  }, [isNotificationsLoading, notifications]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteNotifications(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editNotification(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postNotification(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {

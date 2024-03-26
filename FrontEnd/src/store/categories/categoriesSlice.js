@@ -14,10 +14,10 @@ const categoriesSlice = createSlice({
       state.categories = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedCategories(state, action) {
+    setLoadedCategories(state) {
       state.isCategoriesLoading = false;
     },
-    setLoadingCategories(state, action) {
+    setLoadingCategories(state) {
       state.isCategoriesLoading = true;
     },
   },
