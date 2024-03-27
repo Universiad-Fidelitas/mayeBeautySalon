@@ -102,6 +102,7 @@ const Marcas = () => {
 
   const deleteItems = useCallback(
     async (values) => {
+      console.log('delete', values);
       dispatch(deleteProviders(values));
     },
     [dispatch]
