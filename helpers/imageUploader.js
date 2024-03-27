@@ -52,7 +52,7 @@ const uploadMiddleware = (req, res, next) => {
         }
   
         // Remove the original uploaded file
-        fs.unlinkSync(inputFile);
+        //fs.unlinkSync(inputFile);
   
         // Update the request file path to the WebP version with a relative path
         req.file.path = 'uploads/' + relativePath;
