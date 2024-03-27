@@ -13,12 +13,8 @@ export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDe
   }, []);
 
   const onConfirm = useCallback(() => {
-    deleteItems(
-      selectedFlatRows
-        .map((x) => Object.entries(x.original).filter(([key]) => key.includes(`${type}_id`)))
-        .flat()
-        .map(([value]) => value)
-    );
+    deleteItems(selectedFlatRows.map((row) => row.original[Object.keys(row.original).find((key) => key.endsWith(`${type}_id`))]));
+
     setConfirmDeleteModal(false);
   }, [selectedFlatRows, deleteItems, type]);
 

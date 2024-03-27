@@ -144,6 +144,7 @@ export const ServicesView = () => {
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el servicio seleccionado?"
                     modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="service"
                   />
                 </div>
                 <div className="d-inline-block">
