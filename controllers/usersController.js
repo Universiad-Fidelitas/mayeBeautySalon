@@ -80,10 +80,10 @@ const getUser = async (req, res = response) => {
 }
 
 const postUser = async (req, res = response) => {
-    const { role_id, id_card, first_name, last_name, email, phone, salary } = req.body;
+    const { role_id, id_card, first_name, last_name, email, phone, salary, id_card_type } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file ? req.file.path : '', salary]);
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file ? req.file.path : '', salary, id_card_type]);
         
 
  
@@ -118,12 +118,12 @@ const postUser = async (req, res = response) => {
 }
 const putUser = async (req, res = response) => {
     const { user_id } = req.params;
-    const { role_id, id_card, first_name, last_name, email, activated, phone, salary } = req.body;
+    const { role_id, id_card, first_name, last_name, email, activated, phone, salary, id_card_type } = req.body;
     if ('image' in req.body) {
         ({ image } = req.body);
     }
     try { 
-        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ?, salary= ? WHERE user_id = ?';
+        const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ?, salary= ?, id_card_type = ? WHERE user_id = ?';
         const [userBeforeUpdate] = await dbService.query('SELECT first_name FROM users WHERE  user_id = ?', [user_id]);
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
@@ -131,7 +131,7 @@ const putUser = async (req, res = response) => {
         await dbService.query(logQuery, ['update categories | previus: ' + userBeforeUpdate + ' | new one: ' + first_name, 11]);
         
         if ('image' in req.body) {
-        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image,salary, user_id ]);
+        const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type, user_id ]);
         res.status(200).json({
             role_id: insertId,
             affectedRows:affectedRows,
@@ -139,7 +139,7 @@ const putUser = async (req, res = response) => {
             message: "¡El usuario ha sido editado exitosamente!"
         });
         }else{
-            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file ? req.file.path : '', salary, user_id]);
+            const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file ? req.file.path : '', salary, id_card_type, user_id]);
             res.status(200).json({
                 role_id: insertId,
                 affectedRows:affectedRows,

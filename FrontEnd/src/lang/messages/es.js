@@ -163,7 +163,7 @@ const enMessages = {
   'menu.docsdetail': 'es|Docs Detail',
   'menu.tickets': 'es|Tickets',
   'menu.tickets-detail': 'es|Teicket Detail',
-
+  'menu.usuarios': 'Usuarios',
   'menu.elearning': 'es|Elearning',
   'menu.school': 'es|School',
   'menu.courses': 'es|Courses',
@@ -206,7 +206,9 @@ const enMessages = {
   'helper.email': 'Correo Electrónico',
   'helper.salary': 'Salario',
   'helper.role': 'Rol',
+  'helper.idcardtype': 'Tipo de cédula',
   'helper.selectRol': 'Seleccionar Rol',
+  'helper.selectIdCardType': 'Seleccionar tipo de cédula',
   'helper.signOut': 'Cerrar Sesión',
   'helper.login': 'Iniciar Sesión',
 
@@ -214,6 +216,8 @@ const enMessages = {
   'helper.idCardOnlyNumbers': 'Cédula debe contener solo números',
   'helper.idCardMinSize': 'Cédula debe tener al menos 9 dígitos',
   'helper.idCardMaxSize': 'Cédula debe tener como máximo 12 dígitos',
+  'helper.idCardMinSize2': 'Cédula debe tener al menos 12 dígitos',
+  'helper.idCardMaxSize2': 'Cédula debe tener como máximo 15 dígitos',
 
   'helper.nameRequired': 'Nombre es requerido',
   'services.nameMinLength': 'Nombre debe tener al menos 3 caracteres',
@@ -319,5 +323,6 @@ const enMessages = {
   'users.salaryInteger': 'Salario debe ser un número entero',
   'users.salaryMin': 'Salario debe ser mayor a 0',
   'users.salaryRequired': 'Salario es requerido',
+  'users.idCardTypeRequired': 'Tipo de cédula es requerido',
 };
 export default enMessages;

@@ -39,8 +39,8 @@ const routesAndMenuItems = {
       protected: true,
     },
     {
-      path: `${appRoot}/trabajadores`,
-      label: 'menu.trabajadores',
+      path: `${appRoot}/usuarios`,
+      label: 'menu.usuarios',
       protected: true,
       icon: 'laptop',
       subs: [
@@ -53,13 +53,13 @@ const routesAndMenuItems = {
       label: 'inventory.title',
       icon: 'database',
       subs: [
-        { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
+        { path: '/inventario', icon: 'file-text', label: 'Movimientos Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
         { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
-        { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_PRODUCTS', component: Stock },
+        { path: '/stock', icon: 'wizard', label: 'Inventario', roles: 'R_PRODUCTS', component: Stock },
         { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
       ],
       protected: true,

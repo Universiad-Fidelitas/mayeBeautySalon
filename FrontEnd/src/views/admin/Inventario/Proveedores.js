@@ -55,6 +55,12 @@ const Marcas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
+        Header: 'Correo electrónico',
+        accessor: 'email',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
         Header: '',
         id: 'action',
         headerClassName: 'empty w-10',
@@ -136,6 +142,9 @@ const Marcas = () => {
       .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
       .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
       .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
+    email: Yup.string()
+      .email(f({ id: 'helper.emailInvalid' }))
+      .required(f({ id: 'helper.emailRequired' })),
   });
 
   const formFields = [
@@ -147,6 +156,11 @@ const Marcas = () => {
     {
       id: 'phone',
       label: 'Número del proveedor',
+      type: 'text',
+    },
+    {
+      id: 'email',
+      label: 'Correo del proveedor',
       type: 'text',
     },
   ];

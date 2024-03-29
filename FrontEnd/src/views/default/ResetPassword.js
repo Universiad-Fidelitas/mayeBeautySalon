@@ -92,12 +92,12 @@ const ResetPassword = () => {
             <div className="mb-3 filled">
               <CsLineIcons icon="lock-off" />
               <Form.Control type="password" name="password" onChange={handleChange} value={values.password} placeholder="Contraseña" />
-              {errors.password && touched.password && <div className="d-block invalid-tooltip">{errors.password}</div>}
+              {errors.password && touched.password && <div className="text-danger">{errors.password}</div>}
             </div>
             <div className="mb-3 filled">
               <CsLineIcons icon="lock-on" />
               <Form.Control type="password" name="passwordConfirm" onChange={handleChange} value={values.passwordConfirm} placeholder="Confirmar Contraseña" />
-              {errors.passwordConfirm && touched.passwordConfirm && <div className="d-block invalid-tooltip">{errors.passwordConfirm}</div>}
+              {errors.passwordConfirm && touched.passwordConfirm && <div className="text-danger">{errors.passwordConfirm}</div>}
             </div>
             <Button size="lg" type="submit">
               Restablecer Contraseña

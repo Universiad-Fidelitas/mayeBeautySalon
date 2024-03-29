@@ -28,6 +28,12 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
       }),
     [rolesData]
   );
+  const idTypeDropdown = useMemo(() => {
+    return [
+      { value: 'nacional', label: 'Nacional' },
+      { value: 'extranjero', label: 'Extranjero' },
+    ];
+  }, []);
   const dispatch = useDispatch();
 
   const onSubmit = useCallback(
@@ -87,6 +93,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
           }
         : {
             id_card: '',
+            id_card_type: '',
             first_name: '',
             last_name: '',
             image: '',
@@ -119,11 +126,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
           .max(10, f({ id: 'helper.phoneMaxLength' }))
           .required(f({ id: 'helper.phoneRequired' })),
         image: Yup.mixed().required(f({ id: 'users.imageRequired' })),
-        id_card: Yup.string()
-          .required(f({ id: 'helper.idCardRequired' }))
-          .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))
-          .min(9, f({ id: 'helper.idCardMinSize' }))
-          .max(12, f({ id: 'helper.idCardMaxSize' })),
+
         salary: Yup.number()
           .typeError(f({ id: 'users.salaryNumber' }))
           .positive(f({ id: 'users.salaryPositiveNumber' }))
@@ -131,6 +134,19 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
           .min(0, f({ id: 'users.salaryMin' }))
           .required(f({ id: 'users.salaryRequired' })),
         role_id: Yup.string().required(f({ id: 'users.rolRequired' })),
+        id_card_type: Yup.string().required(f({ id: 'users.idCardTypeRequired' })),
+        id_card: Yup.string()
+          .required(f({ id: 'helper.idCardRequired' }))
+          .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))
+          .when('id_card_type', {
+            is: 'nacional', // o el valor que represente a 'nacional'
+            then: Yup.string()
+              .min(9, f({ id: 'helper.idCardMinSize' }))
+              .max(9, f({ id: 'helper.idCardMaxSize' })),
+            otherwise: Yup.string()
+              .min(12, f({ id: 'helper.idCardMinSize2' }))
+              .max(15, f({ id: 'helper.idCardMaxSize2' })),
+          }),
       }),
     [f]
   );
@@ -181,6 +197,15 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                       <Field className={`form-control ${errors.id_card && touched.id_card ? 'is-invalid' : ''}`} id="id_card" name="id_card" />
                       <ErrorMessage className="text-danger" name="id_card" component="div" />
                     </div>
+                  </Col>
+                  <Col className="col-8 top-label">
+                    <SelectField
+                      label={f({ id: 'helper.idcardtype' })}
+                      name="id_card_type"
+                      placeholder={f({ id: 'helper.selectIdCardType' })}
+                      options={idTypeDropdown}
+                      isError={errors.id_card_type && touched.id_card_type}
+                    />
                   </Col>
                 </Row>
 
