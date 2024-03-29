@@ -21,7 +21,13 @@ const ResetPassword = () => {
   const title = 'Restablecer Contraseña';
   const description = 'Pagina para restablecer contraseña de usuario';
   const validationSchema = Yup.object().shape({
-    password: Yup.string().min(6, 'Debe tener al menos 6 caracteres').required('La contraseña es requerida'),
+    password: Yup.string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
+      .matches(/[a-z]/, 'La contraseña debe contener al menos una letra minúscula')
+      .matches(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula')
+      .matches(/\d/, 'La contraseña debe contener al menos un número')
+      .matches(/[@$!%*?&]/, 'La contraseña debe contener al menos un carácter especial')
+      .required('La contraseña es requerida'),
     passwordConfirm: Yup.string()
       .required('La confirmación de contraseña es requerida')
       .oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales.'),
