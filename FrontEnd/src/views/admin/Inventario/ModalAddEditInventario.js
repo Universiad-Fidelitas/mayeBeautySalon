@@ -75,7 +75,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
-                  <Field className="form-control" type={type} id={id} name={id} />
+                  <Field as="textarea" className="form-control" type={type} id={id} name={id} />
                   <ErrorMessage name={id} component="div" />
                 </div>
               ))}

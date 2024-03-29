@@ -13,7 +13,7 @@ import { ModalAddEditNotificacion } from './ModalAddEditNotificacion';
 const Marcas = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Notificaciones';
-  const description = 'Server side api implementation.';
+  const description = 'En este módulo se va a crear las alertas para que el sistema le notifique cuando un producto esta bajo de inventario';
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'Inventariado' }) },
@@ -46,7 +46,7 @@ const Marcas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Cantidad',
+        Header: 'Cantidad mínima de producto',
         accessor: 'amount',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -131,7 +131,7 @@ const Marcas = () => {
   const formFields = [
     {
       id: 'amount',
-      label: 'Cantidad',
+      label: 'Cantidad mínima de produtos',
       type: 'number',
     },
   ];
@@ -146,6 +146,15 @@ const Marcas = () => {
             <Row>
               <Col xs="12" md="7">
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
+                <br />
+                <span
+                  className="mb-0 pb-0 display-7
+                "
+                >
+                  {description}{' '}
+                </span>
+                <br />
+                <br />
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
               <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">

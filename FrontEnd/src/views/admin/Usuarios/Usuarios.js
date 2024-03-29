@@ -18,8 +18,8 @@ const Usuarios = () => {
   const description = f({ id: 'users.userDescription' });
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/users', text: f({ id: 'menu.trabajadores' }) },
-    { to: 'trabajadores/roles', title: 'Usuarios' },
+    { to: 'usuarios/users', text: f({ id: 'menu.usuarios' }) },
+    { to: 'usuarios/roles', title: 'Usuarios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -54,6 +54,12 @@ const Usuarios = () => {
         accessor: 'id_card',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
+      },
+      {
+        Header: f({ id: 'users.id_card_type' }),
+        accessor: 'id_card_type',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
       },
       {
         Header: f({ id: 'users.email' }),

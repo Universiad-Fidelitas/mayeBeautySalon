@@ -27,7 +27,7 @@ const getProviders = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select provider_id, name, phone from providers where activated = 1';
+        let baseQuery = 'select provider_id, name, phone, email from providers where activated = 1';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
@@ -76,10 +76,10 @@ const getProviders = async (req, res = response) => {
 }
 
 const postProvider = async (req, res = response) => {
-    const { name, phone } = req.body;
+    const { name, phone,email } = req.body;
     try {
-        const userQuery = `CALL sp_provider('create', '0', ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [name, phone]);
+        const userQuery = `CALL sp_provider('create', '0', ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [name, phone,email]);
 
                 res.status(200).json({
                     provider_id: insertId,
@@ -113,15 +113,15 @@ const postProvider = async (req, res = response) => {
 
 const putProvider = async (req, res = response) => {
     const { provider_id } = req.params;
-    const { name, phone } = req.body;
+    const { name, phone, email } = req.body;
     try {
 
         const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
         const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
    
 
-        const userQuery = `CALL sp_provider('update', ?, ?,?);`;
-        const { insertId } = await dbService.query(userQuery, [provider_id, name, phone ]);
+        const userQuery = `CALL sp_provider('update', ?, ?,?,?);`;
+        const { insertId } = await dbService.query(userQuery, [provider_id, name, phone, email ]);
 
         res.status(200).json({
             provider_id: insertId,
@@ -157,7 +157,7 @@ const deleteProvider = async (req, res = response) => {
     try {
         const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
         const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
-        const userQuery = `CALL sp_provider('delete', ?, '', '');`;
+        const userQuery = `CALL sp_provider('delete', ?, '', '', '');`;
         const rows = await dbService.query(userQuery, [provider_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
