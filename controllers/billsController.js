@@ -29,7 +29,7 @@ const getBills = async (req, res = response) => {
 
         let baseQuery = 'select * from bill_view where activated = 1';
         if (term) {
-            baseQuery += ` AND user_fullname LIKE '%${term}%'`;
+            baseQuery += ` AND first_name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
@@ -49,7 +49,7 @@ const getBills = async (req, res = response) => {
         const rows = await dbService.query(query);
         for (const row of rows) {
             const inventoryId = row.inventory_id;
-            const productQuery = `SELECT amount, product_id FROM inventory_products WHERE inventory_id = ${inventoryId}`;
+            const productQuery = `SELECT amount, product_id, invetory_products_id FROM inventory_products WHERE inventory_id = ${inventoryId}`;
             const productData = await dbService.query(productQuery);
             row.dataToInsert = productData;
         }
@@ -68,15 +68,7 @@ const getBills = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'bills', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+
         res.status(500).json({ message: error.message });
     }
 }
@@ -147,27 +139,42 @@ const postBill = async (req, res = response) => {
     }
 }
 
-
 const putBill = async (req, res = response) => {
     const { bill_id } = req.params;
-    const { name } = req.body;
+    const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card, first_name, last_name, email, phone, payment_id, inventory_id } = req.body;
     try {
-       const [billBeforeUpdate] = await dbService.query('SELECT name FROM bills WHERE activated = 1 AND bill_id = ?', [bill_id]);
-        const billNameBeforeUpdate = billBeforeUpdate ? billBeforeUpdate.name : "Desconocido"; 
-        const userQuery = `CALL sp_bill('update', ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [bill_id, name ]);
-     
-        res.status(200).json({
-            bill_id: insertId,
-            success: true,
-            message: "¡La factura ha sido editada exitosamente!"
-        })
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'bills', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['update bill | previus: ' + billNameBeforeUpdate + ' | new one: ' + name, 11]);
-    
+        const userQuery = `UPDATE payments SET status= ?, payment_type= ?, sinpe_phone_number= ? WHERE payment_id= ?`;
+        const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number, payment_id]);
+        const userQuery2 = `UPDATE inventory SET description= ? WHERE inventory_id = ? ;`;
+        const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ description, inventory_id]);
+        for (const data of dataToInsert) {
+            const query = 'UPDATE inventory_products SET amount = ?, product_id = ? WHERE invetory_products_id = ?;';
+            const { insertId } = await dbService.query(query, [data.amount, data.product_id, data.invetory_products_id]);
+        }
+        const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
+        const userChecker = await dbService.query(queryUserChecker, [id_card]); 
+        let userInsertId;
+        if (userChecker.length === 0) {
+            const queryAddUser = "INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, 1, '', NULL)";
+            const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
+            const queryAddBill =`UPDATE bills SET user_id = ? WHERE bills_id = ?`;
+            const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bill_id]);
+            res.status(200).json({
+                bill_id: billInsertId,
+                success: true,
+                message: "¡La factura ha sido agregada exitosamente!"
+            })
+        } else { 
+            userInsertId  = userChecker[0].user_id
+            const queryAddBill =`UPDATE bills SET user_id = ? WHERE bills_id = ?`;
+            const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bill_id]);
+            res.status(200).json({
+                bill_id: billInsertId,
+                success: true,
+                message: "¡La factura ha sido agregada exitosamente!"
+            })
+        }
+
     }
     catch(error) {
         try {
@@ -230,5 +237,6 @@ module.exports = {
     postBill,
     putBill,
     deleteBill,
+    getUserBills,
     getById
 }
