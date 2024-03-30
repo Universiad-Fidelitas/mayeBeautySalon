@@ -13,6 +13,18 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
   const { data: categoriesData } = useCategories();
   const { data: providersData } = useProviders();
   const [productImage, setProductImage] = useState([]);
+  let original;
+  if (selectedFlatRows[0] && selectedFlatRows[0].original) {
+    original = { ...selectedFlatRows[0].original };
+    const { size } = original;
+    const firstLetterIndex = size.search(/[a-zA-Z]/);
+    if (firstLetterIndex !== -1) {
+      original.size = size.substring(0, firstLetterIndex);
+      original.size_m = size.substring(firstLetterIndex);
+    }
+  } else {
+    console.log('selectedFlatRows[0] o selectedFlatRows[0].original es undefined');
+  }
 
   const { data: brandsData } = useBrands();
   const categoryDataDropdown = useMemo(
@@ -102,7 +114,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
   ];
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
-      <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
+      <Formik initialValues={selectedFlatRows.length === 1 ? original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
         <Form>
           <Modal.Header>
             <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>

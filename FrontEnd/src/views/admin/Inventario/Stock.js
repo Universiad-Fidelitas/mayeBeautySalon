@@ -130,27 +130,33 @@ const Stock = () => {
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
             </Row>
-            {categoryDataDropdown && (
-              <>
-                <div className="mb-3">
-                  <label className="form-label">Filtrar por categoria</label>
-                  <CustomSelect
-                    className="form-control"
-                    value={category}
-                    onChange={(value) => setCategory(value)}
-                    options={[{ value: '', label: 'Elija una categoria' }, ...categoryDataDropdown]}
-                  />
-                </div>
-              </>
-            )}
 
             <Row className="mb-3">
-              <Col sm="12" md="5" lg="3" xxl="2">
+              <Col sm="12" md="4" lg="4" xxl="4">
+                {categoryDataDropdown && (
+                  <>
+                    <div className="mb-3">
+                      <label className="form-label">Filtrar por categoria</label>
+                      <CustomSelect
+                        className="form-control"
+                        value={category}
+                        onChange={(value) => setCategory(value)}
+                        options={[{ value: '', label: 'Elija una categoria' }, ...categoryDataDropdown]}
+                      />
+                    </div>
+                  </>
+                )}
+              </Col>
+              <Col sm="12" md="5" lg="5" xxl="5">
+                <label className="form-label">Buscar</label>
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
                   <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
-              <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
+
+              <Col sm="24" md="3" lg="3" xxl="3" className="text-end">
+                <label className="form-label">Tamaño de paginación</label>
+                <br />
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
                 </div>
