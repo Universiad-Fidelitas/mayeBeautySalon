@@ -10,9 +10,9 @@ const router = Router();
 router.post('/', getBills)
 router.post('/add', postBill)
 
-router.get('/:bill_id', [ param('bill_id').isNumeric().withMessage('bill_id must be a number')], getById)
-router.put('/:bill_id', [ param('bill_id').isNumeric().withMessage('bill_id must be a number')], router.put('/:bill_id', [ param('bill_id').isNumeric().withMessage('bill_id must be a number')], putBill)
+router.get('/:bills_id', [ param('bills_id').isNumeric().withMessage('bills_id must be a number')], getById)
+router.put('/:bills_id', [ param('bills_id').isNumeric().withMessage('bills_id must be a number')], router.put('/:bills_id', [ param('bills_id').isNumeric().withMessage('bills_id must be a number')], putBill)
 )
-router.post('/delete', [ param('bill_id').isNumeric().withMessage('bill_id must be a number')], deleteBill)
+router.post('/delete', [ param('bills_id').isNumeric().withMessage('bills_id must be a number')], deleteBill)
 
 module.exports = router;
