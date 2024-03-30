@@ -3,9 +3,9 @@ const dbService = require('../database/dbService');
 const helper = require('../helpers/dbHelpers');
 
 const getById = async (req, res = response) => {
-    const { bill_id } = req.params;
+    const { bills_id } = req.params;
     try {
-        const [billFound] = await dbService.query('SELECT * FROM bill_view WHERE activated = 1 AND bills_id = ?', [bill_id]);
+        const [billFound] = await dbService.query('SELECT * FROM bill_view WHERE activated = 1 AND bills_id = ?', [bills_id]);
         res.status(500).json({billFound, status: true, message: 'Se ha encontrado la factura exitosamente.' });
     }
     catch(error) {
@@ -113,7 +113,7 @@ const postBill = async (req, res = response) => {
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
             res.status(200).json({
-                bill_id: billInsertId,
+                bills_id: billInsertId,
                 success: true,
                 message: "¡La factura ha sido agregada exitosamente!"
             })
@@ -122,7 +122,7 @@ const postBill = async (req, res = response) => {
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
             res.status(200).json({
-                bill_id: billInsertId,
+                bills_id: billInsertId,
                 success: true,
                 message: "¡La factura ha sido agregada exitosamente!"
             })
@@ -140,7 +140,7 @@ const postBill = async (req, res = response) => {
 }
 
 const putBill = async (req, res = response) => {
-    const { bill_id } = req.params;
+    const { bills_id } = req.params;
     const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card, first_name, last_name, email, phone, payment_id, inventory_id } = req.body;
     try {
         const userQuery = `UPDATE payments SET status= ?, payment_type= ?, sinpe_phone_number= ? WHERE payment_id= ?`;
@@ -158,18 +158,18 @@ const putBill = async (req, res = response) => {
             const queryAddUser = "INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
             const queryAddBill =`UPDATE bills SET user_id = ? WHERE bills_id = ?`;
-            const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bill_id]);
+            const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bills_id]);
             res.status(200).json({
-                bill_id: billInsertId,
+                bills_id: billInsertId,
                 success: true,
                 message: "¡La factura ha sido agregada exitosamente!"
             })
         } else { 
             userInsertId  = userChecker[0].user_id
             const queryAddBill =`UPDATE bills SET user_id = ? WHERE bills_id = ?`;
-            const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bill_id]);
+            const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bills_id]);
             res.status(200).json({
-                bill_id: billInsertId,
+                bills_id: billInsertId,
                 success: true,
                 message: "¡La factura ha sido agregada exitosamente!"
             })
@@ -195,11 +195,11 @@ const putBill = async (req, res = response) => {
 }
 
 const deleteBill = async (req, res = response) => {
-    const { bill_id } = req.body;
+    const { bills_id } = req.body;
     try {
 
         const userQuery = `UPDATE bills SET activated=0 WHERE FIND_IN_SET(bills_id, ?)`;
-        const rows = await dbService.query(userQuery, [bill_id]);
+        const rows = await dbService.query(userQuery, [bills_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {
             res.status(200).json({
