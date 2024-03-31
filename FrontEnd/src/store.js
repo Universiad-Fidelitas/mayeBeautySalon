@@ -32,6 +32,7 @@ import reports3Reducer from 'store/reports/reports3Slice';
 import { REDUX_PERSIST_KEY } from 'config.js';
 import calendarReducer from 'views/admin/Citas/calendarSlice';
 import appointmentsReducer from 'store/appointments/appointmentsSlice';
+import billsReducer from 'store/bills/billsSlice';
 
 const persistConfig = {
   key: REDUX_PERSIST_KEY,
@@ -66,6 +67,7 @@ const persistedReducer = persistReducer(
     calendar: calendarReducer,
     services: servicesReducer,
     appointments: appointmentsReducer,
+    bills: billsReducer,
   })
 );
 const store = configureStore({
