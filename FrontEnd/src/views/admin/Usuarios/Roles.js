@@ -164,20 +164,6 @@ const Roles = () => {
     setTerm(val || undefined);
   }, 200);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre del rol',
-    },
-  ];
-
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -232,8 +218,6 @@ const Roles = () => {
             tableInstance={tableInstance}
             addItem={addItem}
             editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
           />
         </Col>
       </Row>

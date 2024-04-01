@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  ModalAddEdit,
   ButtonsAddNew,
   ControlsPageSize,
   ControlsAdd,
@@ -11,59 +10,42 @@ import {
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getServices, postService, editService, deleteServices } from 'store/services/servicesThunk';
+import { useDispatch } from 'react-redux';
+// import { deleteBrands } from 'store/brands/brandsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
-import { ModalAddEditServices2 } from './ModalAddEditServices2';
+import { useBrands } from 'hooks/react-query/useBrands';
+import { MarcasModalAddEdit } from './MarcasModalAddEdit';
 
-const Servicios = () => {
+const Marcas = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Servicios';
+  const title = 'Marcas';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/services', title: 'Servicios' },
+    { to: '/inventariado/brands', title: 'Marcas' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isServicesLoading, services, pageCount } = useSelector((state) => state.services);
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'ID',
-        accessor: 'service_id',
+        Header: 'brand_id',
+        accessor: 'brand_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
       },
       {
         Header: 'Nombre',
         accessor: 'name',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Tiempo',
-        accessor: 'duration',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Precio',
-        accessor: 'price',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Estado del Servicio',
-        accessor: 'activated',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -92,7 +74,7 @@ const Servicios = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'service_id', desc: false }], hiddenColumns: ['service_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['brand_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -103,64 +85,26 @@ const Servicios = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getServices({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+
+  const { getBrands, inactivateBrands } = useBrands({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isBrandsDataSuccess, data: BrandsData } = getBrands;
 
   useEffect(() => {
-    if (services.length > 0) {
-      setData(services);
+    if (isBrandsDataSuccess) {
+      setData(BrandsData.items);
+      setPageCount(BrandsData.pageCount);
     }
-  }, [isServicesLoading]);
+  }, [isBrandsDataSuccess, BrandsData]);
 
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteServices(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editService(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postService(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  const deleteItems = useCallback(async (values) => {
+    inactivateBrands.mutateAsync(values);
+  }, [dispatch]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
-      .min(1, <span style={{ color: 'red' }}>El precio debe ser al menos 1</span>),
-  });
 
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre de el servicio',
-      type: 'text',
-    },
-    {
-      id: 'price',
-      label: 'Precio',
-      type: 'number',
-    },
-  ];
-  console.log('algo', tableInstance);
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -192,9 +136,9 @@ const Servicios = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el servicio seleccionado?"
-                    modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="service"
+                    modalTitle="¿Desea eliminar la marca seleccionada?"
+                    modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="brand"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -211,16 +155,10 @@ const Servicios = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEditServices2
-            tableInstance={tableInstance}
-            addItem={addItem}
-            editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
-          />
+          <MarcasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/> 
         </Col>
       </Row>
     </>
   );
 };
-export default Servicios;
+export default Marcas;

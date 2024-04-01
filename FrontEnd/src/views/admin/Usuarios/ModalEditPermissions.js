@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, FormCheck, Modal } from 'react-bootstrap';
+import { Button, Col, FormCheck, Modal, Row } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { DB_TABLE_ROLS } from 'data/rolsData';
 import { useExportAllPermissions } from 'hooks/useUserPermissions';
+import * as Yup from 'yup';
+import { useIntl } from 'react-intl';
 
-export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
+export const ModalEditPermissions = ({ tableInstance, addItem, editItem }) => {
+  const { formatMessage: f } = useIntl();
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const [permissionsList, setPermissionsList] = useState([]);
   const [allSwitchChangeStatus, setAllSwitchChangeStatus] = useState(false);
@@ -54,25 +57,42 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
     setAllSwitchChangeStatus(!allSwitchChangeStatus);
   };
 
+  const validationSchema = Yup.object().shape({
+    name: Yup.string()
+      .required('El nombre es requerido')
+      .min(3, 'El nombre debe tener al menos 3 caracteres')
+      .max(15, 'El nombre no puede tener más de 15 caracteres'),
+  });
+
+  console.log('selectedFlatRows', selectedFlatRows[0])
+
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
-      <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
+      <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].values : {
+        name: '',
+        permissions: ''
+      }} onSubmit={onSubmit} validationSchema={validationSchema}>
+      {({ errors, touched, setFieldValue, values, dirty }) => (
         <Form>
           <Modal.Header>
             <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {formFields.map(({ id, label }) => (
-              <div className="mb-3" key={id}>
-                <label className="form-label">{label}</label>
-                <Field className="form-control" type="text" id={id} name={id} />
-                <ErrorMessage name={id} component="div" />
-              </div>
-            ))}
-            <Col className="d-flex flex-row justify-content-between align-items-center">
-              <p className="h6">Todos los roles</p>
-              <FormCheck className="form-check mt-2 ps-7 ps-md-2" type="switch" checked={allSwitchChangeStatus} onChange={() => onAllSwitchChange()} />
-            </Col>
+            <Row className="mb-3">
+              <Col>
+                <div className="top-label">
+                  <label className="form-label">Nombre del rol</label>
+                  <Field className={`form-control ${errors.name && touched.name ? 'is-invalid' : ''}`} id="name" name="name" />
+                  <ErrorMessage className="text-danger" name="name" component="div" />
+                </div>
+              </Col>
+            </Row>
+            <Row className="mb-3">
+              <Col className="d-flex flex-row justify-content-between align-items-center">
+                <p className="h6 m-0">Todos los roles</p>
+                <FormCheck className={`form-check mt-2 ps-7 ps-md-2 ${errors.name && touched.name ? 'is-invalid' : ''}`} type="switch" checked={allSwitchChangeStatus} onChange={() => onAllSwitchChange()} />
+              </Col>
+            </Row>
             {DB_TABLE_ROLS.map(({ permissionName, permissionKey }, index) => (
               <div className="mb-3" key={index}>
                 <Col className="d-flex flex-row justify-content-between align-items-center">
@@ -122,11 +142,12 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem, validat
             <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
               Cancelar
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={selectedFlatRows.length === 1 && !dirty && true}>
               {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
             </Button>
           </Modal.Footer>
         </Form>
+      )}
       </Formik>
     </Modal>
   );

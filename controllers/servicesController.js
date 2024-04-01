@@ -146,8 +146,9 @@ const deleteServices = async (req, res = response) => {
     try {
 
         const { service_ids } = req.body;
-        const query = `UPDATE services SET activated = 0 WHERE service_id IN (?);`;
-        const { affectedRows } = await dbService.query(query, [service_ids.join(',')]);
+        const placeholders = service_ids.map(() => '?').join(',');
+        const query = `UPDATE services SET activated = 0 WHERE service_id IN (${placeholders});`;
+        const { affectedRows } = await dbService.query(query, service_ids);
 
         res.status(200).json({
             success: true,

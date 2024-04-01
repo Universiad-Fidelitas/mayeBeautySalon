@@ -22,7 +22,8 @@ const Stock = () => {
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { data: categoriesData } = useCategories();
+  const { getCategories } = useCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: categoriesData } = getCategories;
   const [category, setCategory] = useState('');
   const { isStockLoading, stock, pageCount } = useSelector((state) => state.stock);
   const categoryDataDropdown = useMemo(

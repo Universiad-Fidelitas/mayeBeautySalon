@@ -320,5 +320,23 @@ const enMessages = {
   'users.salaryInteger': 'Salary must be an integer',
   'users.salaryMin': 'Salary cannot be negative',
   'users.salaryRequired': 'Salary is required',
+
+  'notifications.productsMinAmount': 'Products with minimum amount',
+  'notifications.selectProduct': 'Select Product',
+  'notifications.productsList': 'Products List',
+  'notifications.amountErrors.onlyNumbers': 'Amount must be only numbers',
+  'notifications.amountErrors.minLength': 'Amount must be at least 1 character',
+  'notifications.amountErrors.maxLength': 'Amount must be at most 3 characters',
+  'notifications.amountErrors.required': 'Amount is required',
+  'notifications.productErrors.required': 'Product is required',
+
+  'service.selectMinutes': 'Select Minutes',
+  'service.selectHours': 'Select Hours',
+  'service.minutes': 'Minutes',
+  'service.hours': 'Hours',
+  'service.timeErrors.required': 'Service time is required',
+  'service.timeErrors.noValidTime': 'Service time is not valid',
+
+  
 };
 export default enMessages;

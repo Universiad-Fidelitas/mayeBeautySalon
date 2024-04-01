@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  ModalAddEdit,
   ButtonsAddNew,
   ControlsPageSize,
   ControlsAdd,
@@ -11,36 +10,35 @@ import {
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getBrands, postBrand, editBrand, deleteBrands } from 'store/brands/brandsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
+import { useCategories } from 'hooks/react-query/useCategories';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { CategoriasModalAddEdit } from './CategoriasModalAddEdit';
 
-const Marcas = () => {
+const Categorias = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Marcas';
+  const title = 'Categorias';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/brands', title: 'Marcas' },
+    { to: '/inventariado/categories', title: 'Categorias' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
-  const dispatch = useDispatch();
-  const { isBrandsLoading, brands, pageCount } = useSelector((state) => state.brands);
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'ID',
-        accessor: 'brand_id',
+        Header: 'category_id',
+        accessor: 'category_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
       },
       {
         Header: 'Nombre',
@@ -73,7 +71,7 @@ const Marcas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['brand_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['category_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -84,55 +82,24 @@ const Marcas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getBrands({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+
+  const { getCategories, inactivateCategories } = useCategories({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isCategoriesDataSuccess, data: categoriesData } = getCategories;
 
   useEffect(() => {
-    if (brands.length > 0) {
-      setData(brands);
+    if (isCategoriesDataSuccess) {
+      setData(categoriesData.items);
+      setPageCount(categoriesData.pageCount);
     }
-  }, [isBrandsLoading, brands]);
+  }, [isCategoriesDataSuccess, categoriesData]);
 
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteBrands(values));
-    },
-    [dispatch]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editBrand(values));
-    },
-    [dispatch]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postBrand(values));
-    },
-    [dispatch]
-  );
+  const deleteItems = useCallback(async (values) => {
+      inactivateCategories.mutateAsync(values);
+  },[inactivateCategories]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre de la marca',
-      type: 'text',
-    },
-  ];
 
   return (
     <>
@@ -165,9 +132,9 @@ const Marcas = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la marca seleccionada?"
-                    modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="brand"
+                    modalTitle="¿Desea eliminar la categoria seleccionada?"
+                    modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="category"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -184,10 +151,10 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <CategoriasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
         </Col>
       </Row>
     </>
   );
 };
-export default Marcas;
+export default Categorias;

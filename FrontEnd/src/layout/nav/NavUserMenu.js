@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
 import { setLogoutUser } from 'store/slices/authSlice';
+import Notifications from './notifications/Notifications';
 
 export const NavUserMenu = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ export const NavUserMenu = () => {
   }
   return (
     <div className="user-container d-flex">
+      <Notifications/>
       <Button variant="outline-white" onClick={() => dispatch(setLogoutUser())} className="btn-icon btn-icon-start sendPasswordButton">
         <CsLineIcons icon="logout" />
         <span> {f({ id: 'helper.signOut' })}</span>

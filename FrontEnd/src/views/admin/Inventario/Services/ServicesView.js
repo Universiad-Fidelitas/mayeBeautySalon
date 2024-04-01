@@ -102,7 +102,7 @@ export const ServicesView = () => {
 
   const deleteItems = useCallback(
     async (values) => {
-      deleteServices.mutateAsync({ service_ids: values });
+      deleteServices.mutateAsync( values );
     },
     [deleteServices]
   );

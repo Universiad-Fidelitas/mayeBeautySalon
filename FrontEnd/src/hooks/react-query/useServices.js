@@ -111,8 +111,8 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
   const deleteServices = () => {
     const queryClient = useQueryClient();
 
-    const deleteServicesApi = useCallback(async (service_ids) => {
-      const { data } = await baseApi.post('/services/delete', service_ids);
+    const deleteServicesApi = useCallback(async (services) => {
+      const { data } = await baseApi.post('/services/delete', { service_ids: services });
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
