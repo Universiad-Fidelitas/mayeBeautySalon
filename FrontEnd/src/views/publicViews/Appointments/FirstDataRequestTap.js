@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Form, Table, Card } from 'react-bootstrap';
+import { Button, Form, Table, Card, Col } from 'react-bootstrap';
 import { Formik } from 'formik';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
@@ -10,6 +10,7 @@ import { useGetWeekAppointments } from 'hooks/react-query/useAppointments';
 import moment from 'moment/moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { setServiceDateTime } from 'store/appointments/appointmentsSlice';
+import { SelectField } from 'components/SelectField';
 
 export const FirstDataRequestTap = ({ formRef }) => {
   const [selectedService, setSelectedService] = useState();
@@ -28,6 +29,15 @@ export const FirstDataRequestTap = ({ formRef }) => {
       }),
     [data]
   );
+
+  const formatOptionLabel = (values) => {
+  return (
+    <div className='formatAppSelect'>
+      <img src='https://t4.ftcdn.net/jpg/00/87/28/19/360_F_87281963_29bnkFXa6RQnJYWeRfrSpieagNxw1Rru.jpg' alt='s'/>
+      <p className="small-title">{ values.label }</p>
+    </div>
+  )
+};
 
   const daysOfWeek = useMemo(() => ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'], []);
 
@@ -161,6 +171,16 @@ export const FirstDataRequestTap = ({ formRef }) => {
             <h5 className="card-title">{f({ id: 'appointments.FirstTaptitle' })}</h5>
             <p className="card-text text-alternate mb-4">{f({ id: 'appointments.FirstTapDescription' })} </p>
             <Select
+              className="w-20 mb-3 AppSelect"
+              classNamePrefix="react-select"
+              options={serviceOptions}
+              value={selectedService}
+              onChange={onSelectedService}
+              placeholder="Seleccione Servicio"
+              formatOptionLabel={formatOptionLabel}
+            />
+            
+            <Select
               className="w-20 mb-3"
               classNamePrefix="react-select"
               options={serviceOptions}
@@ -168,6 +188,15 @@ export const FirstDataRequestTap = ({ formRef }) => {
               onChange={onSelectedService}
               placeholder="Seleccione Servicio"
             />
+            <Col className="col-8 top-label w-20 appointmentWorkedSelect">
+              <SelectField
+                label={f({ id: 'helper.role' })}
+                name="role_id"
+                placeholder={f({ id: 'helper.selectRol' })}
+                options={serviceOptions}
+                formatOptionLabel={formatOptionLabel}
+              />
+            </Col>
 
             {selectedService?.value && (
               <>

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { settingsChangeColor } from 'settings/settingsSlice';
-import IconMenuNotifications from './notifications/Notifications';
 import SearchModal from './search/SearchModal';
 
 const NavIconMenu = () => {
@@ -35,7 +34,6 @@ const NavIconMenu = () => {
             <CsLineIcons icon="light-off" size="18" className="dark" />
           </a>
         </li>
-        <IconMenuNotifications />
       </ul>
       <SearchModal show={showSearchModal} setShow={setShowSearchModal} />
     </>

@@ -1,62 +1,54 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProviders, postProvider, editProvider, deleteProviders } from 'store/providers/providersThunk';
+import { useDispatch } from 'react-redux';
+import { deleteNotifications } from 'store/notifications/notificationsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { useNotifications } from 'hooks/react-query/useNotificacions';
+import { NotificacionsModalAddEdit } from './NotificacionsModalAddEdit';
 
-const Marcas = () => {
+export const Notificacions = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Proveedores';
-  const description = 'Server side api implementation.';
+  const title = 'Notificaciones';
+  const description = 'En este módulo se va a crear las alertas para que el sistema le notifique cuando un producto esta bajo de inventario';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/providers', title: 'Proveedores' },
+    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
+    { to: '/inventariado/notifications', title: 'Notificaciones' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isProvidersLoading, providers, pageCount } = useSelector((state) => state.providers);
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'ID',
-        accessor: 'provider_id',
+        Header: 'notification_id',
+        accessor: 'notification_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
       },
       {
-        Header: 'Nombre',
+        Header: 'Producto',
         accessor: 'name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Número de telefono',
-        accessor: 'phone',
+        Header: 'Producto ID',
+        accessor: 'product_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Correo electrónico',
-        accessor: 'email',
+        Header: 'Cantidad mínima de producto',
+        accessor: 'amount',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -85,7 +77,7 @@ const Marcas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['provider_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: true }], hiddenColumns: ['notification_id', 'product_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -96,74 +88,24 @@ const Marcas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getProviders({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+  
+  const { getNotifications, inactivateNotifications } = useNotifications({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isNotificationsDataSuccess, data: NotificationsData } = getNotifications;
 
   useEffect(() => {
-    if (providers.length > 0) {
-      setData(providers);
+    if (isNotificationsDataSuccess) {
+      setData(NotificationsData.items);
+      setPageCount(NotificationsData.pageCount);
     }
-  }, [isProvidersLoading, providers]);
+  }, [isNotificationsDataSuccess, NotificationsData]);
 
-  const deleteItems = useCallback(
-    async (values) => {
-      console.log('delete', values);
-      dispatch(deleteProviders(values));
-    },
-    [dispatch]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editProvider(values));
-    },
-    [dispatch]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postProvider(values));
-    },
-    [dispatch]
-  );
+  const deleteItems = useCallback(async (values) => {
+      inactivateNotifications.mutateAsync(values)
+    }, [dispatch]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    phone: Yup.string()
-      .matches(/^\d+$/, 'El teléfono debe ser un número')
-      .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
-      .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
-      .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
-    email: Yup.string()
-      .email(f({ id: 'helper.emailInvalid' }))
-      .required(f({ id: 'helper.emailRequired' })),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre del proveedor',
-      type: 'text',
-    },
-    {
-      id: 'phone',
-      label: 'Número del proveedor',
-      type: 'text',
-    },
-    {
-      id: 'email',
-      label: 'Correo del proveedor',
-      type: 'text',
-    },
-  ];
 
   return (
     <>
@@ -175,6 +117,15 @@ const Marcas = () => {
             <Row>
               <Col xs="12" md="7">
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
+                <br />
+                <span
+                  className="mb-0 pb-0 display-7
+                "
+                >
+                  {description}{' '}
+                </span>
+                <br />
+                <br />
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
               <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
@@ -196,9 +147,9 @@ const Marcas = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el proveedor seleccionado?"
-                    modalDescription="El proveedor seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="provider"
+                    modalTitle="¿Desea eliminar la notificación seleccionada?"
+                    modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="notification"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -215,10 +166,9 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <NotificacionsModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
         </Col>
       </Row>
     </>
   );
 };
-export default Marcas;

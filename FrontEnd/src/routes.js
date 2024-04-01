@@ -3,21 +3,21 @@ import Citas from 'views/admin/Citas/Citas';
 import Dashboard from 'views/admin/Dashboard';
 import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
-import Categorias from 'views/admin/Inventario/Categorias';
-import Marcas from 'views/admin/Inventario/Marcas';
+import Marcas from 'views/admin/Inventario/Marcas/Marcas';
 import Gastos from 'views/admin/Facturas/Gastos';
 import Productos from 'views/admin/Inventario/Productos';
 import Stock from 'views/admin/Inventario/Stock';
-import Proveedores from 'views/admin/Inventario/Proveedores';
+import Proveedores from 'views/admin/Inventario/Proveedores/Proveedores';
 import Inventario from 'views/admin/Inventario/Inventario';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
 import Pagos from 'views/admin/Facturas/Pagos';
-import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import { HomeView } from 'views/publicViews/HomeView';
+import Categorias from 'views/admin/Inventario/Categorias/Categorias';
+import { Notificacions } from 'views/admin/Inventario/Notifications/Notificacions';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
@@ -60,7 +60,7 @@ const routesAndMenuItems = {
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
         { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
         { path: '/stock', icon: 'wizard', label: 'Inventario', roles: 'R_PRODUCTS', component: Stock },
-        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
+        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificacions },
       ],
       protected: true,
     },

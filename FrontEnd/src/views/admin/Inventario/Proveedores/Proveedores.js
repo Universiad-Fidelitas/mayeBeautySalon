@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  ModalAddEdit,
   ButtonsAddNew,
   ControlsPageSize,
   ControlsAdd,
@@ -11,34 +10,54 @@ import {
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, postCategory, editCategory, deleteCategories } from 'store/categories/categoriesThunk';
+import { useDispatch } from 'react-redux';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { useProviders } from 'hooks/react-query/useProviders';
+import { ProveedoresModalAddEdit } from './ProveedoresModalAddEdit';
 
-const Categorias = () => {
+
+const Marcas = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Categorias';
+  const title = 'Proveedores';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
     { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/categories', title: 'Categorias' },
+    { to: '/inventariado/providers', title: 'Proveedores' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+  const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
-  const { isCategoriesLoading, categories, pageCount } = useSelector((state) => state.categories);
 
   const columns = React.useMemo(() => {
     return [
       {
+        Header: 'provider_id',
+        accessor: 'provider_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
+      },
+      {
         Header: 'Nombre',
         accessor: 'name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Número de telefono',
+        accessor: 'phone',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Correo electrónico',
+        accessor: 'email',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -67,7 +86,7 @@ const Categorias = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['category_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['provider_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -78,55 +97,24 @@ const Categorias = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getCategories({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+
+  const { getProviders, inactivateProviders } = useProviders({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isProvidersDataSuccess, data: providersData } = getProviders;
 
   useEffect(() => {
-    if (categories.length > 0) {
-      setData(categories);
+    if (isProvidersDataSuccess) {
+      setData(providersData.items);
+      setPageCount(providersData.pageCount);
     }
-  }, [isCategoriesLoading, categories]);
+  }, [isProvidersDataSuccess, providersData]);
 
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteCategories(values));
-    },
-    [dispatch]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editCategory(values));
-    },
-    [dispatch]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postCategory(values));
-    },
-    [dispatch]
-  );
+  const deleteItems = useCallback(async (values) => {
+    inactivateProviders.mutate(values);
+  }, [dispatch]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre de la categoría',
-      type: 'text',
-    },
-  ];
 
   return (
     <>
@@ -159,9 +147,9 @@ const Categorias = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la categoria seleccionada?"
-                    modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="category"
+                    modalTitle="¿Desea eliminar el proveedor seleccionado?"
+                    modalDescription="El proveedor seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="provider"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -178,10 +166,10 @@ const Categorias = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ProveedoresModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
         </Col>
       </Row>
     </>
   );
 };
-export default Categorias;
+export default Marcas;

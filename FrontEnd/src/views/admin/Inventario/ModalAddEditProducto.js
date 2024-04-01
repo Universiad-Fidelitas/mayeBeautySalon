@@ -10,8 +10,15 @@ import { ProductosImageUploader } from 'components/ImageUploading/ProductsImageU
 
 export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { data: categoriesData } = useCategories();
-  const { data: providersData } = useProviders();
+  const { getCategories } = useCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: categoriesData } = getCategories;
+
+  const { getProviders } = useProviders({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: providersData } = getProviders;
+
+  const { getBrands } = useBrands({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: brandsData } = getBrands;
+
   const [productImage, setProductImage] = useState([]);
   let original;
   if (selectedFlatRows[0] && selectedFlatRows[0].original) {
@@ -26,7 +33,6 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
     console.log('selectedFlatRows[0] o selectedFlatRows[0].original es undefined');
   }
 
-  const { data: brandsData } = useBrands();
   const categoryDataDropdown = useMemo(
     () =>
       categoriesData?.items.map(({ category_id, name }) => {
