@@ -20,9 +20,8 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const addBill = () => {
     const queryClient = useQueryClient();
-
     const addBillApi = useCallback(async (newBill) => {
-      const { data } = await baseApi.post('/bills/add', newBill);
+      const { data } = await baseApi.post('/bills/add', newBill.values);
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
@@ -38,7 +37,7 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
         const previousData = queryClient.getQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }]);
 
         queryClient.setQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          const newItems = [newBill, ...oldData.items.slice(0, 4)];
+          const newItems = [newBill.values, ...oldData.items.slice(0, 4)];
           return {
             ...oldData,
             items: newItems,
@@ -64,7 +63,8 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
   const updateBill = () => {
     const queryClient = useQueryClient();
     const updateBillApi = useCallback(async (billData) => {
-      const { data } = await baseApi.put(`/bills/${billData.get('bills_id')}`, billData);
+      const { data } = await baseApi.put(`/bills/${billData.values.bills_id}`, billData.values);
+
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
@@ -79,8 +79,8 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
         const previousData = queryClient.getQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }]);
         queryClient.setQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }], (oldData) => {
           const newItems = oldData.items.map((item) => {
-            if (item.bills_id === billData.get('bills_id')) {
-              return billData;
+            if (item.bills_id === billData.values.bills_id) {
+              return billData.values;
             }
             return item;
           });

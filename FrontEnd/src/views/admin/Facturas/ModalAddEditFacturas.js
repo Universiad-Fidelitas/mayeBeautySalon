@@ -5,7 +5,7 @@ import 'react-dropzone-uploader/dist/styles.css';
 import { useStock } from 'hooks/react-query/useStock';
 import Select from 'react-select';
 
-export const ModalAddEditFacturas = ({ tableInstance, addItem, validationSchema, formFields }) => {
+export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { data: productsData } = useStock();
   const productsDataDropdown = useMemo(
@@ -31,8 +31,24 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, validationSchema,
   };
 
   const onSubmit = (values) => {
+    delete values.activated;
+    delete values.appointment_date;
+    delete values.appointment_id;
+    delete values.appointment_price;
+    delete values.inventory_date;
+    delete values.inventory_price;
+    delete values.user_id;
+    delete values.voucher_path;
     let isValid = true;
-    console.log('values', values);
+    if (values.payment_id === '') {
+      values.payment_id = 0;
+    }
+    if (values.inventory_id === '') {
+      values.inventory_id = 0;
+    }
+    if (values.dataToInsert[0].invetory_products_id === '') {
+      values.dataToInsert[0].invetory_products_id = 0;
+    }
     values.dataToInsert.forEach((item, index) => {
       if (values.action === 'remove') {
         const product = productsDataDropdown.find((p) => p.value === item.product_id);
@@ -47,7 +63,11 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, validationSchema,
     });
 
     if (isValid) {
-      addItem(values);
+      if (selectedFlatRows.length === 1) {
+        editItem(values);
+      } else {
+        addItem(values);
+      }
       setIsOpenAddEditModal(false);
     }
   };
@@ -72,7 +92,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, validationSchema,
     { value: 'sinpe', label: 'Sinpe' },
   ];
   return (
-    <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
+    <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik
         initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : initialValues}
         onSubmit={onSubmit}
@@ -142,6 +162,22 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, validationSchema,
                             </div>
                           </>
                         )}
+                        <div className="mb-3" key={`dataToInsert.${index}.invetory_products_id`}>
+                          <label className="form-label">ID del IP</label>
+                          <Field
+                            className="form-control"
+                            type="text"
+                            id={`dataToInsert.${index}.invetory_products_id`}
+                            name={`dataToInsert.${index}.invetory_products_id`}
+                            disabled
+                            value={
+                              values.dataToInsert && values.dataToInsert[index] && values.dataToInsert[index].invetory_products_id
+                                ? values.dataToInsert[index].invetory_products_id
+                                : '0'
+                            }
+                          />
+                          <ErrorMessage name={`dataToInsert.${index}.invetory_products_id`} component="div" />
+                        </div>
                         <div className="mb-3">
                           <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
                             Cantidad
@@ -159,7 +195,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, validationSchema,
                       </div>
                     ))}
 
-                    <Button variant="primary" onClick={() => push({ product_id: '', amount: '' })}>
+                    <Button variant="primary" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
                       Agregar Producto
                     </Button>
                   </div>
