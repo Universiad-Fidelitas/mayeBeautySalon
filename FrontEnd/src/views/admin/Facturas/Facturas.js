@@ -87,6 +87,12 @@ const Facturas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
+        Header: 'Tipo de cédula',
+        accessor: 'id_card_type',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
         Header: 'Pago ID',
         accessor: 'payment_id',
         sortable: true,
@@ -256,6 +262,7 @@ const Facturas = () => {
         amount: Yup.number().min(0, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
       })
     ),
+    id_card_type: Yup.string().required('El tipo de cedula es requerido'),
     id_card: Yup.string()
       .required(f({ id: 'helper.idCardRequired' }))
       .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))

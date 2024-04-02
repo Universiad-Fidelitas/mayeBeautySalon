@@ -18,6 +18,12 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
       }),
     [productsData]
   );
+  const idTypeDropdown = useMemo(() => {
+    return [
+      { value: 'nacional', label: 'Nacional' },
+      { value: 'extranjero', label: 'Extranjero' },
+    ];
+  }, []);
   const initialValues = {
     status: '',
     payment_type: '',
@@ -121,7 +127,13 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                 <Field as="textarea" className="form-control" type="text" id="description" name="description" />
                 <ErrorMessage style={{ color: 'red' }} name="description" component="div" />
               </div>
-
+              <div className="mb-3">
+                <label className="form-label" htmlFor="id_card_type">
+                  Tipo de Cedula
+                </label>
+                <Field className="form-control" name="id_card_type" id="id_card_type" component={CustomSelect} options={idTypeDropdown} required />
+                <ErrorMessage style={{ color: 'red' }} name="id_card_type" className="field-error" component="div" />
+              </div>
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>

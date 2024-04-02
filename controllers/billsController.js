@@ -94,7 +94,7 @@ const getUserBills = async (req, res = response) => {
     }
 }
 const postBill = async (req, res = response) => {
-    const {  status, payment_type, sinpe_phone_number, description, dataToInsert, id_card, first_name, last_name, email, phone } = req.body;
+    const {  status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone } = req.body;
     try {
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
@@ -108,8 +108,8 @@ const postBill = async (req, res = response) => {
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
         let userInsertId;
         if (userChecker.length === 0) {
-            const queryAddUser = "INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, 1, '', NULL)";
-            const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
+            const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
+            const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
             res.status(200).json({
@@ -141,7 +141,7 @@ const postBill = async (req, res = response) => {
 
 const putBill = async (req, res = response) => {
     const { bills_id } = req.params;
-    const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card, first_name, last_name, email, phone, payment_id, inventory_id } = req.body;
+    const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, payment_id, inventory_id } = req.body;
     try {
         const userQuery = `UPDATE payments SET status= ?, payment_type= ?, sinpe_phone_number= ? WHERE payment_id= ?`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number, payment_id]);
@@ -169,8 +169,8 @@ const putBill = async (req, res = response) => {
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
         let userInsertId;
         if (userChecker.length === 0) {
-            const queryAddUser = "INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, 1, '', NULL)";
-            const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
+            const queryAddUser = "INSERT INTO users (role_id, id_card,id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?,?, ?, ?, ?, ?, 1, '', NULL)";
+            const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
             const queryAddBill =`UPDATE bills SET user_id = ? WHERE bills_id = ?`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId,bills_id]);
             res.status(200).json({
