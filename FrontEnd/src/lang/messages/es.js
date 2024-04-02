@@ -324,5 +324,6 @@ const enMessages = {
   'users.salaryMin': 'Salario debe ser mayor a 0',
   'users.salaryRequired': 'Salario es requerido',
   'users.idCardTypeRequired': 'Tipo de cédula es requerido',
+  'users.id_card_type': 'Tipo de cédula',
 };
 export default enMessages;

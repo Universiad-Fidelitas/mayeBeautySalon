@@ -60,6 +60,7 @@ const Usuarios = () => {
         accessor: 'id_card_type',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
       },
       {
         Header: f({ id: 'users.email' }),

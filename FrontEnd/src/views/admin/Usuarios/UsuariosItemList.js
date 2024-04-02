@@ -43,9 +43,6 @@ const UsuariosItemList = ({ tableInstance }) => {
                       <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate id_card">{id_card}</div>
                       </Col>
-                      <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
-                        <div className="lh-1 text-alternate id_card_type">{id_card_type}</div>
-                      </Col>
                       <Col xs="12" lg="3" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate email">{email}</div>
                       </Col>
