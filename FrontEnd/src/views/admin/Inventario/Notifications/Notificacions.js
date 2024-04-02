@@ -41,6 +41,12 @@ export const Notificacions = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
+        Header: 'Estado',
+        accessor: 'activated',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-lg-3',
+      },
+      {
         Header: 'Producto ID',
         accessor: 'product_id',
         sortable: true,
@@ -88,7 +94,7 @@ export const Notificacions = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  
+
   const { getNotifications, inactivateNotifications } = useNotifications({ term, pageIndex, pageSize, sortBy });
   const { isSuccess: isNotificationsDataSuccess, data: NotificationsData } = getNotifications;
 
@@ -99,9 +105,12 @@ export const Notificacions = () => {
     }
   }, [isNotificationsDataSuccess, NotificationsData]);
 
-  const deleteItems = useCallback(async (values) => {
-      inactivateNotifications.mutateAsync(values)
-    }, [dispatch]);
+  const deleteItems = useCallback(
+    async (values) => {
+      inactivateNotifications.mutateAsync(values);
+    },
+    [dispatch]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
@@ -166,7 +175,7 @@ export const Notificacions = () => {
               </Col>
             </Row>
           </div>
-          <NotificacionsModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
+          <NotificacionsModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>

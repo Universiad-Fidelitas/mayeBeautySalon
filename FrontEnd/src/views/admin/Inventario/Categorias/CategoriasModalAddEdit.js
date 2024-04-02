@@ -6,30 +6,40 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useCategories } from 'hooks/react-query/useCategories';
 
 export const CategoriasModalAddEdit = ({ tableInstance, apiParms }) => {
-    const { formatMessage: f } = useIntl();
-    const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-    const { updateCategory, addCategory } = useCategories(apiParms);
+  const { formatMessage: f } = useIntl();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { updateCategory, addCategory } = useCategories(apiParms);
 
-    const onSubmit = useCallback((values) => {
-        if (selectedFlatRows.length === 1) {
-            updateCategory.mutateAsync(values);
-        } else {
-            addCategory.mutateAsync(values);
-        }
-        setIsOpenAddEditModal(false);
-    }, [setIsOpenAddEditModal, selectedFlatRows, addCategory]);
+  const onSubmit = useCallback(
+    (values) => {
+      if (selectedFlatRows.length === 1) {
+        updateCategory.mutateAsync(values);
+      } else {
+        addCategory.mutateAsync(values);
+      }
+      setIsOpenAddEditModal(false);
+    },
+    [setIsOpenAddEditModal, selectedFlatRows, addCategory]
+  );
 
-    const initialValues = useMemo(() => ({
-        category_id: selectedFlatRows?.[0]?.original.category_id || '',
-        name: selectedFlatRows?.[0]?.original.name || '',
-    }), [selectedFlatRows]);
+  const initialValues = useMemo(
+    () => ({
+      category_id: selectedFlatRows?.[0]?.original.category_id || '',
+      name: selectedFlatRows?.[0]?.original.name || '',
+    }),
+    [selectedFlatRows]
+  );
 
-    const validationSchema = useMemo(() => Yup.object().shape({
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
         name: Yup.string()
-            .required(f({ id: 'helper.nameRequired' }))
-            .min(3, f({ id: 'helper.nameMinLength' }))
-            .max(20, f({ id: 'helper.nameMaxLength' }))
-    }), [f]);
+          .required(f({ id: 'categories.nameRequired' }))
+          .min(3, f({ id: 'categories.nameMinLength' }))
+          .max(20, f({ id: 'categories.nameMaxLength' })),
+      }),
+    [f]
+  );
 
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
@@ -64,5 +74,5 @@ export const CategoriasModalAddEdit = ({ tableInstance, apiParms }) => {
         </Formik>
       </Card>
     </Modal>
-  )
-}
+  );
+};
