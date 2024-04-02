@@ -87,6 +87,12 @@ const Facturas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
+        Header: 'Tipo de cédula',
+        accessor: 'id_card_type',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
         Header: 'Pago ID',
         accessor: 'payment_id',
         sortable: true,
@@ -183,7 +189,19 @@ const Facturas = () => {
         pageIndex: 0,
         pageSize: 5,
         sortBy: [{ id: 'bills_id', desc: false }],
-        hiddenColumns: ['bills_id', 'inventory_id', 'payment_id', 'user_id', 'appointment_id'],
+        hiddenColumns: [
+          'bills_id',
+          'inventory_id',
+          'payment_id',
+          'user_id',
+          'appointment_id',
+          'sinpe_phone_number',
+          'activated',
+          'description',
+          'phone',
+          'appointment_price',
+          'inventory_price',
+        ],
       },
     },
     useGlobalFilter,
@@ -232,7 +250,51 @@ const Facturas = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    // name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    status: Yup.string().required('El estado del pago es requerido'),
+    payment_type: Yup.string().required('El tipo de pago es requerido'),
+    description: Yup.string()
+      .required('La descripción es requerida')
+      .min(3, 'La descripción debe tener al menos 3 caracteres')
+      .max(100, 'La descripción no puede tener más de 100 caracteres'),
+    dataToInsert: Yup.array().of(
+      Yup.object().shape({
+        product_id: Yup.string().required('El producto es requerido'),
+        amount: Yup.number().min(0, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
+      })
+    ),
+    id_card_type: Yup.string().required('El tipo de cedula es requerido'),
+    id_card: Yup.string()
+      .required(f({ id: 'helper.idCardRequired' }))
+      .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))
+      .when('id_card_type', {
+        is: 'nacional',
+        then: Yup.string()
+          .min(9, f({ id: 'helper.idCardMinSize' }))
+          .max(9, f({ id: 'helper.idCardMaxSize' })),
+        otherwise: Yup.string()
+          .min(12, f({ id: 'helper.idCardMinSize2' }))
+          .max(15, f({ id: 'helper.idCardMaxSize2' })),
+      }),
+    first_name: Yup.string()
+      .required(f({ id: 'helper.nameRequired' }))
+      .min(3, f({ id: 'helper.nameMinLength' }))
+      .max(20, f({ id: 'helper.nameMaxLength' })),
+    last_name: Yup.string()
+      .required(f({ id: 'helper.lastnameRequired' }))
+      .min(3, f({ id: 'helper.lastnameMinLength' }))
+      .max(20, f({ id: 'helper.lastnameMaxLength' })),
+    email: Yup.string()
+      .email(f({ id: 'helper.emailInvalid' }))
+      .required(f({ id: 'helper.emailRequired' })),
+    phone: Yup.string()
+      .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
+      .min(8, f({ id: 'helper.phoneMinLength' }))
+      .max(10, f({ id: 'helper.phoneMaxLength' }))
+      .required(f({ id: 'helper.phoneRequired' })),
+    sinpe_phone_number: Yup.string()
+      .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
+      .min(8, f({ id: 'helper.phoneMinLength' }))
+      .max(10, f({ id: 'helper.phoneMaxLength' })),
   });
 
   const formFields = [

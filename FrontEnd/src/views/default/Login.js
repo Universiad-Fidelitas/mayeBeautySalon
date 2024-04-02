@@ -18,7 +18,7 @@ const Login = () => {
   const formikRef = useRef();
 
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required('El correo es requerido'),
+    email: Yup.string().email('Debe ser un email válido').required('El correo es requerido'),
     password: Yup.string().min(6, 'Debe tener al menos 6 caracteres!').required('La contraseña es requerida'),
   });
   const initialValues = { email: '', password: '' };
@@ -98,7 +98,7 @@ const Login = () => {
                   className={classNames(errors.password && touched.password && 'is-invalid')}
                   onChange={handleChange}
                   value={values.password}
-                  placeholder="Password"
+                  placeholder="Contraseña"
                 />
                 <NavLink
                   className={classNames('text-small position-absolute t-3 e-3', errors.password && touched.password && 'text-danger email-field')}
