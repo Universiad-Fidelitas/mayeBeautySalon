@@ -12,7 +12,7 @@ import Select from 'react-select';
 
 const Stock = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Stock';
+  const title = 'Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },

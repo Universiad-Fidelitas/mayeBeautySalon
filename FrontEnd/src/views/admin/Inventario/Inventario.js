@@ -12,7 +12,7 @@ import { ModalAddEditInventario } from './ModalAddEditInventario';
 
 const Inventory = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Inventario';
+  const title = 'Movimiento de Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
