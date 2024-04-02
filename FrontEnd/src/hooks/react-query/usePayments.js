@@ -8,7 +8,7 @@ export const usePayments = () => {
     return data;
   };
 
-  return useQuery(['project-products'], getPayment, {
+  return useQuery(['project-payments'], getPayment, {
     refetchOnWindowFocus: false,
     onError: () => {
       // console.log('first')

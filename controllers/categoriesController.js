@@ -12,7 +12,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'categories', NOW(), ?, ?)
+                VALUES ('getone', 'getone error', 'categorias', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -88,16 +88,16 @@ const postCategory = async (req, res = response) => {
                 })
                 const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'categories', NOW(), '', ?)
+                VALUES ('crear', ?, 'categorias', NOW(), '', ?)
             `;
-            await dbService.query(logQuery, ['crete category | new one: ' + name, 11]);
+            await dbService.query(logQuery, ['crear categoria | nueva: ' + name, 11]);
 
     }
     catch({ message }) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('insert', 'insert error', 'categories', NOW(), ?, ?)
+                VALUES ('insert', 'insert error', 'categorias', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -127,15 +127,15 @@ const putCategory = async (req, res = response) => {
         })
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'categories', NOW(), '', ?)
+        VALUES ('actualizar', ?, 'categorias', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update categories | previus: ' + categorieNameBeforeUpdate + ' | new one: ' + name, 11]);
+    await dbService.query(logQuery, ['actualizar categorias | anterior: ' + categorieNameBeforeUpdate + ' | nueva: ' + name, 11]);
     }
     catch(error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'categories', NOW(), ?, ?)
+                VALUES ('update', 'update error', 'categorias', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -171,14 +171,14 @@ const deleteCategory = async (req, res = response) => {
         }
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('delete', ?, 'categories', NOW(), '', ?)
+        VALUES ('eliminar', ?, 'categorias', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['delete categories | old one: ' + categorieNameBeforeUpdate, 11]);
+    await dbService.query(logQuery, ['eliminar categorias | anterior: ' + categorieNameBeforeUpdate, 11]);
     } catch (error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'categories', NOW(), ?, ?)
+                VALUES ('delete', 'delete error', 'categorias', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {

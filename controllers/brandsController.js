@@ -12,7 +12,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'brands', NOW(), ?, ?)
+                VALUES ('getone', 'getone error', 'marcas', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (error) {
@@ -65,7 +65,7 @@ const getBrands = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'brands', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'marcas', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -88,15 +88,15 @@ const postBrand = async (req, res = response) => {
                 })
                 const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'brands', NOW(), '', ?)
+                VALUES ('crear', ?, 'marcas', NOW(), '', ?)
             `;
-            await dbService.query(logQuery, ['crete brand | new one: ' + name, 11]);
+            await dbService.query(logQuery, ['crear marca | new one: ' + name, 11]);
     }
     catch({ message }) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'brands', NOW(), ?, ?)
+                VALUES ('create', 'create error', 'marcas', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -127,16 +127,16 @@ const putBrand = async (req, res = response) => {
         })
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'brands', NOW(), '', ?)
+        VALUES ('update', ?, 'marcas', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update brand | previus: ' + brandNameBeforeUpdate + ' | new one: ' + name, 11]);
+    await dbService.query(logQuery, ['actualizar marca | anterior: ' + brandNameBeforeUpdate + ' | nueva: ' + name, 11]);
     
     }
     catch(error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'brands', NOW(), ?, ?)
+                VALUES ('update', 'update error', 'marcas', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -172,7 +172,7 @@ const deleteBrand = async (req, res = response) => {
         }
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('delete', ?, 'brands', NOW(), '', ?)
+        VALUES ('eliminar', ?, 'marcas', NOW(), '', ?)
     `;
     await dbService.query(logQuery, ['delete brand | old one: ' + brandNameBeforeUpdate, 11]);
         
@@ -180,7 +180,7 @@ const deleteBrand = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'brands', NOW(), ?, ?)
+                VALUES ('delete', 'delete error', 'marcas', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {

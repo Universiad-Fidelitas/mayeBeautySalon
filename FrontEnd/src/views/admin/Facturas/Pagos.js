@@ -45,18 +45,14 @@ const Pagos = () => {
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
+
       {
         Header: 'Estado',
         accessor: 'status',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
-      {
-        Header: 'Tamaño',
-        accessor: 'size',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
+
       {
         Header: 'Voucher',
         accessor: 'voucher_path',
@@ -136,40 +132,36 @@ const Pagos = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .required(<span style={{ color: 'red' }}>El tipo es requerido</span>)
       .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
       .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      sinpe_phonbe_number: Yup.number()
+      .required(<span style={{ color: 'red' }}>El telefono es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-    price_buy: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      voucher_path: Yup.number()
+      .required(<span style={{ color: 'red' }}>El voucher es requerido</span>),
+    status: Yup.number()
+      .required(<span style={{ color: 'red' }}>El estado es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-    size: Yup.string()
-      .matches(/^\d+$/, 'El tamaño debe ser un número')
-      .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
-      .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
-      .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),
+
   });
 
   const formFields = [
+    
+ 
     {
-      id: 'name',
-      label: 'Tipo',
-      type: 'text',
-    },
-    {
-      id: 'price',
+      id: 'sinpe_phonbe_number',
       label: 'Telefono',
       type: 'text',
     },
     {
-      id: 'price_buy',
-      label: 'Estado',
+      id: 'voucher_path',
+      label: 'Voucher',
       type: 'number',
     },
+ 
   ];
 
   return (

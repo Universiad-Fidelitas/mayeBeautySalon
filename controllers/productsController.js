@@ -13,7 +13,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getOne', 'getOne error', 'products', NOW(), ?, ?)
+                VALUES ('getOne', 'getOne error', 'productos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -70,7 +70,7 @@ const getProducts = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'products', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'productos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -94,15 +94,15 @@ const postProducts = async (req, res = response) => {
         })
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('create', ?, 'products', NOW(), '', ?)
+        VALUES ('crear', ?, 'productos', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['crete product | new one: ' + name, 11]);
+    await dbService.query(logQuery, ['crear producto | nuevo: ' + name, 11]);
     }
     catch(error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'products', NOW(), ?, ?)
+                VALUES ('create', 'create error', 'productos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -143,9 +143,9 @@ const putProducts = async (req, res = response) => {
         }
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'products', NOW(), '', ?)
+        VALUES ('actualizar', ?, 'productos', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update products | previus: ' + productNameBeforeUpdate + ' | new one: ' + name, 11]);
+    await dbService.query(logQuery, ['actualizar productos | anterior: ' + productNameBeforeUpdate + ' | nuevo: ' + name, 11]);
     }
         catch(error) {
             try {
@@ -186,14 +186,14 @@ const putProducts = async (req, res = response) => {
             }
             const logQuery = `
             INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-            VALUES ('delete', ?, 'products', NOW(), '', ?)
+            VALUES ('delete', ?, 'productos', NOW(), '', ?)
         `;
-        await dbService.query(logQuery, ['delete products | old one: ' + productNameBeforeUpdate, 11]);
+        await dbService.query(logQuery, ['eliminar productos | anterior: ' + productNameBeforeUpdate, 11]);
         } catch (error) {
             try {
                 const logQuery = `
                     INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('delete', 'delete error', 'products', NOW(), ?, ?)
+                    VALUES ('delete', 'delete error', 'productos', NOW(), ?, ?)
                 `;
                 await dbService.query(logQuery, [error.message, 11]);
             } catch (logError) {

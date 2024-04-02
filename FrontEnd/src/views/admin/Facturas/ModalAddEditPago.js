@@ -70,10 +70,28 @@ export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validation
     />
   );
   const options = [
-    { value: 'ml', label: 'ml' },
-    { value: 'L', label: 'L' },
-    { value: 'Unidad', label: 'Unidad' },
+    { value: 'Sinpe', label: 'Sinpe' },
+    { value: 'Transferencia', label: 'Transferencia' },
+    { value: 'Tarjeta', label: 'Tarjeta' },
   ];
+
+  const CustomSelect2 = ({ field, form, options2 }) => (
+    <Select
+      classNamePrefix="react-select"
+      options={options2}
+      name={field.name}
+      value={options2 ? options2.find((option) => option.value === field.value) : ''}
+      onChange={(option) => form.setFieldValue(field.name, option.value)}
+      placeholder="Seleccione una opcion"
+    />
+  );
+  const options2 = [
+    { value: 'P', label: 'Pendiente' },
+    { value: 'R', label: 'Pagado' },
+ 
+  ];
+  
+
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
@@ -85,6 +103,14 @@ export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validation
             <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
               <PagosImageUploader initialImages={paymentImage} setImageState={setPaymentImage} />
             </Col>
+            <div className="mb-3" key="size">
+              <label className="form-label">Tipo</label>
+              <Row>
+            
+                <Col sm="12">
+                  <Field className="form-control" id="payment_type" name="payment_type" component={CustomSelect} options={options} required />
+                </Col>
+              
             {formFields.map(({ id, label, type }) => (
               <div className="mb-3" key={id}>
                 <label className="form-label">{label}</label>
@@ -92,16 +118,12 @@ export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validation
                 <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
               </div>
             ))}
-
-            <div className="mb-3" key="size">
-              <label className="form-label">Tamaño</label>
-              <Row>
-                <Col sm="6">
-                  <Field className="form-control" type="text" id="size" name="size" />
+            <label className="form-label">Estado</label>
+            <Col sm="12">
+                  <Field className="form-control" id="status" name="status" component={CustomSelect2} options2={options2} required />
                 </Col>
-                <Col sm="6">
-                  <Field className="form-control" id="size_m" name="size_m" component={CustomSelect} options={options} required />
-                </Col>
+          
+                
               </Row>
 
               <ErrorMessage style={{ color: 'red' }} name="size" component="div" />
