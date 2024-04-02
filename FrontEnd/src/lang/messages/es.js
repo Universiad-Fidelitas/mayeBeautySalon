@@ -325,5 +325,25 @@ const enMessages = {
   'users.salaryRequired': 'Salario es requerido',
   'users.idCardTypeRequired': 'Tipo de cédula es requerido',
   'users.id_card_type': 'Tipo de cédula',
+
+  'notifications.productsList': 'Producto',
+  'notifications.productsMinAmount': 'Cantidad mínima de producto',
+  'notifications.productErrors.required': 'El producto es requerido',
+  'notifications.amountErrors.required': 'La cantidad mínima del producto es requerido',
+  'notifications.amountErrors.maxLength': 'La cantidad no puede ser mayor a 999',
+  'notifications.amountErrors.minLength': 'La cantidad debe ser mayor a 0',
+  'notifications.selectProduct': 'Seleccione un producto',
+
+  'categories.nameRequired': 'El nombre de la categoría es requerido',
+  'categories.nameMinLength': 'El nombre debe tener al menos 3 caracteres',
+  'categories.nameMaxLength': 'El nombre debe tener máximo 20 caracteres',
+  'helper.nameMinLength': 'El nombre debe tener al menos 3 caracteres',
+  'helper.nameMaxLength': 'El nombre debe tener máximo 20 caracteres',
+  'service.timeErrors.noValidTime': 'La hora no es válida',
+  'service.timeErrors.required': 'El timpo es requerido',
+  'service.selectMinutes': 'Seleccione minutos',
+  'service.minutes': 'Minutos',
+  'service.selectHours': 'Seleccione una hora',
+  'service.hours': 'Hora',
 };
 export default enMessages;

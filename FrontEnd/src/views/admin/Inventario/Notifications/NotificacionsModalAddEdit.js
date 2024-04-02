@@ -8,42 +8,51 @@ import { useProducts } from 'hooks/react-query/useProducts';
 import { useNotifications } from 'hooks/react-query/useNotificacions';
 
 export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
-    const { formatMessage: f } = useIntl();
-    const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-    const { updateNotification, addNotification } = useNotifications(apiParms);
+  const { formatMessage: f } = useIntl();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { updateNotification, addNotification } = useNotifications(apiParms);
 
-    const { data: productsData } = useProducts();
-    const productsDataDropdown = useMemo(
-      () =>
-        productsData?.items.map(({ product_id, name }) => {
-          return { value: product_id, label: name };
-        }),
-      [productsData]
-    );
+  const { data: productsData } = useProducts();
+  const productsDataDropdown = useMemo(
+    () =>
+      productsData?.items.map(({ product_id, name }) => {
+        return { value: product_id, label: name };
+      }),
+    [productsData]
+  );
 
-    const onSubmit = useCallback((values) => {
-        if (selectedFlatRows.length === 1) {
-          updateNotification.mutateAsync(values);
-        } else {
-          addNotification.mutateAsync(values);
-        }
-        setIsOpenAddEditModal(false);
-    }, [setIsOpenAddEditModal, selectedFlatRows, updateNotification, addNotification]);
+  const onSubmit = useCallback(
+    (values) => {
+      if (selectedFlatRows.length === 1) {
+        updateNotification.mutateAsync(values);
+      } else {
+        addNotification.mutateAsync(values);
+      }
+      setIsOpenAddEditModal(false);
+    },
+    [setIsOpenAddEditModal, selectedFlatRows, updateNotification, addNotification]
+  );
 
-    const initialValues = useMemo(() => ({
+  const initialValues = useMemo(
+    () => ({
       notification_id: selectedFlatRows?.[0]?.original.notification_id || '',
       amount: selectedFlatRows?.[0]?.original.amount || '',
       product_id: selectedFlatRows?.[0]?.original.product_id || '',
-    }), [selectedFlatRows]);
+    }),
+    [selectedFlatRows]
+  );
 
-    const validationSchema = useMemo(() => Yup.object().shape({
-      amount: Yup.string()
-        .matches(/^\d+$/, f({ id: 'notifications.amountErrors.onlyNumbers' }))
-        .min(1, f({ id: 'notifications.amountErrors.minLength' }))
-        .max(3, f({ id: 'notifications.amountErrors.maxLength' }))
-        .required(f({ id: 'notifications.amountErrors.required' })),
-      product_id: Yup.string().required(f({ id: 'notifications.productErrors.required' })),
-    }), [f]);
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        amount: Yup.number()
+          .min(1, f({ id: 'notifications.amountErrors.minLength' }))
+          .max(999, f({ id: 'notifications.amountErrors.maxLength' }))
+          .required(f({ id: 'notifications.amountErrors.required' })),
+        product_id: Yup.string().required(f({ id: 'notifications.productErrors.required' })),
+      }),
+    [f]
+  );
 
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
@@ -65,14 +74,14 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
                   </Col>
                 </Row>
                 <Row className="g-3 mb-3">
-                <Col className="col-8 top-label">
-                  <SelectField
-                    label={f({ id: 'notifications.productsList' })}
-                    name="product_id"
-                    placeholder={f({ id: 'notifications.selectProduct' })}
-                    options={productsDataDropdown}
-                    isError={errors.product_id && touched.product_id}
-                  />
+                  <Col className="col-12 top-label">
+                    <SelectField
+                      label={f({ id: 'notifications.productsList' })}
+                      name="product_id"
+                      placeholder={f({ id: 'notifications.selectProduct' })}
+                      options={productsDataDropdown}
+                      isError={errors.product_id && touched.product_id}
+                    />
                   </Col>
                 </Row>
               </Modal.Body>
@@ -89,5 +98,5 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
         </Formik>
       </Card>
     </Modal>
-  )
-}
+  );
+};

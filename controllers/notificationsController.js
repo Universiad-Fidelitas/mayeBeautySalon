@@ -5,7 +5,7 @@ const helper = require('../helpers/dbHelpers');
 const getById = async (req, res = response) => {
     const { notification_id } = req.params;
     try {
-        const [notificationFound] = await dbService.query('SELECT * FROM notifications WHERE activated = 1 AND notification_id = ?', [notification_id]);
+        const [notificationFound] = await dbService.query('SELECT * FROM notifications WHERE notification_id = ?', [notification_id]);
         res.status(500).json({notificationFound, status: true, message: 'Se ha encontrado la notification exitosamente.' });
     }
     catch(error) {
@@ -18,9 +18,9 @@ const getNotifications = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications` where activated=1';
+        let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications`';
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += `where name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
