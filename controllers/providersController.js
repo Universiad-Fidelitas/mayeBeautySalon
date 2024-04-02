@@ -12,7 +12,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'providers', NOW(), ?, ?)
+                VALUES ('getone', 'getone error', 'provedores', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -65,7 +65,7 @@ const getProviders = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'providers', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'provedores', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -90,13 +90,13 @@ const postProvider = async (req, res = response) => {
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
                 VALUES ('create', ?, 'categories', NOW(), '', ?)
             `;
-            await dbService.query(logQuery, ['crete provider | new one: ' + name, 11]);
+            await dbService.query(logQuery, ['crear proveedor | nuevo: ' + name, 11]);
     }
     catch({ message }) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('insert', 'insert error', 'providers', NOW(), ?, ?)
+                VALUES ('insert', 'insert error', 'proveedores', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -132,7 +132,7 @@ const putProvider = async (req, res = response) => {
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
         VALUES ('update', ?, 'categories', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update providers | previus: ' + providerNameBeforeUpdate + ' | new one: ' + name, 11]);
+    await dbService.query(logQuery, ['actualizar proveedores | anterior: ' + providerNameBeforeUpdate + ' | nuevo: ' + name, 11]);
     }
     catch(error) {
         try {
@@ -173,14 +173,14 @@ const deleteProvider = async (req, res = response) => {
         }
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('delete', ?, 'providers', NOW(), '', ?)
+        VALUES ('eliminar', ?, 'proveedores', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['delete providers | old one: ' + providerNameBeforeUpdate, 11]);
+    await dbService.query(logQuery, ['eliminar proveedores | anterior: ' + providerNameBeforeUpdate, 11]);
     } catch (error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'providers', NOW(), ?, ?)
+                VALUES ('delete', 'delete error', 'proveedores', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {

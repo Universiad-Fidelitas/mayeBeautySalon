@@ -12,7 +12,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'expenses', NOW(), ?, ?)
+                VALUES ('getone', 'getone error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (error) {
@@ -65,7 +65,7 @@ const getExpenses = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'expenses', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -88,9 +88,9 @@ const postExpense = async (req, res = response) => {
                 })
                 const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'exepnses', NOW(), '', ?)
+                VALUES ('create', ?, 'gastos', NOW(), '', ?)
             `;
-            await dbService.query(logQuery, ['crete expense | new one: ' + expense_type, 11]);
+            await dbService.query(logQuery, ['crear gasto | nuevo: ' + expense_type, 11]);
 
 
     }
@@ -98,7 +98,7 @@ const postExpense = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'expenses', NOW(), ?, ?)
+                VALUES ('create', 'create error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -127,9 +127,9 @@ const putExpense = async (req, res = response) => {
         })
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'categories', NOW(), '', ?)
+        VALUES ('actualizar', ?, 'gastos', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update expenses | previus: ' + expenseBeforeUpdate + ' | new one: ' + expense_type, 11]);
+    await dbService.query(logQuery, ['actualizar gastos | anterior: ' + expenseBeforeUpdate + ' | nuevo: ' + expense_type, 11]);
     }
     catch(error) {
         try {
@@ -170,7 +170,7 @@ const deleteExpense = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'expenses', NOW(), ?, ?)
+                VALUES ('delete', 'delete error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {

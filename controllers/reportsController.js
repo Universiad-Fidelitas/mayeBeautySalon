@@ -19,7 +19,7 @@ const getReport = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'reports', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'reportes', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -43,7 +43,7 @@ const getReport2 = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'reports', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'reportes', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -67,7 +67,7 @@ const getReport3 = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'reports', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'reportes', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
