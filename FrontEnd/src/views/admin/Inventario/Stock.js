@@ -1,7 +1,5 @@
-/* eslint-disable jsx-a11y/no-onchange */
-/* eslint-disable react/jsx-no-comment-textnodes */
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { ButtonsAddNew, ControlsPageSize, ControlsSearch, Table, TablePagination } from 'components/datatables';
+import React, { useEffect, useState, useMemo } from 'react';
+import { ControlsPageSize, ControlsSearch, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStock } from 'store/stock/stockThunk';
@@ -14,7 +12,7 @@ import Select from 'react-select';
 
 const Stock = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Stock';
+  const title = 'Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
@@ -24,7 +22,8 @@ const Stock = () => {
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isLoading, data: categoriesData } = useCategories();
+  const { getCategories } = useCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: categoriesData } = getCategories;
   const [category, setCategory] = useState('');
   const { isStockLoading, stock, pageCount } = useSelector((state) => state.stock);
   const categoryDataDropdown = useMemo(
@@ -100,13 +99,13 @@ const Stock = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getStock({ term, sortBy, pageIndex, pageSize, category }));
-  }, [sortBy, pageIndex, pageSize, term, category]);
+  }, [sortBy, pageIndex, pageSize, term, category, dispatch]);
 
   useEffect(() => {
     if (stock.length > 0) {
       setData(stock);
     }
-  }, [isStockLoading]);
+  }, [isStockLoading, stock]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
@@ -132,27 +131,33 @@ const Stock = () => {
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
             </Row>
-            {categoryDataDropdown && (
-              <>
-                <div className="mb-3">
-                  <label className="form-label">Filtrar por categoria</label>
-                  <CustomSelect
-                    className="form-control"
-                    value={category}
-                    onChange={(value) => setCategory(value)}
-                    options={[{ value: '', label: 'Elija una categoria' }, ...categoryDataDropdown]}
-                  />
-                </div>
-              </>
-            )}
 
             <Row className="mb-3">
-              <Col sm="12" md="5" lg="3" xxl="2">
+              <Col sm="12" md="4" lg="4" xxl="4">
+                {categoryDataDropdown && (
+                  <>
+                    <div className="mb-3">
+                      <label className="form-label">Filtrar por categoria</label>
+                      <CustomSelect
+                        className="form-control"
+                        value={category}
+                        onChange={(value) => setCategory(value)}
+                        options={[{ value: '', label: 'Elija una categoria' }, ...categoryDataDropdown]}
+                      />
+                    </div>
+                  </>
+                )}
+              </Col>
+              <Col sm="12" md="5" lg="5" xxl="5">
+                <label className="form-label">Buscar</label>
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
                   <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
-              <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
+
+              <Col sm="24" md="3" lg="3" xxl="3" className="text-end">
+                <label className="form-label">Tamaño de paginación</label>
+                <br />
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
                 </div>

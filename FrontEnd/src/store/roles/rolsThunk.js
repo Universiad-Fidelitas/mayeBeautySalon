@@ -10,7 +10,7 @@ const getRols = (tableStatus) => {
       if (data) {
         dispatch(setRols(data));
         dispatch(setLoadedRols());
-      } 
+      }
     } catch (error) {
       dispatch(setLoadedRols());
     }

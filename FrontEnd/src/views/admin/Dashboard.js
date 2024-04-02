@@ -1,26 +1,12 @@
 import React from 'react';
-import { Button, Row, Col, Card, Dropdown, Badge } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import { Row, Col, Card } from 'react-bootstrap';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useReports } from 'hooks/react-query/useReports';
 import { useReports2 } from 'hooks/react-query/useReports2';
 import { useReports3 } from 'hooks/react-query/useReports3';
-import ChartCustomHorizontalTooltip from './chart/ChartCustomHorizontalTooltip';
-import ChartSmallLine1 from './chart/ChartSmallLine1';
-import ChartSmallLine2 from './chart/ChartSmallLine2';
-import ChartSmallLine3 from './chart/ChartSmallLine3';
-import ChartSmallLine4 from './chart/ChartSmallLine4';
-import ChartBubble from './chart/ChartBubble';
-import ChartSmallDoughnutChart1 from './chart/ChartSmallDoughnutChart1';
 import ChartLargeLineStock from './chart/ChartLargeLineStock';
-import ChartSmallDoughnutChart2 from './chart/ChartSmallDoughnutChart2';
-import ChartSmallDoughnutChart3 from './chart/ChartSmallDoughnutChart3';
-import ChartSmallDoughnutChart4 from './chart/ChartSmallDoughnutChart4';
-import ChartSmallDoughnutChart5 from './chart/ChartSmallDoughnutChart5';
-import ChartSmallDoughnutChart6 from './chart/ChartSmallDoughnutChart6';
 import { CardReport } from './Inventario/CardReport';
 
 const Dashboard = () => {

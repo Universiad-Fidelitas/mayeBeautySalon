@@ -1,7 +1,6 @@
 import React from 'react';
 import { Row, Col, Card, Form } from 'react-bootstrap';
 import classNames from 'classnames';
-import { useRoles } from 'hooks/react-query/useRoles';
 
 const UsuariosItemList = ({ tableInstance }) => {
   const { page, prepareRow, toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
@@ -17,7 +16,7 @@ const UsuariosItemList = ({ tableInstance }) => {
       <div className="list mb-5">
         {page.map((row, i) => {
           prepareRow(row);
-          const { email, activated, first_name, last_name, phone, image, id_card, role_id: userCurrentRoleId } = row.original;
+          const { email, activated, first_name, last_name, phone, image, id_card, id_card_type } = row.original;
           const { checked, onChange } = row.getToggleRowSelectedProps();
 
           return (

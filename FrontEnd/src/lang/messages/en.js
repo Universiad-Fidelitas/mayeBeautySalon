@@ -205,7 +205,12 @@ const enMessages = {
   'helper.lastname': 'Last Name',
   'helper.phone': 'Phone',
   'helper.email': 'Email',
-  
+  'helper.salary': 'Salary',
+  'helper.role': 'Role',
+  'helper.selectRol': 'Select Role',
+  'helper.signOut': 'Sign Out',
+  'helper.login': 'Login',
+
   'helper.idCardRequired': 'Id Card is required',
   'helper.idCardOnlyNumbers': 'Id Card needs to be only numbers',
   'helper.idCardMinSize': 'Id Card must be at least 9 digits',
@@ -214,7 +219,7 @@ const enMessages = {
   'helper.nameRequired': 'Name is required',
   'helper.nameMinLength': 'Name must be at least 3 characters',
   'helper.nameMaxLength': 'Name must be at most 20 characters',
-  
+
   'helper.lastnameRequired': 'Lastname is required',
   'helper.lastnameMinLength': 'Lastname must be at least 3 characters',
   'helper.lastnameMaxLength': 'Lastname must be at most 20 characters',
@@ -227,9 +232,8 @@ const enMessages = {
   'helper.phoneMaxLength': 'Phone must be at most 10 characters',
   'helper.phoneRequired': 'Phone is required',
 
-
   'inventory.title': 'Inventory',
-  
+
   'services.title': 'Services',
   'services.description': 'Services provided by the MayeBeautySalon',
   'services.serviceName': 'Service Name',
@@ -261,7 +265,7 @@ const enMessages = {
   'appointments.findUserInformation': 'Find User Information',
 
   'appointments.service': 'Service',
-  
+
   'appointments.servicePrice': 'Service Price',
   'appointments.appointmentDate': 'Appointment Date',
   'appointments.startTime': 'Start Time',
@@ -289,9 +293,9 @@ const enMessages = {
   'appointments.successEdit': 'The appointment has been edited successfully!',
   'appointments.errorEdit': 'The appointment has not been edited!',
   'appointments.customerErrorRequired': 'Customer is required',
-  'appointments.customerInformation': 'Customer Information', 
-  'appointments.customerName': 'Customer Name', 
-  'appointments.emailInformation': 'Email Information', 
+  'appointments.customerInformation': 'Customer Information',
+  'appointments.customerName': 'Customer Name',
+  'appointments.emailInformation': 'Email Information',
   'appointments.phoneNumber': 'Phone Number',
   'appointments.editAppointment': 'Edit Appointment',
   'appointments.errorEndTime': 'End time must be greater than start time',
@@ -299,5 +303,71 @@ const enMessages = {
   'appointments.week': 'Week',
   'appointments.day': 'Day',
   'appointments.today': 'Today',
+
+  'users.first_name': 'Name',
+  'users.last_name': 'Last Name',
+  'users.id_card': 'Id Card',
+  'users.email': 'Email',
+  'users.phone': 'Phone',
+  'users.state': 'State',
+  'users.userTitle': 'Users',
+  'users.userDescription': 'Users of the MayeBeautySalon',
+  'users.passwordReset': 'Reset Password',
+  'users.imageRequired': 'Image is required',
+  'users.rolRequired': 'Rol is required',
+  'users.salaryNumber': 'Salary must be a positive number',
+  'users.salaryPositiveNumber': 'Rol is required',
+  'users.salaryInteger': 'Salary must be an integer',
+  'users.salaryMin': 'Salary cannot be negative',
+  'users.salaryRequired': 'Salary is required',
+
+  'notifications.productsMinAmount': 'Products with minimum amount',
+  'notifications.selectProduct': 'Select Product',
+  'notifications.productsList': 'Products List',
+  'notifications.amountErrors.onlyNumbers': 'Amount must be only numbers',
+  'notifications.amountErrors.minLength': 'Amount must be at least 1 character',
+  'notifications.amountErrors.maxLength': 'Amount must be at most 3 characters',
+  'notifications.amountErrors.required': 'Amount is required',
+  'notifications.productErrors.required': 'Product is required',
+
+  'service.selectMinutes': 'Select Minutes',
+  'service.selectHours': 'Select Hours',
+  'service.minutes': 'Minutes',
+  'service.hours': 'Hours',
+  'service.timeErrors.required': 'Service time is required',
+  'service.timeErrors.noValidTime': 'Service time is not valid',
+
+  'products.productName': 'Product name',
+  'products.productBuyPrice': 'Product buy price',
+  'products.productFinalPrice': 'Product sale price',
+  'products.providerInformation': 'Provider information',
+  'products.selectProvider': 'Select provider',
+  'products.categoryInformation': 'Category information',
+  'products.selectCategory': 'Select category',
+
+  'products.brandInformation': 'Brand information',
+  'products.selectBrand': 'Select brand',
+  'products.unitOfMeasurement': 'Unit of measurement',
+  'products.productAmount': 'Product amount',
+  'products.totalAmount': 'Total amount',
+
+  'products.nameError.required': 'Product name is required',
+  'products.nameError.minLength': 'Product name must be at least 3 characters',
+  'products.nameError.maxLength': 'Product name must be at most 20 characters',
+  'products.priceError.required': 'Product sale price is required',
+  'products.priceError.typeError': 'Product sale price must be a number',
+  'products.priceError.minError': 'Product sale price must be a positive number',
+
+  'products.buyPriceError.required': 'Product buy price is required',
+  'products.buyPriceError.typeError': 'Product buy price must be a number',
+  'products.buyPriceError.minError': 'Product buy price must be a positive number',
+
+  'products.providerError.required': 'Provider is required',
+  'products.categoryError.required': 'Category is required',
+  'products.brandError.required': 'Brand is required',
+  'products.amountError.required': 'Product amount is required',
+  'products.amountError.notValid': 'Product amount is not valid',
+
+  'products.successAdd': 'The product has been added successfully!',
 };
 export default enMessages;

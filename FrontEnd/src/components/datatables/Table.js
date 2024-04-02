@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl';
 
 export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
   const { formatMessage: f } = useIntl();
-  const { getTableProps, headerGroups, page, getTableBodyProps, prepareRow, toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
+  const { getTableProps, headerGroups, page, getTableBodyProps, prepareRow } = tableInstance;
 
   return (
     <>

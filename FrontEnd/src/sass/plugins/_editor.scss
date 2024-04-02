@@ -134,7 +134,7 @@
   &:after {
     position: absolute !important;
     display: block !important;
-    content: "" !important;
+    content: '' !important;
     border-color: transparent !important;
     border-style: solid !important;
     border-bottom-color: var(--foreground) !important;
@@ -273,8 +273,7 @@
     }
 
     ~ label {
-      transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0s ease-in-out,
-        height 0.1s ease-in-out !important;
+      transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0s ease-in-out, height 0.1s ease-in-out !important;
     }
 
     &.active ~ label,
@@ -287,8 +286,7 @@
       height: auto !important;
       -webkit-transform: scale(0.85) translateY(1px) translateX(0.15rem) !important;
       transform: scale(0.85) translateY(1px) translateX(0.15rem) !important;
-      transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0.1s ease-in-out 0.1s,
-        height 0.1s ease-in-out !important;
+      transition: transform 0.1s ease-in-out, padding 0.1s ease-in-out, background-color 0.1s ease-in-out 0.1s, height 0.1s ease-in-out !important;
     }
   }
 }

@@ -17,8 +17,8 @@ const Roles = () => {
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/usuarios', text: f({ id: 'menu.trabajadores' }) },
-    { to: 'trabajadores/roles', title: 'Roles' },
+    { to: 'usuarios/usuarios', text: f({ id: 'menu.usuarios' }) },
+    { to: 'usuarios/roles', title: 'Roles' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -130,53 +130,39 @@ const Roles = () => {
 
   useEffect(() => {
     dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
   useEffect(() => {
     if (rols.length > 0) {
       setData(rols);
     } else {
       setData([]);
     }
-  }, [isRolesLoading]);
+  }, [isRolesLoading, rols]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteRols(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editRol(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postRol(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre del rol',
-    },
-  ];
 
   return (
     <>
@@ -232,8 +218,6 @@ const Roles = () => {
             tableInstance={tableInstance}
             addItem={addItem}
             editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
           />
         </Col>
       </Row>

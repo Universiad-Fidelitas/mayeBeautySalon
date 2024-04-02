@@ -1,23 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import React, { useEffect, useState } from 'react';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteUsers, editUser, getUsers, postUser } from 'store/users';
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
+import { useUsers } from 'hooks/react-query/useUsers';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
 import { useUserPermissions } from 'hooks/useUserPermissions';
 import { ModalAddEditUsuarios } from './ModalAddEditUsuarios';
 import UsuariosItemList from './UsuariosItemList';
@@ -26,18 +14,17 @@ import UsuariosItemListPagination from './UsuariosItemListPagination';
 
 const Usuarios = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Usuarios';
-  const description = 'Server side api implementation.';
+  const title = f({ id: 'users.userTitle' });
+  const description = f({ id: 'users.userDescription' });
   const breadcrumbs = [
     { to: '', text: 'Home' },
-    { to: 'trabajadores/users', text: f({ id: 'menu.trabajadores' }) },
-    { to: 'trabajadores/roles', title: 'Usuarios' },
+    { to: 'usuarios/users', text: f({ id: 'menu.usuarios' }) },
+    { to: 'usuarios/roles', title: 'Usuarios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
-  const dispatch = useDispatch();
-  const { isUsersLoading, users, pageCount } = useSelector((state) => state.users);
+  const [pageCount, setPageCount] = useState();
   const { userHasPermission } = useUserPermissions();
 
   const columns = React.useMemo(() => {
@@ -50,51 +37,56 @@ const Usuarios = () => {
         hideColumn: true,
       },
       {
-        Header: 'Nombre',
+        Header: f({ id: 'users.first_name' }),
         accessor: 'first_name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
       },
       {
-        Header: 'Apellidos',
+        Header: f({ id: 'users.last_name' }),
         accessor: 'last_name',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
-        Header: 'Cédula',
+        Header: f({ id: 'users.id_card' }),
         accessor: 'id_card',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
       },
       {
-        Header: 'Correo electrónico',
+        Header: f({ id: 'users.id_card_type' }),
+        accessor: 'id_card_type',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        hideColumn: true,
+      },
+      {
+        Header: f({ id: 'users.email' }),
         accessor: 'email',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
       },
       {
-        Header: 'Teléfono',
+        Header: f({ id: 'users.phone' }),
         accessor: 'phone',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
       },
       {
-        Header: 'Estado',
+        Header: f({ id: 'users.state' }),
         accessor: 'activated',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
       },
       {
-        Header: 'Imagen',
         accessor: 'image',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
-        Header: 'role_id',
         accessor: 'role_id',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
@@ -108,7 +100,7 @@ const Usuarios = () => {
         hideColumn: true,
       },
     ];
-  }, []);
+  }, [f]);
 
   const tableInstance = useTable(
     {
@@ -135,97 +127,19 @@ const Usuarios = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
-  useEffect(() => {
-    dispatch(getUsers({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  const { getUsers } = useUsers({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isUsersDataSuccess, data: usersData } = getUsers;
 
   useEffect(() => {
-    if (users.length > 0) {
-      setData(users);
+    if (isUsersDataSuccess) {
+      setData(usersData.items);
+      setPageCount(usersData.pageCount);
     }
-  }, [isUsersLoading]);
-
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteUsers(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editUser(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postUser(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  }, [isUsersDataSuccess, usersData]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    first_name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    last_name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El apellido es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El apellido debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El apellido no puede tener más de 15 caracteres</span>),
-    id_card: Yup.string()
-      .matches(/^\d+$/, 'La cédula debe ser un número')
-      .min(9, <span style={{ color: 'red' }}>La cédula debe tener al menos 9 números</span>)
-      .max(15, <span style={{ color: 'red' }}>La cédula no puede tener más de 15 números</span>)
-      .required(<span style={{ color: 'red' }}>La cédula es requerida</span>),
-    email: Yup.string()
-      .email(<span style={{ color: 'red' }}>Email inválido</span>)
-      .required(<span style={{ color: 'red' }}>Email es requerido</span>),
-    phone: Yup.string()
-      .matches(/^\d+$/, 'El teléfono debe ser un número')
-      .min(8, <span style={{ color: 'red' }}>El teléfono debe tener al menos 8 números</span>)
-      .max(10, <span style={{ color: 'red' }}>El teléfono no puede tener más de 10 números</span>)
-      .required(<span style={{ color: 'red' }}>El teléfono es requerido</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'first_name',
-      label: 'Nombre',
-      type: 'text',
-    },
-    {
-      id: 'last_name',
-      label: 'Apellidos',
-      type: 'text',
-    },
-    {
-      id: 'id_card',
-      label: 'Cédula',
-      type: 'text',
-    },
-    {
-      id: 'email',
-      label: 'Correo Electrónico',
-      type: 'text',
-    },
-    {
-      id: 'phone',
-      label: 'Teléfono',
-      type: 'text',
-    },
-    {
-      id: 'salary',
-      label: 'Salario',
-      type: 'number',
-    },
-  ];
 
   return (
     <>
@@ -268,13 +182,7 @@ const Usuarios = () => {
           <UsuariosItemListHeader tableInstance={tableInstance} />
           <UsuariosItemList tableInstance={tableInstance} />
           <UsuariosItemListPagination tableInstance={tableInstance} />
-          <ModalAddEditUsuarios
-            tableInstance={tableInstance}
-            addItem={addItem}
-            editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
-          />
+          <ModalAddEditUsuarios tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>

@@ -22,6 +22,10 @@
   min-height: var(--input-height) !important;
 }
 
+.is-invalid .react-select__control {
+  border-color: #dc3545 !important;
+}
+
 .react-select__control--menu-is-open {
   border-color: var(--primary) !important;
 }

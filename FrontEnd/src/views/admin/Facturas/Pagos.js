@@ -1,17 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getPayments, postPayment, editPayment, deletePayments } from 'store/payments/paymentsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
@@ -34,7 +24,6 @@ const Pagos = () => {
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
 
-
   const columns = React.useMemo(() => {
     return [
       {
@@ -56,25 +45,21 @@ const Pagos = () => {
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
+
       {
         Header: 'Estado',
         accessor: 'status',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
-      {
-        Header: 'Tamaño',
-        accessor: 'size',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
+
       {
         Header: 'Voucher',
         accessor: 'voucher_path',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
-   
+
       {
         Header: '',
         id: 'action',
@@ -99,7 +84,7 @@ const Pagos = () => {
       manualSortBy: true,
       autoResetPage: false,
       autoResetSortBy: false,
-   
+
       initialState: {
         pageIndex: 0,
         pageSize: 5,
@@ -118,29 +103,27 @@ const Pagos = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getPayments({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
-
- 
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deletePayments(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editPayment(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postPayment(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {
@@ -149,40 +132,36 @@ const Pagos = () => {
 
   const validationSchema = Yup.object().shape({
     name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
+      .required(<span style={{ color: 'red' }}>El tipo es requerido</span>)
       .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
       .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      sinpe_phonbe_number: Yup.number()
+      .required(<span style={{ color: 'red' }}>El telefono es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-    price_buy: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
+      voucher_path: Yup.number()
+      .required(<span style={{ color: 'red' }}>El voucher es requerido</span>),
+    status: Yup.number()
+      .required(<span style={{ color: 'red' }}>El estado es requerido</span>)
       .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
       .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-    size: Yup.string()
-      .matches(/^\d+$/, "El tamaño debe ser un número")
-      .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
-      .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
-      .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),
+
   });
 
   const formFields = [
+    
+ 
     {
-      id: 'name',
-      label: 'Tipo',
-      type: 'text',
-    },
-    {
-      id: 'price',
+      id: 'sinpe_phonbe_number',
       label: 'Telefono',
       type: 'text',
     },
     {
-      id: 'price_buy',
-      label: 'Estado',
+      id: 'voucher_path',
+      label: 'Voucher',
       type: 'number',
     },
+ 
   ];
 
   return (
@@ -235,13 +214,7 @@ const Pagos = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEditPagos
-            tableInstance={tableInstance}
-            addItem={addItem}
-            editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
-          />
+          <ModalAddEditPagos tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
         </Col>
       </Row>
     </>

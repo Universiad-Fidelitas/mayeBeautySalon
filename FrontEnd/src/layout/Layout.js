@@ -16,7 +16,25 @@ const Layout = ({ children }) => {
     document.documentElement.click();
     window.scrollTo(0, 0);
     // eslint-disable-next-line
-    }, [pathname]);
+  }, [pathname]);
+
+  if (pathname === '/') {
+    return (
+      <>
+        <Nav />
+        <main className="p-0">
+          <Row className="h-100">
+            <SidebarMenu />
+            <Col className="h-100" id="contentArea">
+              {children}
+            </Col>
+          </Row>
+        </main>
+        <Footer />
+        <RightButtons />
+      </>
+    );
+  }
   return (
     <>
       <Nav />

@@ -77,9 +77,9 @@ table.react-table {
     }
   }
 
-
   &.nowrap {
-    th, td {
+    th,
+    td {
       white-space: nowrap;
     }
   }
@@ -90,8 +90,7 @@ table.react-table {
     tbody {
       tr {
         &:hover,
-        &.selected,
-        {
+        &.selected {
           background-color: rgba(var(--separator-rgb), 0.3);
         }
 
@@ -108,7 +107,7 @@ table.react-table {
     tbody {
       tr {
         &.odd {
-          background-color: rgba(var(--body-rgb), .05);
+          background-color: rgba(var(--body-rgb), 0.05);
         }
       }
     }
@@ -118,14 +117,16 @@ table.react-table {
     border-spacing: 0 calc(var(--card-spacing-xs) / 10 * 7);
 
     thead {
-      tr, th {
+      tr,
+      th {
         padding-left: var(--card-spacing-sm);
         padding-right: var(--card-spacing-sm);
       }
     }
 
     tbody {
-      tr, td {
+      tr,
+      td {
         padding-left: var(--card-spacing-sm);
         padding-right: var(--card-spacing-sm);
       }
@@ -136,7 +137,7 @@ table.react-table {
 
         &.selected {
           td {
-            border-color: rgba(var(--primary-rgb), .5);
+            border-color: rgba(var(--primary-rgb), 0.5);
           }
         }
 
@@ -177,22 +178,23 @@ table.react-table {
     padding-top: calc(var(--card-spacing) / 2);
 
     thead {
-      tr, td {
+      tr,
+      td {
         padding-left: var(--card-spacing-sm);
         padding-right: var(--card-spacing-sm);
       }
     }
 
     tbody {
-      tr, td {
+      tr,
+      td {
         padding-left: var(--card-spacing-sm);
         padding-right: var(--card-spacing-sm);
       }
 
       tr {
         &:hover,
-        &.selected,
-        {
+        &.selected {
           background-color: rgba(var(--separator-rgb), 0.3);
         }
 

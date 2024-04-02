@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useMemo } from 'react';
+import { Button, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, FieldArray, ErrorMessage } from 'formik';
 import 'react-dropzone-uploader/dist/styles.css';
 import { useStock } from 'hooks/react-query/useStock';
 import Select from 'react-select';
+import { toast } from 'react-toastify';
+import { useIntl } from 'react-intl';
 
-export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { isLoading, data: productsData } = useStock();
+export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchema, formFields }) => {
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { data: productsData } = useStock();
+  const { formatMessage: f } = useIntl();
   const productsDataDropdown = useMemo(
     () =>
       productsData?.items.map(({ product_id, name, total_amount }) => {
@@ -31,7 +34,9 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
         console.log('product', product);
         if (product && Number(product.amount) < item.amount) {
           isValid = false;
-          alert(`El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.`);
+          // ARREGLAR ESTO USAR UN TOAST
+          console.log(index);
+          toast(f({ id: `El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.` }), { className: 'danger' });
         }
       }
     });
@@ -68,13 +73,13 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                 <label className="form-label">Acción</label>
                 <Field className="form-control" name="action" id="action" component={CustomSelect} options={options} />
 
-                <ErrorMessage name="action" component="div" className="field-error" />
+                <ErrorMessage style={{ color: 'red' }} name="action" component="div" className="field-error" />
               </div>
               {formFields.map(({ id, label, type }) => (
                 <div className="mb-3" key={id}>
                   <label className="form-label">{label}</label>
-                  <Field className="form-control" type={type} id={id} name={id} />
-                  <ErrorMessage name={id} component="div" />
+                  <Field as="textarea" className="form-control" type={type} id={id} name={id} />
+                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
                 </div>
               ))}
               <FieldArray name="dataToInsert">
@@ -96,7 +101,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                                 component={CustomSelect}
                                 options={productsDataDropdown}
                               />
-                              <ErrorMessage name={`dataToInsert.${index}.product_id`} className="field-error" component="div" />
+                              <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.product_id`} className="field-error" component="div" />
                             </div>
                           </>
                         )}
@@ -105,7 +110,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, editItem, valid
                             Cantidad
                           </label>
                           <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
-                          <ErrorMessage name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
+                          <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
                         </div>
                         {index > 0 && (
                           <div className="mb-3">

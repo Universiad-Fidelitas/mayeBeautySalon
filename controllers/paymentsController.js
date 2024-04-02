@@ -14,7 +14,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getOne', 'getOne error', 'payments', NOW(), ?, ?)
+                VALUES ('getOne', 'getOne error', 'pagos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -70,7 +70,7 @@ const getPayments = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'payments', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'pagos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -93,15 +93,15 @@ const postPayments = async (req, res = response) => {
         })
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('create', ?, 'payments', NOW(), '', ?)
+        VALUES ('create', ?, 'pagos', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['crete pago | new one: ' + payment_type, 11]);
+    await dbService.query(logQuery, ['crear pago | nuevo: ' + payment_type, 11]);
     }
     catch(error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'payments', NOW(), ?, ?)
+                VALUES ('create', 'create error', 'pagos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -141,15 +141,15 @@ const putPayments= async (req, res = response) => {
         }
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'payments', NOW(), '', ?)
+        VALUES ('actualizar', ?, 'pagos', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update payments | previus: ' + paymentNameBeforeUpdate + ' | new one: ' + payment_type, 11]);
+    await dbService.query(logQuery, ['actualizar pagos | anterior: ' + paymentNameBeforeUpdate + ' | nuevo: ' + payment_type, 11]);
     }
         catch(error) {
             try {
                 const logQuery = `
                     INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('update', 'update error', 'payments', NOW(), ?, ?)
+                    VALUES ('update', 'update error', 'pagos', NOW(), ?, ?)
                 `;
                 await dbService.query(logQuery, [error.message, 11]);
             } catch (logError) {
@@ -182,14 +182,14 @@ const putPayments= async (req, res = response) => {
             }
             const logQuery = `
             INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-            VALUES ('delete', ?, 'payments', NOW(), '', ?)
+            VALUES ('eliminar', ?, 'pagos', NOW(), '', ?)
         `;
-        await dbService.query(logQuery, ['delete payments | old one: ' + paymentBeforeUpdate, 11]);
+        await dbService.query(logQuery, ['eliminar pagos | anterior: ' + paymentBeforeUpdate, 11]);
         } catch (error) {
             try {
                 const logQuery = `
                     INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('delete', 'delete error', 'payments', NOW(), ?, ?)
+                    VALUES ('delete', 'delete error', 'pagos', NOW(), ?, ?)
                 `;
                 await dbService.query(logQuery, [error.message, 11]);
             } catch (logError) {

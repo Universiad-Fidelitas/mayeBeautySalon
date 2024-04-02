@@ -2,27 +2,17 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getInventory, postInventory } from 'store/inventory/inventoryThunk';
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsSearch, Table, TablePagination } from 'components/datatables';
 import { ModalAddEditInventario } from './ModalAddEditInventario';
 
 const Inventory = () => {
   const { formatMessage: f } = useIntl();
-  const title = 'Inventario';
+  const title = 'Movimiento de Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
     { to: '', text: 'Home' },
@@ -137,19 +127,19 @@ const Inventory = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getInventory({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (inventory.length > 0) {
       setData(inventory);
     }
-  }, [isInventoryLoading]);
+  }, [isInventoryLoading, inventory]);
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postInventory(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {

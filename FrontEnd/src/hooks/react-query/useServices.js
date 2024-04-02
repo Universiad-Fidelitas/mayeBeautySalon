@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 
+/* eslint-disable react-hooks/rules-of-hooks */
 export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
   const { formatMessage: f } = useIntl();
   const getServices = async () => {
@@ -19,19 +20,16 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
   const addServices = () => {
     const queryClient = useQueryClient();
 
-    const addServicesApi = useCallback(
-      async (newService) => {
-        const { data } = await baseApi.post('/services/add', newService);
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
+    const addServicesApi = useCallback(async (newService) => {
+      const { data } = await baseApi.post('/services/add', newService);
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
 
     return useMutation(addServicesApi, {
       onMutate: async (newService) => {
@@ -50,7 +48,7 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
 
-      onSettled: async ({ pageCount }, error, _) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -65,19 +63,16 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
   const updateServices = () => {
     const queryClient = useQueryClient();
 
-    const updateServicesApi = useCallback(
-      async (newService) => {
-        const { data } = await baseApi.put(`/services/${newService.service_id}`, newService);
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
+    const updateServicesApi = useCallback(async (newService) => {
+      const { data } = await baseApi.put(`/services/${newService.service_id}`, newService);
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
 
     return useMutation(updateServicesApi, {
       onMutate: async (newService) => {
@@ -101,7 +96,7 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
 
-      onSettled: async ({ pageCount }, error, _) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -116,19 +111,16 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
   const deleteServices = () => {
     const queryClient = useQueryClient();
 
-    const deleteServicesApi = useCallback(
-      async (service_ids) => {
-        const { data } = await baseApi.post('/services/delete', service_ids);
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
+    const deleteServicesApi = useCallback(async (services) => {
+      const { data } = await baseApi.post('/services/delete', { service_ids: services });
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
 
     return useMutation(deleteServicesApi, {
       onSuccess: async () => {
@@ -152,3 +144,5 @@ export const useGetAllServices = () => {
   };
   return useQuery(['client-services'], getAllServices);
 };
+
+/* eslint-enable react-hooks/rules-of-hooks */

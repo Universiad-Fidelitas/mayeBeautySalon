@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  ModalAddEdit,
   ButtonsAddNew,
   ControlsPageSize,
   ControlsAdd,
@@ -11,13 +10,14 @@ import {
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getBrands, postBrand, editBrand, deleteBrands } from 'store/brands/brandsThunk';
+import { useDispatch } from 'react-redux';
+// import { deleteBrands } from 'store/brands/brandsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { useBrands } from 'hooks/react-query/useBrands';
+import { MarcasModalAddEdit } from './MarcasModalAddEdit';
 
 const Marcas = () => {
   const { formatMessage: f } = useIntl();
@@ -32,15 +32,16 @@ const Marcas = () => {
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isBrandsLoading, brands, pageCount } = useSelector((state) => state.brands);
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'ID',
+        Header: 'brand_id',
         accessor: 'brand_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
       },
       {
         Header: 'Nombre',
@@ -84,55 +85,25 @@ const Marcas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getBrands({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+
+  const { getBrands, inactivateBrands } = useBrands({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isBrandsDataSuccess, data: BrandsData } = getBrands;
 
   useEffect(() => {
-    if (brands.length > 0) {
-      setData(brands);
+    if (isBrandsDataSuccess) {
+      setData(BrandsData.items);
+      setPageCount(BrandsData.pageCount);
     }
-  }, [isBrandsLoading]);
+  }, [isBrandsDataSuccess, BrandsData]);
 
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteBrands(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editBrand(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postBrand(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  const deleteItems = useCallback(async (values) => {
+    inactivateBrands.mutateAsync(values);
+  }, [dispatch]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
 
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre de la marca',
-      type: 'text',
-    },
-  ];
 
   return (
     <>
@@ -184,7 +155,7 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <MarcasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/> 
         </Col>
       </Row>
     </>

@@ -1,23 +1,38 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Row, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Row, Col, Modal } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
 import 'react-dropzone-uploader/dist/styles.css';
-import DropzonePreview from 'components/dropzone/DropzonePreview';
-import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
 import { useCategories } from 'hooks/react-query/useCategories';
 import { useBrands } from 'hooks/react-query/useBrands';
 import { useProviders } from 'hooks/react-query/useProviders';
 import { ProductosImageUploader } from 'components/ImageUploading/ProductsImageUploader';
-import classNames from 'classnames';
 
 export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  const { isLoading, data: categoriesData } = useCategories();
-  const { data: providersData } = useProviders();
-  const [productImage, setProductImage] = useState([]);
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { getCategories } = useCategories({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: categoriesData } = getCategories;
 
-  const { data: brandsData } = useBrands();
+  const { getProviders } = useProviders({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: providersData } = getProviders;
+
+  const { getBrands } = useBrands({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { data: brandsData } = getBrands;
+
+  const [productImage, setProductImage] = useState([]);
+  let original;
+  if (selectedFlatRows[0] && selectedFlatRows[0].original) {
+    original = { ...selectedFlatRows[0].original };
+    const { size } = original;
+    const firstLetterIndex = size.search(/[a-zA-Z]/);
+    if (firstLetterIndex !== -1) {
+      original.size = size.substring(0, firstLetterIndex);
+      original.size_m = size.substring(firstLetterIndex);
+    }
+  } else {
+    console.log('selectedFlatRows[0] o selectedFlatRows[0].original es undefined');
+  }
+
   const categoryDataDropdown = useMemo(
     () =>
       categoriesData?.items.map(({ category_id, name }) => {
@@ -105,7 +120,7 @@ export const ModalAddEditProductos = ({ tableInstance, addItem, editItem, valida
   ];
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
-      <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
+      <Formik initialValues={selectedFlatRows.length === 1 ? original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
         <Form>
           <Modal.Header>
             <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>

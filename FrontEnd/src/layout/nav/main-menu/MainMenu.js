@@ -106,7 +106,9 @@ const MainMenu = () => {
         }
       }
       // eslint-disable-next-line
-  }, [behaviourStatus,placementStatus,breakpoints]);
+    },
+    [behaviourStatus, placementStatus, dispatch]
+  );
 
   useEffect(() => {
     if (width && placement && behaviour && breakpoints) {

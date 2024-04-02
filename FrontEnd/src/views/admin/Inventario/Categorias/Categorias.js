@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  ModalAddEdit,
   ButtonsAddNew,
   ControlsPageSize,
   ControlsAdd,
@@ -11,13 +10,12 @@ import {
   TablePagination,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCategories, postCategory, editCategory, deleteCategories } from 'store/categories/categoriesThunk';
 import { Col, Form, Row } from 'react-bootstrap';
+import { useCategories } from 'hooks/react-query/useCategories';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { CategoriasModalAddEdit } from './CategoriasModalAddEdit';
 
 const Categorias = () => {
   const { formatMessage: f } = useIntl();
@@ -31,11 +29,17 @@ const Categorias = () => {
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
-  const dispatch = useDispatch();
-  const { isCategoriesLoading, categories, pageCount } = useSelector((state) => state.categories);
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
+      {
+        Header: 'category_id',
+        accessor: 'category_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        hideColumn: true,
+      },
       {
         Header: 'Nombre',
         accessor: 'name',
@@ -78,55 +82,24 @@ const Categorias = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getCategories({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+
+  const { getCategories, inactivateCategories } = useCategories({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isCategoriesDataSuccess, data: categoriesData } = getCategories;
 
   useEffect(() => {
-    if (categories.length > 0) {
-      setData(categories);
+    if (isCategoriesDataSuccess) {
+      setData(categoriesData.items);
+      setPageCount(categoriesData.pageCount);
     }
-  }, [isCategoriesLoading]);
+  }, [isCategoriesDataSuccess, categoriesData]);
 
-  const deleteItems = useCallback(
-    async (values) => {
-      dispatch(deleteCategories(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editCategory(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postCategory(values));
-    },
-    [sortBy, pageIndex, pageSize]
-  );
+  const deleteItems = useCallback(async (values) => {
+      inactivateCategories.mutateAsync(values);
+  },[inactivateCategories]);
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre de la categoría',
-      type: 'text',
-    },
-  ];
 
   return (
     <>
@@ -178,7 +151,7 @@ const Categorias = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <CategoriasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
         </Col>
       </Row>
     </>

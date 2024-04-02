@@ -4,8 +4,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Select from 'react-select';
 
 export const ModalAddEdit = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-  console.log('forms', formFields);
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const onSubmit = (values) => {
     if (selectedFlatRows.length === 1) {
       editItem({ ...selectedFlatRows[0].original, ...values });

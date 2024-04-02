@@ -58,7 +58,7 @@
       fill: var(--warning) !important;
     }
   }
-  
+
   &.danger {
     .CircularProgressbar-path {
       stroke: var(--danger) !important;
@@ -67,7 +67,7 @@
       fill: var(--danger) !important;
     }
   }
-    
+
   &.body {
     .CircularProgressbar-path {
       stroke: var(--body) !important;
@@ -89,4 +89,3 @@
 .CircularProgressbar.transparent-trailer .CircularProgressbar-trail {
   stroke: transparent !important;
 }
-

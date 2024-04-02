@@ -12,12 +12,13 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteRols, editRol, getRols, postRol } from 'store/roles';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
+import { useBills } from 'hooks/react-query/useBills';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { ModalAddEditFacturas } from './ModalAddEditFacturas';
 
 const Facturas = () => {
   const { formatMessage: f } = useIntl();
@@ -31,18 +32,131 @@ const Facturas = () => {
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+  const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
-  const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Rol Id',
-        accessor: 'rol_id',
+        Header: 'Bill Id',
+        accessor: 'bills_id',
+        hideColumn: true,
       },
       {
-        Header: 'Accion',
-        accessor: 'name',
+        Header: 'Activado',
+        accessor: 'activated',
+        sortable: true,
+        hideColumn: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Correo electrónico',
+        accessor: 'email',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Nombre',
+        accessor: 'first_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Apellido',
+        accessor: 'last_name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'User ID',
+        accessor: 'user_id',
+        sortable: true,
+        hideColumn: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Telefóno',
+        accessor: 'phone',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Cédula',
+        accessor: 'id_card',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tipo de cédula',
+        accessor: 'id_card_type',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Pago ID',
+        accessor: 'payment_id',
+        sortable: true,
+        hideColumn: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Tipo pago',
+        accessor: 'payment_type',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Numero de Sinpe',
+        accessor: 'sinpe_phone_number',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Estado de Pago',
+        accessor: 'status',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Inventory ID',
+        accessor: 'inventory_id',
+        sortable: true,
+        hideColumn: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Precio inventorio',
+        accessor: 'inventory_price',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Descripción',
+        accessor: 'description',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Fecha de venta',
+        accessor: 'inventory_date',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'appointment id',
+        accessor: 'appointment_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Fecha de Cita',
+        accessor: 'appointment_date',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Precio de Cita',
+        accessor: 'appointment_price',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
@@ -71,7 +185,24 @@ const Facturas = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['rol_id'] },
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+        sortBy: [{ id: 'bills_id', desc: false }],
+        hiddenColumns: [
+          'bills_id',
+          'inventory_id',
+          'payment_id',
+          'user_id',
+          'appointment_id',
+          'sinpe_phone_number',
+          'activated',
+          'description',
+          'phone',
+          'appointment_price',
+          'inventory_price',
+        ],
+      },
     },
     useGlobalFilter,
     useSortBy,
@@ -82,36 +213,36 @@ const Facturas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
+  const { getBills, deleteBills, addBill, updateBill } = useBills({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isBillsDataSuccess, data: billsData } = getBills;
 
   useEffect(() => {
-    dispatch(getRols({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
-
-  useEffect(() => {
-    if (rols.length > 0) {
-      setData(rols);
+    if (isBillsDataSuccess) {
+      setData(billsData.items);
+      setPageCount(billsData.pageCount);
     }
-  }, [isRolesLoading]);
+  }, [isBillsDataSuccess, billsData]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteRols(values));
+      const valuesAsString = values.join(',');
+      deleteBills.mutateAsync({ bills_id: valuesAsString });
     },
-    [sortBy, pageIndex, pageSize]
+    [deleteBills]
   );
 
   const editItem = useCallback(
     async (values) => {
-      dispatch(editRol(values));
+      updateBill.mutateAsync({ values });
     },
-    [sortBy, pageIndex, pageSize]
+    [updateBill]
   );
 
   const addItem = useCallback(
     async (values) => {
-      dispatch(postRol(values));
+      addBill.mutateAsync({ values });
     },
-    [sortBy, pageIndex, pageSize]
+    [addBill]
   );
 
   const searchItem = useAsyncDebounce((val) => {
@@ -119,26 +250,83 @@ const Facturas = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required('First Name is required').min(3, 'First Name must be at least 3 character').max(15, 'First Name must be at most 15 characters'),
+    status: Yup.string().required('El estado del pago es requerido'),
+    payment_type: Yup.string().required('El tipo de pago es requerido'),
+    description: Yup.string()
+      .required('La descripción es requerida')
+      .min(3, 'La descripción debe tener al menos 3 caracteres')
+      .max(100, 'La descripción no puede tener más de 100 caracteres'),
+    dataToInsert: Yup.array().of(
+      Yup.object().shape({
+        product_id: Yup.string().required('El producto es requerido'),
+        amount: Yup.number().min(0, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
+      })
+    ),
+    id_card_type: Yup.string().required('El tipo de cedula es requerido'),
+    id_card: Yup.string()
+      .required(f({ id: 'helper.idCardRequired' }))
+      .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))
+      .when('id_card_type', {
+        is: 'nacional',
+        then: Yup.string()
+          .min(9, f({ id: 'helper.idCardMinSize' }))
+          .max(9, f({ id: 'helper.idCardMaxSize' })),
+        otherwise: Yup.string()
+          .min(12, f({ id: 'helper.idCardMinSize2' }))
+          .max(15, f({ id: 'helper.idCardMaxSize2' })),
+      }),
+    first_name: Yup.string()
+      .required(f({ id: 'helper.nameRequired' }))
+      .min(3, f({ id: 'helper.nameMinLength' }))
+      .max(20, f({ id: 'helper.nameMaxLength' })),
+    last_name: Yup.string()
+      .required(f({ id: 'helper.lastnameRequired' }))
+      .min(3, f({ id: 'helper.lastnameMinLength' }))
+      .max(20, f({ id: 'helper.lastnameMaxLength' })),
+    email: Yup.string()
+      .email(f({ id: 'helper.emailInvalid' }))
+      .required(f({ id: 'helper.emailRequired' })),
+    phone: Yup.string()
+      .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
+      .min(8, f({ id: 'helper.phoneMinLength' }))
+      .max(10, f({ id: 'helper.phoneMaxLength' }))
+      .required(f({ id: 'helper.phoneRequired' })),
+    sinpe_phone_number: Yup.string()
+      .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
+      .min(8, f({ id: 'helper.phoneMinLength' }))
+      .max(10, f({ id: 'helper.phoneMaxLength' })),
   });
 
   const formFields = [
     {
-      id: 'action',
-      label: 'Accion',
-    },
-
-    {
-      id: 'bill_id',
-      label: 'ID Factura',
+      id: 'sinpe_phone_number',
+      label: 'Número de SINPE',
+      type: 'text',
     },
     {
-      id: 'user_id',
-      label: 'ID Usuario',
+      id: 'id_card',
+      label: 'Cédula',
+      type: 'text',
     },
     {
-      id: 'total',
-      label: 'Total',
+      id: 'first_name',
+      label: 'Nombre',
+      type: 'text',
+    },
+    {
+      id: 'last_name',
+      label: 'Apellido',
+      type: 'text',
+    },
+    {
+      id: 'email',
+      label: 'Correo eletrónico',
+      type: 'text',
+    },
+    {
+      id: 'phone',
+      label: 'Número de teléfono',
+      type: 'text',
     },
   ];
 
@@ -170,7 +358,13 @@ const Facturas = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete tableInstance={tableInstance} deleteItems={deleteItems} />
+                  <ControlsDelete
+                    tableInstance={tableInstance}
+                    deleteItems={deleteItems}
+                    modalTitle="¿Desea eliminar la factura seleccionado?"
+                    modalDescription="La factura seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="bills"
+                  />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
@@ -186,7 +380,13 @@ const Facturas = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditFacturas
+            tableInstance={tableInstance}
+            addItem={addItem}
+            editItem={editItem}
+            validationSchema={validationSchema}
+            formFields={formFields}
+          />
         </Col>
       </Row>
     </>

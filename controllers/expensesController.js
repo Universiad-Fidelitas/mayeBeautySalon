@@ -6,14 +6,13 @@ const getById = async (req, res = response) => {
     const { expense_id } = req.params;
     try {
         const [expenseFound] = await dbService.query('SELECT * FROM expenses WHERE expense_id = ?', [expense_id]);
-        console.log(expenseFound)
         res.status(500).json({expenseFound, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
     }
     catch(error) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'expenses', NOW(), ?, ?)
+                VALUES ('getone', 'getone error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (error) {
@@ -66,7 +65,7 @@ const getExpenses = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'expenses', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -89,9 +88,9 @@ const postExpense = async (req, res = response) => {
                 })
                 const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'exepnses', NOW(), '', ?)
+                VALUES ('create', ?, 'gastos', NOW(), '', ?)
             `;
-            await dbService.query(logQuery, ['crete expense | new one: ' + expense_type, 11]);
+            await dbService.query(logQuery, ['crear gasto | nuevo: ' + expense_type, 11]);
 
 
     }
@@ -99,7 +98,7 @@ const postExpense = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'expenses', NOW(), ?, ?)
+                VALUES ('create', 'create error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -118,7 +117,7 @@ const putExpense = async (req, res = response) => {
     const { expense_id } = req.params;
     const { expense_type, price } = req.body;
     try {
-        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM expenses WHERE activated = 1 AND category_id = ?', [expense_id]);
+        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM expenses WHERE activated = 1 AND expense_id = ?', [expense_id]);
         const userQuery = `CALL sp_expense('update', ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [expense_id, expense_type, price ]);
         res.status(200).json({
@@ -128,9 +127,9 @@ const putExpense = async (req, res = response) => {
         })
         const logQuery = `
         INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'categories', NOW(), '', ?)
+        VALUES ('actualizar', ?, 'gastos', NOW(), '', ?)
     `;
-    await dbService.query(logQuery, ['update expenses | previus: ' + expenseBeforeUpdate + ' | new one: ' + expense_type, 11]);
+    await dbService.query(logQuery, ['actualizar gastos | anterior: ' + expenseBeforeUpdate + ' | nuevo: ' + expense_type, 11]);
     }
     catch(error) {
         try {
@@ -152,7 +151,6 @@ const putExpense = async (req, res = response) => {
 
 const deleteExpense = async (req, res = response) => {
     const { expense_id } = req.body;
-    console.log("delete",expense_id)
     try {
         const userQuery = `CALL sp_expense('delete', ?, '',0);`;
         const rows = await dbService.query(userQuery, [expense_id]);
@@ -172,7 +170,7 @@ const deleteExpense = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'expenses', NOW(), ?, ?)
+                VALUES ('delete', 'delete error', 'gastos', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {

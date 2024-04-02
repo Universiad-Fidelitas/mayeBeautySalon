@@ -53,7 +53,9 @@ class Server {
         this.app.use('/v1/api/appointments', require('../routes/appointments'));
         this.app.use('/v1/api/expenses', require('../routes/expenses'));
         this.app.use('/v1/api/reports', require('../routes/reports'));
+        this.app.use('/v1/api/bills', require('../routes/bills'));
         this.app.use('/v1/api/logs', require('../routes/logs'));
+        this.app.use('/v1/api/images-uploader', require('../routes/imagesUploader'));
 
         // // Serve the static files for the React app
         this.app.use(express.static(path.join(__dirname, '..', 'FrontEnd', 'build')));

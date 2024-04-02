@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isUsersLoading: false,
   users: {},
-  pageCount: 0
+  pageCount: 0,
 };
 
 const usersSlice = createSlice({
@@ -14,10 +14,10 @@ const usersSlice = createSlice({
       state.users = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedUsers(state, action) {
+    setLoadedUsers(state) {
       state.isUsersLoading = false;
     },
-    setLoadingUsers(state, action) {
+    setLoadingUsers(state) {
       state.isUsersLoading = true;
     },
   },

@@ -12,7 +12,7 @@ const getById = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getOne', 'getOne error', 'inventory', NOW(), ?, ?)
+                VALUES ('getOne', 'getOne error', 'inventario', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {
@@ -65,7 +65,7 @@ const getInventory = async (req, res = response) => {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'inventory', NOW(), ?, ?)
+                VALUES ('get', 'get error', 'inventario', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 1]);
         } catch (logError) {
@@ -94,15 +94,15 @@ const postInventory = async (req, res = response) => {
                 })
                 const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'categories', NOW(), '', ?)
+                VALUES ('crear', ?, 'inventario', NOW(), '', ?)
             `;
-            await dbService.query(logQuery, ['crete inventory | new one: ' + description, 11]);
+            await dbService.query(logQuery, ['crear Inventario | nuevo: ' + description, 11]);
     }
     catch({ message }) {
         try {
             const logQuery = `
                 INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'inventory', NOW(), ?, ?)
+                VALUES ('create', 'create error', 'inventario', NOW(), ?, ?)
             `;
             await dbService.query(logQuery, [error.message, 11]);
         } catch (logError) {

@@ -163,7 +163,7 @@ const enMessages = {
   'menu.docsdetail': 'es|Docs Detail',
   'menu.tickets': 'es|Tickets',
   'menu.tickets-detail': 'es|Teicket Detail',
-
+  'menu.usuarios': 'Usuarios',
   'menu.elearning': 'es|Elearning',
   'menu.school': 'es|School',
   'menu.courses': 'es|Courses',
@@ -204,16 +204,25 @@ const enMessages = {
   'helper.lastname': 'Apellido',
   'helper.phone': 'Teléfono',
   'helper.email': 'Correo Electrónico',
+  'helper.salary': 'Salario',
+  'helper.role': 'Rol',
+  'helper.idcardtype': 'Tipo de cédula',
+  'helper.selectRol': 'Seleccionar Rol',
+  'helper.selectIdCardType': 'Seleccionar tipo de cédula',
+  'helper.signOut': 'Cerrar Sesión',
+  'helper.login': 'Iniciar Sesión',
 
   'helper.idCardRequired': 'Cédula es requerida',
   'helper.idCardOnlyNumbers': 'Cédula debe contener solo números',
   'helper.idCardMinSize': 'Cédula debe tener al menos 9 dígitos',
   'helper.idCardMaxSize': 'Cédula debe tener como máximo 12 dígitos',
+  'helper.idCardMinSize2': 'Cédula debe tener al menos 12 dígitos',
+  'helper.idCardMaxSize2': 'Cédula debe tener como máximo 15 dígitos',
 
   'helper.nameRequired': 'Nombre es requerido',
   'services.nameMinLength': 'Nombre debe tener al menos 3 caracteres',
   'services.nameMaxLength': 'Nombre debe tener como máximo 20 caracteres',
-  
+
   'helper.lastnameRequired': 'Apellido es requerido',
   'services.lastnameMinLength': 'Apellido debe tener al menos 3 caractere',
   'services.lastnameMaxLength': 'Apellido debe tener como máximo 20 caracteres',
@@ -227,7 +236,7 @@ const enMessages = {
   'helper.phoneRequired': 'Teléfono es requerido',
 
   'inventory.title': 'Inventario',
-  
+
   'services.title': 'Servicios',
   'services.description': 'Servicios proporcionados por el MayeBeautySalon',
   'services.serviceName': 'Nombre del Servicio',
@@ -259,7 +268,7 @@ const enMessages = {
   'appointments.findUserInformation': 'Buscar Información del Usuario',
 
   'appointments.service': 'Servicio',
-  
+
   'appointments.servicePrice': 'Precio',
   'appointments.appointmentDate': 'Fecha de la Cita',
   'appointments.startTime': 'Hora de Inicio',
@@ -286,10 +295,10 @@ const enMessages = {
   'appointments.errorAdd': '¡La cita no ha sido agregada!',
   'appointments.successEdit': '¡La cita ha sido editada exitosamente!',
   'appointments.errorEdit': '¡La cita no ha sido editada!',
-  'appointments.customerErrorRequired': 'Cliente es requerido', 
+  'appointments.customerErrorRequired': 'Cliente es requerido',
   'appointments.customerInformation': 'Información del Cliente',
-  'appointments.customerName': 'Nombre del Cliente', 
-  'appointments.emailInformation': 'Información del Correo Electrónico', 
+  'appointments.customerName': 'Nombre del Cliente',
+  'appointments.emailInformation': 'Información del Correo Electrónico',
   'appointments.phoneNumber': 'Número de Teléfono',
   'appointments.editAppointment': 'Editar Cita',
   'appointments.errorEndTime': 'La hora de finalización debe ser mayor a la hora de inicio',
@@ -297,5 +306,44 @@ const enMessages = {
   'appointments.week': 'Semana',
   'appointments.day': 'Día',
   'appointments.today': 'Hoy',
+
+  'users.first_name': 'Nombre',
+  'users.last_name': 'Apellidos',
+  'users.id_card': 'Cédula',
+  'users.email': 'Correo Electrónico',
+  'users.phone': 'Teléfono',
+  'users.state': 'Estado',
+  'users.userTitle': 'Usuarios',
+  'users.userDescription': 'Usuarios del sistema',
+  'users.passwordReset': 'Restablecer Contraseña',
+  'users.imageRequired': 'Imagen es requerida',
+  'users.rolRequired': 'Rol es requerido',
+  'users.salaryNumber': 'Salario debe ser un número positivo',
+  'users.salaryPositiveNumber': 'Salario debe ser un número positivo',
+  'users.salaryInteger': 'Salario debe ser un número entero',
+  'users.salaryMin': 'Salario debe ser mayor a 0',
+  'users.salaryRequired': 'Salario es requerido',
+  'users.idCardTypeRequired': 'Tipo de cédula es requerido',
+  'users.id_card_type': 'Tipo de cédula',
+
+  'notifications.productsList': 'Producto',
+  'notifications.productsMinAmount': 'Cantidad mínima de producto',
+  'notifications.productErrors.required': 'El producto es requerido',
+  'notifications.amountErrors.required': 'La cantidad mínima del producto es requerido',
+  'notifications.amountErrors.maxLength': 'La cantidad no puede ser mayor a 999',
+  'notifications.amountErrors.minLength': 'La cantidad debe ser mayor a 0',
+  'notifications.selectProduct': 'Seleccione un producto',
+
+  'categories.nameRequired': 'El nombre de la categoría es requerido',
+  'categories.nameMinLength': 'El nombre debe tener al menos 3 caracteres',
+  'categories.nameMaxLength': 'El nombre debe tener máximo 20 caracteres',
+  'helper.nameMinLength': 'El nombre debe tener al menos 3 caracteres',
+  'helper.nameMaxLength': 'El nombre debe tener máximo 20 caracteres',
+  'service.timeErrors.noValidTime': 'La hora no es válida',
+  'service.timeErrors.required': 'El timpo es requerido',
+  'service.selectMinutes': 'Seleccione minutos',
+  'service.minutes': 'Minutos',
+  'service.selectHours': 'Seleccione una hora',
+  'service.hours': 'Hora',
 };
 export default enMessages;

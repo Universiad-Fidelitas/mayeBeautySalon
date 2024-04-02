@@ -3,39 +3,34 @@ import Citas from 'views/admin/Citas/Citas';
 import Dashboard from 'views/admin/Dashboard';
 import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
-import Categorias from 'views/admin/Inventario/Categorias';
-import Marcas from 'views/admin/Inventario/Marcas';
+import Marcas from 'views/admin/Inventario/Marcas/Marcas';
 import Gastos from 'views/admin/Facturas/Gastos';
-import Productos from 'views/admin/Inventario/Productos';
+import Productos from 'views/admin/Inventario/Productos/Productos';
 import Stock from 'views/admin/Inventario/Stock';
-import Proveedores from 'views/admin/Inventario/Proveedores';
+import Proveedores from 'views/admin/Inventario/Proveedores/Proveedores';
 import Inventario from 'views/admin/Inventario/Inventario';
-import Servicios from 'views/admin/Inventario/Services/ServicesView2';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
 import Pagos from 'views/admin/Facturas/Pagos';
-import Notificaciones from 'views/admin/Inventario/Notificacion';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
+import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
+import { HomeView } from 'views/publicViews/HomeView';
+import Categorias from 'views/admin/Inventario/Categorias/Categorias';
+import { Notificacions } from 'views/admin/Inventario/Notifications/Notificacions';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
 const routesAndMenuItems = {
   mainMenuItems: [
     {
-      path: DEFAULT_PATHS.APP,
-      exact: true,
-      redirect: true,
-      to: `${appRoot}/dashboard`,
-    },
-    {
       path: `${appRoot}/dashboard`,
       label: 'menu.dashboard',
       icon: 'dashboard-1',
       component: Dashboard,
       protected: true,
+      hideInMenu: true,
     },
-
     {
       path: `${appRoot}/citas`,
       label: 'Citas',
@@ -44,8 +39,9 @@ const routesAndMenuItems = {
       protected: true,
     },
     {
-      path: `${appRoot}/trabajadores`,
-      label: 'menu.trabajadores',
+      path: `${appRoot}/usuarios`,
+      label: 'menu.usuarios',
+      protected: true,
       icon: 'laptop',
       subs: [
         { path: '/users', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
@@ -57,15 +53,16 @@ const routesAndMenuItems = {
       label: 'inventory.title',
       icon: 'database',
       subs: [
-        { path: '/inventario', icon: 'file-text', label: 'Inventario', roles: 'R_INVENTORY', component: Inventario },
+        { path: '/inventario', icon: 'file-text', label: 'Movimientos Inventario', roles: 'R_INVENTORY', component: Inventario },
         { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
         { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
         { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
         { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
-        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: Servicios },
-        { path: '/stock', icon: 'wizard', label: 'Stock', roles: 'R_PRODUCTS', component: Stock },
-        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificaciones },
+        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
+        { path: '/stock', icon: 'wizard', label: 'Inventario', roles: 'R_PRODUCTS', component: Stock },
+        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificacions },
       ],
+      protected: true,
     },
     {
       path: `${appRoot}/facturación`,
@@ -84,7 +81,7 @@ const routesAndMenuItems = {
       label: 'appointments.menuTitle',
       icon: 'check-square',
       component: AppointmentsClient,
-      protected: false,
+      publicOnly: true,
     },
     {
       path: `${appRoot}/logs`,
@@ -92,6 +89,11 @@ const routesAndMenuItems = {
       icon: 'logs-1',
       component: Logs,
       protected: true,
+    },
+    {
+      path: '/',
+      component: HomeView,
+      publicOnly: true,
     },
   ],
   sidebarItems: [],

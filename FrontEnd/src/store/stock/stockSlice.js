@@ -14,10 +14,10 @@ const stockSlice = createSlice({
       state.stock = action.payload.items;
       state.pageCount = action.payload.pageCount;
     },
-    setLoadedStock(state, action) {
+    setLoadedStock(state) {
       state.isStockLoading = false;
     },
-    setLoadingStock(state, action) {
+    setLoadingStock(state) {
       state.isStockLoading = true;
     },
   },

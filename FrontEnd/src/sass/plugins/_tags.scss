@@ -44,7 +44,7 @@
 }
 
 .react-tags__selected-tag:after {
-  content: "\2715";
+  content: '\2715';
   color: var(--muted);
   margin-left: 0.5rem;
   font-size: 0.75rem;
@@ -171,7 +171,8 @@
     }
   }
 
-  .react-tags.is-focused, &.tag-added .react-tags {
+  .react-tags.is-focused,
+  &.tag-added .react-tags {
     ~ label {
       -webkit-transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
       transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);

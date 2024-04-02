@@ -21,7 +21,13 @@ const ResetPassword = () => {
   const title = 'Restablecer Contraseña';
   const description = 'Pagina para restablecer contraseña de usuario';
   const validationSchema = Yup.object().shape({
-    password: Yup.string().min(6, 'Debe tener al menos 6 caracteres').required('La contraseña es requerida'),
+    password: Yup.string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
+      .matches(/[a-z]/, 'La contraseña debe contener al menos una letra minúscula')
+      .matches(/[A-Z]/, 'La contraseña debe contener al menos una letra mayúscula')
+      .matches(/\d/, 'La contraseña debe contener al menos un número')
+      .matches(/[@$!%*?&]/, 'La contraseña debe contener al menos un carácter especial')
+      .required('La contraseña es requerida'),
     passwordConfirm: Yup.string()
       .required('La confirmación de contraseña es requerida')
       .oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales.'),
@@ -86,12 +92,12 @@ const ResetPassword = () => {
             <div className="mb-3 filled">
               <CsLineIcons icon="lock-off" />
               <Form.Control type="password" name="password" onChange={handleChange} value={values.password} placeholder="Contraseña" />
-              {errors.password && touched.password && <div className="d-block invalid-tooltip">{errors.password}</div>}
+              {errors.password && touched.password && <div className="text-danger">{errors.password}</div>}
             </div>
             <div className="mb-3 filled">
               <CsLineIcons icon="lock-on" />
               <Form.Control type="password" name="passwordConfirm" onChange={handleChange} value={values.passwordConfirm} placeholder="Confirmar Contraseña" />
-              {errors.passwordConfirm && touched.passwordConfirm && <div className="d-block invalid-tooltip">{errors.passwordConfirm}</div>}
+              {errors.passwordConfirm && touched.passwordConfirm && <div className="text-danger">{errors.passwordConfirm}</div>}
             </div>
             <Button size="lg" type="submit">
               Restablecer Contraseña
@@ -119,7 +125,7 @@ const ResetPassword = () => {
         toast(<Content />, { className: 'danger' });
       }
     }
-  }, [isLoading, resetPassTokenState]);
+  }, [isLoading, resetPassTokenState, history]);
 
   if (isLoading) {
     return <div>Loading...</div>;

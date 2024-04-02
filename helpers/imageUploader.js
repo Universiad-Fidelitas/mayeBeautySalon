@@ -44,7 +44,7 @@ const uploadMiddleware = (req, res, next) => {
     const outputFile = path.join(uploadFolder, relativePath);
   
     sharp(inputFile)
-      // .resize({ width: 800, height: 600 })
+      .resize({ width: 300, height: 300 })
       .toFormat('webp')
       .toFile(outputFile, (err) => {
         if (err) {
@@ -52,7 +52,7 @@ const uploadMiddleware = (req, res, next) => {
         }
   
         // Remove the original uploaded file
-        fs.unlinkSync(inputFile);
+        //fs.unlinkSync(inputFile);
   
         // Update the request file path to the WebP version with a relative path
         req.file.path = 'uploads/' + relativePath;

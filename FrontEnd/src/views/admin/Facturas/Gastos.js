@@ -92,33 +92,33 @@ const Gastos = () => {
   } = tableInstance;
   useEffect(() => {
     dispatch(getExpenses({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term]);
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
 
   useEffect(() => {
     if (expenses.length > 0) {
       setData(expenses);
     }
-  }, [isExpensesLoading]);
+  }, [isExpensesLoading, expenses]);
 
   const deleteItems = useCallback(
     async (values) => {
       dispatch(deleteExpenses(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const editItem = useCallback(
     async (values) => {
       dispatch(editExpense(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const addItem = useCallback(
     async (values) => {
       dispatch(postExpense(values));
     },
-    [sortBy, pageIndex, pageSize]
+    [dispatch]
   );
 
   const searchItem = useAsyncDebounce((val) => {

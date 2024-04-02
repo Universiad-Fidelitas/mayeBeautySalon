@@ -1,24 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Card, Col, FormCheck, Modal } from 'react-bootstrap';
+import React, { useCallback, useMemo } from 'react';
+import { Button, Card, Col, FormCheck, Modal, Row } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
-import Select from 'react-select';
 import { useRoles } from 'hooks/react-query/useRoles';
 import classNames from 'classnames';
-import { UsuariosImageUploader } from 'components/ImageUploading/UsuariosImageUploader';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { forgotPassword } from 'store/slices/authThunk';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { IconNotification } from 'components/notifications/IconNotification';
 import 'react-dropzone-uploader/dist/styles.css';
-import DropzonePreview from 'components/dropzone/DropzonePreview';
-import Dropzone, { defaultClassNames } from 'react-dropzone-uploader';
+import * as Yup from 'yup';
+import { UploaderComponent } from 'components/imagesUploader/UploaderComponent';
+import { useIntl } from 'react-intl';
+import { SelectField } from 'components/SelectField';
+import { useUsers } from 'hooks/react-query/useUsers';
+import InputMask from 'react-input-mask';
+import NumberFormat from 'react-number-format';
 
-export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
-  const { selectedFlatRows, data, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
+  const { formatMessage: f } = useIntl();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { updateUser, addUser } = useUsers(apiParms);
 
   const { isLoading, data: rolesData } = useRoles();
-  const [profileImage, setProfileImage] = useState([]);
   const rolDataDropdown = useMemo(
     () =>
       rolesData?.items.map(({ role_id, name }) => {
@@ -26,7 +30,12 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }),
     [rolesData]
   );
-  const [activeUser, setActiveUser] = useState(false);
+  const idTypeDropdown = useMemo(() => {
+    return [
+      { value: 'nacional', label: 'Nacional' },
+      { value: 'extranjero', label: 'Extranjero' },
+    ];
+  }, []);
   const dispatch = useDispatch();
 
   const onSubmit = useCallback(
@@ -35,53 +44,32 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       const userSchema = {
         ...values,
       };
-
-      if (profileImage[0]?.dataurl.startsWith('data:')) {
+      if (values.image[0].file) {
         Object.entries(userSchema).forEach(([key, value]) => {
           if (key !== 'image') {
             formData.append(key, value);
           }
         });
-        formData.append('image', profileImage[0].file);
+
+        formData.append('image', values.image[0].file);
       } else {
         Object.entries(userSchema).forEach(([key, value]) => {
           formData.append(key, value);
         });
+        formData.set('image', values.image[0].dataurl);
       }
+      formData.set('activated', values.activated ? 1 : 0);
+      formData.set('phone', values.phone.replace(/-/g, ''));
+      formData.set('salary', values.salary.replace(/₡/g, '').replace(/\./g, '').replace(/,/g, ''));
       if (selectedFlatRows.length === 1) {
-        editItem({
-          formData,
-          userId: selectedFlatRows[0].values.user_id,
-        });
+        updateUser.mutateAsync(formData);
       } else {
-        addItem(formData);
+        addUser.mutateAsync(formData);
       }
-      setProfileImage([]);
       setIsOpenAddEditModal(false);
     },
-    [profileImage, selectedFlatRows, activeUser]
+    [selectedFlatRows, addUser, setIsOpenAddEditModal, updateUser]
   );
-
-  const handleImageFromUrl = async (url) => {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    const filename = url.substring(url.lastIndexOf('/') + 1);
-    setProfileImage([{ file: new File([blob], filename, { type: blob.type }), dataurl: url }]);
-  };
-
-  useEffect(() => {
-    if (selectedFlatRows.length === 1) {
-      handleImageFromUrl(`${process.env.REACT_APP_BASE_API_URL}/${selectedFlatRows[0].values.image}`);
-    } else {
-      setProfileImage([]);
-    }
-  }, [selectedFlatRows]);
-
-  useEffect(() => {
-    if (!isOpenAddEditModal) {
-      setProfileImage([]);
-    }
-  }, [isOpenAddEditModal]);
 
   const enviarEmail = async () => {
     if (selectedFlatRows.length === 1) {
@@ -93,77 +81,211 @@ export const ModalAddEditUsuarios = ({ tableInstance, addItem, editItem, validat
       }
     }
   };
-  const CustomSelect = ({ field, form, options }) => (
-    <Select
-      classNamePrefix="react-select"
-      options={options}
-      name={field.name}
-      value={options ? options.find((option) => option.value === field.value) : ''}
-      onChange={(option) => form.setFieldValue(field.name, option.value)}
-      placeholder="Seleccione una opcion"
-    />
+
+  const initialValues = useMemo(
+    () =>
+      selectedFlatRows.length === 1
+        ? {
+            ...selectedFlatRows[0].values,
+            activated: selectedFlatRows[0].values.activated === 1,
+            image: [
+              {
+                dataurl: selectedFlatRows[0].values.image,
+                file: null,
+              },
+            ],
+          }
+        : {
+            id_card: '',
+            id_card_type: '',
+            first_name: '',
+            last_name: '',
+            image: '',
+            email: '',
+            phone: '',
+            salary: '',
+            role_id: '',
+            activated: true,
+          },
+    [selectedFlatRows]
   );
+
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        first_name: Yup.string()
+          .required(f({ id: 'helper.nameRequired' }))
+          .min(3, f({ id: 'helper.nameMinLength' }))
+          .max(20, f({ id: 'helper.nameMaxLength' })),
+        last_name: Yup.string()
+          .required(f({ id: 'helper.lastnameRequired' }))
+          .min(3, f({ id: 'helper.lastnameMinLength' }))
+          .max(20, f({ id: 'helper.lastnameMaxLength' })),
+        email: Yup.string()
+          .email(f({ id: 'helper.emailInvalid' }))
+          .required(f({ id: 'helper.emailRequired' })),
+        phone: Yup.string()
+          .min(8, f({ id: 'helper.phoneMinLength' }))
+          .max(10, f({ id: 'helper.phoneMaxLength' }))
+          .required(f({ id: 'helper.phoneRequired' })),
+        image: Yup.mixed().required(f({ id: 'users.imageRequired' })),
+
+        salary: Yup.string()
+          .required(f({ id: 'users.salaryRequired' })),
+        role_id: Yup.string().required(f({ id: 'users.rolRequired' })),
+        id_card_type: Yup.string().required(f({ id: 'users.idCardTypeRequired' })),
+        // id_card: Yup.number()
+        //   .required(f({ id: 'helper.idCardRequired' }))
+        //   // .typeError(f({ id: 'helper.idCardOnlyNumbers' }))
+        //   .when('id_card_type', {
+        //     is: 'nacional', // o el valor que represente a 'nacional'
+        //     then: Yup.string()
+        //       .min(9, f({ id: 'helper.idCardMinSize' }))
+        //       .max(9, f({ id: 'helper.idCardMaxSize' })),
+        //     otherwise: Yup.string()
+        //       .min(12, f({ id: 'helper.idCardMinSize2' }))
+        //       .max(15, f({ id: 'helper.idCardMaxSize2' })),
+
+        id_card: Yup.number()
+              .required(f({ id: 'products.buyPriceError.required' }))
+              .typeError(f({ id: 'products.buyPriceError.typeError' }))
+              .min(1, f({ id: 'products.buyPriceError.minError' })),
+
+      }),
+    [f]
+  );
+  const customFormat = (value) => {
+    return value ? value.replace(/-/g, '') : '';
+  };
   return (
-    <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
+    <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
-        <Formik initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : {}} onSubmit={onSubmit} validationSchema={validationSchema}>
-          <Form>
-            <Modal.Header>
-              <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {selectedFlatRows.length === 1 && (
-                <Col className="d-flex flex-row justify-content-between align-items-center mb-3">
-                  <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start w-100 w-md-auto add-datatable">
-                    <CsLineIcons icon="email" />
-                    <span> Restablecer Contraseña</span>
-                  </Button>
-                </Col>
-              )}
-              <div className="mb-3">
-                <label className="form-label">Activo</label>
-                <Field className="form-control" as="select" id="activated" name="activated">
-                  <option value="" disabled selected>
-                    Elige una opción
-                  </option>
-                  <option value="1">Activado</option>
-                  <option value="0">Desactivado</option>
-                </Field>
-                <ErrorMessage style={{ color: 'red' }} name="activated" component="div" />
-              </div>
-              <Col className="d-flex flex-column justify-content-between align-items-center mb-3">
-                <UsuariosImageUploader initialImages={profileImage} setImageState={setProfileImage} />
-              </Col>
-              {rolDataDropdown && (
-                <>
-                  <div className="mb-3">
-                    <label className="form-label">Roles</label>
+        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+          {({ errors, touched, setFieldValue, values, dirty }) => (
+            <Form>
+              <Modal.Header>
+                <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Row className="g-0 mb-3 d-flex justify-content-center">
+                  <Col className="col-6 top-label">
+                    <UploaderComponent initialImages={values.image} isError={errors.image && touched.image} setFieldValue={setFieldValue} />
+                  </Col>
+                  <ErrorMessage className="text-danger text-center" name="image" component="div" />
+                </Row>
 
-                    <Field className="form-control" id="role_id" name="role_id" component={CustomSelect} options={rolDataDropdown} required />
-                    <ErrorMessage style={{ color: 'red' }} name="role_id" component="div" />
-                  </div>
-                </>
-              )}
+                <Row className="g-3 mb-3">
+                  {selectedFlatRows.length === 1 && (
+                    <Col className="col-6">
+                      <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start sendPasswordButton">
+                        <CsLineIcons icon="email" />
+                        <span> {f({ id: 'users.passwordReset' })}</span>
+                      </Button>
+                    </Col>
+                  )}
+                  <Col className="col-3">
+                    <div className="d-flex flex-row justify-content-between align-items-center activationSwitch">
+                      <label className="form-label">{f({ id: 'services.serviceState' })}</label>
+                      <FormCheck
+                        className="form-check"
+                        type="switch"
+                        checked={values.activated}
+                        onChange={() => setFieldValue('activated', !values.activated)}
+                      />
+                    </div>
+                  </Col>
+                </Row>
 
-              {formFields.map(({ id, label, type }) => (
-                <div className="mb-3" key={id}>
-                  <label className="form-label">{label}</label>
+                <Row className="g-3 mb-3">
+                  <Col className="col-4">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'helper.idcard' })}</label>
+                      <Field className={`form-control ${errors.id_card && touched.id_card ? 'is-invalid' : ''}`} id="id_card" name="id_card" />
+                      <ErrorMessage className="text-danger" name="id_card" component="div" />
+                    </div>
+                  </Col>
+                  <Col className="col-8 top-label">
+                    <SelectField
+                      label={f({ id: 'helper.idcardtype' })}
+                      name="id_card_type"
+                      placeholder={f({ id: 'helper.selectIdCardType' })}
+                      options={idTypeDropdown}
+                      isError={errors.id_card_type && touched.id_card_type}
+                    />
+                  </Col>
+                </Row>
 
-                  <Field className="form-control" type={type} id={id} name={id} />
+                <Row className="g-3 mb-3">
+                  <Col className="col-6">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'helper.name' })}</label>
+                      <Field className={`form-control ${errors.first_name && touched.first_name ? 'is-invalid' : ''}`} id="first_name" name="first_name" />
+                      <ErrorMessage className="text-danger" name="first_name" component="div" />
+                    </div>
+                  </Col>
+                  <Col className="col-6 top-label">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'helper.lastname' })}</label>
+                      <Field className={`form-control ${errors.last_name && touched.last_name ? 'is-invalid' : ''}`} id="last_name" name="last_name" />
+                      <ErrorMessage className="text-danger" name="last_name" component="div" />
+                    </div>
+                  </Col>
+                </Row>
 
-                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
-                </div>
-              ))}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
-                Cancelar
-              </Button>
-              <Button variant="primary" type="submit">
-                {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
-              </Button>
-            </Modal.Footer>
-          </Form>
+                <Row className="g-3 mb-3">
+                  <Col className="col-8">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'helper.email' })}</label>
+                      <Field className={`form-control ${errors.email && touched.email ? 'is-invalid' : ''}`} id="email" name="email" />
+                      <ErrorMessage className="text-danger" name="email" component="div" />
+                    </div>
+                  </Col>
+                  <Col className="col-4 top-label">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'helper.phone' })}</label>
+                      <Field className={`form-control ${errors.phone && touched.phone ? 'is-invalid' : ''}`} id="phone" name="phone">
+                        {({ field }) => (
+                          <NumberFormat {...field} className="form-control" mask="_" format="####-####" allowEmptyFormatting/>
+                        )}
+                      </Field>
+                      <ErrorMessage className="text-danger" name="phone" component="div" />
+                    </div>
+                  </Col>
+                </Row>
+
+                <Row className="g-3">
+                  <Col className="col-4">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'helper.salary' })}</label>
+                      <Field className={`form-control ${errors.salary && touched.salary ? 'is-invalid' : ''}`} id="salary" name="salary">
+                        {({ field }) => (
+                          <NumberFormat {...field} className="form-control" thousandSeparator="." decimalSeparator="," prefix="₡" allowNegative={false}/>
+                        )}
+                      </Field>
+                      <ErrorMessage className="text-danger" name="salary" component="div" />
+                    </div>
+                  </Col>
+                  <Col className="col-8 top-label">
+                    <SelectField
+                      label={f({ id: 'helper.role' })}
+                      name="role_id"
+                      placeholder={f({ id: 'helper.selectRol' })}
+                      options={rolDataDropdown}
+                      isError={errors.role_id && touched.role_id}
+                    />
+                  </Col>
+                </Row>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
+                  {f({ id: 'helper.cancel' })}
+                </Button>
+                <Button variant="primary" type="submit" disabled={selectedFlatRows.length === 1 && !dirty && true}>
+                  {selectedFlatRows.length === 1 ? f({ id: 'helper.edit' }) : f({ id: 'helper.add' })}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          )}
         </Formik>
       </Card>
     </Modal>
