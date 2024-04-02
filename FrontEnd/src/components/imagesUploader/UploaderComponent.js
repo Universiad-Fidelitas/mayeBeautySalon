@@ -16,7 +16,7 @@ export const UploaderComponent = ({ initialImages, isError, setFieldValue }) => 
             <div className={classNames('user-dropzone rounded-circle', isError && 'is-invalid')}>
               {!imageList.length > 0 && (
                 <div className="image-item h-100 w-100 d-flex justify-content-center align-items-center">
-                  <CsLineIcons size={100} icon="user" />
+                  <CsLineIcons size={100} icon="image" />
                   <button type="button" className="update-image-user-btn border-0 rounded-circle" onClick={() => onImageUpload()}>
                     <CsLineIcons icon="upload" />
                   </button>

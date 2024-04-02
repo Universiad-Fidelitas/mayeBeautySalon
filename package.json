@@ -33,6 +33,7 @@
     "nodemailer-express-handlebars": "^6.1.0",
     "npm": "^10.4.0",
     "react-images-uploading": "^3.1.7",
+    "react-input-mask": "^2.0.4",
     "sharp": "^0.33.3",
     "uuid": "^9.0.1"
   },

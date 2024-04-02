@@ -259,6 +259,18 @@
   }
 }
 
+.products-uploader-component {
+  width: 300px !important;
+  .user-dropzone {
+    border-radius: 5% !important;
+    height: 250px !important;
+    width: 300px !important;
+    .rounded-circle {
+      border-radius: 5% !important;
+    }
+  }
+}
+
 .sendPasswordButton,
 .activationSwitch {
   width: 100%;

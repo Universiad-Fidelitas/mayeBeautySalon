@@ -5,7 +5,7 @@ import Facturas from 'views/admin/Facturas/Facturas';
 import Transacciones from 'views/admin/Facturas/Transacciones';
 import Marcas from 'views/admin/Inventario/Marcas/Marcas';
 import Gastos from 'views/admin/Facturas/Gastos';
-import Productos from 'views/admin/Inventario/Productos';
+import Productos from 'views/admin/Inventario/Productos/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores/Proveedores';
 import Inventario from 'views/admin/Inventario/Inventario';
