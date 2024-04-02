@@ -44,7 +44,7 @@ const uploadMiddleware = (req, res, next) => {
     const outputFile = path.join(uploadFolder, relativePath);
   
     sharp(inputFile)
-      // .resize({ width: 800, height: 600 })
+      .resize({ width: 300, height: 300 })
       .toFormat('webp')
       .toFile(outputFile, (err) => {
         if (err) {

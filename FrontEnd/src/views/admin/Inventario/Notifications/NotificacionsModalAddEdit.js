@@ -12,7 +12,8 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
     const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
     const { updateNotification, addNotification } = useNotifications(apiParms);
 
-    const { data: productsData } = useProducts();
+    const { getProducts } = useProducts({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+    const { data: productsData } = getProducts;
     const productsDataDropdown = useMemo(
       () =>
         productsData?.items.map(({ product_id, name }) => {

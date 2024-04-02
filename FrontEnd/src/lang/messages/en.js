@@ -337,6 +337,37 @@ const enMessages = {
   'service.timeErrors.required': 'Service time is required',
   'service.timeErrors.noValidTime': 'Service time is not valid',
 
-  
+  'products.productName': 'Product name',
+  'products.productBuyPrice': 'Product buy price',
+  'products.productFinalPrice': 'Product sale price',
+  'products.providerInformation': 'Provider information',
+  'products.selectProvider': 'Select provider',
+  'products.categoryInformation': 'Category information',
+  'products.selectCategory': 'Select category',
+
+  'products.brandInformation': 'Brand information',
+  'products.selectBrand': 'Select brand',
+  'products.unitOfMeasurement': 'Unit of measurement',
+  'products.productAmount': 'Product amount',
+  'products.totalAmount': 'Total amount',
+
+  'products.nameError.required': 'Product name is required',
+  'products.nameError.minLength': 'Product name must be at least 3 characters',
+  'products.nameError.maxLength': 'Product name must be at most 20 characters',
+  'products.priceError.required': 'Product sale price is required',
+  'products.priceError.typeError': 'Product sale price must be a number',
+  'products.priceError.minError': 'Product sale price must be a positive number',
+
+  'products.buyPriceError.required': 'Product buy price is required',
+  'products.buyPriceError.typeError': 'Product buy price must be a number',
+  'products.buyPriceError.minError': 'Product buy price must be a positive number',
+
+  'products.providerError.required': 'Provider is required',
+  'products.categoryError.required': 'Category is required',
+  'products.brandError.required': 'Brand is required',
+  'products.amountError.required': 'Product amount is required',
+  'products.amountError.notValid': 'Product amount is not valid',
+
+  'products.successAdd': 'The product has been added successfully!',
 };
 export default enMessages;

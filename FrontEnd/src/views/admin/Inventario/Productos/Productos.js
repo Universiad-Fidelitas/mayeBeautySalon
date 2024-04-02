@@ -1,14 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getProducts, postProduct, editProduct, deleteProducts } from 'store/products/productsThunk';
+import { useDispatch } from 'react-redux';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
-import { ModalAddEditProductos } from './ModalAddEditProducto';
+import { useProducts } from 'hooks/react-query/useProducts';
+import { ProductosModalAddEdit } from './ProductosModalAddEdit';
+import { ProductosTableListItem } from './ProductosTableListItem';
+import { ProductosTableListItemHeader } from './ProductosTableListItemHeader';
+
 
 const Productos = () => {
   const { formatMessage: f } = useIntl();
@@ -23,76 +26,81 @@ const Productos = () => {
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
-  const { isProductsLoading, products, pageCount } = useSelector((state) => state.products);
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Imagen',
-        accessor: 'image',
+        Header: 'product_id',
+        accessor: 'product_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
-        Header: 'Nombre',
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        hideColumn: true,
+      },
+      {
+        Header: 'Detalle del producto',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Precio de venta',
-        accessor: 'price',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Precio de compra',
-        accessor: 'price_buy',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Tamaño',
-        accessor: 'size',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Marca',
-        accessor: 'brand_name',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'col-lg-2 col-12',
       },
       {
         Header: 'Proveedor',
         accessor: 'provider_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'Precio de compra',
+        accessor: 'price_buy',
+        sortable: true,
+        headerClassName: 'col-lg-2 col-12',
+      },
+      {
+        Header: 'Precio de venta',
+        accessor: 'price',
+        sortable: true,
+        headerClassName: 'col-lg-2 col-12',
+      },
+      {
+        Header: 'Tamaño',
+        accessor: 'size',
+        sortable: true,
+        hideColumn: true,
+      },
+      {
+        Header: 'Marca',
+        accessor: 'brand_name',
+        sortable: true,
+        hideColumn: true,
       },
       {
         Header: 'Categoria',
         accessor: 'category_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
         Header: 'Marca ID',
         accessor: 'brand_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
         Header: 'Proveedor ID',
         accessor: 'provider_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
         Header: 'Categoria ID',
         accessor: 'category_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
       },
       {
         Header: '',
@@ -135,33 +143,20 @@ const Productos = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getProducts({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+
+  const { getProducts, inactivateProductos } = useProducts({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isProductsDataSuccess, data: ProductsData } = getProducts;
 
   useEffect(() => {
-    if (products.length > 0) {
-      setData(products);
+    if (isProductsDataSuccess) {
+      setData(ProductsData.items);
+      setPageCount(ProductsData.pageCount);
     }
-  }, [isProductsLoading, products]);
+  }, [isProductsDataSuccess, ProductsData]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteProducts(values));
-    },
-    [dispatch]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editProduct(values));
-    },
-    [dispatch]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postProduct(values));
+      inactivateProductos.mutateAsync(values);
     },
     [dispatch]
   );
@@ -169,44 +164,6 @@ const Productos = () => {
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El nombre es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-    price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
-      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-    price_buy: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio es requerido</span>)
-      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-    size: Yup.string()
-      .matches(/^\d+$/, 'El tamaño debe ser un número')
-      .min(1, <span style={{ color: 'red' }}>El tamaño debe tener al menos 1 números</span>)
-      .max(6, <span style={{ color: 'red' }}>El tamaño no puede tener más de 6 números</span>)
-      .required(<span style={{ color: 'red' }}>El tamaño es requerido</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'name',
-      label: 'Nombre del producto',
-      type: 'text',
-    },
-    {
-      id: 'price',
-      label: 'Precio de Venta',
-      type: 'number',
-    },
-    {
-      id: 'price_buy',
-      label: 'Precio de Compra',
-      type: 'number',
-    },
-  ];
 
   return (
     <>
@@ -250,21 +207,14 @@ const Productos = () => {
               </Col>
             </Row>
             <Row>
-              <Col xs="12">
-                <Table className="react-table rows" tableInstance={tableInstance} />
-              </Col>
+              <ProductosTableListItemHeader tableInstance={tableInstance} />
+              <ProductosTableListItem tableInstance={tableInstance} />
               <Col xs="12">
                 <TablePagination tableInstance={tableInstance} />
               </Col>
             </Row>
           </div>
-          <ModalAddEditProductos
-            tableInstance={tableInstance}
-            addItem={addItem}
-            editItem={editItem}
-            validationSchema={validationSchema}
-            formFields={formFields}
-          />
+          <ProductosModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>
