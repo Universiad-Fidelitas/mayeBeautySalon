@@ -77,14 +77,14 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
                   </Col>
                 </Row>
                 <Row className="g-3 mb-3">
-                <Col className="col-8 top-label">
-                  <SelectField
-                    label={f({ id: 'notifications.productsList' })}
-                    name="product_id"
-                    placeholder={f({ id: 'notifications.selectProduct' })}
-                    options={productsDataDropdown}
-                    isError={errors.product_id && touched.product_id}
-                  />
+                  <Col className="col-12 top-label">
+                    <SelectField
+                      label={f({ id: 'notifications.productsList' })}
+                      name="product_id"
+                      placeholder={f({ id: 'notifications.selectProduct' })}
+                      options={productsDataDropdown}
+                      isError={errors.product_id && touched.product_id}
+                    />
                   </Col>
                 </Row>
               </Modal.Body>
@@ -101,5 +101,5 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
         </Formik>
       </Card>
     </Modal>
-  )
-}
+  );
+};
