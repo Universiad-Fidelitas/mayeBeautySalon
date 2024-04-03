@@ -147,32 +147,24 @@ const Inventory = () => {
   }, 200);
 
   const validationSchema = Yup.object().shape({
-    action: Yup.string().required(<span style={{ color: 'red' }}>La acción es requerida</span>),
+    action: Yup.string().required('La acción es requerida'),
     description: Yup.string()
-      .required(<span style={{ color: 'red' }}>La descripción es requerida</span>)
-      .min(3, <span style={{ color: 'red' }}>La descripción debe tener al menos 3 caracteres</span>)
-      .max(100, <span style={{ color: 'red' }}>La descripción no puede tener más de 100 caracteres</span>),
+      .required('La descripción es requerida')
+      .min(3, 'La descripción debe tener al menos 3 caracteres')
+      .max(100, 'La descripción no puede tener más de 100 caracteres'),
     dataToInsert: Yup.array()
       .of(
         Yup.object().shape({
-          product_id: Yup.string().required(<span style={{ color: 'red' }}>El producto es requerido</span>),
+          product_id: Yup.string().required('El producto es requerido'),
           amount: Yup.number()
-            .min(0, <span style={{ color: 'red' }}>La cantidad debe ser mayor a 0</span>)
-            .typeError(<span style={{ color: 'red' }}>La cantidad solo acepta números</span>)
-            .required(<span style={{ color: 'red' }}>La cantidad es requerida</span>),
+            .min(0, 'La cantidad debe ser mayor a 0')
+            .typeError('La cantidad solo acepta números')
+            .required('La cantidad es requerida'),
         })
       )
       .required('Must have product')
       .min(1, 'Minimum of 1 product'),
   });
-
-  const formFields = [
-    {
-      id: 'description',
-      label: 'Descripción',
-      type: 'text',
-    },
-  ];
 
   return (
     <>
@@ -217,7 +209,7 @@ const Inventory = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEditInventario tableInstance={tableInstance} addItem={addItem} validationSchema={validationSchema} formFields={formFields} />
+          <ModalAddEditInventario tableInstance={tableInstance} addItem={addItem} validationSchema={validationSchema} />
         </Col>
       </Row>
     </>
