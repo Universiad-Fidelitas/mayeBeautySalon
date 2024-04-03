@@ -6,6 +6,7 @@ import Select from 'react-select';
 import { useServices } from 'hooks/react-query/useServices';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
+import NumberFormat from 'react-number-format';
 
 
 export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
@@ -71,7 +72,17 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
                 <Col className="col-6">
                   <div className="top-label">
                   <label className="form-label">{f({ id: 'services.servicePrice' })}</label>
-                    <Field className={`form-control ${errors.price && touched.price ? 'is-invalid' : ''}`} id="price" name="price" />
+                    <NumberFormat
+                      className={classNames('form-control', { 'is-invalid': errors.price && touched.price })}
+                      thousandSeparator="."
+                      decimalSeparator=","
+                      prefix="₡"
+                      allowNegative={false}
+                      value={values.price}
+                      onValueChange={({ value }) => {
+                        setFieldValue('price', value);
+                      }}
+                    />
                     <ErrorMessage className="text-danger" name="price" component="div" />
                   </div>
                 </Col>

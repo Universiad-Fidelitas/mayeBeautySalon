@@ -11,6 +11,7 @@ import { useBrands } from 'hooks/react-query/useBrands';
 import { useProviders } from 'hooks/react-query/useProviders';
 import classNames from 'classnames';
 import Select from 'react-select';
+import NumberFormat from 'react-number-format';
 
 export const ProductosModalAddEdit = ({ tableInstance, apiParms }) => {
     const { formatMessage: f } = useIntl();
@@ -162,14 +163,34 @@ export const ProductosModalAddEdit = ({ tableInstance, apiParms }) => {
                   <Col className="col-6">
                     <div className="top-label">
                     <label className="form-label">{f({ id: 'products.productFinalPrice' })}</label>
-                      <Field className={`form-control ${errors.price && touched.price ? 'is-invalid' : ''}`} id="price" name="price" />
+                      <NumberFormat
+                        className={classNames('form-control', { 'is-invalid': errors.price && touched.price })}
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="₡"
+                        allowNegative={false}
+                        value={values.price}
+                        onValueChange={({ value }) => {
+                          setFieldValue('price', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="price" component="div" />
                     </div>
                   </Col>
                   <Col className="col-6">
                     <div className="top-label">
                     <label className="form-label">{f({ id: 'products.productBuyPrice' })}</label>
-                      <Field className={`form-control ${errors.price_buy && touched.price_buy ? 'is-invalid' : ''}`} id="price_buy" name="price_buy" />
+                      <NumberFormat
+                        className={classNames('form-control', { 'is-invalid': errors.price_buy && touched.price_buy })}
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="₡"
+                        allowNegative={false}
+                        value={values.price_buy}
+                        onValueChange={({ value }) => {
+                          setFieldValue('price_buy', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="price_buy" component="div" />
                     </div>
                   </Col>

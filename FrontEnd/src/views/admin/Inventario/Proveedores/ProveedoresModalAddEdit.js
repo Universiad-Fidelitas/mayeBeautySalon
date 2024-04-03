@@ -4,6 +4,8 @@ import { useIntl } from 'react-intl';
 import { Button, Card, Col, Modal, Row } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useProviders } from 'hooks/react-query/useProviders';
+import NumberFormat from 'react-number-format';
+import classNames from 'classnames';
 
 export const ProveedoresModalAddEdit = ({ tableInstance, apiParms }) => {
     const { formatMessage: f } = useIntl();
@@ -45,7 +47,7 @@ export const ProveedoresModalAddEdit = ({ tableInstance, apiParms }) => {
     <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card>
         <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-          {({ errors, touched, dirty }) => (
+          {({ errors, touched, dirty, values, setFieldValue }) => (
             <Form>
               <Modal.Header>
                 <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
@@ -70,8 +72,17 @@ export const ProveedoresModalAddEdit = ({ tableInstance, apiParms }) => {
                   </Col>
                   <Col className="col-6 top-label">
                     <div className="top-label">
-                      <label className="form-label">{f({ id: 'helper.phone' })}</label>
-                      <Field className={`form-control ${errors.phone && touched.phone ? 'is-invalid' : ''}`} id="phone" name="phone" />
+                      <label className="form-label">{f({ id: 'helper.phone' })}</label>                      
+                      <NumberFormat
+                        className={classNames('form-control', { 'is-invalid': errors.phone && touched.phone })}
+                        mask="_"
+                        format="####-####"
+                        allowEmptyFormatting
+                        value={values.phone}
+                        onValueChange={({ value }) => {
+                          setFieldValue('phone', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="phone" component="div" />
                     </div>
                   </Col>
