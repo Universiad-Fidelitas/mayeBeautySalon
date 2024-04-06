@@ -31,7 +31,7 @@ const getUser = async (req, res = response) => {
 
         let baseQuery = 'SELECT * FROM users';
         if (term) {
-            baseQuery += ` WHERE first_name LIKE '%${term}%'`;
+            baseQuery += ` WHERE id_card LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
@@ -85,8 +85,6 @@ const postUser = async (req, res = response) => {
         const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
         const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file ? req.file.path : '', salary, id_card_type]);
         
-
- 
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
             const { affectedRows } = await dbService.query(userQuery, [insertId, await hashPassword('123456789') ]);

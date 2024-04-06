@@ -4,12 +4,11 @@ import { setLoadedReports, setLoadingReports, setReports } from './reportsSlice'
 import { setReports2, setLoadedReports2, setLoadingReports2 } from './reports2Slice';
 import { setReports3, setLoadedReports3, setLoadingReports3 } from './reports3Slice';
 
-const getReport1 = () => {
+const getReport1 = (tableStatus) => {
   return async (dispatch) => {
     try {
       dispatch(setLoadingReports());
-      const { data } = await baseApi.get('/reports/report1');
-      console.log('karo', data);
+      const { data } = await baseApi.post('/reports/report1', tableStatus);
       if (data) {
         dispatch(setReports(data));
         dispatch(setLoadedReports());
