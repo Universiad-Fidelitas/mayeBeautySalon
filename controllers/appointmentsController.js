@@ -91,14 +91,20 @@ const saveAppointment = async (req, res = response) => {
         const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
         const userChecker = await dbService.query(queryUserChecker, [id_card]);
 
+
+        // se agrega estas lineas para evitar un error en la creacion del bill
+        const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number) VALUES (?,?,'','')`;
+        const { insertId: paymentInsertId } = await dbService.query(userQuery, ['pending', 'efectivo']);
+
+
         if (userChecker.length === 0) {
             const queryAddUser = "INSERT INTO users (user_id, role_id, id_card, first_name, last_name, email, phone, activated, image, salary) VALUES (NULL, 1, ?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
-            const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id) VALUES (NULL, ?, NULL, ?, NULL) ";
-            await dbService.query(queryAddBill, [userInsertId, insertId]);
+            const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id, activated) VALUES (NULL, ?, NULL, ?, ?, 1) ";
+            await dbService.query(queryAddBill, [userInsertId, insertId, paymentInsertId]);
         } else { 
-            const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id) VALUES (NULL, ?, NULL, ?, NULL) ";
-            await dbService.query(queryAddBill, [userChecker[0].user_id, insertId]);
+            const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id, activated) VALUES (NULL, ?, NULL, ?, ?, 1) ";
+            await dbService.query(queryAddBill, [userChecker[0].user_id, insertId, paymentInsertId]);
         }
         
         res.status(200).json({
@@ -214,12 +220,18 @@ const addAppointment = async (req, res = response) => {
 
         const queryAddAppointment = 'INSERT INTO appointments (appointment_id, date, start_time, end_time, activated, price) VALUES (NULL, ?, ?, ?, ?, ?);';
         const { insertId } = await dbService.query(queryAddAppointment, [moment(start).format('YYYY-MM-DD'), moment(start).format('HH:mm:ss'), moment(end).format('HH:mm:ss'), 1 , servicePrice[0].price]);
-    
+        
+
+        // se agrega estas lineas para evitar un error en la creacion del bill
+
+        const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number) VALUES (?,?,'','')`;
+        const { insertId: paymentInsertId } = await dbService.query(userQuery, ['pending', 'efectivo']);
+
         const queryAddServicesAppointmets = 'INSERT INTO `services-appointments` (service_appointment_id, service_id, appointment_id, extra, extra_description) VALUES (NULL, ?, ?, ?, ?)';
         await dbService.query(queryAddServicesAppointmets, [service_id, insertId, extra, extra_description]);
 
-        const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id) VALUES (NULL, ?, NULL, ?, NULL) ";
-        await dbService.query(queryAddBill, [user_id, insertId]);
+        const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id, activated) VALUES (NULL, ?, NULL, ?, ?, 1) ";
+        await dbService.query(queryAddBill, [user_id, insertId, paymentInsertId]);
 
         const queryServiceInformation = 'SELECT * FROM services WHERE service_id = ?';
         const serviceData = await dbService.query(queryServiceInformation, [service_id]);

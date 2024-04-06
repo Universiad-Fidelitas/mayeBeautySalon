@@ -3,7 +3,6 @@ import { Row, Col, Card } from 'react-bootstrap';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
-import { useReports } from 'hooks/react-query/useReports';
 import { useReports2 } from 'hooks/react-query/useReports2';
 import { useReports3 } from 'hooks/react-query/useReports3';
 import ChartLargeLineStock from './chart/ChartLargeLineStock';
@@ -17,17 +16,11 @@ const Dashboard = () => {
     { to: '', text: 'Home' },
     { to: 'dashboards', text: 'Dashboards' },
   ];
-  const { data: reportsData } = useReports();
   const { data: reports2Data } = useReports2();
   const { data: reports3Data } = useReports3();
   let formFields;
   let profitsArray;
-  if (reportsData) {
-    formFields = reportsData.items;
-    console.log('reportsData1', reportsData);
-  } else {
-    console.log('reportsData is undefined');
-  }
+
   if (reports2Data) {
     console.log('reportsData2', reports2Data);
   } else {
@@ -193,7 +186,10 @@ const Dashboard = () => {
           {/* Stats End */}
         </Col>
       </Row>
-      <Row>{formFields ? <CardReport formFields={formFields} /> : null}</Row>
+
+      <Row>
+        <CardReport />{' '}
+      </Row>
 
       <h2 className="small-title">Reporte de facturación</h2>
       <Row xs={1} md={2} className="g-4">

@@ -129,16 +129,14 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
         image: Yup.mixed().required(f({ id: 'users.imageRequired' })),
 
         salary: Yup.number()
-        .typeError(f({ id: 'users.salaryNumber' }))
-        .positive(f({ id: 'users.salaryPositiveNumber' }))
-        .integer(f({ id: 'users.salaryInteger' }))
-        .min(0, f({ id: 'users.salaryMin' })),
-        
+          .typeError(f({ id: 'products.priceError.typeError' }))
+          .min(1, f({ id: 'products.priceError.minError' })),
+
         role_id: Yup.string().required(f({ id: 'users.rolRequired' })),
         id_card_type: Yup.string().required(f({ id: 'users.idCardTypeRequired' })),
         id_card: Yup.number()
-        .required(f({ id: 'helper.idCardRequired' }))
-        .typeError(f({ id: 'helper.idCardOnlyNumbers' }))
+          .required(f({ id: 'helper.idCardRequired' }))
+          .typeError(f({ id: 'helper.idCardOnlyNumbers' })),
       }),
     [f]
   );
@@ -188,16 +186,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                   <Col className="col-4">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.idcard' })}</label>
-                        <NumberFormat
-                          className="form-control"
-                          mask="_"
-                          format={values.id_card_type && values.id_card_type !== 'nacional' ? "##-####-###" : "#-####-####" }
-                          allowEmptyFormatting
-                          value={values.id_card}
-                          onValueChange={({ value }) => {
-                            setFieldValue('id_card', value);
-                          }}
-                        />
+                      <NumberFormat
+                        className="form-control"
+                        mask="_"
+                        format={values.id_card_type && values.id_card_type !== 'nacional' ? '####-####-####' : '#-####-####'}
+                        allowEmptyFormatting
+                        value={values.id_card}
+                        onValueChange={({ value }) => {
+                          setFieldValue('id_card', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="id_card" component="div" />
                     </div>
                   </Col>
@@ -240,16 +238,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                   <Col className="col-4 top-label">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.phone' })}</label>
-                        <NumberFormat
-                          className="form-control"
-                          mask="_"
-                          format="####-####"
-                          allowEmptyFormatting
-                          value={values.phone}
-                          onValueChange={({ value }) => {
-                            setFieldValue('phone', value);
-                          }}
-                        />
+                      <NumberFormat
+                        className="form-control"
+                        mask="_"
+                        format="####-####"
+                        allowEmptyFormatting
+                        value={values.phone}
+                        onValueChange={({ value }) => {
+                          setFieldValue('phone', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="phone" component="div" />
                     </div>
                   </Col>
@@ -259,17 +257,17 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                   <Col className="col-4">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.salary' })}</label>
-                        <NumberFormat
-                          className="form-control"
-                          thousandSeparator="."
-                          decimalSeparator=","
-                          prefix="₡"
-                          allowNegative={false}
-                          value={values.salary}
-                          onValueChange={({ value }) => {
-                            setFieldValue('salary', value);
-                          }}
-                        />
+                      <NumberFormat
+                        className="form-control"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="₡"
+                        allowNegative={false}
+                        value={values.salary}
+                        onValueChange={({ value }) => {
+                          setFieldValue('salary', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="salary" component="div" />
                     </div>
                   </Col>

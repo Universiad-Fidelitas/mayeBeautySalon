@@ -5,13 +5,41 @@ const helper = require('../helpers/dbHelpers');
 
 
 const getReport = async (req, res = response) => {
-    try{
+    const { pageIndex, pageSize, term, sortBy } = req.body;
+    try {
+        const offset = pageIndex * pageSize;
+
         let baseQuery = 'SELECT name, image, total_amount, product_id, stock_status, Sold_amount FROM product_summary';
-        const query = `${baseQuery}`;
+        if (term) {
+            baseQuery += ` WHERE name LIKE '%${term}%'`;
+        }
+        const orderByClauses = [];
+
+        if (Array.isArray(sortBy)) {
+            for (const sortItem of sortBy) {
+                const { id, desc } = sortItem;
+                if (id) {
+                    orderByClauses.push(`${id} ${desc ? 'DESC' : 'ASC'}`);
+                }
+            }
+        }
+
+        if (orderByClauses.length > 0) {
+            baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
+        }
+        const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
         const rows = await dbService.query(query);
+        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_reports`);
+        const totalRowCount = totalRowCountResult[0].count;
+
+        const pageCount = Math.ceil(totalRowCount / pageSize);
 
         const response = {
+            pageSize,
+            pageIndex,
+            pageCount,
             items: rows,
+            rowCount: totalRowCount,
         };
 
         res.json(response);

@@ -253,9 +253,9 @@ const Facturas = () => {
     status: Yup.string().required('El estado del pago es requerido'),
     payment_type: Yup.string().required('El tipo de pago es requerido'),
     description: Yup.string()
-      .required('La descripción es requerida')
       .min(3, 'La descripción debe tener al menos 3 caracteres')
-      .max(100, 'La descripción no puede tener más de 100 caracteres'),
+      .max(100, 'La descripción no puede tener más de 100 caracteres')
+      .nullable(),
     dataToInsert: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.string().required('El producto es requerido'),
@@ -297,38 +297,7 @@ const Facturas = () => {
       .max(10, f({ id: 'helper.phoneMaxLength' })),
   });
 
-  const formFields = [
-    {
-      id: 'sinpe_phone_number',
-      label: 'Número de SINPE',
-      type: 'text',
-    },
-    {
-      id: 'id_card',
-      label: 'Cédula',
-      type: 'text',
-    },
-    {
-      id: 'first_name',
-      label: 'Nombre',
-      type: 'text',
-    },
-    {
-      id: 'last_name',
-      label: 'Apellido',
-      type: 'text',
-    },
-    {
-      id: 'email',
-      label: 'Correo eletrónico',
-      type: 'text',
-    },
-    {
-      id: 'phone',
-      label: 'Número de teléfono',
-      type: 'text',
-    },
-  ];
+  const formFields = [];
 
   return (
     <>

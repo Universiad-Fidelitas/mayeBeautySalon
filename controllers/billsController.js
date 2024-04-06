@@ -94,24 +94,36 @@ const getUserBills = async (req, res = response) => {
     }
 }
 const postBill = async (req, res = response) => {
-    const {  status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone } = req.body;
+    const {  status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, appointment_id } = req.body;
     try {
+        console.log('1');
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
+        console.log('2');
         const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
         const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
+
         for (const data of dataToInsert) {
             const query = 'INSERT INTO `inventory_products` (amount, inventory_id, product_id) VALUES (?, ?, ?);';
-            const { insertId } = await dbService.query(query, [data.amount, inventoryInsertId, data.product_id]);
+            console.log([data.amount, inventoryInsertId, data.product_id]);
+            const { insertId: userInsertId }= await dbService.query(query, [data.amount, inventoryInsertId, data.product_id]);
+            
         }
+       
         const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
+
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
+
         let userInsertId;
         if (userChecker.length === 0) {
             const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
+            if(appointment_id > 0){
+                const queryAddBill =`UPDATE bills SET appointment_id = ? WHERE bills_id = ?`;
+                await dbService.query(queryAddBill, [appointment_id, billInsertId]);
+            }
             res.status(200).json({
                 bills_id: billInsertId,
                 success: true,
@@ -121,6 +133,10 @@ const postBill = async (req, res = response) => {
             userInsertId  = userChecker[0].user_id
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
+            if(appointment_id > 0){
+                const queryAddBill =`UPDATE bills SET appointment_id = ? WHERE bills_id = ?`;
+                await dbService.query(queryAddBill, [appointment_id, billInsertId]);
+            }
             res.status(200).json({
                 bills_id: billInsertId,
                 success: true,
@@ -141,24 +157,48 @@ const postBill = async (req, res = response) => {
 
 const putBill = async (req, res = response) => {
     const { bills_id } = req.params;
-    const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, payment_id, inventory_id } = req.body;
+    const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, payment_id, inventory_id, appointment_id } = req.body;
+    console.log('karo', appointment_id)
     try {
-        const userQuery = `UPDATE payments SET status= ?, payment_type= ?, sinpe_phone_number= ? WHERE payment_id= ?`;
-        const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number, payment_id]);
+        if(payment_id===null){
+            const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number) VALUES (?,?,'',?)`;
+            const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
+            const queryAddBill =`UPDATE bills SET payment_id = ? WHERE bills_id = ?`;
+            await dbService.query(queryAddBill, [paymentInsertId,bills_id]);
+        }else{
+            const userQuery = `UPDATE payments SET status= ?, payment_type= ?, sinpe_phone_number= ? WHERE payment_id= ?`;
+            await dbService.query(userQuery, [status, payment_type, sinpe_phone_number, payment_id]);
+        }
+        if(appointment_id > 0){
+            const queryAddBill =`UPDATE bills SET appointment_id = ? WHERE bills_id = ?`;
+            await dbService.query(queryAddBill, [appointment_id, bills_id]);
+        }
         const userQuery2 = `UPDATE inventory SET description= ? WHERE inventory_id = ? ;`;
-        const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ description, inventory_id]);
+        await dbService.query(userQuery2, [ description, inventory_id]);
 
         // Delete items not included in dataToInsert
         const existingItemIds = dataToInsert.map((data) => data.invetory_products_id).filter((id) => id !== 0);
         const formattedIds = existingItemIds.join(',');
-
-        const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
-        await dbService.query(deleteQuery, [ inventory_id])
+        if(formattedIds!==''){
+            const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
+            await dbService.query(deleteQuery, [ inventory_id])
+        }
+        
+       
         for (const data of dataToInsert) {
             if (data.invetory_products_id === 0) {
                 // Insert new item
-                const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
-                await dbService.query(insertItemQuery, [data.amount, data.product_id, inventory_id]);
+                if(data.inventory_id === undefined || data.inventory_id === null){
+                    const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
+                    const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
+                    const queryAddBill =`UPDATE bills SET inventory_id = ? WHERE bills_id = ?`;
+                    await dbService.query(queryAddBill, [inventoryInsertId,bills_id]);
+                    const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
+                    await dbService.query(insertItemQuery, [data.amount, data.product_id, inventoryInsertId]);
+                }else{
+                    const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
+                    await dbService.query(insertItemQuery, [data.amount, data.product_id, inventory_id]);
+                }
             } else {
                 // Update existing item
                 const updateItemQuery = 'UPDATE inventory_products SET amount = ?, product_id = ? WHERE invetory_products_id = ? AND inventory_id = ?';
