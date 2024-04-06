@@ -15,10 +15,7 @@ export const Notificacions = () => {
   const title = 'Notificaciones';
   const description = 'En este módulo se va a crear las alertas para que el sistema le notifique cuando un producto esta bajo de inventario';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/notifications', title: 'Notificaciones' },
-  ];
+];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');

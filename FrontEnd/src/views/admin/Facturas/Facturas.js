@@ -25,9 +25,6 @@ const Facturas = () => {
   const title = 'Facturas';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: 'Facturas/Facturas', text: f({ id: 'Facturas' }) },
-    { to: 'Facturas/Facturas', title: 'Facturas' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -106,7 +103,7 @@ const Facturas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Numero de Sinpe',
+        Header: 'Número de Sinpe',
         accessor: 'sinpe_phone_number',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -137,10 +134,16 @@ const Facturas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Fecha de venta',
+        Header: 'Fecha de Venta',
         accessor: 'inventory_date',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
+        Cell: ({ value }) => {
+          const dateObject = new Date(value);
+          const dateString = dateObject.toLocaleDateString();
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `${dateString} ${timeString}`;
+        },
       },
       {
         Header: 'appointment id',
@@ -153,6 +156,12 @@ const Facturas = () => {
         accessor: 'appointment_date',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
+        Cell: ({ value }) => {
+          const dateObject = new Date(value);
+          const dateString = dateObject.toLocaleDateString();
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `${dateString} ${timeString}`;
+        },
       },
       {
         Header: 'Precio de Cita',
@@ -194,6 +203,9 @@ const Facturas = () => {
           'inventory_id',
           'payment_id',
           'user_id',
+          'first_name',
+          'last_name',
+          'payment_type',
           'appointment_id',
           'sinpe_phone_number',
           'activated',

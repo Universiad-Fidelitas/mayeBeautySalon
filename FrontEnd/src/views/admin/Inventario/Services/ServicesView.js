@@ -13,10 +13,7 @@ export const ServicesView = () => {
   const title = f({ id: 'services.title' });
   const description = f({ id: 'services.description' });
   const breadcrumbs = [
-    { to: '', text: f({ id: 'menu.home' }) },
-    { to: '', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/servicios', title: f({ id: 'services.title' }) },
-  ];
+ ];
 
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);

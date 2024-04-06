@@ -2,7 +2,6 @@ import { DEFAULT_PATHS } from 'config.js';
 import Citas from 'views/admin/Citas/Citas';
 import Dashboard from 'views/admin/Dashboard';
 import Facturas from 'views/admin/Facturas/Facturas';
-import Transacciones from 'views/admin/Facturas/Transacciones';
 import Marcas from 'views/admin/Inventario/Marcas/Marcas';
 import Gastos from 'views/admin/Facturas/Gastos';
 import Productos from 'views/admin/Inventario/Productos/Productos';
@@ -72,7 +71,6 @@ const routesAndMenuItems = {
       subs: [
         { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
-        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
         { path: '/pagos', icon: 'book-open', label: 'Pagos', component: Pagos },
       ],
     },

@@ -16,9 +16,7 @@ const Roles = () => {
   const title = 'Roles de usuario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: 'usuarios/usuarios', text: f({ id: 'menu.usuarios' }) },
-    { to: 'usuarios/roles', title: 'Roles' },
+
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);

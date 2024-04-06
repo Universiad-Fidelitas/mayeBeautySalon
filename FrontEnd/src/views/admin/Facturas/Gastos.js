@@ -24,10 +24,7 @@ const Gastos = () => {
   const title = 'Gastos';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: '/facturas', text: f({ id: 'facturas' }) },
-    { to: '/facturas/expenses', title: 'Gastos' },
-  ];
+ ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');

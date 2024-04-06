@@ -362,7 +362,7 @@ const enMessages = {
   'products.productFinalPrice': 'Precio de Venta',
   'products.productName': 'Nombre del producto',
   'products.productBuyPrice': 'Precio de Compra',
-  'products.providerInformation': 'Proveedr',
+  'products.providerInformation': 'Proveedor',
   'products.selectProvider': 'Seleccione un proveedor',
   'products.categoryInformation': 'Categoría',
   'products.selectCategory': 'Seleccione una categoría',

@@ -17,9 +17,6 @@ const Usuarios = () => {
   const title = f({ id: 'users.userTitle' });
   const description = f({ id: 'users.userDescription' });
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: 'usuarios/users', text: f({ id: 'menu.usuarios' }) },
-    { to: 'usuarios/roles', title: 'Usuarios' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
