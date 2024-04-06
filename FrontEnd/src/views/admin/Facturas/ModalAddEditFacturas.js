@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef, forwardRef } from 'react';
 import { Button, Card, Col, FormCheck, Modal, Row } from 'react-bootstrap';
 import { Formik, Field, Form, FieldArray, ErrorMessage } from 'formik';
 import 'react-dropzone-uploader/dist/styles.css';
@@ -9,6 +9,7 @@ import { useIntl } from 'react-intl';
 import { baseApi } from 'api/apiConfig';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
+import ReactToPrint from 'react-to-print';
 
 export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
@@ -61,7 +62,9 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
     }
     delete values.activated;
     delete values.appointment_date;
-    delete values.appointment_id;
+    if (values.appointment_id === null) {
+      delete values.appointment_id;
+    }
     delete values.appointment_price;
     delete values.inventory_date;
     delete values.inventory_price;
@@ -78,18 +81,19 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
         values.inventory_id = 0;
       }
 
-      if (values.dataToInsert[0].invetory_products_id === '') {
-        values.dataToInsert[0].invetory_products_id = 0;
-      }
-
-      values.dataToInsert.forEach((item, index) => {
-        const product = productsDataDropdown.find((p) => p.value === item.product_id);
-        if (product && Number(product.amount) < item.amount) {
-          isValid = false;
-          console.log(index);
-          toast(f({ id: `El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.` }), { className: 'danger' });
+      if (values.dataToInsert.length > 0) {
+        if (values.dataToInsert[0].invetory_products_id === '') {
+          values.dataToInsert[0].invetory_products_id = 0;
         }
-      });
+        values.dataToInsert.forEach((item, index) => {
+          const product = productsDataDropdown.find((p) => p.value === item.product_id);
+          if (product && Number(product.amount) < item.amount) {
+            isValid = false;
+            console.log(index);
+            toast(f({ id: `El producto en la posición ${index + 1} no tiene suficiente cantidad para remover.` }), { className: 'danger' });
+          }
+        });
+      }
     }
 
     if (isValid) {
@@ -161,6 +165,67 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
       placeholder="Seleccione una opcion"
     />
   );
+
+  const PrintValuesComponent = forwardRef(({ values }, ref) => {
+    console.log('values', values);
+    const showDetail = values.inventory_id !== null;
+    const showDetail2 = values.appointment_id !== null;
+    const inventoryPrice = values.inventory_price !== null ? values.inventory_price : 0;
+    const appointmentPrice = values.appointment_price !== null ? parseFloat(values.appointment_price) : 0;
+
+    const totalPrice = inventoryPrice + appointmentPrice;
+    return (
+      <div ref={ref}>
+        <h2>Factura Maye beauty Salon</h2>
+        <p>El pago se realizó en {values.payment_type}</p>
+        <p>Estado: {values.status}</p>
+        <p>
+          Nombre del cliente: {values.first_name} {values.last_name}
+        </p>
+        <p>Correo: {values.email}</p>
+        <p>Detalle: {}</p>
+        {showDetail && (
+          <>
+            <p>Descripción: {values.description}</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Precio</th>
+                </tr>
+              </thead>
+              <tbody>
+                {values.dataToInsert.map((item, index) => (
+                  <tr key={index}>
+                    <td>{item.name}</td>
+                    <td>{item.amount}</td>
+                    <td>{item.amount * item.price}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+        {showDetail2 && (
+          <>
+            <p>Fecha de la cita: {values.appointment_date}</p>
+            <p>Precio total de la cita: {values.appointment_price}</p>
+          </>
+        )}
+        <hr className="mb-3 mt-4" />
+        <table>
+          <tbody>
+            <tr>
+              <td>Total a pagar</td>
+              <td>{totalPrice}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  });
+  const componentRef = useRef();
   return (
     <Modal
       className="modal-right large"
@@ -182,6 +247,24 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
               <Modal.Title>Agregar</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              {selectedFlatRows.length === 1 && (
+                <>
+                  <div style={{ display: 'none' }}>
+                    <PrintValuesComponent ref={componentRef} values={values} />
+                  </div>
+                  <h4 className="mb-3">Imprimir Factura</h4>
+                  <ReactToPrint
+                    trigger={() => (
+                      <Button variant="secondary">
+                        <CsLineIcons icon="print" />
+                      </Button>
+                    )}
+                    content={() => componentRef.current}
+                  />
+                  <hr className="mb-3 mt-4" />
+                  <h4 className="mb-3">Factura</h4>
+                </>
+              )}
               <Row className="g-3 mb-3">
                 <Col className="col-6">
                   <div className="mb-3">

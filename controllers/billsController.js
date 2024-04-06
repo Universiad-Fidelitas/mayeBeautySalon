@@ -49,7 +49,7 @@ const getBills = async (req, res = response) => {
         const rows = await dbService.query(query);
         for (const row of rows) {
             const inventoryId = row.inventory_id;
-            const productQuery = `SELECT amount, product_id, invetory_products_id FROM inventory_products WHERE inventory_id = ${inventoryId}`;
+            const productQuery = `SELECT i.amount, i.product_id, i.invetory_products_id, p.name, p.price FROM inventory_products i left join products p on i.product_id = p.product_id WHERE inventory_id = ${inventoryId}`;
             const productData = await dbService.query(productQuery);
             row.dataToInsert = productData;
         }
