@@ -56,11 +56,9 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
   };
 
   const onSubmit = (values) => {
-    console.log('karopre', values);
     if (values.desciption === null) {
       values.description = '';
     }
-    console.log('karopost', values);
     delete values.activated;
     delete values.appointment_date;
     delete values.appointment_id;
@@ -86,7 +84,6 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
       values.dataToInsert.forEach((item, index) => {
         const product = productsDataDropdown.find((p) => p.value === item.product_id);
-        console.log('product', product);
         if (product && Number(product.amount) < item.amount) {
           isValid = false;
           console.log(index);
@@ -107,7 +104,6 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
     }
   };
   const SearchUser = async (id_card, form) => {
-    console.log('karo', form);
     setIsUserFound(true);
     const { data } = await baseApi.post('/appointments/user-prefill', { id_card });
     const { userPrefillData } = data;
@@ -117,7 +113,6 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
       form.setFieldValue('last_name', userPrefillData[0].last_name);
       form.setFieldValue('email', userPrefillData[0].email);
       form.setFieldValue('phone', userPrefillData[0].phone);
-      // deberiamos setear el value de los usuarios en base a userprefilldata
     } else {
       setIsUserFound2(false);
       form.setFieldValue('first_name', '');
@@ -133,7 +128,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
       name={field.name}
       value={options ? options.find((option) => option.value === field.value) : ''}
       onChange={(option) => form.setFieldValue(field.name, option.value)}
-      placeholder="Seleccione una opcion"
+      placeholder="Seleccione una opción"
     />
   );
 

@@ -15,10 +15,7 @@ const Inventory = () => {
   const title = 'Movimiento de Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'Inventariado' }) },
-    { to: '/inventariado/inventory', title: 'Inventario' },
-  ];
+ ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');

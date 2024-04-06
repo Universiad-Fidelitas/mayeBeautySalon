@@ -15,9 +15,6 @@ const Stock = () => {
   const title = 'Inventario';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/stock', title: 'Stock' },
   ];
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');

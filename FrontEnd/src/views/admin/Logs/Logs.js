@@ -14,9 +14,6 @@ const Logs = () => {
   const title = 'Logs';
   const description = 'Server side API implementation for logging.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: '/admin', text: f({ id: 'Admin' }) },
-    { to: '/admin/logs', title: 'Logs' },
   ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);

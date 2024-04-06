@@ -24,10 +24,7 @@ const Marcas = () => {
   const title = 'Marcas';
   const description = 'Server side api implementation.';
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: '/inventariado', text: f({ id: 'inventory.title' }) },
-    { to: '/inventariado/brands', title: 'Marcas' },
-  ];
+ ];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');

@@ -13,8 +13,6 @@ const Dashboard = () => {
   const description = 'Analytic Dashboard';
 
   const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: 'dashboards', text: 'Dashboards' },
   ];
   const { data: reports2Data } = useReports2();
   const { data: reports3Data } = useReports3();
