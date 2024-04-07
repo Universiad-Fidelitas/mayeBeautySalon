@@ -14,6 +14,8 @@ import ReactToPrint from 'react-to-print';
 export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { data: productsData } = useStock();
+
+  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const { data: getMonthData, isSuccess: isGetMonthDataSuccess } = useGetMonthAppointments();
   const { monthAppointments } = getMonthData || {};
   const [isIdCardDisabled, setIsIdCardDisabled] = useState(false);
@@ -55,6 +57,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
     inventory_id: '',
     dataToInsert: [{ product_id: '', amount: '', invetory_products_id: '' }],
   };
+  const [formValues, setFormValues] = useState(selectedFlatRows.length === 1 ? selectedFlatRows[0].original : initialValues);
 
   const onSubmit = (values) => {
     if (values.desciption === null) {
@@ -102,6 +105,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
       } else {
         addItem(values);
       }
+      setConfirmDeleteModal(true);
       setIsOpenAddEditModal(false);
       setIsUserFound(false);
       setIsIdCardDisabled(true);
@@ -274,226 +278,274 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
     );
   });
   const componentRef = useRef();
-  return (
-    <Modal
-      className="modal-right large"
-      show={isOpenAddEditModal}
-      onHide={() => {
-        setIsOpenAddEditModal(false);
-        setIsUserFound(false);
-        setIsIdCardDisabled(true);
-      }}
-    >
-      <Formik
-        initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : initialValues}
-        onSubmit={onSubmit}
-        validationSchema={validationSchema}
-      >
-        {({ values, setFieldValue }) => (
-          <Form>
-            <Modal.Header>
-              <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {selectedFlatRows.length === 1 && (
-                <>
-                  <div style={{ display: 'none' }}>
-                    <PrintValuesComponent ref={componentRef} values={values} />
-                  </div>
-                  <h4 className="mb-3">Imprimir Factura</h4>
-                  <ReactToPrint
-                    trigger={() => (
-                      <Button variant="secondary">
-                        <CsLineIcons icon="print" />
-                      </Button>
-                    )}
-                    content={() => componentRef.current}
-                  />
-                  <hr className="mb-3 mt-4" />
-                  <h4 className="mb-3">Factura</h4>
-                </>
-              )}
-              <Row className="g-3 mb-3">
-                <Col className="col-6">
-                  <div className="mb-3">
-                    <label className="form-label">Estado del Pago</label>
-                    <Field className="form-control" name="status" id="status" component={CustomSelect} options={optionsStatus} required />
-                    <ErrorMessage style={{ color: 'red' }} name="status" component="div" className="field-error" />
-                  </div>
-                </Col>
-                <Col className="col-6">
-                  <div className="mb-3">
-                    <label className="form-label">Tipo de Pago</label>
-                    <Field className="form-control" name="payment_type" id="payment_type" component={CustomSelect} options={optionsPayment} required />
-                    <ErrorMessage style={{ color: 'red' }} name="payment_type" component="div" className="field-error" />
-                  </div>
-                </Col>
-              </Row>
-              <div className="mb-3" key="sinpe_phone_number">
-                <label className="form-label">Número de SINPE</label>
-                <Field className="form-control" type="text" id="sinpe_phone_number" name="sinpe_phone_number" />
-                <ErrorMessage style={{ color: 'red' }} name="sinpe_phone_number" component="div" />
-              </div>
-              <div className="mb-3" key="description">
-                <label className="form-label">Descripción</label>
-                <Field as="textarea" className="form-control" type="text" id="description" name="description" />
-                <ErrorMessage style={{ color: 'red' }} name="description" component="div" />
-              </div>
-              {selectedFlatRows.length === 1 && (
-                <>
-                  {' '}
-                  <div className="mb-3">
-                    <label className="form-label" htmlFor="appointment_id">
-                      Cita
-                    </label>
-                    <Field className="form-control" name="appointment_id" id="appointment_id" component={CustomSelect} options={appointmentOptions} required />
-                    <ErrorMessage style={{ color: 'red' }} name="appointment_id" className="field-error" component="div" />
-                  </div>
-                </>
-              )}
-              <div className="mb-3">
-                <label className="form-label" htmlFor="id_card_type">
-                  Tipo de Cedula
-                </label>
-                <Field className="form-control" name="id_card_type" id="id_card_type" component={CustomSelect2} options={idTypeDropdown} required />
-                <ErrorMessage style={{ color: 'red' }} name="id_card_type" className="field-error" component="div" />
-              </div>
-              <Row className="g-3 mb-3">
-                {selectedFlatRows.length === 1 && setIsIdCardDisabled(false)}
-                <Col className="col-9">
-                  <div className="mb-3" key="id_card">
-                    <label className="form-label">Cédula</label>
-                    <Field className="form-control" type="text" id="id_card" name="id_card" disabled={!values.id_card_type} />
-                    <ErrorMessage style={{ color: 'red' }} name="id_card" component="div" />
-                  </div>
-                </Col>
-                <Col className="col-3">
-                  <div className="mb-3">
-                    <label className="form-label">Buscar</label>
-                    <br />
-                    <Button variant="primary" onClick={() => SearchUser(values.id_card, { setFieldValue })} disabled={!values.id_card}>
-                      Buscar
-                    </Button>
-                  </div>
-                </Col>
-              </Row>
-              {IsUserFound && (
-                <>
-                  <Row className="g-3 mb-3">
-                    <Col className="col-6">
-                      <div className="mb-3" key="first_name">
-                        <label className="form-label">Nombre</label>
-                        <Field className="form-control" type="text" id="first_name" name="first_name" disabled={IsUserFound2} />
-                        <ErrorMessage style={{ color: 'red' }} name="first_name" component="div" />
-                      </div>
-                    </Col>
-                    <Col className="col-6">
-                      <div className="mb-3" key="last_name">
-                        <label className="form-label">Apellido</label>
-                        <Field className="form-control" type="text" id="last_name" name="last_name" disabled={IsUserFound2} />
-                        <ErrorMessage style={{ color: 'red' }} name="last_name" component="div" />
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row className="g-3 mb-3">
-                    <Col className="col-8">
-                      <div className="mb-3" key="email">
-                        <label className="form-label">Correo eletrónico</label>
-                        <Field className="form-control" type="text" id="email" name="email" disabled={IsUserFound2} />
-                        <ErrorMessage style={{ color: 'red' }} name="email" component="div" />
-                      </div>
-                    </Col>
-                    <Col className="col-4">
-                      <div className="mb-3" key="phone">
-                        <label className="form-label">Número de teléfono</label>
-                        <Field className="form-control" type="text" id="phone" name="phone" disabled={IsUserFound2} />
-                        <ErrorMessage style={{ color: 'red' }} name="phone" component="div" />
-                      </div>
-                    </Col>
-                  </Row>
-                </>
-              )}
-              <FieldArray name="dataToInsert">
-                {({ push, remove }) => (
-                  <div>
-                    {values.dataToInsert.map((_, index) => (
-                      <div className="row" key={index}>
-                        <Row className="g-3 mb-3 m-0">
-                          <Col className="col-6 m-0">
-                            {productsDataDropdown && (
-                              <>
-                                <div className="mb-3">
-                                  <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
-                                    Productos
-                                  </label>
 
-                                  <Field
-                                    className="form-control"
-                                    name={`dataToInsert.${index}.product_id`}
-                                    id="product_id"
-                                    component={CustomSelect}
-                                    options={productsDataDropdown}
-                                  />
-                                  <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.product_id`} className="field-error" component="div" />
-                                </div>
-                              </>
-                            )}
-                          </Col>
-                          <Col className="col-3 m-0">
-                            <div className="mb-3">
-                              <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
-                                Cantidad
-                              </label>
-                              <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
-                              <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
+  return (
+    <>
+      <Modal
+        className="modal-right large"
+        show={isOpenAddEditModal}
+        onHide={() => {
+          setIsOpenAddEditModal(false);
+          setIsUserFound(false);
+          setIsIdCardDisabled(true);
+        }}
+      >
+        <Formik
+          initialValues={selectedFlatRows.length === 1 ? selectedFlatRows[0].original : initialValues}
+          onSubmit={onSubmit}
+          validationSchema={validationSchema}
+        >
+          {({ values, setFieldValue }) => {
+            useEffect(() => {
+              setFormValues(values);
+            }, [values]);
+
+            return (
+              <>
+                <Form>
+                  <Modal.Header>
+                    <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {selectedFlatRows.length === 1 && (
+                      <>
+                        <div style={{ display: 'none' }}>
+                          <PrintValuesComponent ref={componentRef} values={values} />
+                        </div>
+                        <h4 className="mb-3">Imprimir Factura</h4>
+                        <ReactToPrint
+                          trigger={() => (
+                            <Button variant="secondary">
+                              <CsLineIcons icon="print" />
+                            </Button>
+                          )}
+                          content={() => componentRef.current}
+                        />
+                        <hr className="mb-3 mt-4" />
+                        <h4 className="mb-3">Factura</h4>
+                      </>
+                    )}
+
+                    <Row className="g-3 mb-3">
+                      <Col className="col-6">
+                        <div className="mb-3">
+                          <label className="form-label">Estado del Pago</label>
+                          <Field className="form-control" name="status" id="status" component={CustomSelect} options={optionsStatus} required />
+                          <ErrorMessage style={{ color: 'red' }} name="status" component="div" className="field-error" />
+                        </div>
+                      </Col>
+                      <Col className="col-6">
+                        <div className="mb-3">
+                          <label className="form-label">Tipo de Pago</label>
+                          <Field className="form-control" name="payment_type" id="payment_type" component={CustomSelect} options={optionsPayment} required />
+                          <ErrorMessage style={{ color: 'red' }} name="payment_type" component="div" className="field-error" />
+                        </div>
+                      </Col>
+                    </Row>
+                    <div className="mb-3" key="sinpe_phone_number">
+                      <label className="form-label">Número de SINPE</label>
+                      <Field className="form-control" type="text" id="sinpe_phone_number" name="sinpe_phone_number" />
+                      <ErrorMessage style={{ color: 'red' }} name="sinpe_phone_number" component="div" />
+                    </div>
+                    <div className="mb-3" key="description">
+                      <label className="form-label">Descripción</label>
+                      <Field as="textarea" className="form-control" type="text" id="description" name="description" />
+                      <ErrorMessage style={{ color: 'red' }} name="description" component="div" />
+                    </div>
+                    {selectedFlatRows.length === 1 && (
+                      <>
+                        {' '}
+                        <div className="mb-3">
+                          <label className="form-label" htmlFor="appointment_id">
+                            Cita
+                          </label>
+                          <Field
+                            className="form-control"
+                            name="appointment_id"
+                            id="appointment_id"
+                            component={CustomSelect}
+                            options={appointmentOptions}
+                            required
+                          />
+                          <ErrorMessage style={{ color: 'red' }} name="appointment_id" className="field-error" component="div" />
+                        </div>
+                      </>
+                    )}
+                    <div className="mb-3">
+                      <label className="form-label" htmlFor="id_card_type">
+                        Tipo de Cedula
+                      </label>
+                      <Field className="form-control" name="id_card_type" id="id_card_type" component={CustomSelect2} options={idTypeDropdown} required />
+                      <ErrorMessage style={{ color: 'red' }} name="id_card_type" className="field-error" component="div" />
+                    </div>
+                    <Row className="g-3 mb-3">
+                      {selectedFlatRows.length === 1 && setIsIdCardDisabled(false)}
+                      <Col className="col-9">
+                        <div className="mb-3" key="id_card">
+                          <label className="form-label">Cédula</label>
+                          <Field className="form-control" type="text" id="id_card" name="id_card" disabled={!values.id_card_type} />
+                          <ErrorMessage style={{ color: 'red' }} name="id_card" component="div" />
+                        </div>
+                      </Col>
+                      <Col className="col-3">
+                        <div className="mb-3">
+                          <label className="form-label">Buscar</label>
+                          <br />
+                          <Button variant="primary" onClick={() => SearchUser(values.id_card, { setFieldValue })} disabled={!values.id_card}>
+                            Buscar
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                    {IsUserFound && (
+                      <>
+                        <Row className="g-3 mb-3">
+                          <Col className="col-6">
+                            <div className="mb-3" key="first_name">
+                              <label className="form-label">Nombre</label>
+                              <Field className="form-control" type="text" id="first_name" name="first_name" disabled={IsUserFound2} />
+                              <ErrorMessage style={{ color: 'red' }} name="first_name" component="div" />
                             </div>
                           </Col>
-                          <Col className="col-3 m-0">
-                            <Row className="g-3 mb-3 m-0">
-                              {index > 0 && (
-                                <Col className="col-6 m-0">
-                                  <div className="mb-3">
-                                    <Button variant="danger w-100 p-2 mt-5" onClick={() => remove(index)}>
-                                      <CsLineIcons icon="bin" />
-                                    </Button>
-                                  </div>
-                                </Col>
-                              )}
-
-                              <Col className="col-6 m-0">
-                                {values.dataToInsert.length - 1 === index && (
-                                  <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '' })}>
-                                    <CsLineIcons icon="plus" />
-                                  </Button>
-                                )}
-                              </Col>
-                            </Row>
+                          <Col className="col-6">
+                            <div className="mb-3" key="last_name">
+                              <label className="form-label">Apellido</label>
+                              <Field className="form-control" type="text" id="last_name" name="last_name" disabled={IsUserFound2} />
+                              <ErrorMessage style={{ color: 'red' }} name="last_name" component="div" />
+                            </div>
                           </Col>
                         </Row>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </FieldArray>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="outline-primary"
-                onClick={() => {
-                  setIsOpenAddEditModal(false);
-                  setIsUserFound(false);
-                  setIsIdCardDisabled(true);
-                }}
-              >
-                Cancelar
+                        <Row className="g-3 mb-3">
+                          <Col className="col-8">
+                            <div className="mb-3" key="email">
+                              <label className="form-label">Correo eletrónico</label>
+                              <Field className="form-control" type="text" id="email" name="email" disabled={IsUserFound2} />
+                              <ErrorMessage style={{ color: 'red' }} name="email" component="div" />
+                            </div>
+                          </Col>
+                          <Col className="col-4">
+                            <div className="mb-3" key="phone">
+                              <label className="form-label">Número de teléfono</label>
+                              <Field className="form-control" type="text" id="phone" name="phone" disabled={IsUserFound2} />
+                              <ErrorMessage style={{ color: 'red' }} name="phone" component="div" />
+                            </div>
+                          </Col>
+                        </Row>
+                      </>
+                    )}
+                    <FieldArray name="dataToInsert">
+                      {({ push, remove }) => (
+                        <div>
+                          {values.dataToInsert.map((_, index) => (
+                            <div className="row" key={index}>
+                              <Row className="g-3 mb-3 m-0">
+                                <Col className="col-6 m-0">
+                                  {productsDataDropdown && (
+                                    <>
+                                      <div className="mb-3">
+                                        <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
+                                          Productos
+                                        </label>
+
+                                        <Field
+                                          className="form-control"
+                                          name={`dataToInsert.${index}.product_id`}
+                                          id="product_id"
+                                          component={CustomSelect}
+                                          options={productsDataDropdown}
+                                        />
+                                        <ErrorMessage
+                                          style={{ color: 'red' }}
+                                          name={`dataToInsert.${index}.product_id`}
+                                          className="field-error"
+                                          component="div"
+                                        />
+                                      </div>
+                                    </>
+                                  )}
+                                </Col>
+                                <Col className="col-3 m-0">
+                                  <div className="mb-3">
+                                    <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
+                                      Cantidad
+                                    </label>
+                                    <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
+                                    <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
+                                  </div>
+                                </Col>
+                                <Col className="col-3 m-0">
+                                  <Row className="g-3 mb-3 m-0">
+                                    {index > 0 && (
+                                      <Col className="col-6 m-0">
+                                        <div className="mb-3">
+                                          <Button variant="danger w-100 p-2 mt-5" onClick={() => remove(index)}>
+                                            <CsLineIcons icon="bin" />
+                                          </Button>
+                                        </div>
+                                      </Col>
+                                    )}
+
+                                    <Col className="col-6 m-0">
+                                      {values.dataToInsert.length - 1 === index && (
+                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '' })}>
+                                          <CsLineIcons icon="plus" />
+                                        </Button>
+                                      )}
+                                    </Col>
+                                  </Row>
+                                </Col>
+                              </Row>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </FieldArray>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      variant="outline-primary"
+                      onClick={() => {
+                        setIsOpenAddEditModal(false);
+                        setIsUserFound(false);
+                        setIsIdCardDisabled(true);
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                    <Button variant="primary" type="submit">
+                      {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
+                    </Button>
+                  </Modal.Footer>
+                </Form>
+              </>
+            );
+          }}
+        </Formik>
+      </Modal>
+      <Modal className="modal-close-out" show={confirmDeleteModal} onHide={() => setConfirmDeleteModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-primary">¿Desea Imprimir la factura?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¿Desea imprimir la factura?</p>
+          <div style={{ display: 'none' }}>
+            <PrintValuesComponent ref={componentRef} values={formValues} />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-body" onClick={() => setConfirmDeleteModal(false)}>
+            Cerrar
+          </Button>
+          <ReactToPrint
+            trigger={() => (
+              <Button variant="secondary">
+                <CsLineIcons icon="print" />
               </Button>
-              <Button variant="primary" type="submit">
-                {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
-              </Button>
-            </Modal.Footer>
-          </Form>
-        )}
-      </Formik>
-    </Modal>
+            )}
+            content={() => componentRef.current}
+          />
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 };

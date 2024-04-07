@@ -101,7 +101,7 @@ const Login = () => {
                   placeholder="Contraseña"
                 />
                 <NavLink
-                  className={classNames('text-small position-absolute t-3 e-3', errors.password && touched.password && 'text-danger email-field')}
+                  className={classNames('text-medium position-absolute t-3 e-3', errors.password && touched.password && 'text-danger email-field')}
                   to="/forgot-password"
                 >
                   Olvidaste tu contraseña?
