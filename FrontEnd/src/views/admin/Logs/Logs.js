@@ -13,8 +13,7 @@ const Logs = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Logs';
   const description = 'Server side API implementation for logging.';
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const dispatch = useDispatch();
