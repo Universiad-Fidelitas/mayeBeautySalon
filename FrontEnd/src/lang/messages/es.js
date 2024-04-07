@@ -224,11 +224,14 @@ const enMessages = {
   'services.nameMaxLength': 'Nombre debe tener como máximo 20 caracteres',
 
   'helper.lastnameRequired': 'Apellido es requerido',
-  'services.lastnameMinLength': 'Apellido debe tener al menos 3 caractere',
+  'services.lastnameMinLength': 'Apellido debe tener al menos 3 caracteres',
   'services.lastnameMaxLength': 'Apellido debe tener como máximo 20 caracteres',
 
   'helper.emailInvalid': 'Correo Electrónico es inválido',
   'helper.emailRequired': 'Correo Electrónico es requerido',
+  'helper.lastnameMinLength': 'Apellido debe tener al menos 3 caracteres',
+  'helper.lastnameMaxLength': 'Apellido debe tener como máximo 20 caracteres',
+
 
   'helper.phoneOnlyNumbers': 'Teléfono debe contener solo números',
   'helper.phoneMinLength': 'Teléfono debe tener al menos 8 caracteres',
@@ -340,7 +343,7 @@ const enMessages = {
   'helper.nameMinLength': 'El nombre debe tener al menos 3 caracteres',
   'helper.nameMaxLength': 'El nombre debe tener máximo 20 caracteres',
   'service.timeErrors.noValidTime': 'La hora no es válida',
-  'service.timeErrors.required': 'El timpo es requerido',
+  'service.timeErrors.required': 'El tiempo es requerido',
   'service.selectMinutes': 'Seleccione minutos',
   'service.minutes': 'Minutos',
   'service.selectHours': 'Seleccione una hora',
@@ -372,5 +375,7 @@ const enMessages = {
   'products.unitOfMeasurementPH': 'Seleccione una unidad',
   'products.productAmount': 'Cantidad',
   'products.totalAmount': 'Tamaño del producto',
+
+
 };
 export default enMessages;
