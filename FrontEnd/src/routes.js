@@ -11,7 +11,7 @@ import Inventario from 'views/admin/Inventario/Inventario';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
-import Pagos from 'views/admin/Facturas/Pagos';
+import Pagos from 'views/admin/Facturas/Pagos/Pagos';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import { HomeView } from 'views/publicViews/HomeView';

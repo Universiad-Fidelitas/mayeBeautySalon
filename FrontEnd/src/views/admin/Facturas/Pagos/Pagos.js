@@ -2,59 +2,58 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch } from 'react-redux';
-import { getPayments, postPayment, editPayment, deletePayments } from 'store/payments/paymentsThunk';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
-import { ModalAddEditPagos } from './ModalAddEditPago';
+import { usePayments } from 'hooks/react-query/usePayments';
+import { PagosModalAddEdit } from './PagosModalAddEdit';
+import { PagosTableListItem } from './PagosTableListItem';
+import { PagosTableListItemHeader } from './PAgosTableListItemHeader';
 
 const Pagos = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Pagos';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
+  const [pageCount, setPageCount] = useState();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Imagen',
-        accessor: 'image',
+        Header: 'payment_id',
+        accessor: 'payment_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
-      {
-        Header: 'Tipo',
-        accessor: 'payment_type',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-      {
-        Header: 'Telefono',
-        accessor: 'sinpe_phone',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-
-      {
-        Header: 'Estado',
-        accessor: 'status',
-        sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
-      },
-
       {
         Header: 'Voucher',
         accessor: 'voucher_path',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
+      },
+      {
+        Header: 'Tipo de pago',
+        accessor: 'payment_type',
+        sortable: true,
+        headerClassName: 'col-lg-2 col-12',
+      },
+      {
+        Header: 'Estado del pago',
+        accessor: 'status',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'Número de teléfono del SINPE',
+        accessor: 'sinpe_phone_number',
+        sortable: true,
+        hideColumn: true,
       },
 
       {
@@ -81,12 +80,12 @@ const Pagos = () => {
       manualSortBy: true,
       autoResetPage: false,
       autoResetSortBy: false,
-
+      pageCount,
       initialState: {
         pageIndex: 0,
         pageSize: 5,
-        sortBy: [{ id: 'name', desc: false }],
-        hiddenColumns: ['payment_id'],
+        sortBy: [{ id: 'payment_id', desc: false }],
+        hiddenColumns: ['payment_id', 'voucher_path', 'sinpe_phone_number'],
       },
     },
     useGlobalFilter,
@@ -98,27 +97,20 @@ const Pagos = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
+
+  const { getPayments, inactivatePayments } = usePayments({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isPaymentsDataSuccess, data: PaymentsData } = getPayments;
+
   useEffect(() => {
-    dispatch(getPayments({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+    if (isPaymentsDataSuccess) {
+      setData(PaymentsData.items);
+      setPageCount(PaymentsData.pageCount);
+    }
+  }, [isPaymentsDataSuccess, PaymentsData]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deletePayments(values));
-    },
-    [dispatch]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editPayment(values));
-    },
-    [dispatch]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postPayment(values));
+      inactivatePayments.mutateAsync(values);
     },
     [dispatch]
   );
@@ -126,40 +118,6 @@ const Pagos = () => {
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required(<span style={{ color: 'red' }}>El tipo es requerido</span>)
-      .min(3, <span style={{ color: 'red' }}>El nombre debe tener al menos 3 caracteres</span>)
-      .max(15, <span style={{ color: 'red' }}>El nombre no puede tener más de 15 caracteres</span>),
-      sinpe_phonbe_number: Yup.number()
-      .required(<span style={{ color: 'red' }}>El telefono es requerido</span>)
-      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-      voucher_path: Yup.number()
-      .required(<span style={{ color: 'red' }}>El voucher es requerido</span>),
-    status: Yup.number()
-      .required(<span style={{ color: 'red' }}>El estado es requerido</span>)
-      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(3, <span style={{ color: 'red' }}>El precio debe ser mayor a 1</span>),
-
-  });
-
-  const formFields = [
-    
- 
-    {
-      id: 'sinpe_phonbe_number',
-      label: 'Telefono',
-      type: 'text',
-    },
-    {
-      id: 'voucher_path',
-      label: 'Voucher',
-      type: 'number',
-    },
- 
-  ];
 
   return (
     <>
@@ -192,9 +150,9 @@ const Pagos = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el Paymento seleccionado?"
-                    modalDescription="El Paymento seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="Payment"
+                    modalTitle="¿Desea eliminar el producto seleccionado?"
+                    modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    type="payment"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -203,15 +161,14 @@ const Pagos = () => {
               </Col>
             </Row>
             <Row>
-              <Col xs="12">
-                <Table className="react-table rows" tableInstance={tableInstance} />
-              </Col>
+              <PagosTableListItemHeader tableInstance={tableInstance} />
+              <PagosTableListItem tableInstance={tableInstance} />
               <Col xs="12">
                 <TablePagination tableInstance={tableInstance} />
               </Col>
             </Row>
           </div>
-          <ModalAddEditPagos tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <PagosModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>

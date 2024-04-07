@@ -5,6 +5,8 @@ import { Button, Card, Col, Modal, Row } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useExpenses } from 'hooks/react-query/useExpenses';
 import { SelectField } from 'components/SelectField';
+import classNames from 'classnames';
+import NumberFormat from 'react-number-format';
 
 export const GastosModalAddEdit = ({ tableInstance, apiParms }) => {
   const { formatMessage: f } = useIntl();
@@ -66,8 +68,18 @@ export const GastosModalAddEdit = ({ tableInstance, apiParms }) => {
                 <Row className="g-3 mb-3">
                   <Col className="col-12">
                     <div className="top-label">
-                      <label className="form-label">Precio de recibo</label>
-                      <Field className={`form-control ${errors.price && touched.price ? 'is-invalid' : ''}`} id="price" name="price" />
+                      <label className="form-label">{f({ id: 'products.productFinalPrice' })}</label>
+                      <NumberFormat
+                        className={classNames('form-control', { 'is-invalid': errors.price && touched.price })}
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="₡"
+                        allowNegative={false}
+                        value={values.price}
+                        onValueChange={({ value }) => {
+                          setFieldValue('price', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="price" component="div" />
                     </div>
                   </Col>
