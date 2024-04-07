@@ -107,11 +107,11 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                   if (cell.column.id === 'status') {
                     return (
                       <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
-                        {cell.value === 'done' ? (
+                        {cell.value === 'Pagado' ? (
                           <span className="badge bg-outline-success">Pagado</span>
-                        ) : cell.value === 'pending' ? (
+                        ) : cell.value === 'Pendiente' ? (
                           <span className="badge bg-outline-warning">Pendiente de pago</span>
-                        ) : cell.value === 'cancelled' ? (
+                        ) : cell.value === 'Cancelado' ? (
                           <span className="badge bg-outline-danger">Cancelado</span>
                         ) : (
                           <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>

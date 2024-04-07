@@ -3,7 +3,7 @@ import Citas from 'views/admin/Citas/Citas';
 import Dashboard from 'views/admin/Dashboard';
 import Facturas from 'views/admin/Facturas/Facturas';
 import Marcas from 'views/admin/Inventario/Marcas/Marcas';
-import Gastos from 'views/admin/Facturas/Gastos';
+import Gastos from 'views/admin/Facturas/Gastos/Gastos';
 import Productos from 'views/admin/Inventario/Productos/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores/Proveedores';

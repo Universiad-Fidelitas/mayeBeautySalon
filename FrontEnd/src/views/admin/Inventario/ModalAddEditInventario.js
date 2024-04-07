@@ -70,7 +70,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
           return (
             <Form>
               <Modal.Header>
-                <Modal.Title>Agregar</Modal.Title>
+                <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <Row className="g-3 mb-3">
