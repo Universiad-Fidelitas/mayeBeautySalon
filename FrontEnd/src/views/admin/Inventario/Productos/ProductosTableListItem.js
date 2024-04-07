@@ -31,11 +31,17 @@ export const ProductosTableListItem = ({ tableInstance }) => {
                 <Col className="py-3 py-sm-3">
                   <Card.Body className="h-100 ps-3 ps-lg-5 pe-4 pt-0 pb-0 d-flex flex-column justify-content-center">
                     <Row className="w-100">
-                      <Col xs="12" lg="2"  className="d-flex flex-column d-flex order-1 view-click">
+                      <Col xs="12" lg="2" className="d-flex flex-column d-flex order-1 view-click">
                         <h5 className="text-primary font-weight-bold">{name}</h5>
-                        <p className='m-0'><span className="text-primary">Cantidad:</span> {size}</p>
-                        <p className='m-0'><span className="text-primary">Marca:</span> {brand_name}</p>
-                        <p className='m-0'><span className="text-primary">Categoria:</span> {category_name}</p>
+                        <p className="m-0">
+                          <span className="text-primary">Cantidad:</span> {size}
+                        </p>
+                        <p className="m-0">
+                          <span className="text-primary">Marca:</span> {brand_name}
+                        </p>
+                        <p className="m-0">
+                          <span className="text-primary">Categoria:</span> {category_name}
+                        </p>
                       </Col>
                       <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate id_card">{provider_name}</div>

@@ -232,7 +232,6 @@ const enMessages = {
   'helper.lastnameMinLength': 'Apellido debe tener al menos 3 caracteres',
   'helper.lastnameMaxLength': 'Apellido debe tener como máximo 20 caracteres',
 
-
   'helper.phoneOnlyNumbers': 'Teléfono debe contener solo números',
   'helper.phoneMinLength': 'Teléfono debe tener al menos 8 caracteres',
   'helper.phoneMaxLength': 'Teléfono debe tener como máximo 10 caracteres',
@@ -328,7 +327,6 @@ const enMessages = {
   'users.salaryRequired': 'Salario es requerido',
   'users.idCardTypeRequired': 'Tipo de cédula es requerido',
   'users.id_card_type': 'Tipo de cédula',
-
   'notifications.productsList': 'Producto',
   'notifications.productsMinAmount': 'Cantidad mínima de producto',
   'notifications.productErrors.required': 'El producto es requerido',
@@ -375,7 +373,5 @@ const enMessages = {
   'products.unitOfMeasurementPH': 'Seleccione una unidad',
   'products.productAmount': 'Cantidad',
   'products.totalAmount': 'Tamaño del producto',
-
-
 };
 export default enMessages;

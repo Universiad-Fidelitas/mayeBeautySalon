@@ -137,9 +137,9 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
   );
 
   const optionsStatus = [
-    { value: 'done', label: 'Pagado' },
-    { value: 'pending', label: 'Pendiente de Pago' },
-    { value: 'cancelled', label: 'Cancelado' },
+    { value: 'Pagado', label: 'Pagado' },
+    { value: 'Pendiente', label: 'Pendiente de Pago' },
+    { value: 'Cancelado', label: 'Cancelado' },
   ];
   const optionsPayment = [
     { value: 'tarjeta', label: 'Tarjeta' },
@@ -167,7 +167,6 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
   );
 
   const PrintValuesComponent = forwardRef(({ values }, ref) => {
-    console.log('values', values);
     const showDetail = values.inventory_id !== null;
     const showDetail2 = values.appointment_id !== null;
     const inventoryPrice = values.inventory_price !== null ? values.inventory_price : 0;
@@ -175,53 +174,102 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
     const totalPrice = inventoryPrice + appointmentPrice;
     return (
-      <div ref={ref}>
-        <h2>Factura Maye beauty Salon</h2>
-        <p>El pago se realizó en {values.payment_type}</p>
-        <p>Estado: {values.status}</p>
-        <p>
-          Nombre del cliente: {values.first_name} {values.last_name}
-        </p>
-        <p>Correo: {values.email}</p>
-        <p>Detalle: {}</p>
-        {showDetail && (
-          <>
-            <p>Descripción: {values.description}</p>
-            <table>
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Precio</th>
-                </tr>
-              </thead>
-              <tbody>
-                {values.dataToInsert.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.name}</td>
-                    <td>{item.amount}</td>
-                    <td>{item.amount * item.price}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </>
-        )}
-        {showDetail2 && (
-          <>
-            <p>Fecha de la cita: {values.appointment_date}</p>
-            <p>Precio total de la cita: {values.appointment_price}</p>
-          </>
-        )}
+      <div ref={ref} className="mx-6">
+        <div className="d-flex justify-content-center">
+          <h2 className="mx-auto">Factura Maye Beauty Salon</h2>
+        </div>
+        <div className="d-flex justify-content-center">
+          <h5 className="mx-auto">Teléfono: 7284-0695</h5>
+        </div>
         <hr className="mb-3 mt-4" />
-        <table>
-          <tbody>
-            <tr>
-              <td>Total a pagar</td>
-              <td>{totalPrice}</td>
-            </tr>
-          </tbody>
-        </table>
+        <p>El pago se realizó en {values.payment_type}</p>
+        <div className="d-flex d-flex justify-content-start">
+          <p className="font-weight-bold">Estado: </p>
+          <p> {values.status}</p>
+        </div>
+        <div className="d-flex d-flex justify-content-evenly">
+          <p className="font-weight-bold">Nombre del cliente:</p>
+          <p>
+            {values.first_name} {values.last_name}
+          </p>
+
+          <p className="font-weight-bold">Correo: </p>
+          <p>{values.email}</p>
+        </div>
+        <div>
+          <h4 className="font-weight-bold">Detalle: {}</h4>
+        </div>
+        <div className="mx-3">
+          {showDetail && (
+            <>
+              <h5 className="font-weight-bold">Venta de productos</h5>
+              <div className="mx-3">
+                <p>Descripción: {values.description}</p>
+                <div className="d-flex d-flex justify-content-between">
+                  <p className="font-weight-bold">Fecha de la venta: </p>
+                  <p>
+                    {(() => {
+                      const dateObject = new Date(values.inventory_date);
+                      const dateString = dateObject.toLocaleDateString();
+                      const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                      return `${dateString} ${timeString}`;
+                    })()}
+                  </p>
+                </div>
+
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Producto</th>
+                      <th scope="col">Cantidad</th>
+                      <th scope="col">Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {values.dataToInsert.map((item, index) => (
+                      <tr key={index}>
+                        <th scope="row">{item.name}</th>
+                        <td>{item.amount}</td>
+                        <td>₡{item.amount * item.price}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <hr className="mb-3 mt-4" />
+            </>
+          )}
+          {showDetail2 && (
+            <>
+              <h5 className="font-weight-bold">Cita</h5>
+              <div className="mx-3">
+                <div className="d-flex d-flex justify-content-between">
+                  <p className="font-weight-bold">Fecha de la cita: </p>
+                  <p>
+                    {(() => {
+                      const dateObject = new Date(values.appointment_date);
+                      const dateString = dateObject.toLocaleDateString();
+                      const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                      return `${dateString} ${timeString}`;
+                    })()}
+                  </p>
+                </div>
+
+                <div className="d-flex d-flex justify-content-between">
+                  <p className="font-weight-bold">Precio total de la cita: </p>
+                  <p>₡{values.appointment_price}</p>
+                </div>
+              </div>
+              <hr className="mb-3 mt-4" />
+            </>
+          )}
+        </div>
+        <div className="mx-6">
+          <div className="d-flex d-flex justify-content-between">
+            <p className="font-weight-bold">Total a pagar</p>
+            <p className="font-weight-bold">₡{totalPrice}</p>
+          </div>
+        </div>
       </div>
     );
   });
@@ -244,7 +292,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
         {({ values, setFieldValue }) => (
           <Form>
             <Modal.Header>
-              <Modal.Title>Agregar</Modal.Title>
+              <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {selectedFlatRows.length === 1 && (
@@ -291,13 +339,18 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                 <Field as="textarea" className="form-control" type="text" id="description" name="description" />
                 <ErrorMessage style={{ color: 'red' }} name="description" component="div" />
               </div>
-              <div className="mb-3">
-                <label className="form-label" htmlFor="appointment_id">
-                  Cita
-                </label>
-                <Field className="form-control" name="appointment_id" id="appointment_id" component={CustomSelect} options={appointmentOptions} required />
-                <ErrorMessage style={{ color: 'red' }} name="appointment_id" className="field-error" component="div" />
-              </div>
+              {selectedFlatRows.length === 1 && (
+                <>
+                  {' '}
+                  <div className="mb-3">
+                    <label className="form-label" htmlFor="appointment_id">
+                      Cita
+                    </label>
+                    <Field className="form-control" name="appointment_id" id="appointment_id" component={CustomSelect} options={appointmentOptions} required />
+                    <ErrorMessage style={{ color: 'red' }} name="appointment_id" className="field-error" component="div" />
+                  </div>
+                </>
+              )}
               <div className="mb-3">
                 <label className="form-label" htmlFor="id_card_type">
                   Tipo de Cedula

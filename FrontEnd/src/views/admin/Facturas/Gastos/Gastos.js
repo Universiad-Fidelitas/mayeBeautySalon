@@ -1,35 +1,24 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ModalAddEdit,
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import { getExpenses, postExpense, editExpense, deleteExpenses } from 'store/expenses/expensesThunk';
+import { useDispatch } from 'react-redux';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import * as Yup from 'yup';
+import { useExpenses } from 'hooks/react-query/useExpenses';
+import { GastosModalAddEdit } from './GastosModalAddEdit';
 
 const Gastos = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Gastos';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
- ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+  const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
-  const { isExpensesLoading, expenses, pageCount } = useSelector((state) => state.expenses);
 
   const columns = React.useMemo(() => {
     return [
@@ -87,67 +76,27 @@ const Gastos = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  useEffect(() => {
-    dispatch(getExpenses({ term, sortBy, pageIndex, pageSize }));
-  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+  const { getExpenses, deleteExpenses } = useExpenses({ term, pageIndex, pageSize, sortBy });
+  const { isSuccess: isExpensesDataSuccess, data: expensesData } = getExpenses;
 
   useEffect(() => {
-    if (expenses.length > 0) {
-      setData(expenses);
+    if (isExpensesDataSuccess) {
+      setData(expensesData.items);
+      setPageCount(expensesData.pageCount);
     }
-  }, [isExpensesLoading, expenses]);
+  }, [isExpensesDataSuccess, expensesData]);
 
   const deleteItems = useCallback(
     async (values) => {
-      dispatch(deleteExpenses(values));
+      const valuesAsString = values.join(',');
+      deleteExpenses.mutateAsync({ expenses_id: valuesAsString });
     },
-    [dispatch]
-  );
-
-  const editItem = useCallback(
-    async (values) => {
-      dispatch(editExpense(values));
-    },
-    [dispatch]
-  );
-
-  const addItem = useCallback(
-    async (values) => {
-      dispatch(postExpense(values));
-    },
-    [dispatch]
+    [deleteExpenses]
   );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
-  const validationSchema = Yup.object().shape({
-    expense_type: Yup.string().required(<span style={{ color: 'red' }}>El Tipo de gasto es requerido</span>),
-    price: Yup.number()
-      .required(<span style={{ color: 'red' }}>El precio del gasto es requerido</span>)
-      .typeError(<span style={{ color: 'red' }}>El precio solo acepta números</span>)
-      .min(1, <span style={{ color: 'red' }}>'El precio debe ser mayor a 1'</span>),
-  });
-
-  const formFields = [
-    {
-      id: 'expense_type',
-      label: 'Nombre de gasto',
-      type: 'select',
-      options: [
-        { value: 'Recibo de Internet', label: 'Recibo de Internet' },
-        { value: 'Recibo de Luz', label: 'Recibo de Luz' },
-        { value: 'Recibo de Agua', label: 'Recibo de Agua' },
-        { value: 'Renta', label: 'Renta' },
-      ],
-    },
-    {
-      id: 'price',
-      label: 'Precio',
-      type: 'number',
-    },
-  ];
 
   return (
     <>
@@ -199,7 +148,7 @@ const Gastos = () => {
               </Col>
             </Row>
           </div>
-          <ModalAddEdit tableInstance={tableInstance} addItem={addItem} editItem={editItem} validationSchema={validationSchema} formFields={formFields} />
+          <GastosModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>

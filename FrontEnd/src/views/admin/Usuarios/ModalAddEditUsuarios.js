@@ -129,8 +129,8 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
         image: Yup.mixed().required(f({ id: 'users.imageRequired' })),
 
         salary: Yup.number()
-          .typeError(f({ id: 'products.priceError.typeError' }))
-          .min(1, f({ id: 'products.priceError.minError' })),
+          .min(1, f({ id: 'users.salaryPositiveNumber' }))
+          .nullable(),
 
         role_id: Yup.string().required(f({ id: 'users.rolRequired' })),
         id_card_type: Yup.string().required(f({ id: 'users.idCardTypeRequired' })),
