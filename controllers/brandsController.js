@@ -6,7 +6,7 @@ const getById = async (req, res = response) => {
     const { brand_id } = req.params;
     try {
         const [brandFound] = await dbService.query('SELECT * FROM brands WHERE activated = 1 AND brand_id = ?', [brand_id]);
-        res.status(500).json({brandFound, status: true, message: 'Se ha encontrado la marca exitosamente.' });
+        res.status(200).json({brandFound, status: true, message: 'Se ha encontrado la marca exitosamente.' });
     }
     catch(error) {
         try {

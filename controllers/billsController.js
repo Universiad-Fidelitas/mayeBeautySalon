@@ -6,18 +6,13 @@ const getById = async (req, res = response) => {
     const { bills_id } = req.params;
     try {
         const [billFound] = await dbService.query('SELECT * FROM bill_view WHERE activated = 1 AND bills_id = ?', [bills_id]);
-        res.status(500).json({billFound, status: true, message: 'Se ha encontrado la factura exitosamente.' });
+        const productQuery = `SELECT i.amount, i.product_id, i.invetory_products_id, p.name, p.price FROM inventory_products i left join products p on i.product_id = p.product_id WHERE inventory_id = ?`;
+        const productData = await dbService.query(productQuery,[billFound.inventory_id]);
+        billFound.dataToInsert = productData;
+        res.status(200).json({billFound, status: true, message: 'Se ha encontrado la factura exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'bills', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (error) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+       
         res.status(500).json({message: error.message})
     }
 }
@@ -216,7 +211,7 @@ const putBill = async (req, res = response) => {
             res.status(200).json({
                 bills_id: billInsertId,
                 success: true,
-                message: "¡La factura ha sido agregada exitosamente!"
+                message: "¡La factura ha sido editada exitosamente!"
             })
         } else { 
             userInsertId  = userChecker[0].user_id
@@ -225,7 +220,7 @@ const putBill = async (req, res = response) => {
             res.status(200).json({
                 bills_id: billInsertId,
                 success: true,
-                message: "¡La factura ha sido agregada exitosamente!"
+                message: "¡La factura ha sido editada exitosamente!"
             })
         }
 

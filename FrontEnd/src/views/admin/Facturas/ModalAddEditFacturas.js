@@ -10,6 +10,7 @@ import { baseApi } from 'api/apiConfig';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ReactToPrint from 'react-to-print';
+import { useBills } from 'hooks/react-query/useBills';
 
 export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
@@ -17,6 +18,8 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const { data: getMonthData, isSuccess: isGetMonthDataSuccess } = useGetMonthAppointments();
+  const { getOneBill } = useBills({ term: '', pageIndex: 0, pageSize: 5, sortBy: [{ id: 'bills_id', desc: false }] });
+
   const { monthAppointments } = getMonthData || {};
   const [isIdCardDisabled, setIsIdCardDisabled] = useState(false);
   const [IsUserFound, setIsUserFound] = useState(false);
@@ -60,6 +63,8 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
   const [formValues, setFormValues] = useState(selectedFlatRows.length === 1 ? selectedFlatRows[0].original : initialValues);
 
   const onSubmit = (values) => {
+    setFormValues(values);
+    console.log('karo', formValues);
     if (values.desciption === null) {
       values.description = '';
     }
@@ -98,14 +103,25 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
         });
       }
     }
-
+    let resultadoAdd;
     if (isValid) {
       if (selectedFlatRows.length === 1) {
         editItem(values);
       } else {
-        addItem(values);
+        addItem(values).then((result) => {
+          resultadoAdd = result.bills_id;
+          getOneBill(resultadoAdd)
+            .then((billData) => {
+              console.log('Bill data:', billData.billFound);
+              setFormValues(billData.billFound);
+            })
+            .catch((error) => {
+              console.error('Error fetching bill data:', error);
+            });
+          setConfirmDeleteModal(true);
+        });
       }
-      setConfirmDeleteModal(true);
+
       setIsOpenAddEditModal(false);
       setIsUserFound(false);
       setIsIdCardDisabled(true);
@@ -172,7 +188,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
   const PrintValuesComponent = forwardRef(({ values }, ref) => {
     const showDetail = values.inventory_id !== null;
-    const showDetail2 = values.appointment_id !== null;
+    const showDetail2 = values.appointment_id ? !(values.appointment_id === null || values.appointment_id === 0) : false;
     const inventoryPrice = values.inventory_price !== null ? values.inventory_price : 0;
     const appointmentPrice = values.appointment_price !== null ? parseFloat(values.appointment_price) : 0;
 
