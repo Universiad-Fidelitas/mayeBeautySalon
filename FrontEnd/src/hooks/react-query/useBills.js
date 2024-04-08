@@ -17,7 +17,10 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
     });
     return data;
   };
-
+  const getOneBill = async (billData) => {
+    const { data } = await baseApi.get(`/bills/${billData}`);
+    return data;
+  };
   const addBill = () => {
     const queryClient = useQueryClient();
     const addBillApi = useCallback(async (newBill) => {
@@ -126,6 +129,7 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
     addBill: addBill(),
     updateBill: updateBill(),
     deleteBills: deleteBills(),
+    getOneBill: useCallback(getOneBill, []),
   };
 };
 

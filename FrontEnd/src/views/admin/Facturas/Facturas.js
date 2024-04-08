@@ -24,8 +24,7 @@ const Facturas = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Facturas';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -252,7 +251,9 @@ const Facturas = () => {
 
   const addItem = useCallback(
     async (values) => {
-      addBill.mutateAsync({ values });
+      const add = addBill.mutateAsync({ values });
+      console.log('add', add);
+      return add;
     },
     [addBill]
   );
