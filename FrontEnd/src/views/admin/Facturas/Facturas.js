@@ -138,6 +138,9 @@ const Facturas = () => {
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
         Cell: ({ value }) => {
+          if (value === null) {
+            return '';
+          }
           const dateObject = new Date(value);
           const dateString = dateObject.toLocaleDateString();
           const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -156,6 +159,9 @@ const Facturas = () => {
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
         Cell: ({ value }) => {
+          if (value === null) {
+            return '';
+          }
           const dateObject = new Date(value);
           const dateString = dateObject.toLocaleDateString();
           const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -272,7 +278,7 @@ const Facturas = () => {
     dataToInsert: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.string().required('El producto es requerido'),
-        amount: Yup.number().min(0, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
+        amount: Yup.number().min(1, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
       })
     ),
     id_card_type: Yup.string().required('El tipo de cedula es requerido'),
