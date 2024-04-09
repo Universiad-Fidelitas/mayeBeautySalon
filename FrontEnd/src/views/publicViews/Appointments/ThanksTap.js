@@ -1,17 +1,23 @@
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useGetAllServices } from 'hooks/react-query/useServices';
 import moment from 'moment';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Spinner } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAppointmentServiceInformation, setIsEnd } from 'store/appointments/appointmentsSlice';
 
 export const ThanksTap = () => {
+  const dispatch = useDispatch();
   const { appointmentServiceInformation } = useSelector((state) => state.appointments);
   const { service_time, service_date, email } = appointmentServiceInformation;
   const { data, isSuccess: isServicesSuccess } = useGetAllServices();
   const { name, price } = useMemo(() =>  isServicesSuccess && data.services.find(({service_id}) => service_id === appointmentServiceInformation.service_id), [appointmentServiceInformation, isServicesSuccess])
+
+  useEffect(() => {
+    dispatch(setIsEnd(true));
+  }, [])
 
   const { formatDate } = useIntl();
   return (
@@ -23,7 +29,7 @@ export const ThanksTap = () => {
       ) : (
         <div>
           <div className="text-center">
-            <NavLink to="/" className="btn btn-icon btn-icon-start btn-primary mb-3 ">
+            <NavLink to="/" onClick={() => { dispatch(setAppointmentServiceInformation({}))}} className="btn btn-icon btn-icon-start btn-primary mb-3 ">
               <CsLineIcons icon="arrow-left" /> <span>Volver a casa</span>
             </NavLink>
             <h1 className="mb-2">¡Tu cita se ha agendado con éxito!</h1>

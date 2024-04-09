@@ -110,9 +110,8 @@ const getUserDataPrefill = async (req, res = response) => {
 
 const saveAppointment = async (req, res = response) => {
     try {
-        const { service_id, service_date, service_time, id_card, first_name, last_name, email, phone, employment_id } = req.body;
+        const { service_id, service_date, service_time, id_card, first_name, last_name, email, phone, employment_id, id_card_type } = req.body;
 
-        console.log(req.body)
         const queryGetServiceInfo = 'SELECT * FROM services WHERE service_id = ?';
         const serviceInfo = await dbService.query(queryGetServiceInfo, [service_id]);
 
@@ -144,7 +143,7 @@ const saveAppointment = async (req, res = response) => {
 
 
         if (userChecker.length === 0) {
-            const queryAddUser = "INSERT INTO users (user_id, role_id, id_card, first_name, last_name, email, phone, activated, image, salary) VALUES (NULL, 1, ?, ?, ?, ?, ?, 1, '', NULL)";
+            const queryAddUser = "INSERT INTO users (user_id, role_id, id_card, first_name, last_name, email, phone, id_card_type, activated, image, salary) VALUES (NULL, 1, ?, ?, ?, ?, ?, 'nacional', 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
             const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id, activated) VALUES (NULL, ?, NULL, ?, ?, 1) ";
             await dbService.query(queryAddBill, [userInsertId, insertId, paymentInsertId]);
@@ -236,7 +235,7 @@ const updateAppointment = async (req, res = response) => {
         sendEmail('appointmentConfirmation', getUserAppInfo[0].email, "Confirmación de cita", {
             selectedServiceName: serviceData[0].name,
             selectedDate: moment(start).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
-            selectedTime: moment(start, 'HH:mm:ss').format('hh:mmA'),
+            selectedTime: moment(start).format('hh:mm A'),
             servicePrice: serviceData[0].price,
         });
         
@@ -258,8 +257,6 @@ const updateAppointment = async (req, res = response) => {
 const addAppointment = async (req, res = response) => {
     try {
         const { start, end, service_id, extra, extra_description, user_id, employee }  = req.body;
-
-        console.log(start, end, service_id, extra, extra_description, user_id, employee)
 
         const queryServicePrice = 'SELECT price FROM services WHERE service_id = ?';
         const servicePrice = await dbService.query(queryServicePrice, [service_id]);
@@ -288,7 +285,7 @@ const addAppointment = async (req, res = response) => {
         sendEmail('appointmentConfirmation', getUserAppInfo[0].email, "Confirmación de cita", {
             selectedServiceName: serviceData[0].name,
             selectedDate: moment(start).locale('es').format('dddd DD [de] MMMM [del] YYYY'),
-            selectedTime: moment(start, 'HH:mm:ss').format('hh:mmA'),
+            selectedTime: moment(start).format('hh:mm A'),
             servicePrice: serviceData[0].price,
         });
         

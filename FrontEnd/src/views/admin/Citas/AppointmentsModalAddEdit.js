@@ -295,17 +295,17 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
 
         <Modal className="fade modal-close-out" show={isShowDeleteConfirmModal}>
           <Modal.Header>
-            <Modal.Title> Are you sure?</Modal.Title>
+            <Modal.Title>¿Estas seguro?</Modal.Title>
           </Modal.Header>
           <Modal.Body className="d-flex flex-column">
             <p>
-              <span className="fw-bold">{selectedItem.title}</span> <span>will be deleted. Are you sure?</span>
+              <span className="fw-bold">{selectedItem.title}</span> <span>será eliminado ¿Estas seguro?</span>
             </p>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={() => setIsShowDeleteConfirmModal(false)}>No</Button>
             <Button variant="outline-primary" onClick={deleteItemApprove}>
-              Yes
+              Si
             </Button>
           </Modal.Footer>
         </Modal>

@@ -147,6 +147,16 @@ const Citas = () => {
     );
   };
 
+  const daysOfWeek = useMemo(() => ({
+    Sun:'Domingo',
+    Mon:'Lunes',
+    Tue:'Martes',
+    Wed:'Miércoles',
+    Thu:'Jueves',
+    Fri:'Viernes',
+    Sat:'Sábado',
+  }), []);
+
   return (
     <>
       <HtmlHead title={htmlTitle} description={htmlDescription} />
@@ -244,11 +254,12 @@ const Citas = () => {
             minute: '2-digit',
             meridiem: false,
           }}
-          dayHeaderContent={({ date }) => {
+          dayHeaderContent={({ date, text }) => {
             const formattedDayName = formatDate(date, {
               weekday: 'long',
             });
-            return <b>{formattedDayName.charAt(0).toUpperCase() + formattedDayName.slice(1)}</b>;
+            console.log('dayHeaderContent', daysOfWeek[text])
+            return <b>{daysOfWeek[text]}</b>;
           }}
         />
       </Card>
