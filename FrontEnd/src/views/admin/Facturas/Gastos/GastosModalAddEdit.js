@@ -68,7 +68,7 @@ export const GastosModalAddEdit = ({ tableInstance, apiParms }) => {
                 <Row className="g-3 mb-3">
                   <Col className="col-12">
                     <div className="top-label">
-                      <label className="form-label">{f({ id: 'products.productFinalPrice' })}</label>
+                      <label className="form-label">Precio del recibo</label>
                       <NumberFormat
                         className={classNames('form-control', { 'is-invalid': errors.price && touched.price })}
                         thousandSeparator="."
