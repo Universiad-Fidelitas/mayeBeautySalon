@@ -42,7 +42,7 @@ export const AppointmentsClient = () => {
           const newFields = { ...fields, ...form.values };
 
           setFields(newFields);
-
+          dispatch(setAppointmentServiceInformation(newFields));
           if (steps.length - 2 <= steps.indexOf(step)) {
             dispatch(setAppointmentServiceInformation(newFields));
             const { data } = await baseApi.post('/appointments/save-appointment', { ...newFields });

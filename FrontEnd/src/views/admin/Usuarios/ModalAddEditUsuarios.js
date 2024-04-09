@@ -39,6 +39,9 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
 
   const onSubmit = useCallback(
     (values) => {
+      if (values.salary === '') {
+        values.salary = 0;
+      }
       const formData = new FormData();
       const userSchema = {
         ...values,

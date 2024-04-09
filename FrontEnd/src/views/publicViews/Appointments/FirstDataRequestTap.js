@@ -11,24 +11,46 @@ import moment from 'moment/moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetEmployments } from 'hooks/react-query/useUsers';
 import * as Yup from 'yup';
-import { setIsAbleToNext } from 'store/appointments/appointmentsSlice';
+import { setAppointmentServiceInformation, setIsAbleToNext, setIsEnd } from 'store/appointments/appointmentsSlice';
 
 export const FirstDataRequestTap = ({ formRef }) => {
   const [serviceDate, setServiceDate] = useState(moment().add(1, 'day').toDate());
   const [serviceId, setServiceId] = useState();
-  const [employee, setEmployee] = useState(1);
+  const [employee, setEmployee] = useState();
+  const [isBack, setIsBack] = useState(false);
+  const { appointmentServiceInformation, isEnd } = useSelector((state) => state.appointments);
+  const { service_date, service_time, service_id, employment_id } = appointmentServiceInformation;
+  console.log('setIsEnd', isEnd)
   
   const { isSuccess, data } = useGetAllServices();
   const { data: weekAppointmentsData, isSuccess: isWeekAppointmentsDataSuccess, refetch } = useGetWeekAppointments({
-    serviceDate,
-    serviceId,
-    employee
+    serviceDate: service_date || serviceDate,
+    serviceId: service_id || serviceId,
+    employee: employment_id || employee,
   });
+
+  // useEffect(() => {
+  //   setServiceDate(moment(service_date).toDate());
+  //   setServiceId(service_id);
+  //   setEmployee(employment_id);
+  //   setIsBack(true);
+  // }, [service_date, service_id, employment_id, appointmentServiceInformation]);
+
+  // useEffect(() => {
+  //   if(isBack){
+  //     refetch();
+  //   }
+  // }, [isBack])
+  
+
+  useEffect(() => {
+    refetch();
+  }, [employee, serviceDate, serviceId, refetch])
+  
 
   const { data: employmentsData, isSuccess: isEmploymentsDataSuccess } = useGetEmployments();
   const { formatMessage: f, formatDate } = useIntl();
   const dispatch = useDispatch();
-  const { selectedAppointments } = useSelector((state) => state.appointments);
 
   const serviceOptions = useMemo(() =>
   isSuccess ? data.services?.map((service) => {
@@ -43,10 +65,9 @@ export const FirstDataRequestTap = ({ formRef }) => {
   [employmentsData, isEmploymentsDataSuccess]);
 
   const formatOptionLabel = (values) => {
-    console.log('employmentsOptions', `http://localhost:3000/${values.image}`)
   return (
     <div className='formatAppSelect'>
-      <img src={`http://localhost:4000/v1/api/${values.image}`} alt='s'/>
+      <img src={[process.env.REACT_APP_BASE_API_URL, values.image].join('/')} alt='s'/>
       <p className="small-title">{ values.label }</p>
     </div>
   )
@@ -66,10 +87,10 @@ export const FirstDataRequestTap = ({ formRef }) => {
   }, [serviceDate, daysOfWeek]);
 
   const initialValues = useMemo(() => ({
-    employment_id: '',
-    service_id: '',
-    service_date: '',
-    service_time: '',
+    employment_id: employment_id || '',
+    service_id: service_id || '',
+    service_date: service_date || '',
+    service_time: service_time || '',
 }), []);
 
 
@@ -83,11 +104,6 @@ function isBeforeToday(date) {
 const onFormSubmit = useCallback(() => {
   console.log('fdsf')
 }, []);
-
-useEffect(() => {
-  refetch();
-}, [employee, serviceDate, serviceId, refetch])
-
 
 
   return (
