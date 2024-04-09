@@ -120,16 +120,14 @@ const putUser = async (req, res = response) => {
     if ('image' in req.body) {
         ({ image } = req.body);
     }
+    console.log("1")
     try { 
+        console.log("1.2")
         const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ?, salary= ?, id_card_type = ? WHERE user_id = ?';
-        const [userBeforeUpdate] = await dbService.query('SELECT first_name FROM users WHERE  user_id = ?', [user_id]);
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'categories', NOW(), '', ?)`;
-        await dbService.query(logQuery, ['actualizar usuarios | anterior: ' + userBeforeUpdate + ' | nuevo: ' + first_name, 11]);
-        
+        console.log("1.3")
         if ('image' in req.body) {
         const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type, user_id ]);
+        console.log("1.4")
         res.status(200).json({
             role_id: insertId,
             affectedRows:affectedRows,
@@ -137,6 +135,7 @@ const putUser = async (req, res = response) => {
             message: "¡El usuario ha sido editado exitosamente!"
         });
         }else{
+            console.log("1.4.1")
             const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, req.file ? req.file.path : '', salary, id_card_type, user_id]);
             res.status(200).json({
                 role_id: insertId,
