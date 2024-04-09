@@ -124,11 +124,6 @@ const putUser = async (req, res = response) => {
     try { 
         console.log("1.2")
         const userQuery = 'UPDATE users SET role_id = ?, id_card = ?, first_name = ?, last_name = ?, email = ?, phone = ?, activated = ?, image = ?, salary= ?, id_card_type = ? WHERE user_id = ?';
-        const [userBeforeUpdate] = await dbService.query('SELECT first_name FROM users WHERE  user_id = ?', [user_id]);
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'categories', NOW(), '', ?)`;
-        await dbService.query(logQuery, ['actualizar usuarios | anterior: ' + userBeforeUpdate + ' | nuevo: ' + first_name, 11]);
         console.log("1.3")
         if ('image' in req.body) {
         const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type, user_id ]);
