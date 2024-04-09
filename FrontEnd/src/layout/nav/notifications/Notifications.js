@@ -14,7 +14,7 @@ const NotificationsDropdownToggle = React.memo(
     <a
       ref={ref}
       href="#/"
-      className="notification-button"
+      className="notification-button text-white"
       data-toggle="dropdown"
       aria-expanded={expanded}
       onClick={(e) => {
@@ -24,7 +24,7 @@ const NotificationsDropdownToggle = React.memo(
       }}
     >
       <div className="position-relative d-inline-flex">
-        <CsLineIcons icon="bell" size="18" />
+        <CsLineIcons icon="bell" size="25"/>
         <span className="position-absolute notification-dot rounded-xl" />
       </div>
     </a>
