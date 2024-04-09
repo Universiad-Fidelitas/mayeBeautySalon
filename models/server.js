@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const { dbConnection } = require('../database/config');
 const { authenticateToken } = require('../middlewares/jsonwebtoken');
+const { appointmentsReminder } = require('../helpers/CronJobs');
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
 class Server {
@@ -22,6 +23,7 @@ class Server {
 
     middlewares() {
         // CORS
+        appointmentsReminder.start();
         this.app.use(cors());
         this.app.options('*', cors());
         this.app.use(function(req, res, next) {
@@ -32,6 +34,7 @@ class Server {
         });
         // PARSE JSON FORMAT
         this.app.use(express.json());
+
     }
 
     routes() {
@@ -55,6 +58,7 @@ class Server {
         this.app.use('/v1/api/reports', require('../routes/reports'));
         this.app.use('/v1/api/bills', require('../routes/bills'));
         this.app.use('/v1/api/logs', require('../routes/logs'));
+        this.app.use('/v1/api/payments', require('../routes/payments'));
         this.app.use('/v1/api/images-uploader', require('../routes/imagesUploader'));
 
         // // Serve the static files for the React app

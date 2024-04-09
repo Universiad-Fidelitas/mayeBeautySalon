@@ -1,13 +1,17 @@
 import React, { useMemo } from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Col, Modal, Row } from 'react-bootstrap';
 import { Formik, Field, Form, FieldArray, ErrorMessage } from 'formik';
 import 'react-dropzone-uploader/dist/styles.css';
 import { useStock } from 'hooks/react-query/useStock';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { useIntl } from 'react-intl';
+import { SelectField } from 'components/SelectField';
+import NumberFormat from 'react-number-format';
+import classNames from 'classnames';
+import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
-export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchema, formFields }) => {
+export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchema }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { data: productsData } = useStock();
   const { formatMessage: f } = useIntl();
@@ -18,7 +22,6 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
       }),
     [productsData]
   );
-  console.log('karoIng', productsDataDropdown);
   const initialValues = {
     action: '',
     description: '',
@@ -61,84 +64,116 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
     { value: 'remove', label: 'Remover' },
   ];
   return (
-    <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
+    <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-        {({ values }) => (
-          <Form>
-            <Modal.Header>
-              <Modal.Title>Agregar</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="mb-3">
-                <label className="form-label">Acción</label>
-                <Field className="form-control" name="action" id="action" component={CustomSelect} options={options} />
+        {({ errors, touched, values, setFieldValue }) => {
+          return (
+            <Form>
+              <Modal.Header>
+                <Modal.Title>{selectedFlatRows.length === 1 ? 'Editar' : 'Agregar'}</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Row className="g-3 mb-3">
+                  <Col className="col-12 top-label">
+                    <SelectField label="Acción" name="action" placeholder="Seleccione una opcion" options={options} isError={errors.action && touched.action} />
+                  </Col>
+                </Row>
 
-                <ErrorMessage style={{ color: 'red' }} name="action" component="div" className="field-error" />
-              </div>
-              {formFields.map(({ id, label, type }) => (
-                <div className="mb-3" key={id}>
-                  <label className="form-label">{label}</label>
-                  <Field as="textarea" className="form-control" type={type} id={id} name={id} />
-                  <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
-                </div>
-              ))}
-              <FieldArray name="dataToInsert">
-                {({ push, remove }) => (
-                  <div>
-                    {values.dataToInsert.map((_, index) => (
-                      <div className="row" key={index}>
-                        {productsDataDropdown && (
-                          <>
-                            <div className="mb-3">
-                              <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
-                                Productos
-                              </label>
+                <Row className="g-3 mb-3">
+                  <Col>
+                    <div className="top-label">
+                      <label className="form-label">Descripción</label>
+                      <Field
+                        as="textarea"
+                        className={`form-control ${errors.description && touched.description ? 'is-invalid' : ''}`}
+                        id="description"
+                        name="description"
+                      />
+                      <ErrorMessage className="text-danger" name="description" component="div" />
+                    </div>
+                  </Col>
+                </Row>
 
-                              <Field
-                                className="form-control"
-                                name={`dataToInsert.${index}.product_id`}
-                                id="product_id"
-                                component={CustomSelect}
-                                options={productsDataDropdown}
-                              />
-                              <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.product_id`} className="field-error" component="div" />
-                            </div>
-                          </>
-                        )}
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
-                            Cantidad
-                          </label>
-                          <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
-                          <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
-                        </div>
-                        {index > 0 && (
-                          <div className="mb-3">
-                            <Button variant="danger" onClick={() => remove(index)}>
-                              Remover Producto
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                <hr className="mb-3 mt-4" />
+                <h4 className="mb-3">Información Productos</h4>
 
-                    <Button variant="primary" onClick={() => push({ product_id: '', amount: '' })}>
-                      Agregar Producto
-                    </Button>
-                  </div>
-                )}
-              </FieldArray>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
-                Cancelar
-              </Button>
-              <Button variant="primary" type="submit">
-                {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
-              </Button>
-            </Modal.Footer>
-          </Form>
-        )}
+                <FieldArray name="dataToInsert">
+                  {({ push, remove }) => (
+                    <div>
+                      {values.dataToInsert.map((_, index) => (
+                        <Row key={index}>
+                          <Row className="g-3 mb-3 m-0">
+                            <Col className="col-5 m-0">
+                              <div className="top-label">
+                                <SelectField
+                                  className="m-0"
+                                  label="Productos"
+                                  name={`dataToInsert.${index}.product_id`}
+                                  placeholder="Seleccione producto"
+                                  options={productsDataDropdown}
+                                  isError={
+                                    errors.dataToInsert &&
+                                    errors.dataToInsert[index]?.product_id &&
+                                    touched.dataToInsert &&
+                                    touched.dataToInsert[index]?.product_id
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col className="col-4 m-0">
+                              <div className="top-label">
+                                <label className="form-label">Cantidad</label>
+                                <NumberFormat
+                                  className={classNames('form-control', {
+                                    'is-invalid':
+                                      errors.dataToInsert && errors.dataToInsert[index]?.amount && touched.dataToInsert && touched.dataToInsert[index]?.amount,
+                                  })}
+                                  allowEmptyFormatting
+                                  isAllowed={({ value }) => value <= 50 && true}
+                                  value={values.dataToInsert[index].cantidad}
+                                  onValueChange={({ value }) => {
+                                    setFieldValue(`dataToInsert.${index}.amount`, value);
+                                  }}
+                                />
+                                <ErrorMessage className="text-danger" name={`dataToInsert.${index}.amount`} component="div" />
+                              </div>
+                            </Col>
+                            <Col className="col-3 m-0">
+                              <Row className="g-3 m-0">
+                                {values.dataToInsert.length - 1 === index && (
+                                  <Col className="col-6 m-0">
+                                    <Button variant="success w-100 p-2" onClick={() => push({ product_id: '', amount: '' })}>
+                                      <CsLineIcons icon="plus" />
+                                    </Button>
+                                  </Col>
+                                )}
+                                {index > 0 && (
+                                  <Col className="col-6 m-0">
+                                    <Button variant="danger w-100 p-2" onClick={() => remove(index)}>
+                                      <CsLineIcons icon="bin" />
+                                    </Button>
+                                  </Col>
+                                )}
+                              </Row>
+                            </Col>
+                          </Row>
+                        </Row>
+                      ))}
+                    </div>
+                  )}
+                </FieldArray>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="outline-primary" onClick={() => setIsOpenAddEditModal(false)}>
+                  Cancelar
+                </Button>
+                <Button variant="primary" type="submit">
+                  {selectedFlatRows.length === 1 ? 'Hecho' : 'Agregar'}
+                </Button>
+              </Modal.Footer>
+            </Form>
+          );
+        }}
       </Formik>
     </Modal>
   );

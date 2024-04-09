@@ -258,7 +258,7 @@ const enMessages = {
   'appointments.menuTitle': 'Schedule Appointment',
 
   'appointments.FirstTaptitle': 'Choose Service',
-  'appointments.FirstTapDescription': 'Please chose the service and date for the appointment',
+  'appointments.FirstTapDescription': 'Please choose the service, date and your preferred stylist for the appointment',
 
   'appointments.SecondTaptitle': 'Customer Information',
   'appointments.SecondTapDescription': 'Please fill in the following information',
@@ -270,8 +270,8 @@ const enMessages = {
   'appointments.appointmentDate': 'Appointment Date',
   'appointments.startTime': 'Start Time',
   'appointments.endTime': 'End Time',
-  'appointments.extra': 'Extra',
-  'appointments.extraDescription': 'Extra Description',
+  'appointments.extra': 'Monto extra',
+  'appointments.extraDescription': 'Monto extra Description',
   'appointments.saveAppointment': 'Save Appointment',
   'appointments.addAppointment': 'Add Appointment',
   'appointments.deleteAppointment': 'Delete Appointment',

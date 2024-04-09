@@ -14,7 +14,6 @@ import { UploaderComponent } from 'components/imagesUploader/UploaderComponent';
 import { useIntl } from 'react-intl';
 import { SelectField } from 'components/SelectField';
 import { useUsers } from 'hooks/react-query/useUsers';
-import InputMask from 'react-input-mask';
 import NumberFormat from 'react-number-format';
 
 export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
@@ -60,7 +59,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
       }
       formData.set('activated', values.activated ? 1 : 0);
       formData.set('phone', values.phone.replace(/-/g, ''));
-      formData.set('salary', values.salary.replace(/₡/g, '').replace(/\./g, '').replace(/,/g, ''));
       if (selectedFlatRows.length === 1) {
         updateUser.mutateAsync(formData);
       } else {
@@ -130,27 +128,15 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
           .required(f({ id: 'helper.phoneRequired' })),
         image: Yup.mixed().required(f({ id: 'users.imageRequired' })),
 
-        salary: Yup.string()
-          .required(f({ id: 'users.salaryRequired' })),
+        salary: Yup.number()
+          .min(1, f({ id: 'users.salaryPositiveNumber' }))
+          .nullable(),
+
         role_id: Yup.string().required(f({ id: 'users.rolRequired' })),
         id_card_type: Yup.string().required(f({ id: 'users.idCardTypeRequired' })),
-        // id_card: Yup.number()
-        //   .required(f({ id: 'helper.idCardRequired' }))
-        //   // .typeError(f({ id: 'helper.idCardOnlyNumbers' }))
-        //   .when('id_card_type', {
-        //     is: 'nacional', // o el valor que represente a 'nacional'
-        //     then: Yup.string()
-        //       .min(9, f({ id: 'helper.idCardMinSize' }))
-        //       .max(9, f({ id: 'helper.idCardMaxSize' })),
-        //     otherwise: Yup.string()
-        //       .min(12, f({ id: 'helper.idCardMinSize2' }))
-        //       .max(15, f({ id: 'helper.idCardMaxSize2' })),
-
         id_card: Yup.number()
-              .required(f({ id: 'products.buyPriceError.required' }))
-              .typeError(f({ id: 'products.buyPriceError.typeError' }))
-              .min(1, f({ id: 'products.buyPriceError.minError' })),
-
+          .required(f({ id: 'helper.idCardRequired' }))
+          .typeError(f({ id: 'helper.idCardOnlyNumbers' })),
       }),
     [f]
   );
@@ -200,7 +186,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                   <Col className="col-4">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.idcard' })}</label>
-                      <Field className={`form-control ${errors.id_card && touched.id_card ? 'is-invalid' : ''}`} id="id_card" name="id_card" />
+                      <NumberFormat
+                        className="form-control"
+                        mask="_"
+                        format={values.id_card_type && values.id_card_type !== 'nacional' ? '####-####-####' : '#-####-####'}
+                        allowEmptyFormatting
+                        value={values.id_card}
+                        onValueChange={({ value }) => {
+                          setFieldValue('id_card', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="id_card" component="div" />
                     </div>
                   </Col>
@@ -243,11 +238,16 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                   <Col className="col-4 top-label">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.phone' })}</label>
-                      <Field className={`form-control ${errors.phone && touched.phone ? 'is-invalid' : ''}`} id="phone" name="phone">
-                        {({ field }) => (
-                          <NumberFormat {...field} className="form-control" mask="_" format="####-####" allowEmptyFormatting/>
-                        )}
-                      </Field>
+                      <NumberFormat
+                        className="form-control"
+                        mask="_"
+                        format="####-####"
+                        allowEmptyFormatting
+                        value={values.phone}
+                        onValueChange={({ value }) => {
+                          setFieldValue('phone', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="phone" component="div" />
                     </div>
                   </Col>
@@ -257,11 +257,17 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                   <Col className="col-4">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.salary' })}</label>
-                      <Field className={`form-control ${errors.salary && touched.salary ? 'is-invalid' : ''}`} id="salary" name="salary">
-                        {({ field }) => (
-                          <NumberFormat {...field} className="form-control" thousandSeparator="." decimalSeparator="," prefix="₡" allowNegative={false}/>
-                        )}
-                      </Field>
+                      <NumberFormat
+                        className="form-control"
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="₡"
+                        allowNegative={false}
+                        value={values.salary}
+                        onValueChange={({ value }) => {
+                          setFieldValue('salary', value);
+                        }}
+                      />
                       <ErrorMessage className="text-danger" name="salary" component="div" />
                     </div>
                   </Col>

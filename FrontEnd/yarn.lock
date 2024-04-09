@@ -10861,6 +10861,11 @@ react-themeable@^1.1.0:
   dependencies:
     object-assign "^3.0.0"
 
+react-to-print@^2.15.0:
+  version "2.15.1"
+  resolved "https://registry.npmjs.org/react-to-print/-/react-to-print-2.15.1.tgz"
+  integrity sha512-1foogIFbCpzAVxydkhBiDfMiFYhIMphiagDOfcG4X/EcQ+fBPqJ0rby9Wv/emzY1YLkIQy/rEgOrWQT+rBKhjw==
+
 react-toastify@^7.0.4:
   version "7.0.4"
   resolved "https://registry.npmjs.org/react-toastify/-/react-toastify-7.0.4.tgz"

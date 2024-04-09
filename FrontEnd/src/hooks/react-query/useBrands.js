@@ -65,7 +65,7 @@ export const useBrands = ({ term, pageIndex, pageSize, sortBy }) => {
     const queryClient = useQueryClient();
 
     const updateBrandApi = useCallback(async ({ brand_id, name }) => {
-      const { data } = await baseApi.put(`/brands/${ brand_id }`, { name });
+      const { data } = await baseApi.put(`/brands/${brand_id}`, { name });
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
@@ -97,7 +97,7 @@ export const useBrands = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
 
-      onSettled: async (pageCount , error) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-brands', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-brands', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -111,7 +111,7 @@ export const useBrands = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const inactivateBrands = () => {
     const queryClient = useQueryClient();
-  
+
     const inactivateBrandsApi = useCallback(
       async (brands) => {
         const { data } = await baseApi.post('/brands/delete', { brand_id: brands.toString() });
@@ -125,7 +125,7 @@ export const useBrands = ({ term, pageIndex, pageSize, sortBy }) => {
       },
       [f]
     );
-  
+
     return useMutation(inactivateBrandsApi, {
       onMutate: async (newBrand) => {
         queryClient.setQueryData(['project-brands', { term, pageIndex, pageSize, sortBy }], (oldData) => {
@@ -135,7 +135,7 @@ export const useBrands = ({ term, pageIndex, pageSize, sortBy }) => {
           };
         });
       },
-      onSettled: async (pageCount , error) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-brands', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-brands', { term, pageIndex, pageSize, sortBy }], (oldData) => ({

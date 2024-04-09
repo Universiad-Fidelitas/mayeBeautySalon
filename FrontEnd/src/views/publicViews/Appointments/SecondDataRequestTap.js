@@ -1,15 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button, Col, Row, Spinner } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useIntl } from 'react-intl';
 import * as Yup from 'yup';
 import { baseApi } from 'api/apiConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCustumerInfo } from 'store/appointments/appointmentsSlice';
+import NumberFormat from 'react-number-format';
+import { SelectField } from 'components/SelectField';
 
 export const SecondDataRequestTap = ({ formRef }) => {
   const dispatch = useDispatch();
-  const { custumerInfo } = useSelector((state) => state.appointments);
   const { formatMessage: f } = useIntl();
   const [initialValues, setInitialValues] = useState({
     id_card: '',
@@ -21,14 +21,6 @@ export const SecondDataRequestTap = ({ formRef }) => {
   const [userPrefilled, setuserPrefilled] = useState(false);
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [isFindingCustomer, setIsFindingCustomer] = useState(false);
-
-  useEffect(() => {
-    if (custumerInfo.id_card) {
-      setInitialValues(custumerInfo);
-      setShowUserInfoForm(true);
-      setuserPrefilled(true);
-    }
-  }, [custumerInfo]);
 
   const validationSchema = useMemo(
     () =>
@@ -61,6 +53,7 @@ export const SecondDataRequestTap = ({ formRef }) => {
           .matches(/^\d+$/, f({ id: 'helper.idCardOnlyNumbers' }))
           .min(9, f({ id: 'helper.idCardMinSize' }))
           .max(12, f({ id: 'helper.idCardMaxSize' })),
+        id_card_type: Yup.string().required('Tipo de documento requerido'),
       }),
     [f]
   );
@@ -78,6 +71,7 @@ export const SecondDataRequestTap = ({ formRef }) => {
       } else {
         setInitialValues({
           id_card,
+          id_card_type: '',
           first_name: '',
           last_name: '',
           email: '',
@@ -99,31 +93,64 @@ export const SecondDataRequestTap = ({ formRef }) => {
   );
 
   const onFormSubmit = useCallback(() => {
-    dispatch(setCustumerInfo(initialValues));
+    console.log('first')
   }, [initialValues, dispatch]);
+
+  const idTypeDropdown = useMemo(() => {
+    return [
+      { value: 'nacional', label: 'Nacional' },
+      { value: 'extranjero', label: 'Extranjero' },
+    ];
+  }, []);
 
   return (
     <>
       <h5 className="card-title">{f({ id: 'appointments.SecondTaptitle' })}</h5>
       <p className="card-text text-alternate mb-4">{f({ id: 'appointments.SecondTapDescription' })}</p>
 
-      <Formik initialValues={{ id_card: '305300042' }} onSubmit={onCustomerFinder} validationSchema={validationSchemaCard}>
+      <Formik initialValues={{ id_card: '', id_card_type: '' }} onSubmit={onCustomerFinder} validationSchema={validationSchemaCard}>
+      {({ errors, touched, setFieldValue, values }) => (
         <Form>
-          <div className="w-30 mb-3">
-            <label className="form-label">{f({ id: 'helper.idcard' })}</label>
-            <div className="d-flex gap-2">
-              <Field className="form-control w-40" id="id_card" name="id_card" disabled={isFindingCustomer} />
-              <Button variant="outline-primary" type="submit" disabled={isFindingCustomer}>
-                {isFindingCustomer ? (
-                  <Spinner size="sm" animation="border" variant="primary" className="m-0" />
-                ) : (
-                  <span>{f({ id: 'appointments.findUserInformation' })}</span>
-                )}
-              </Button>
-            </div>
-            <ErrorMessage className="text-danger" name="id_card" component="div" />
-          </div>
+          <Row className="mb-3">
+            <Col className="col-12 col-lg-4">
+              <Row className="mb-3">
+                <Col className="col-6">
+                <SelectField
+                      label={f({ id: 'helper.idcardtype' })}
+                      name="id_card_type"
+                      placeholder={f({ id: 'helper.selectIdCardType' })}
+                      options={idTypeDropdown}
+                      isError={errors.id_card_type && touched.id_card_type}
+                    />
+                  <div className="top-label">
+                    <label className="form-label bg-transparent">{f({ id: 'helper.name' })}</label>
+                      <NumberFormat
+                        className="form-control"
+                        mask="_"
+                        format={values.id_card_type && values.id_card_type !== 'nacional' ? '####-####-####' : '#-####-####'}
+                        allowEmptyFormatting
+                        value={values.id_card}
+                        onValueChange={({ value }) => {
+                          setFieldValue('id_card', value);
+                        }}
+                      />
+                    <ErrorMessage className="text-danger" name="id_card" component="div" />
+                  </div>
+                </Col>
+                <Col className="col-6">
+                  <Button variant="outline-primary h-100" type="submit" disabled={isFindingCustomer}>
+                    {isFindingCustomer ? (
+                      <Spinner size="sm" animation="border" variant="primary" className="m-0" />
+                    ) : (
+                      <span>Buscar Información</span>
+                    )}
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </Form>
+      )}
       </Formik>
       {showUserInfoForm && (
         <Formik
@@ -134,32 +161,59 @@ export const SecondDataRequestTap = ({ formRef }) => {
           validationSchema={validationSchema}
           enableReinitialize
         >
+          {({ errors, touched, setFieldValue, values }) => (
           <Form>
-            <div className="w-30 mb-3">
-              <div className="d-flex gap-3 mb-3">
-                <div className=" w-100">
-                  <label className="form-label">{f({ id: 'helper.name' })}</label>
-                  <Field className="form-control" id="first_name" name="first_name" disabled={userPrefilled} />
-                  <ErrorMessage className="text-danger" name="first_name" component="div" />
-                </div>
-                <div className="w-100">
-                  <label className="form-label">{f({ id: 'helper.lastname' })}</label>
-                  <Field className="form-control" id="last_name" name="last_name" disabled={userPrefilled} />
-                  <ErrorMessage className="text-danger" name="last_name" component="div" />
-                </div>
-              </div>
-              <div className="mb-3">
-                <label className="form-label">{f({ id: 'helper.phone' })}</label>
-                <Field className="form-control w-60" id="phone" name="phone" disabled={userPrefilled} />
-                <ErrorMessage className="text-danger" name="phone" component="div" />
-              </div>
-              <div>
-                <label className="form-label">{f({ id: 'helper.email' })}</label>
-                <Field className="form-control" id="email" name="email" disabled={userPrefilled} />
-                <ErrorMessage className="text-danger" name="email" component="div" />
-              </div>
-            </div>
+            <Row className="mb-3">
+              <Col className="col-12 col-lg-4">
+                <Row className="g-3 mb-3">
+                  <Col className="col-6">
+                    <div className="top-label">
+                      <label className="form-label bg-transparent">{f({ id: 'helper.name' })}</label>
+                      <Field className="form-control" id="first_name" name="first_name" disabled={userPrefilled} />
+                      <ErrorMessage className="text-danger" name="first_name" component="div" />
+                    </div>
+                  </Col>
+                  <Col className="col-6">
+                    <div className="top-label">
+                      <label className="form-label bg-transparent">{f({ id: 'helper.lastname' })}</label>
+                      <Field className="form-control" id="last_name" name="last_name" disabled={userPrefilled} />
+                      <ErrorMessage className="text-danger" name="last_name" component="div" />
+                    </div>
+                  </Col>
+                </Row>
+
+                <Row className="g-3 mb-3">
+                  <Col className="col-4">
+                    <div className="top-label">
+                      <label className="form-label bg-transparent">{f({ id: 'helper.phone' })}</label>
+                      {/* <Field className="form-control" id="phone" name="phone" disabled={userPrefilled} /> */}
+                      <NumberFormat
+                        className="form-control"
+                        mask="_"
+                        format="####-####"
+                        disabled={userPrefilled}
+                        allowEmptyFormatting
+                        value={values.phone}
+                        onValueChange={({ value }) => {
+                          setFieldValue('phone', value);
+                        }}
+                      />
+                      <ErrorMessage className="text-danger" name="phone" component="div" />
+                    </div>
+                  </Col>
+                  <Col className="col-8">
+                    <div className="top-label">
+                      <label className="form-label bg-transparent">{f({ id: 'helper.email' })}</label>
+                      <Field className="form-control" id="email" name="email" disabled={userPrefilled} />
+                      <ErrorMessage className="text-danger" name="email" component="div" />
+                    </div>
+                  </Col>
+                </Row>
+                
+              </Col>
+            </Row>
           </Form>
+        )}
         </Formik>
       )}
     </>

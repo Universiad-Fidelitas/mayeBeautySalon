@@ -1,64 +1,113 @@
-import React from 'react';
-import { Row, Col, Card, Badge } from 'react-bootstrap';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
+import { useDispatch, useSelector } from 'react-redux';
+import { getReport1 } from 'store/reports/reportsThunk';
+import { Col, Row } from 'react-bootstrap';
 
-export const CardReport = ({ formFields }) => {
-  console.log('karo', formFields);
-  function StockBadge({ stock_status }) {
-    let badgeVariant;
+import { ControlsPageSize, Table, TablePagination } from 'components/datatables';
 
-    switch (stock_status) {
-      case 'Bajo':
-        badgeVariant = 'outline-danger';
-        break;
-      case 'Indefinido':
-        badgeVariant = 'outline-secondary';
-        break;
-      case 'Normal':
-        badgeVariant = 'outline-success'; // Please note that there was a typo in 'outline-sucess'
-        break;
-      default:
-        badgeVariant = 'outline-secondary';
+export const CardReport = () => {
+  const [data, setData] = useState([]);
+  const [term, setTerm] = useState('');
+  const dispatch = useDispatch();
+  const { isReportsLoading, reports, pageCount } = useSelector((state) => state.reports);
+  console.log('1', reports);
+  console.log('2', isReportsLoading);
+  const columns = React.useMemo(() => {
+    return [
+      {
+        Header: 'Imagen',
+        accessor: 'image',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
+      },
+      {
+        Header: 'Producto',
+        accessor: 'name',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Cantidad en producto',
+        accessor: 'total_amount',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Estado del inventario',
+        accessor: 'stock_status',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Cantidad vendida',
+        accessor: 'Sold_amount',
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+      },
+      {
+        Header: 'Product_id',
+        accessor: 'product_id',
+        sortable: true,
+        headerClassName: 'text-muted text-small text-uppercase w-30',
+        hideColumn: true,
+      },
+    ];
+  }, []);
+  const tableInstance = useTable(
+    {
+      columns,
+      data,
+      setData,
+      manualPagination: true,
+      manualFilters: true,
+      manualSortBy: true,
+      autoResetPage: false,
+      autoResetSortBy: false,
+      pageCount,
+      initialState: {
+        pageIndex: 0,
+        pageSize: 5,
+        sortBy: [{ id: 'name', desc: true }],
+        hiddenColumns: ['product_id'],
+      },
+    },
+    useGlobalFilter,
+    useSortBy,
+    usePagination,
+    useRowSelect,
+    useRowState
+  );
+  const {
+    state: { pageIndex, pageSize, sortBy },
+  } = tableInstance;
+  useEffect(() => {
+    dispatch(getReport1({ term, sortBy, pageIndex, pageSize }));
+  }, [sortBy, pageIndex, pageSize, term, dispatch]);
+
+  useEffect(() => {
+    if (reports.length > 0) {
+      setData(reports);
     }
+  }, [isReportsLoading, reports]);
 
-    return badgeVariant;
-  }
   return (
-    <Col lg="12" className="mb-5">
-      <div className="d-flex justify-content-between">
-        <h2 className="small-title">Reporte Inventario</h2>
-      </div>
-      {formFields.map(({ name, image, total_amount, stock_status, Sold_amount }) => (
-        <div key={name} className="mb-2 card">
-          <Card className="g-0 sh-14 sh-md-10 row">
-            <Card.Body className="pt-0 pb-0 h-100">
-              <Row className="g-0 h-100 align-content-center">
-                <Col md="2" className="h-100 col-auto">
-                  <img
-                    src={`${process.env.REACT_APP_BASE_API_URL}/${image}`}
-                    alt="image"
-                    className="card-img card-img-horizontal sw-13 sw-md-12"
-                    id="contactThumb"
-                  />
-                </Col>
-                <Col md="2" className="d-flex align-items-center justify-content-center text-muted text-medium">
-                  <span>{name}</span>
-                </Col>
-                <Col md="2" className="d-flex align-items-center justify-content-center text-muted text-medium">
-                  <span>{total_amount}</span>
-                </Col>
-                <Col md="2" className="d-flex align-items-center justify-content-center text-muted text-medium">
-                  <Badge bg={StockBadge({ stock_status })} className="me-1">
-                    {stock_status}
-                  </Badge>
-                </Col>
-                <Col md="2" className="d-flex align-items-center justify-content-center text-muted text-medium">
-                  <span>{Sold_amount}</span>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-        </div>
-      ))}
-    </Col>
+    <>
+      <h2 className="small-title">Reporte de inventario</h2>
+      <Row className="mb-3">
+        <Col sm="12" md="7" lg="9" xxl="10">
+          <div className="d-inline-block">
+            <ControlsPageSize tableInstance={tableInstance} />
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col xs="12">
+          <Table className="react-table rows" tableInstance={tableInstance} />
+        </Col>
+        <Col xs="12">
+          <TablePagination tableInstance={tableInstance} />
+        </Col>
+      </Row>
+    </>
   );
 };

@@ -116,6 +116,13 @@
   }
 }
 
+.react-select__control--is-disabled {
+  background: rgba(var(--separator-rgb), 0.5) !important;
+  border-color: rgba(var(--separator-rgb), 0.5) !important;
+  color: var(--muted);
+  -webkit-text-fill-color: var(--muted) !important;
+}
+
 .react-select__multi-value__label,
 .react-select__single-value {
   color: var(--body) !important;
@@ -146,6 +153,14 @@
 
   .react-select__multi-value__label {
     padding: 0 !important;
+  }
+  &.employment-select {
+    .react-select__control {
+      min-height: 100px !important;
+      .react-select__value-container {
+        min-height: 60px;
+      }
+    }
   }
 }
 

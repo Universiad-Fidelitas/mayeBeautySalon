@@ -24,11 +24,7 @@ const Facturas = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Facturas';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-    { to: '', text: 'Home' },
-    { to: 'Facturas/Facturas', text: f({ id: 'Facturas' }) },
-    { to: 'Facturas/Facturas', title: 'Facturas' },
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -106,7 +102,7 @@ const Facturas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Numero de Sinpe',
+        Header: 'Número de Sinpe',
         accessor: 'sinpe_phone_number',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
@@ -137,10 +133,19 @@ const Facturas = () => {
         headerClassName: 'text-muted text-small text-uppercase w-30',
       },
       {
-        Header: 'Fecha de venta',
+        Header: 'Fecha de Venta',
         accessor: 'inventory_date',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
+        Cell: ({ value }) => {
+          if (value === null) {
+            return '';
+          }
+          const dateObject = new Date(value);
+          const dateString = dateObject.toLocaleDateString();
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `${dateString} ${timeString}`;
+        },
       },
       {
         Header: 'appointment id',
@@ -153,6 +158,15 @@ const Facturas = () => {
         accessor: 'appointment_date',
         sortable: true,
         headerClassName: 'text-muted text-small text-uppercase w-30',
+        Cell: ({ value }) => {
+          if (value === null) {
+            return '';
+          }
+          const dateObject = new Date(value);
+          const dateString = dateObject.toLocaleDateString();
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `${dateString} ${timeString}`;
+        },
       },
       {
         Header: 'Precio de Cita',
@@ -194,6 +208,9 @@ const Facturas = () => {
           'inventory_id',
           'payment_id',
           'user_id',
+          'first_name',
+          'last_name',
+          'payment_type',
           'appointment_id',
           'sinpe_phone_number',
           'activated',
@@ -240,7 +257,9 @@ const Facturas = () => {
 
   const addItem = useCallback(
     async (values) => {
-      addBill.mutateAsync({ values });
+      const add = addBill.mutateAsync({ values });
+      console.log('add', add);
+      return add;
     },
     [addBill]
   );
@@ -253,13 +272,13 @@ const Facturas = () => {
     status: Yup.string().required('El estado del pago es requerido'),
     payment_type: Yup.string().required('El tipo de pago es requerido'),
     description: Yup.string()
-      .required('La descripción es requerida')
       .min(3, 'La descripción debe tener al menos 3 caracteres')
-      .max(100, 'La descripción no puede tener más de 100 caracteres'),
+      .max(100, 'La descripción no puede tener más de 100 caracteres')
+      .nullable(),
     dataToInsert: Yup.array().of(
       Yup.object().shape({
         product_id: Yup.string().required('El producto es requerido'),
-        amount: Yup.number().min(0, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
+        amount: Yup.number().min(1, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
       })
     ),
     id_card_type: Yup.string().required('El tipo de cedula es requerido'),
@@ -297,38 +316,7 @@ const Facturas = () => {
       .max(10, f({ id: 'helper.phoneMaxLength' })),
   });
 
-  const formFields = [
-    {
-      id: 'sinpe_phone_number',
-      label: 'Número de SINPE',
-      type: 'text',
-    },
-    {
-      id: 'id_card',
-      label: 'Cédula',
-      type: 'text',
-    },
-    {
-      id: 'first_name',
-      label: 'Nombre',
-      type: 'text',
-    },
-    {
-      id: 'last_name',
-      label: 'Apellido',
-      type: 'text',
-    },
-    {
-      id: 'email',
-      label: 'Correo eletrónico',
-      type: 'text',
-    },
-    {
-      id: 'phone',
-      label: 'Número de teléfono',
-      type: 'text',
-    },
-  ];
+  const formFields = [];
 
   return (
     <>

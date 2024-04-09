@@ -1,12 +1,32 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-plusplus */
 import classNames from 'classnames';
 import React from 'react';
 import { useIntl } from 'react-intl';
+import { Row, Col, Card, Badge } from 'react-bootstrap';
 
 export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
   const { formatMessage: f } = useIntl();
   const { getTableProps, headerGroups, page, getTableBodyProps, prepareRow } = tableInstance;
+  function StockBadge({ stock_status }) {
+    let badgeVariant;
 
+    switch (stock_status) {
+      case 'Bajo':
+        badgeVariant = 'outline-danger';
+        break;
+      case 'Indefinido':
+        badgeVariant = 'outline-secondary';
+        break;
+      case 'Normal':
+        badgeVariant = 'outline-success'; // Please note that there was a typo in 'outline-sucess'
+        break;
+      default:
+        badgeVariant = 'outline-secondary';
+    }
+
+    return badgeVariant;
+  }
   return (
     <>
       <table className={className} {...getTableProps()}>
@@ -80,6 +100,34 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                           <span className="badge bg-outline-success">{f({ id: 'helper.activated' })}</span>
                         ) : (
                           <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>
+                        )}
+                      </td>
+                    );
+                  }
+                  if (cell.column.id === 'status') {
+                    return (
+                      <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
+                        {cell.value === 'Pagado' ? (
+                          <span className="badge bg-outline-success">Pagado</span>
+                        ) : cell.value === 'Pendiente' ? (
+                          <span className="badge bg-outline-warning">Pendiente de pago</span>
+                        ) : cell.value === 'Cancelado' ? (
+                          <span className="badge bg-outline-danger">Cancelado</span>
+                        ) : (
+                          <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>
+                        )}
+                      </td>
+                    );
+                  }
+                  if (cell.column.id === 'stock_status') {
+                    return (
+                      <td key={`td.${cellIndex}`} {...cell.getCellProps()} onClick={() => row.toggleRowSelected()}>
+                        {cell.value === 'Bajo' ? (
+                          <span className="badge bg-outline-danger">Bajo</span>
+                        ) : cell.value === 'Indefinido' ? (
+                          <span className="badge bg-outline-secondary">Indefinido</span>
+                        ) : (
+                          <span className="badge bg-outline-success">Normal</span>
                         )}
                       </td>
                     );

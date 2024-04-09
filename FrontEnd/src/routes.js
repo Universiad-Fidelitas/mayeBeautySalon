@@ -2,9 +2,8 @@ import { DEFAULT_PATHS } from 'config.js';
 import Citas from 'views/admin/Citas/Citas';
 import Dashboard from 'views/admin/Dashboard';
 import Facturas from 'views/admin/Facturas/Facturas';
-import Transacciones from 'views/admin/Facturas/Transacciones';
 import Marcas from 'views/admin/Inventario/Marcas/Marcas';
-import Gastos from 'views/admin/Facturas/Gastos';
+import Gastos from 'views/admin/Facturas/Gastos/Gastos';
 import Productos from 'views/admin/Inventario/Productos/Productos';
 import Stock from 'views/admin/Inventario/Stock';
 import Proveedores from 'views/admin/Inventario/Proveedores/Proveedores';
@@ -12,7 +11,7 @@ import Inventario from 'views/admin/Inventario/Inventario';
 import Roles from 'views/admin/Usuarios/Roles';
 import Usuarios from 'views/admin/Usuarios/Usuarios';
 import Logs from 'views/admin/Logs/Logs';
-import Pagos from 'views/admin/Facturas/Pagos';
+import Pagos from 'views/admin/Facturas/Pagos/Pagos';
 import { AppointmentsClient } from 'views/publicViews/AppointmentsClient';
 import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import { HomeView } from 'views/publicViews/HomeView';
@@ -32,7 +31,7 @@ const routesAndMenuItems = {
       hideInMenu: true,
     },
     {
-      path: `${appRoot}/citas`,
+      path: `${appRoot}/admin/citas`,
       label: 'Citas',
       icon: 'check-square',
       component: Citas,
@@ -72,14 +71,34 @@ const routesAndMenuItems = {
       subs: [
         { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
         { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
-        { path: '/transacciones', icon: 'book-open', label: 'Transacciones', roles: 'R_TRANSACTIONS', component: Transacciones },
         { path: '/pagos', icon: 'book-open', label: 'Pagos', component: Pagos },
       ],
     },
     {
-      path: `${appRoot}/cliente/citas`,
+      path: `${appRoot}/citas`,
       label: 'appointments.menuTitle',
       icon: 'check-square',
+      component: AppointmentsClient,
+      publicOnly: true,
+    },
+    {
+      path: `${appRoot}/servicios`,
+      label: 'Servicios',
+      icon: 'crown',
+      component: AppointmentsClient,
+      publicOnly: true,
+    },
+    {
+      path: `${appRoot}/contacto`,
+      label: 'Contacto',
+      icon: 'phone',
+      component: AppointmentsClient,
+      publicOnly: true,
+    },
+    {
+      path: `${appRoot}/redes-sociales`,
+      label: 'Redes Sociales',
+      icon: 'instagram',
       component: AppointmentsClient,
       publicOnly: true,
     },
