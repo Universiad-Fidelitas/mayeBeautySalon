@@ -3,7 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const { dbConnection } = require('../database/config');
 const { authenticateToken } = require('../middlewares/jsonwebtoken');
-const { appointmentsReminder } = require('../helpers/CronJobs');
+const { appointmentsReminder } = require('../helpers/cronJobs');
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 
 class Server {
