@@ -30,7 +30,7 @@ export const ThanksTap = () => {
         <div>
           <div className="text-center">
             <NavLink to="/" onClick={() => { dispatch(setAppointmentServiceInformation({}))}} className="btn btn-icon btn-icon-start btn-primary mb-3 ">
-              <CsLineIcons icon="arrow-left" /> <span>Volver a casa</span>
+              <CsLineIcons icon="arrow-left" /> <span>Volver al inicio</span>
             </NavLink>
             <h1 className="mb-2">¡Tu cita se ha agendado con éxito!</h1>
             <p>
