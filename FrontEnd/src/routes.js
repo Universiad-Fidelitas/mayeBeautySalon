@@ -17,6 +17,7 @@ import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import { HomeView } from 'views/publicViews/HomeView';
 import Categorias from 'views/admin/Inventario/Categorias/Categorias';
 import { Notificacions } from 'views/admin/Inventario/Notifications/Notificacions';
+import { Services } from 'views/publicViews/Services';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
@@ -78,27 +79,6 @@ const routesAndMenuItems = {
       path: `${appRoot}/citas`,
       label: 'appointments.menuTitle',
       icon: 'check-square',
-      component: AppointmentsClient,
-      publicOnly: true,
-    },
-    {
-      path: `${appRoot}/servicios`,
-      label: 'Servicios',
-      icon: 'crown',
-      component: AppointmentsClient,
-      publicOnly: true,
-    },
-    {
-      path: `${appRoot}/contacto`,
-      label: 'Contacto',
-      icon: 'phone',
-      component: AppointmentsClient,
-      publicOnly: true,
-    },
-    {
-      path: `${appRoot}/redes-sociales`,
-      label: 'Redes Sociales',
-      icon: 'instagram',
       component: AppointmentsClient,
       publicOnly: true,
     },
