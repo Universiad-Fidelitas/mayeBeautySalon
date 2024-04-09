@@ -37,6 +37,10 @@ export const PagosModalAddEdit = ({ tableInstance, apiParms }) => {
           });
           formData.set('voucher_path', values.voucher_path[0].dataurl);
         }
+      } else {
+        Object.entries(userSchema).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
       }
       if (selectedFlatRows.length === 1) {
         updatePayment.mutateAsync(formData);

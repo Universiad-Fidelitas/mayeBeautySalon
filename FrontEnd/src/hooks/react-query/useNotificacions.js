@@ -48,7 +48,7 @@ export const useNotifications = ({ term, pageIndex, pageSize, sortBy }) => {
 
         return { previousData };
       },
-      onSettled: async (pageCount , error) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-notificacions', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-notificacions', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -63,8 +63,8 @@ export const useNotifications = ({ term, pageIndex, pageSize, sortBy }) => {
   const updateNotification = () => {
     const queryClient = useQueryClient();
 
-    const updateNotificationApi = useCallback(async ({ notification_id, product_id, amount }) => {
-      const { data } = await baseApi.put(`/notifications/${ notification_id }`, { product_id, amount });
+    const updateNotificationApi = useCallback(async ({ notification_id, amount, product_id }) => {
+      const { data } = await baseApi.put(`/notifications/${notification_id}`, { amount, product_id });
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
@@ -75,14 +75,14 @@ export const useNotifications = ({ term, pageIndex, pageSize, sortBy }) => {
     }, []);
 
     return useMutation(updateNotificationApi, {
-      onMutate: async (notificationUpdated) => {
+      onMutate: async (notificationData) => {
         await queryClient.cancelQueries(['project-notificacions', { term, pageIndex, pageSize, sortBy }]);
         const previousData = queryClient.getQueryData(['project-notificacions', { term, pageIndex, pageSize, sortBy }]);
 
         queryClient.setQueryData(['project-notificacions', { term, pageIndex, pageSize, sortBy }], (oldData) => {
           const newItems = oldData.items.map((item) => {
-            if (item.category_id === notificationUpdated.category_id) {
-              return notificationUpdated;
+            if (item.notification_id === notificationData.notification_id) {
+              return notificationData;
             }
             return item;
           });
@@ -94,37 +94,8 @@ export const useNotifications = ({ term, pageIndex, pageSize, sortBy }) => {
         });
 
         return { previousData };
-      }
-    });
-  };
-
-  const inactivateNotifications = () => {
-    const queryClient = useQueryClient();
-  
-    const inactivatenotificationsApi = useCallback(
-      async (notifications) => {
-        const { data } = await baseApi.post('/notifications/delete', { notification_id: notifications.toString() });
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
       },
-      [f]
-    );
-  
-    return useMutation(inactivatenotificationsApi, {
-      onMutate: async (newNotification) => {
-        queryClient.setQueryData(['project-notificacions', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          return {
-            ...oldData,
-            items: oldData.items.filter(({ category_id }) => !newNotification.includes(category_id)),
-          };
-        });
-      },
-      onSettled: async (pageCount , error) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-notificacions', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-notificacions', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -132,6 +103,26 @@ export const useNotifications = ({ term, pageIndex, pageSize, sortBy }) => {
             pageCount,
           }));
         }
+      },
+    });
+  };
+
+  const inactivateNotifications = () => {
+    const queryClient = useQueryClient();
+    const inactivatenotificationsApi = useCallback(async (notifications) => {
+      const { data } = await baseApi.post('/notifications/delete', { notification_id: notifications.toString() });
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
+
+    return useMutation(inactivatenotificationsApi, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(['project-notificacions', { term, pageIndex, pageSize, sortBy }]);
       },
     });
   };

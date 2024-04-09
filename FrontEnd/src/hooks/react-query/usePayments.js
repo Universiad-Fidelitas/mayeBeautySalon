@@ -111,38 +111,19 @@ export const usePayments = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const inactivatePayments = () => {
     const queryClient = useQueryClient();
-
-    const inactivatePaymentosApi = useCallback(
-      async (payments) => {
-        const { data } = await baseApi.post('/payments/delete', { payment_id: payments.toString() });
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
-
+    const inactivatePaymentosApi = useCallback(async (payments) => {
+      const { data } = await baseApi.post('/payments/delete', { payment_id: payments.toString() });
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
     return useMutation(inactivatePaymentosApi, {
-      onMutate: async (newPayment) => {
-        queryClient.setQueryData(['project-payments', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          return {
-            ...oldData,
-            items: oldData.items.filter(({ category_id }) => !newPayment.includes(category_id)),
-          };
-        });
-      },
-      onSettled: async (pageCount, error) => {
+      onSuccess: async () => {
         await queryClient.invalidateQueries(['project-payments', { term, pageIndex, pageSize, sortBy }]);
-        if (!error && pageCount) {
-          queryClient.setQueryData(['project-payments', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
-            ...oldData,
-            pageCount,
-          }));
-        }
       },
     });
   };

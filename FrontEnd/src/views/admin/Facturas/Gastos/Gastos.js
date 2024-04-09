@@ -76,11 +76,12 @@ const Gastos = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  const { getExpenses, deleteExpenses } = useExpenses({ term, pageIndex, pageSize, sortBy });
+  const { getExpenses, inactivateExpenses } = useExpenses({ term, pageIndex, pageSize, sortBy });
   const { isSuccess: isExpensesDataSuccess, data: expensesData } = getExpenses;
 
   useEffect(() => {
     if (isExpensesDataSuccess) {
+      console.log('vacio', expensesData);
       setData(expensesData.items);
       setPageCount(expensesData.pageCount);
     }
@@ -88,10 +89,9 @@ const Gastos = () => {
 
   const deleteItems = useCallback(
     async (values) => {
-      const valuesAsString = values.join(',');
-      deleteExpenses.mutateAsync({ expenses_id: valuesAsString });
+      inactivateExpenses.mutateAsync(values);
     },
-    [deleteExpenses]
+    [inactivateExpenses]
   );
 
   const searchItem = useAsyncDebounce((val) => {
