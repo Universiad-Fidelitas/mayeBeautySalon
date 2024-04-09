@@ -5,11 +5,9 @@ import { useIntl } from 'react-intl';
 import * as Yup from 'yup';
 import { baseApi } from 'api/apiConfig';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCustumerInfo } from 'store/appointments/appointmentsSlice';
 
 export const SecondDataRequestTap = ({ formRef }) => {
   const dispatch = useDispatch();
-  const { custumerInfo } = useSelector((state) => state.appointments);
   const { formatMessage: f } = useIntl();
   const [initialValues, setInitialValues] = useState({
     id_card: '',
@@ -21,14 +19,6 @@ export const SecondDataRequestTap = ({ formRef }) => {
   const [userPrefilled, setuserPrefilled] = useState(false);
   const [showUserInfoForm, setShowUserInfoForm] = useState(false);
   const [isFindingCustomer, setIsFindingCustomer] = useState(false);
-
-  useEffect(() => {
-    if (custumerInfo.id_card) {
-      setInitialValues(custumerInfo);
-      setShowUserInfoForm(true);
-      setuserPrefilled(true);
-    }
-  }, [custumerInfo]);
 
   const validationSchema = useMemo(
     () =>
@@ -99,7 +89,7 @@ export const SecondDataRequestTap = ({ formRef }) => {
   );
 
   const onFormSubmit = useCallback(() => {
-    dispatch(setCustumerInfo(initialValues));
+    console.log('first')
   }, [initialValues, dispatch]);
 
   return (
@@ -107,7 +97,7 @@ export const SecondDataRequestTap = ({ formRef }) => {
       <h5 className="card-title">{f({ id: 'appointments.SecondTaptitle' })}</h5>
       <p className="card-text text-alternate mb-4">{f({ id: 'appointments.SecondTapDescription' })}</p>
 
-      <Formik initialValues={{ id_card: '305300042' }} onSubmit={onCustomerFinder} validationSchema={validationSchemaCard}>
+      <Formik initialValues={{ id_card: '' }} onSubmit={onCustomerFinder} validationSchema={validationSchemaCard}>
         <Form>
           <div className="w-30 mb-3">
             <label className="form-label">{f({ id: 'helper.idcard' })}</label>

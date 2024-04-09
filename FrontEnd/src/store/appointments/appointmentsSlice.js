@@ -1,24 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  selectedAppointments: {},
-  custumerInfo: {},
+  appointmentServiceInformation: {},
+  isAbleToNext: false,
 };
 
 const appointmentsSlice = createSlice({
   name: 'appointments',
   initialState,
   reducers: {
-    setServiceDateTime(state, action) {
-      state.selectedAppointments = action.payload;
+    setAppointmentServiceInformation(state, action) {
+      state.appointmentServiceInformation = action.payload;
     },
-    setCustumerInfo(state, action) {
-      state.custumerInfo = action.payload;
+    setIsAbleToNext(state, action) {
+      state.isAbleToNext = action.payload;
     },
   },
 });
 
-export const { setServiceDateTime, setCustumerInfo } = appointmentsSlice.actions;
+export const { setAppointmentServiceInformation, setIsAbleToNext } = appointmentsSlice.actions;
 const appointmentsReducer = appointmentsSlice.reducer;
 
 export default appointmentsReducer;

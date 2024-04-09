@@ -116,4 +116,13 @@ export const useUsers = ({ term, pageIndex, pageSize, sortBy }) => {
   };
 };
 
+export const useGetEmployments = () => {
+  const getEmployments = async () => {
+    const { data } = await baseApi.post('/users/employments');
+    return data;
+  };
+  return useQuery(['employments-users'], getEmployments);
+};
+
+
 /* eslint-enable react-hooks/rules-of-hooks */

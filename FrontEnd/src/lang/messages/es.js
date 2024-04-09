@@ -263,7 +263,7 @@ const enMessages = {
   'appointments.menuTitle': 'Agendar Cita',
 
   'appointments.FirstTaptitle': 'Elegir Servicio',
-  'appointments.FirstTapDescription': 'Por favor, elija el servicio y la fecha para la cita',
+  'appointments.FirstTapDescription': 'Por favor, elija el servicio, fecha y su estilista de preferencia para la cita',
 
   'appointments.SecondTaptitle': 'Información del Cliente',
   'appointments.SecondTapDescription': 'Por favor, complete la información del cliente',

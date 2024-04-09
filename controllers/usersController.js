@@ -209,11 +209,31 @@ const deleteUser = async (req, res = response) => {
     }
 };
 
+const getEmployments = async (req, res = response) => {
+    try {
+        const employments = await dbService.query('SELECT * FROM employments_summary', []);
+    
+        res.status(200).json({
+            success: true,
+            employments,
+            message: "services.successAdd"
+        });
+    }
+    catch(error) {
+        res.status(200).json({
+            success: false,
+            message: "services.errorAdd",
+            error: error.message
+        })
+    }
+}
+
 
 module.exports = {
     getUser,
     postUser,
     deleteUser,
     putUser,
-    getByIdUser
+    getByIdUser,
+    getEmployments
 }

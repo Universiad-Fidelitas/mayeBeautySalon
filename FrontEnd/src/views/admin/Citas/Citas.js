@@ -14,6 +14,7 @@ import { useIntl } from 'react-intl';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ModalAddEdit from './components/ModalAddEdit';
 import { setSelectedEvent } from './calendarSlice';
+import { AppointmentsModalAddEdit } from './AppointmentsModalAddEdit';
 
 const CustomToggle = React.forwardRef(({ onClick }, ref) => (
   <Button
@@ -251,14 +252,10 @@ const Citas = () => {
           }}
         />
       </Card>
-      {isShowModalAddEdit && (
-        <ModalAddEdit
-          show={isShowModalAddEdit}
-          onHide={() => {
-            setIsShowModalAddEdit(false);
-          }}
-        />
-      )}
+      <AppointmentsModalAddEdit
+        isOpenAddEditModal={isShowModalAddEdit}
+        setIsOpenAddEditModal={setIsShowModalAddEdit}
+      />
     </>
   );
 };

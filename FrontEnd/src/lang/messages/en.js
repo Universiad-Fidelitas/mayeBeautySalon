@@ -258,7 +258,7 @@ const enMessages = {
   'appointments.menuTitle': 'Schedule Appointment',
 
   'appointments.FirstTaptitle': 'Choose Service',
-  'appointments.FirstTapDescription': 'Please chose the service and date for the appointment',
+  'appointments.FirstTapDescription': 'Please choose the service, date and your preferred stylist for the appointment',
 
   'appointments.SecondTaptitle': 'Customer Information',
   'appointments.SecondTapDescription': 'Please fill in the following information',
