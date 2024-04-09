@@ -32,9 +32,16 @@
 }
 
 .appointments-table {
+  @include respond-below(lg) {
+    overflow-x: scroll;
+  }
   .table-cell {
     text-align: center;
     &.selectedCellDate {
+      background-color: var(--success);
+      color: var(--white);
+    }
+    &.todayCell {
       background-color: var(--primary);
       color: var(--white);
     }

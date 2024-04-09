@@ -5,12 +5,15 @@ import { Wizard, Steps, Step, WithWizard } from 'react-albus';
 import { Button } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { setAppointmentServiceInformation } from 'store/appointments/appointmentsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { baseApi } from 'api/apiConfig';
 import { FirstDataRequestTap } from './Appointments/FirstDataRequestTap';
 import { SecondDataRequestTap } from './Appointments/SecondDataRequestTap';
 import { MENU_PLACEMENT } from '../../constants';
+
 import { ThanksTap } from './Appointments/ThanksTap';
+
 
 export const AppointmentsClient = () => {
   const title = 'Horizontal Menu';
@@ -20,16 +23,9 @@ export const AppointmentsClient = () => {
   const [fields, setFields] = useState(false);
   const [savingData, setSavingData] = useState();
   const { formatMessage: f } = useIntl();
-  const custumerInfo = useSelector((state) => state.appointments);
-
-  const isNextAble = useMemo(() => {
-    const { selectedService, appointmentDateTime } = custumerInfo.selectedAppointments;
-    console.log('custumerInfo', selectedService && appointmentDateTime);
-    if (selectedService && appointmentDateTime) {
-      return false;
-    }
-    return true;
-  }, [custumerInfo]);
+  const { isAbleToNext } = useSelector((state) => state.appointments);
+  console.log('isAbleToNext', isAbleToNext)
+  const dispatch = useDispatch();
 
   const onClickNext = (goToNext, steps, step) => {
     if (steps.length - 1 <= steps.indexOf(step)) {
@@ -41,13 +37,16 @@ export const AppointmentsClient = () => {
     if (form) {
       form.submitForm().then(async () => {
         if (!form.isDirty && form.isValid) {
+
+          form.validateForm();
           const newFields = { ...fields, ...form.values };
 
           setFields(newFields);
 
           if (steps.length - 2 <= steps.indexOf(step)) {
-            console.log('custumerInfo', { ...newFields, ...custumerInfo.selectedAppointments });
-            const { data } = await baseApi.post('/appointments/save-appointment', { ...newFields, ...custumerInfo.selectedAppointments });
+            dispatch(setAppointmentServiceInformation(newFields));
+            const { data } = await baseApi.post('/appointments/save-appointment', { ...newFields });
+            
             setSavingData({
               isLoaded: true,
               ...data,
@@ -112,7 +111,7 @@ export const AppointmentsClient = () => {
               <SecondDataRequestTap formRef={forms} />
             </Step>
             <Step id="step3" hideTopNav>
-              <ThanksTap savingData={savingData} />
+              <ThanksTap/>
             </Step>
           </Steps>
           <WithWizard
@@ -129,7 +128,7 @@ export const AppointmentsClient = () => {
                 </Button>
                 <Button
                   variant="outline-primary"
-                  disabled={isNextAble}
+                  disabled={!isAbleToNext}
                   className={`btn-icon btn-icon-end ${steps.indexOf(step) >= steps.length - 1 ? 'disabled' : ''}`}
                   onClick={() => {
                     onClickNext(next, steps, step);

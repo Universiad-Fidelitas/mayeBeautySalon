@@ -1,15 +1,20 @@
+import { useGetAllServices } from 'hooks/react-query/useServices';
 import moment from 'moment';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Spinner } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 
-export const ThanksTap = ({ savingData }) => {
-  const { date, start_time, price, email, serviceName, isLoaded } = savingData;
+export const ThanksTap = () => {
+  const { appointmentServiceInformation } = useSelector((state) => state.appointments);
+  const { service_time, service_date, email } = appointmentServiceInformation;
+  const { data, isSuccess: isServicesSuccess } = useGetAllServices();
+  const { name, price } = useMemo(() =>  isServicesSuccess && data.services.find(({service_id}) => service_id === appointmentServiceInformation.service_id), [appointmentServiceInformation, isServicesSuccess])
 
   const { formatDate } = useIntl();
   return (
     <div className="d-flex flex-column justify-content-center align-items-center mt-5">
-      {!isLoaded ? (
+      {!appointmentServiceInformation ? (
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
         </div>
@@ -26,14 +31,14 @@ export const ThanksTap = ({ savingData }) => {
             <h5 className="mb-2">¡Aquí tienes un resumen de tu próximo servicio!</h5>
             <p className="m-0">
               <span className="font-weight-bold text-primary">Servicio seleccionado: </span>
-              {serviceName}
+              {name}
             </p>
             <p className="m-0">
               <span className="font-weight-bold text-primary">Fecha: </span>
-              {formatDate(moment(date, 'YYYY-MM-DD'), { month: 'long', day: 'numeric', year: 'numeric' })}
+              {formatDate(moment(service_date, 'YYYY-MM-DD'), { month: 'long', day: 'numeric', year: 'numeric' })}
             </p>
             <p className="m-0">
-              <span className="font-weight-bold text-primary">Hora:</span> {moment(start_time, 'HH:mm:ss').format('hh:mmA')}{' '}
+              <span className="font-weight-bold text-primary">Hora:</span> {moment(service_time, 'HH:mm:ss').format('hh:mm A')}{' '}
             </p>
             <p className="m-0 mb-2">
               <span className="font-weight-bold text-primary">Precio:</span>{' '}
