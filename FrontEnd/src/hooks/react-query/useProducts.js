@@ -111,38 +111,19 @@ export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const inactivateProductos = () => {
     const queryClient = useQueryClient();
-  
-    const inactivateProductosApi = useCallback(
-      async (products) => {
-        const { data } = await baseApi.post('/products/delete', { product_id: products.toString() });
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
-  
+    const inactivateProductosApi = useCallback(async (products) => {
+      const { data } = await baseApi.post('/products/delete', { product_id: products.toString() });
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
     return useMutation(inactivateProductosApi, {
-      onMutate: async (newProduct) => {
-        queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          return {
-            ...oldData,
-            items: oldData.items.filter(({ category_id }) => !newProduct.includes(category_id)),
-          };
-        });
-      },
-      onSettled: async (pageCount , error) => {
+      onSuccess: async () => {
         await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy }]);
-        if (!error && pageCount) {
-          queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
-            ...oldData,
-            pageCount,
-          }));
-        }
       },
     });
   };

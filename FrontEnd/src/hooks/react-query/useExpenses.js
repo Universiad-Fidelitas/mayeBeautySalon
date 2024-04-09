@@ -98,7 +98,7 @@ export const useExpenses = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
 
-      onSettled: async (pageCount, error) => {
+      onSettled: async ({ pageCount }, error) => {
         await queryClient.invalidateQueries(['project-expenses', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-expenses', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -112,39 +112,20 @@ export const useExpenses = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const inactivateExpenses = () => {
     const queryClient = useQueryClient();
+    const inactivateExpensesApi = useCallback(async (expenses) => {
+      const { data } = await baseApi.post('/expenses/delete', { expense_id: expenses.toString() });
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
 
-    const inactivateCategoriesApi = useCallback(
-      async (expenses) => {
-        const { data } = await baseApi.post('/expenses/delete', { expense_id: expenses.toString() });
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
-
-    return useMutation(inactivateCategoriesApi, {
-      onMutate: async (newExpense) => {
-        queryClient.setQueryData(['project-expenses', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          console.log('oldDataMAUUU', oldData, newExpense);
-          return {
-            ...oldData,
-            items: oldData.items.filter(({ expense_id }) => !newExpense.includes(expense_id)),
-          };
-        });
-      },
-      onSettled: async (pageCount, error) => {
+    return useMutation(inactivateExpensesApi, {
+      onSuccess: async () => {
         await queryClient.invalidateQueries(['project-expenses', { term, pageIndex, pageSize, sortBy }]);
-        if (!error && pageCount) {
-          queryClient.setQueryData(['project-expenses', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
-            ...oldData,
-            pageCount,
-          }));
-        }
       },
     });
   };

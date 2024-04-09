@@ -65,7 +65,7 @@ export const useProviders = ({ term, pageIndex, pageSize, sortBy }) => {
     const queryClient = useQueryClient();
 
     const updateCategoryApi = useCallback(async ({ provider_id, name, phone, email }) => {
-      const { data } = await baseApi.put(`/providers/${ provider_id }`, { name, phone, email });
+      const { data } = await baseApi.put(`/providers/${provider_id}`, { name, phone, email });
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
@@ -77,7 +77,7 @@ export const useProviders = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(updateCategoryApi, {
       onMutate: async (providerUpdated) => {
-        console.log('providerUpdated', providerUpdated)
+        console.log('providerUpdated', providerUpdated);
         await queryClient.cancelQueries(['project-providers', { term, pageIndex, pageSize, sortBy }]);
         const previousData = queryClient.getQueryData(['project-providers', { term, pageIndex, pageSize, sortBy }]);
 
@@ -98,7 +98,7 @@ export const useProviders = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
 
-      onSettled: async (pageCount , error) => {
+      onSettled: async (pageCount, error) => {
         await queryClient.invalidateQueries(['project-providers', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-providers', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -112,39 +112,21 @@ export const useProviders = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const inactivateProviders = () => {
     const queryClient = useQueryClient();
-  
-    const inactivateCategoriesApi = useCallback(
-      async (providers) => {
-        const { data } = await baseApi.post('/providers/delete', { provider_id: providers.toString() });
-        const { success, message } = data;
-        if (success) {
-          toast(f({ id: message }), { className: 'success' });
-        } else {
-          toast(f({ id: message }), { className: 'danger' });
-        }
-        return data;
-      },
-      [f]
-    );
-  
+
+    const inactivateCategoriesApi = useCallback(async (providers) => {
+      const { data } = await baseApi.post('/providers/delete', { provider_id: providers.toString() });
+      const { success, message } = data;
+      if (success) {
+        toast(f({ id: message }), { className: 'success' });
+      } else {
+        toast(f({ id: message }), { className: 'danger' });
+      }
+      return data;
+    }, []);
+
     return useMutation(inactivateCategoriesApi, {
-      onMutate: async (newProvider) => {
-        queryClient.setQueryData(['project-providers', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          console.log('oldDataMAUUU', oldData, newProvider)
-          return {
-            ...oldData,
-            items: oldData.items.filter(({ category_id }) => !newProvider.includes(category_id)),
-          };
-        });
-      },
-      onSettled: async (pageCount , error) => {
-        await queryClient.invalidateQueries(['project-providers', { term, pageIndex, pageSize, sortBy }]);
-        if (!error && pageCount) {
-          queryClient.setQueryData(['project-providers', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
-            ...oldData,
-            pageCount,
-          }));
-        }
+      onSuccess: async () => {
+        queryClient.invalidateQueries(['project-providers', { term, pageIndex, pageSize, sortBy }]);
       },
     });
   };

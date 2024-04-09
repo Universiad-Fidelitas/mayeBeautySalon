@@ -14,8 +14,7 @@ export const Notificacions = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Notificaciones';
   const description = 'En este módulo se va a crear las alertas para que el sistema le notifique cuando un producto esta bajo de inventario';
-  const breadcrumbs = [
-];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -106,7 +105,7 @@ export const Notificacions = () => {
     async (values) => {
       inactivateNotifications.mutateAsync(values);
     },
-    [dispatch]
+    [inactivateNotifications]
   );
 
   const searchItem = useAsyncDebounce((val) => {

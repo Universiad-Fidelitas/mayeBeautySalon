@@ -112,7 +112,7 @@ const Pagos = () => {
     async (values) => {
       inactivatePayments.mutateAsync(values);
     },
-    [dispatch]
+    [inactivatePayments]
   );
 
   const searchItem = useAsyncDebounce((val) => {
@@ -151,7 +151,7 @@ const Pagos = () => {
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar el producto seleccionado?"
-                    modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                    modalDescription="El pago seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="payment"
                   />
                 </div>
