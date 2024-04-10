@@ -11,7 +11,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="p-0">
+    <footer className="p-0" style={{ height: '165px' }}>
       <div className="footer-content d-flex justify-content-evenly">
         <Container className="g-3 d-flex row">
           <Row>
