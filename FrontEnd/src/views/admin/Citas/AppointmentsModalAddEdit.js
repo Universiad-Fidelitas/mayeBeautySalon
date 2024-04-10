@@ -107,8 +107,8 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
       } else {
         const itemSubmit = {
           title: services.find((x) => x.value === service_id).label,
-          start: convertDateToString(serviceDate, moment(startTime, 'hh:mm A').format('HH:mm')),
-          end: convertDateToString(serviceDate, moment(endTime, 'hh:mm A').format('HH:mm')),
+          start: `${moment(serviceDate).format("YYYY-MM-DD")}T${moment(startTime, 'hh:mm A').format('HH:mm')}`,
+          end: `${moment(serviceDate).format("YYYY-MM-DD")}T${moment(endTime, 'hh:mm A').format('HH:mm')}`,
           service_id,
           extra_description: extraDescription?.length > 0 ? extraDescription : '',
           extra: extra?.toString().length > 0 ? extra : 0,
@@ -299,7 +299,7 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
           </Modal.Header>
           <Modal.Body className="d-flex flex-column">
             <p>
-              <span className="fw-bold">{selectedItem.title}</span> <span>será eliminado ¿Estas seguro?</span>
+              <span>La cita será eliminada ¿Estas seguro?</span>
             </p>
           </Modal.Body>
           <Modal.Footer>
