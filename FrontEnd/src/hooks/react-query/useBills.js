@@ -5,12 +5,14 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 
 /* eslint-disable react-hooks/rules-of-hooks */
-export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
+export const useBills = ({ term, term2, term3, pageIndex, pageSize, sortBy }) => {
   const { formatMessage: f } = useIntl();
 
   const getBills = async () => {
     const { data } = await baseApi.post('/bills', {
       term,
+      term2,
+      term3,
       pageIndex,
       pageSize,
       sortBy,
@@ -36,10 +38,10 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(addBillApi, {
       onMutate: async (newBill) => {
-        await queryClient.cancelQueries(['project-bills', { term, pageIndex, pageSize, sortBy }]);
-        const previousData = queryClient.getQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.cancelQueries(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
+        const previousData = queryClient.getQueryData(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
 
-        queryClient.setQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }], (oldData) => {
+        queryClient.setQueryData(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }], (oldData) => {
           const newItems = [newBill.values, ...oldData.items.slice(0, 4)];
           return {
             ...oldData,
@@ -52,9 +54,9 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
       },
 
       onSettled: async ({ pageCount }, error) => {
-        await queryClient.invalidateQueries(['project-bills', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
-          queryClient.setQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
+          queryClient.setQueryData(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }], (oldData) => ({
             ...oldData,
             pageCount,
           }));
@@ -78,9 +80,9 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
     }, []);
     return useMutation(updateBillApi, {
       onMutate: async (billData) => {
-        await queryClient.cancelQueries(['project-bills', { term, pageIndex, pageSize, sortBy }]);
-        const previousData = queryClient.getQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }]);
-        queryClient.setQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }], (oldData) => {
+        await queryClient.cancelQueries(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
+        const previousData = queryClient.getQueryData(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
+        queryClient.setQueryData(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }], (oldData) => {
           const newItems = oldData.items.map((item) => {
             if (item.bills_id === billData.values.bills_id) {
               return billData.values;
@@ -96,9 +98,9 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
       onSettled: async ({ pageCount }, error) => {
-        await queryClient.invalidateQueries(['project-bills', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
-          queryClient.setQueryData(['project-bills', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
+          queryClient.setQueryData(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }], (oldData) => ({
             ...oldData,
             pageCount,
           }));
@@ -120,12 +122,12 @@ export const useBills = ({ term, pageIndex, pageSize, sortBy }) => {
     }, []);
     return useMutation(deleteBillsApi, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(['project-bills', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }]);
       },
     });
   };
   return {
-    getBills: useQuery(['project-bills', { term, pageIndex, pageSize, sortBy }], getBills),
+    getBills: useQuery(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }], getBills),
     addBill: addBill(),
     updateBill: updateBill(),
     deleteBills: deleteBills(),

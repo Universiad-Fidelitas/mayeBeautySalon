@@ -79,7 +79,7 @@ const Login = () => {
               <div className="filled form-group tooltip-end-top">
                 <CsLineIcons icon="lock-off" />
                 <Form.Control
-                  type="email"
+                  type="text"
                   name="email"
                   className={classNames(errors.email && touched.email && 'is-invalid')}
                   onChange={handleChange}

@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { Field } from 'formik';
 import {
   ModalAddEdit,
   ButtonsAddNew,
@@ -9,6 +10,7 @@ import {
   ControlsDelete,
   Table,
   TablePagination,
+  ControlsDatePicker,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +20,7 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import { useBills } from 'hooks/react-query/useBills';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { SelectField } from 'components/SelectField';
 import { ModalAddEditFacturas } from './ModalAddEditFacturas';
 
 const Facturas = () => {
@@ -28,15 +31,19 @@ const Facturas = () => {
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+  const [term2, setTerm2] = useState('');
+  const [term3, setTerm3] = useState('');
   const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Bill Id',
+        Header: 'No. Factura',
         accessor: 'bills_id',
         hideColumn: true,
+
+        headerClassName: 'text-muted text-small text-uppercase w-10',
       },
       {
         Header: 'Activado',
@@ -49,7 +56,7 @@ const Facturas = () => {
         Header: 'Correo electrónico',
         accessor: 'email',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-20',
       },
       {
         Header: 'Nombre',
@@ -80,13 +87,13 @@ const Facturas = () => {
         Header: 'Cédula',
         accessor: 'id_card',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-10',
       },
       {
         Header: 'Tipo de cédula',
         accessor: 'id_card_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-10',
       },
       {
         Header: 'Pago ID',
@@ -99,19 +106,19 @@ const Facturas = () => {
         Header: 'Tipo pago',
         accessor: 'payment_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-15',
       },
       {
         Header: 'Número de Sinpe',
         accessor: 'sinpe_phone_number',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-10',
       },
       {
         Header: 'Estado de Pago',
         accessor: 'status',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-10',
       },
       {
         Header: 'Inventory ID',
@@ -136,7 +143,7 @@ const Facturas = () => {
         Header: 'Fecha de Venta',
         accessor: 'inventory_date',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-20',
         Cell: ({ value }) => {
           if (value === null) {
             return '';
@@ -157,7 +164,7 @@ const Facturas = () => {
         Header: 'Fecha de Cita',
         accessor: 'appointment_date',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-small text-uppercase w-20',
         Cell: ({ value }) => {
           if (value === null) {
             return '';
@@ -204,7 +211,6 @@ const Facturas = () => {
         pageSize: 5,
         sortBy: [{ id: 'bills_id', desc: false }],
         hiddenColumns: [
-          'bills_id',
           'inventory_id',
           'payment_id',
           'user_id',
@@ -230,7 +236,7 @@ const Facturas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  const { getBills, deleteBills, addBill, updateBill } = useBills({ term, pageIndex, pageSize, sortBy });
+  const { getBills, deleteBills, addBill, updateBill } = useBills({ term, term2, term3, pageIndex, pageSize, sortBy });
   const { isSuccess: isBillsDataSuccess, data: billsData } = getBills;
 
   useEffect(() => {
@@ -266,6 +272,12 @@ const Facturas = () => {
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
+  }, 200);
+  const searchItem2 = useAsyncDebounce((val) => {
+    setTerm2(val || undefined);
+  }, 200);
+  const searchItem3 = useAsyncDebounce((val) => {
+    setTerm3(val || undefined);
   }, 200);
 
   const validationSchema = Yup.object().shape({
@@ -338,12 +350,22 @@ const Facturas = () => {
 
           <div>
             <Row className="mb-3">
-              <Col sm="12" md="5" lg="3" xxl="2">
+              <Col sm="12" md="4" lg="4" xxl="4">
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
                   <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
-              <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
+              <Col sm="12" md="4" lg="4" xxl="4">
+                <div className="mb-1">
+                  <ControlsDatePicker tableInstance={tableInstance} onChange={searchItem2} />
+                </div>
+              </Col>
+              <Col sm="12" md="4" lg="4" xxl="4">
+                <div className="mb-1">
+                  <ControlsDatePicker tableInstance={tableInstance} onChange={searchItem3} />
+                </div>
+              </Col>
+              <Col sm="12" md="12" lg="12" xxl="12" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
                   <ControlsDelete
