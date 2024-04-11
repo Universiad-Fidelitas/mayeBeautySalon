@@ -111,8 +111,8 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                           <span className="badge bg-outline-success">Pagado</span>
                         ) : cell.value === 'Pendiente' ? (
                           <span className="badge bg-outline-warning">Pendiente de pago</span>
-                        ) : cell.value === 'Cancelado' ? (
-                          <span className="badge bg-outline-danger">Cancelado</span>
+                        ) : cell.value === 'Anulado' ? (
+                          <span className="badge bg-outline-danger">Anulado</span>
                         ) : (
                           <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>
                         )}

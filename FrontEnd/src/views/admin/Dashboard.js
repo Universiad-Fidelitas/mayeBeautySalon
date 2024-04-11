@@ -12,8 +12,7 @@ const Dashboard = () => {
   const title = 'Panel de control';
   const description = 'Analytic Dashboard';
 
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const { data: reports2Data } = useReports2();
   const { data: reports3Data } = useReports3();
   let formFields;
@@ -60,7 +59,7 @@ const Dashboard = () => {
         <Col lg="12">
           {/* Stats Start */}
           <div className="d-flex">
-            <h2 className="small-title">Reporte de Citas</h2>
+            <h2 className="medium-title text-primary">Reporte de Citas</h2>
           </div>
           <div className="mb-5">
             <Row className="g-2">
@@ -189,7 +188,7 @@ const Dashboard = () => {
         <CardReport />{' '}
       </Row>
 
-      <h2 className="small-title">Reporte de facturación</h2>
+      <h2 className="medium-title mt-6 text-primary">Reporte de facturación</h2>
       <Row xs={1} md={2} className="g-4">
         <Col lg="6">
           <Card>

@@ -142,7 +142,7 @@ const enMessages = {
   'menu.shipping': 'es|Shipping',
   'menu.discount': 'es|Discount',
   'menu.general': 'es|General',
-
+  'datepicker.placeholder': 'Seleccione una fecha',
   'menu.upgrade': 'es|Upgrade',
   'menu.community': 'es|Community',
   'menu.community-list': 'es|Community List',

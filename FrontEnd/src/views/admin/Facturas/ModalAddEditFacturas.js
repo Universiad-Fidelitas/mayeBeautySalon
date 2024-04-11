@@ -159,7 +159,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
   const optionsStatus = [
     { value: 'Pagado', label: 'Pagado' },
     { value: 'Pendiente', label: 'Pendiente de Pago' },
-    { value: 'Cancelado', label: 'Cancelado' },
+    { value: 'Anulado', label: 'Anulado' },
   ];
   const optionsPayment = [
     { value: 'tarjeta', label: 'Tarjeta' },

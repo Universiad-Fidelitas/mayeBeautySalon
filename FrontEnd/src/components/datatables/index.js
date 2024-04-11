@@ -7,3 +7,4 @@ export * from './ControlsSearch';
 export * from './Table';
 export * from './ControlsAdd';
 export * from './TablePagination';
+export * from './ControlsDatePicker';

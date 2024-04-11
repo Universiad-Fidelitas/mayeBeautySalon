@@ -18,14 +18,19 @@ const getById = async (req, res = response) => {
 }
 
 const getBills = async (req, res = response) => {
-    const { pageIndex, pageSize, term, sortBy } = req.body;
+    const { pageIndex, pageSize, term, sortBy, term2, term3} = req.body;
     try {
         const offset = pageIndex * pageSize;
 
         let baseQuery = 'select * from bill_view where activated = 1';
         if (term) {
-            baseQuery += ` AND first_name LIKE '%${term}%'`;
+            baseQuery += ` AND id_card LIKE '%${term}%'`;
         }
+        
+        if (term2 && term3) {
+            baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+        }
+        console.log(baseQuery);
         const orderByClauses = [];
 
         if (Array.isArray(sortBy)) {
