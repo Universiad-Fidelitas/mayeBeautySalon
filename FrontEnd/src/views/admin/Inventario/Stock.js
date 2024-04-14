@@ -14,8 +14,7 @@ const Stock = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Inventario';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
@@ -37,32 +36,32 @@ const Stock = () => {
         Header: 'Imagen',
         accessor: 'image',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio',
         accessor: 'price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Tamaño',
         accessor: 'size',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Cantidad',
         accessor: 'total_amount',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
     ];
   }, []);

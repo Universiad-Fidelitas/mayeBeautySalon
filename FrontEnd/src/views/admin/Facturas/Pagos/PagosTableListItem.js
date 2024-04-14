@@ -10,7 +10,8 @@ export const PagosTableListItem = ({ tableInstance }) => {
       <div className="list mb-5">
         {page.map((row, i) => {
           prepareRow(row);
-          const { status, payment_type, sinpe_phone_number, voucher_path, payment_id } = row.original;
+          const { status, payment_type, sinpe_phone_number, voucher_path, payment_id, first_name, last_name, inventory_date, appointment_date, bills_id } =
+            row.original;
           const { checked, onChange } = row.getToggleRowSelectedProps();
 
           return (
@@ -45,7 +46,35 @@ export const PagosTableListItem = ({ tableInstance }) => {
                       <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate id_card">{status}</div>
                       </Col>
-                      <Col xs="12" lg="3" className="d-flex flex-column mb-2 mb-lg-0 align-items-end order-2 order-lg-last justify-content-center">
+                      <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
+                        <div className="lh-1 text-alternate id_card">
+                          <p className="m-0">
+                            <span className="text-primary">Nombre del cliente: </span> {first_name} {last_name}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
+                        <div className="lh-1 text-alternate id_card">
+                          <p className="m-0">
+                            <span className="text-primary">Fecha de Cita: </span> {appointment_date}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
+                        <div className="lh-1 text-alternate id_card">
+                          <p className="m-0">
+                            <span className="text-primary">Fecha de venta: </span> {inventory_date}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col xs="4" lg="1" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
+                        <div className="lh-1 text-alternate id_card">
+                          <p className="m-0">
+                            <span className="text-primary">No de factura: </span> {bills_id}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col className="d-flex flex-column align-items-end order-3  justify-content-center">
                         <Form.Check className="form-check mt-2" type="checkbox" checked={checked} onChange={onChange} />
                       </Col>
                     </Row>

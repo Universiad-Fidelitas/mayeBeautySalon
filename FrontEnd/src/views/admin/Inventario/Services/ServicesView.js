@@ -12,8 +12,7 @@ export const ServicesView = () => {
   const { formatMessage: f } = useIntl();
   const title = f({ id: 'services.title' });
   const description = f({ id: 'services.description' });
-  const breadcrumbs = [
- ];
+  const breadcrumbs = [];
 
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
@@ -30,25 +29,25 @@ export const ServicesView = () => {
         Header: f({ id: 'services.serviceName' }),
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-4',
+        headerClassName: 'text-muted text-medium text-uppercase col-lg-4',
       },
       {
         Header: f({ id: 'services.serviceTime' }),
         accessor: 'duration',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-2',
+        headerClassName: 'text-muted text-medium text-uppercase col-lg-2',
       },
       {
         Header: f({ id: 'services.servicePrice' }),
         accessor: 'price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-2',
+        headerClassName: 'text-muted text-medium text-uppercase col-lg-2',
       },
       {
         Header: f({ id: 'services.serviceState' }),
         accessor: 'activated',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-lg-3',
       },
       {
         Header: '',
@@ -99,7 +98,7 @@ export const ServicesView = () => {
 
   const deleteItems = useCallback(
     async (values) => {
-      deleteServices.mutateAsync( values );
+      deleteServices.mutateAsync(values);
     },
     [deleteServices]
   );

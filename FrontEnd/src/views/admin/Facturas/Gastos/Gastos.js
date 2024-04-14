@@ -26,19 +26,19 @@ const Gastos = () => {
         Header: 'ID',
         accessor: 'expense_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Nombre',
         accessor: 'expense_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio',
         accessor: 'price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',

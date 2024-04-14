@@ -82,7 +82,7 @@ const getUser = async (req, res = response) => {
 const postUser = async (req, res = response) => {
     const { role_id, id_card, first_name, last_name, email, phone, salary, id_card_type } = req.body;
     try {
-        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
+        const userQuery = 'INSERT INTO users (role_id, id_card, first_name, last_name, email, phone, activated, image, salary, id_card_type ) VALUES (7, ?, ?, ?, ?, ?, ?, ?, ?,?)';
         const { affectedRows, insertId } = await dbService.query(userQuery, [role_id, id_card, first_name, last_name, email, phone, 1, req.file ? req.file.path : '', salary, id_card_type]);
         
         if (affectedRows > 0) {

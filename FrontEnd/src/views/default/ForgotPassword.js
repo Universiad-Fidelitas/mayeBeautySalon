@@ -43,7 +43,7 @@ const ForgotPassword = () => {
             <h1 className="display-3 text-white">Maye Beauty Salón</h1>
             <h1 className="display-3 text-white">Refleja tu belleza interior</h1>
           </div>
-          <p className="h6 text-white lh-1-5 mb-5">
+          <p className="h2 text-white mb-5">
             Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una experiencia
             exclusiva y descubre un mundo de belleza hecho a tu medida....
           </p>

@@ -34,10 +34,10 @@ const postRol = (newRol) => {
   };
 };
 
-const editRol = ({ role_id, name, permissions }) => {
+const editRol = ({ role_id, name, permissions, activated }) => {
   return async (dispatch) => {
     try {
-      const { data } = await baseApi.put(`/roles/${role_id}`, { name, permissions });
+      const { data } = await baseApi.put(`/roles/${role_id}`, { name, permissions, activated });
       const { success, message } = data;
       if (success) {
         dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
