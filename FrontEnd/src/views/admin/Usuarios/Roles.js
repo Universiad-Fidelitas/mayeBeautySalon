@@ -15,9 +15,7 @@ const Roles = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Roles de usuario';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -74,19 +72,25 @@ const Roles = () => {
       {
         Header: 'role_id',
         accessor: 'role_id',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
         hideColumn: true,
       },
       {
         Header: 'Nombre del rol',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
+      },
+      {
+        Header: 'Estado del rol',
+        accessor: 'activated',
+        sortable: true,
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Permisos',
         accessor: 'permissions',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
         Cell: ({ row }) => <PermissionRowList permissionsList={JSON.parse(row.values.permissions)} />,
       },
       {
@@ -114,7 +118,7 @@ const Roles = () => {
       autoResetPage: false,
       autoResetSortBy: false,
       pageCount,
-      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'name', desc: false }], hiddenColumns: ['role_id'] },
+      initialState: { pageIndex: 0, pageSize: 5, sortBy: [{ id: 'role_id', desc: false }], hiddenColumns: ['role_id'] },
     },
     useGlobalFilter,
     useSortBy,
@@ -212,11 +216,7 @@ const Roles = () => {
               </Col>
             </Row>
           </div>
-          <ModalEditPermissions
-            tableInstance={tableInstance}
-            addItem={addItem}
-            editItem={editItem}
-          />
+          <ModalEditPermissions tableInstance={tableInstance} addItem={addItem} editItem={editItem} />
         </Col>
       </Row>
     </>

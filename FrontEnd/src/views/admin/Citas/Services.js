@@ -42,7 +42,7 @@ const Servicio = () => {
         Header: 'Servicio',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',

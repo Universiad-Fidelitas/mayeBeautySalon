@@ -1,14 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useCategories } from 'hooks/react-query/useCategories';
@@ -21,8 +12,7 @@ const Categorias = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Categorias';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
- ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -34,14 +24,14 @@ const Categorias = () => {
         Header: 'category_id',
         accessor: 'category_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',
@@ -90,9 +80,12 @@ const Categorias = () => {
     }
   }, [isCategoriesDataSuccess, categoriesData]);
 
-  const deleteItems = useCallback(async (values) => {
+  const deleteItems = useCallback(
+    async (values) => {
       inactivateCategories.mutateAsync(values);
-  },[inactivateCategories]);
+    },
+    [inactivateCategories]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
@@ -148,7 +141,7 @@ const Categorias = () => {
               </Col>
             </Row>
           </div>
-          <CategoriasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
+          <CategoriasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>

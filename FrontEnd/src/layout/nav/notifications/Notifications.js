@@ -10,7 +10,7 @@ import { layoutShowingNavMenu } from 'layout/layoutSlice';
 import { getNotifications } from '../../../store/notifications/notificationsThunk';
 
 const NotificationsDropdownToggle = React.memo(
-  React.forwardRef(({ onClick, expanded = false }, ref) => (
+  React.forwardRef(({ onClick, expanded = false, notificationCount = 0 }, ref) => (
     <a
       ref={ref}
       href="#/"
@@ -23,9 +23,9 @@ const NotificationsDropdownToggle = React.memo(
         onClick(e);
       }}
     >
-      <div className="position-relative d-inline-flex">
-        <CsLineIcons icon="bell" size="25"/>
-        <span className="position-absolute notification-dot rounded-xl" />
+      <div className="position-relative d-inline-flex me-3">
+        <CsLineIcons icon="bell" size="25" />
+        {notificationCount > 0 && <span className="position-absolute top-0 start-100 badge bg-primary rounded-pill translate-middle">{notificationCount}</span>}
       </div>
     </a>
   ))
@@ -34,7 +34,7 @@ const NotificationItem = ({ name = '', amount = '' }) => (
   <li className="mb-3 pb-3 border-bottom border-separator-light d-flex">
     <div className="align-self-center">
       <NavLink to="/inventariado/notifications" activeClassName="">
-        <h5>El producto {name} esta bajo de stock</h5>
+        <h5>El producto {name} está bajo de stock</h5>
         <p>La cantidad actual del producto es menor a {amount} </p>
       </NavLink>
     </div>
@@ -87,18 +87,20 @@ const Notifications = () => {
     // eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    dispatch(layoutShowingNavMenu(''));
+    // eslint-disable-next-line
+  }, [attrMenuAnimate, behaviourHtmlData, attrMobile, color]);
+
   const onToggle = (status, event) => {
     if (event && event.stopPropagation) event.stopPropagation();
     else if (event && event.originalEvent && event.originalEvent.stopPropagation) event.originalEvent.stopPropagation();
     dispatch(layoutShowingNavMenu(status ? MENU_NAME : ''));
   };
 
-  useEffect(() => {
-    dispatch(layoutShowingNavMenu(''));
-    // eslint-disable-next-line
-  }, [attrMenuAnimate, behaviourHtmlData, attrMobile, color]);
+  const notificationCount = Array.isArray(notifications) ? notifications.filter((notification) => notification.activated === 1).length : 0;
 
-  if (notifications && notifications.length > 0) {
+  if (notificationCount > 0) {
     return (
       <Dropdown
         as="li"
@@ -107,7 +109,7 @@ const Notifications = () => {
         show={showingNavMenu === MENU_NAME}
         align={placement === MENU_PLACEMENT.Horizontal ? 'end' : 'start'}
       >
-        <Dropdown.Toggle as={NotificationsDropdownToggle} />
+        <Dropdown.Toggle as={NotificationsDropdownToggle} notificationCount={notificationCount} />
         <Dropdown.Menu
           as={NotificationsDropdownMenu}
           items={notifications}

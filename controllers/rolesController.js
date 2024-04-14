@@ -27,9 +27,9 @@ const getRoles = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select role_id, name, permissions from roles where activated = 1';
+        let baseQuery = 'select role_id, name, permissions, activated from roles';
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += ` WHERE name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
@@ -69,7 +69,7 @@ const getRoles = async (req, res = response) => {
 const postRole = async (req, res = response) => {
     const { name, permissions } = req.body;
     try {
-        const userQuery = `CALL sp_role('create', 0, ?, ?);`;
+        const userQuery = `CALL sp_role('create', 0, ?, ?, 0);`;
         const { insertId } = await dbService.query(userQuery, [name, JSON.stringify(permissions) ]);
 
                 res.status(200).json({
@@ -100,10 +100,10 @@ const postRole = async (req, res = response) => {
 
 const putRole = async (req, res = response) => {
     const { role_id } = req.params;
-    const { name, permissions } = req.body;
+    const { name, permissions, activated } = req.body;
     try {
-        const userQuery = `CALL sp_role('update', ?, ?, ?);`;
-        const { insertId } = await dbService.query(userQuery, [role_id, name, JSON.stringify(permissions) ]);
+        const userQuery = `CALL sp_role('update', ?, ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [role_id, name, JSON.stringify(permissions), activated ]);
         res.status(200).json({
             role_id: insertId,
             success: true,
@@ -131,7 +131,7 @@ const putRole = async (req, res = response) => {
 const deleteRole = async (req, res = response) => {
     const { role_id } = req.body;
     try {
-        const userQuery = `CALL sp_role('delete', ?, '', '');`;
+        const userQuery = `CALL sp_role('delete', ?, '', '', 0);`;
         const rows = await dbService.query(userQuery, [role_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         if( affectedRows === 1 ) {

@@ -67,11 +67,11 @@ const Login = () => {
           </NavLink>
         </div>
         <div className="mb-5">
-          <h2 className="cta-1 mb-0 text-primary">Bienvenido,</h2>
-          <h2 className="cta-1 text-primary">empecemos!</h2>
+          <h1 className="cta-1 mb-0 text-primary">Bienvenido,</h1>
+          <h1 className="cta-1 text-primary">empecemos!</h1>
         </div>
         <div className="mb-5">
-          <p className="h6">Inicia sesión para acceder a tu cuenta.</p>
+          <p className="h4">Inicia sesión para acceder a tu cuenta.</p>
         </div>
         <div>
           <form id="loginForm" className="tooltip-end-bottom" onSubmit={handleSubmit}>

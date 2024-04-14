@@ -50,6 +50,30 @@ const Pagos = () => {
         headerClassName: 'col-10 col-lg-2',
       },
       {
+        Header: 'Nombre Cliente',
+        accessor: 'first_name',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'Fecha de Cita',
+        accessor: 'appointment_date',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'Fecha de Venta',
+        accessor: 'inventory_date',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'No Factura',
+        accessor: 'bills_id',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
         Header: 'Número de teléfono del SINPE',
         accessor: 'sinpe_phone_number',
         sortable: true,

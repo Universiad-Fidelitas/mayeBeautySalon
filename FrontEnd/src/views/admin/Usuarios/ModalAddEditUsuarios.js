@@ -105,7 +105,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
             email: '',
             phone: '',
             salary: '',
-            role_id: '',
+            role_id: 7,
             activated: true,
           },
     [selectedFlatRows]
@@ -165,7 +165,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
 
                 <Row className="g-3 mb-3">
                   {selectedFlatRows.length === 1 && (
-                    <Col className="col-6">
+                    <Col className="col-8">
                       <Button variant="outline-primary" onClick={enviarEmail} className="btn-icon btn-icon-start sendPasswordButton">
                         <CsLineIcons icon="email" />
                         <span> {f({ id: 'users.passwordReset' })}</span>
@@ -186,6 +186,15 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                 </Row>
 
                 <Row className="g-3 mb-3">
+                  <Col className="col-8 top-label">
+                    <SelectField
+                      label={f({ id: 'helper.idcardtype' })}
+                      name="id_card_type"
+                      placeholder={f({ id: 'helper.selectIdCardType' })}
+                      options={idTypeDropdown}
+                      isError={errors.id_card_type && touched.id_card_type}
+                    />
+                  </Col>
                   <Col className="col-4">
                     <div className="top-label">
                       <label className="form-label">{f({ id: 'helper.idcard' })}</label>
@@ -201,15 +210,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                       />
                       <ErrorMessage className="text-danger" name="id_card" component="div" />
                     </div>
-                  </Col>
-                  <Col className="col-8 top-label">
-                    <SelectField
-                      label={f({ id: 'helper.idcardtype' })}
-                      name="id_card_type"
-                      placeholder={f({ id: 'helper.selectIdCardType' })}
-                      options={idTypeDropdown}
-                      isError={errors.id_card_type && touched.id_card_type}
-                    />
                   </Col>
                 </Row>
 
