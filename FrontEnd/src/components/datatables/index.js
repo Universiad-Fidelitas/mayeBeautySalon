@@ -3,6 +3,7 @@ export * from './ButtonsAddNew';
 export * from './ControlsPageSize';
 export * from './ControlsEdit';
 export * from './ControlsDelete';
+export * from './ControlsExportCSV';
 export * from './ControlsSearch';
 export * from './Table';
 export * from './ControlsAdd';

@@ -8,6 +8,7 @@ import {
   ControlsEdit,
   ControlsSearch,
   ControlsDelete,
+  ControlsExportCSV,
   Table,
   TablePagination,
   ControlsDatePicker,
@@ -236,9 +237,9 @@ const Facturas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  const { getBills, deleteBills, addBill, updateBill } = useBills({ term, term2, term3, pageIndex, pageSize, sortBy });
+  const { getBills, deleteBills, addBill, updateBill, getBillsCSV } = useBills({ term, term2, term3, pageIndex, pageSize, sortBy });
   const { isSuccess: isBillsDataSuccess, data: billsData } = getBills;
-
+  const { data: billsCSVData } = getBillsCSV;
   useEffect(() => {
     if (isBillsDataSuccess) {
       setData(billsData.items);
@@ -367,7 +368,7 @@ const Facturas = () => {
               </Col>
               <Col sm="12" md="12" lg="12" xxl="12" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
+                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
@@ -375,6 +376,7 @@ const Facturas = () => {
                     modalDescription="La factura seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="bills"
                   />
+                  <ControlsExportCSV tableInstance={billsCSVData && billsCSVData.items} type="bills" />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

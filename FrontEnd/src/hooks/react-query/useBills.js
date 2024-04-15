@@ -19,6 +19,15 @@ export const useBills = ({ term, term2, term3, pageIndex, pageSize, sortBy }) =>
     });
     return data;
   };
+  const getBillsCSV = async () => {
+    const { data } = await baseApi.post('/bills/CSVbill', {
+      term,
+      term2,
+      term3,
+      sortBy,
+    });
+    return data;
+  };
   const getOneBill = async (billData) => {
     const { data } = await baseApi.get(`/bills/${billData}`);
     return data;
@@ -128,6 +137,7 @@ export const useBills = ({ term, term2, term3, pageIndex, pageSize, sortBy }) =>
   };
   return {
     getBills: useQuery(['project-bills', { term, term2, term3, pageIndex, pageSize, sortBy }], getBills),
+    getBillsCSV: useQuery(['project-bills', { term, term2, term3, sortBy }], getBillsCSV),
     addBill: addBill(),
     updateBill: updateBill(),
     deleteBills: deleteBills(),
