@@ -17,6 +17,10 @@ export const useExpenses = ({ term, pageIndex, pageSize, sortBy }) => {
     });
     return data;
   };
+  const getExpenseTypes = async () => {
+    const { data } = await baseApi.get(`/expenses/types`);
+    return data.items;
+  };
 
   const addExpense = () => {
     const queryClient = useQueryClient();
@@ -134,6 +138,7 @@ export const useExpenses = ({ term, pageIndex, pageSize, sortBy }) => {
     getExpenses: useQuery(['project-expenses', { term, pageIndex, pageSize, sortBy }], getExpenses),
     addExpense: addExpense(),
     updateExpense: updateExpense(),
+    getExpenseTypes: useQuery('expense-types', getExpenseTypes),
     inactivateExpenses: inactivateExpenses(),
   };
 };

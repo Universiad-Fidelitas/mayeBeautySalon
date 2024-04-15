@@ -21,6 +21,25 @@ const getById = async (req, res = response) => {
         res.status(500).json({message: error.message})
     }
 }
+const getExpenseType = async ( req,res = response) => {
+    try {
+        const query = `select distinct expense_type from expenses;`;
+        const rows = await dbService.query(query);
+        res.status(200).json({items: rows, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
+    }
+    catch(error) {
+        try {
+            const logQuery = `
+                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
+                VALUES ('getone', 'getone error', 'gastos', NOW(), ?, ?)
+            `;
+            await dbService.query(logQuery, [error.message, 11]);
+        } catch (error) {
+            console.error('Error al insertar en la tabla de Logs:', logError);
+        }
+        res.status(500).json({message: error.message})
+    }
+}
 
 const getExpenses = async (req, res = response) => {
     const { pageIndex, pageSize, term, sortBy } = req.body;
@@ -187,6 +206,7 @@ module.exports = {
     getExpenses,
     postExpense,
     putExpense,
+    getExpenseType,
     deleteExpense,
     getById
 }
