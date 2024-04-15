@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check, param } = require('express-validator');
-const { getBills,
+const { getBills,getBillsCSV,
     postBill,
     putBill,
     deleteBill,
@@ -8,6 +8,7 @@ const { getBills,
 const router = Router();
 
 router.post('/', getBills)
+router.post('/CSVbill', getBillsCSV)
 router.post('/add', postBill)
 
 router.get('/:bills_id', [ param('bills_id').isNumeric().withMessage('bills_id must be a number')], getById)

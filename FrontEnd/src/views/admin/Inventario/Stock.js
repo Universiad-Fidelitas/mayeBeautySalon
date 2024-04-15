@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { ControlsPageSize, ControlsSearch, Table, TablePagination } from 'components/datatables';
+import { ControlsPageSize, ControlsExportCSV, ControlsSearch, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStock } from 'store/stock/stockThunk';
@@ -150,10 +150,11 @@ const Stock = () => {
                   <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
+              <Col sm="34" md="15" lg="15" xxl="15" className="text-end">
+                <div className="d-inline-block me-3">
+                  <ControlsExportCSV tableInstance={tableInstance && tableInstance.data} type="inventory" />
+                </div>
 
-              <Col sm="24" md="3" lg="3" xxl="3" className="text-end">
-                <label className="form-label">Tamaño de paginación</label>
-                <br />
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
                 </div>

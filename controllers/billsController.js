@@ -72,6 +72,53 @@ const getBills = async (req, res = response) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+const getBillsCSV = async (req, res = response) => {
+    const { term, sortBy, term2, term3} = req.body;
+    try {
+
+        let baseQuery = 'select * from bill_view where activated = 1';
+        if (term) {
+            baseQuery += ` AND id_card LIKE '%${term}%'`;
+        }
+        
+        if (term2 && term3) {
+            baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+        }
+        const orderByClauses = [];
+
+        if (Array.isArray(sortBy)) {
+            for (const sortItem of sortBy) {
+                const { id, desc } = sortItem;
+                if (id) {
+                    orderByClauses.push(`${id} ${desc ? 'DESC' : 'ASC'}`);
+                }
+            }
+        }
+
+        if (orderByClauses.length > 0) {
+            baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
+        }
+        const query = `${baseQuery}`;
+        const rows = await dbService.query(query);
+        for (const row of rows) {
+            const inventoryId = row.inventory_id;
+            const productQuery = `SELECT i.amount, i.product_id, i.invetory_products_id, p.name, p.price FROM inventory_products i left join products p on i.product_id = p.product_id WHERE inventory_id = ${inventoryId}`;
+            const productData = await dbService.query(productQuery);
+            row.dataToInsert = productData;
+        }
+
+        const response = {
+            items: rows
+        };
+
+        res.json(response);
+    } catch (error) {
+
+        res.status(500).json({ message: error.message });
+    }
+}
+
 const getUserBills = async (req, res = response) => {
     try {
         const { id_card } = req.body;
@@ -288,6 +335,7 @@ const deleteBill = async (req, res = response) => {
 
 module.exports = {
     getBills,
+    getBillsCSV,
     postBill,
     putBill,
     deleteBill,
