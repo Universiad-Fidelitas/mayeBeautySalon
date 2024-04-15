@@ -57,16 +57,20 @@ export const GastosModalAddEdit = ({ tableInstance, apiParms }) => {
     { value: 'Otro', label: 'Otro' },
   ];
   const { data: CVdata } = getExpenseTypes;
-  let uniqueExpenseTypes = Array.from(new Set(CVdata.map((item) => item.expense_type)));
-  const valuesToRemove = ['Otro', 'Renta', 'Recibo de Agua', 'Recibo de Luz', 'Recibo de Internet'];
-  uniqueExpenseTypes = uniqueExpenseTypes.filter((type) => !valuesToRemove.includes(type));
-  const newOptions = uniqueExpenseTypes.map((expenseType) => ({
-    value: expenseType,
-    label: expenseType,
-  }));
-  const filteredOptions = TypeOptions.filter((option) => !uniqueExpenseTypes.includes(option.value));
-  const updatedOptions = [...filteredOptions.slice(0, -1), ...newOptions, ...filteredOptions.slice(-1)];
-  TypeOptions = updatedOptions;
+  console.log('Karo', CVdata);
+  if (CVdata !== undefined) {
+    let uniqueExpenseTypes = Array.from(new Set(CVdata.map((item) => item.expense_type)));
+    const valuesToRemove = ['Otro', 'Renta', 'Recibo de Agua', 'Recibo de Luz', 'Recibo de Internet'];
+    uniqueExpenseTypes = uniqueExpenseTypes.filter((type) => !valuesToRemove.includes(type));
+    const newOptions = uniqueExpenseTypes.map((expenseType) => ({
+      value: expenseType,
+      label: expenseType,
+    }));
+    const filteredOptions = TypeOptions.filter((option) => !uniqueExpenseTypes.includes(option.value));
+    const updatedOptions = [...filteredOptions.slice(0, -1), ...newOptions, ...filteredOptions.slice(-1)];
+    TypeOptions = updatedOptions;
+  }
+
   return (
     <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card>
