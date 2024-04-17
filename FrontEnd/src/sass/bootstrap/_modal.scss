@@ -295,7 +295,7 @@
   padding-top: calc(var(--nav-size-slim) + var(--main-spacing-horizontal) / 2);
   background: url('/img/background/background-blue.webp') no-repeat center center fixed;
   background-size: cover;
-  min-height: 500px;
+  min-height: calc(100vh - 326px);
   display: flex;
 }
 
