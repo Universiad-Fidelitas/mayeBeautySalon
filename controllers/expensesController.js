@@ -46,7 +46,7 @@ const getExpenses = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select expense_id, expense_type, date, price from expenses where activated = 1';
+        let baseQuery = 'select expense_id, expense_type, date, price, activated from expenses WHERE activated = 1';
         if (term) {
             baseQuery += ` AND expense_type LIKE '%${term}%'`;
         }

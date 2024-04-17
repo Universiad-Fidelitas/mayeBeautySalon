@@ -27,7 +27,7 @@ const getCategories = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select category_id, name from categories where activated = 1';
+        let baseQuery = 'select category_id, name, activated from categories WHERE activated = 1';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
