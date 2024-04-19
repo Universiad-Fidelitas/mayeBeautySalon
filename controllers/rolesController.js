@@ -23,13 +23,18 @@ const getById = async (req, res = response) => {
 }
 
 const getRoles = async (req, res = response) => {
-    const { pageIndex, pageSize, term, sortBy } = req.body;
+    const { pageIndex, pageSize, term, sortBy, term2 } = req.body;
     try {
         const offset = pageIndex * pageSize;
-
-        let baseQuery = 'select role_id, name, permissions, activated from roles';
+        let activatedTerm2;
+        if(term2===true){
+            activatedTerm2=1
+        }else{
+            activatedTerm2=0
+        }
+        let baseQuery = `select role_id, name, permissions, activated from roles WHERE activated='${activatedTerm2}'`;
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 
@@ -137,12 +142,12 @@ const deleteRole = async (req, res = response) => {
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
-                message: "¡El rol ha sido eliminado exitosamente!"
+                message: "¡El rol ha sido desactivado/reactivado exitosamente!"
             });
         } else {
             res.status(200).json({
                 success: true,
-                message: "¡Los roles han sido eliminados exitosamente!"
+                message: "¡Los roles han sido desactivados/reactivados exitosamente!"
             });
         }
     } catch (error) {

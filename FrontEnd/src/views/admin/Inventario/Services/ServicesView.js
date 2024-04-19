@@ -3,7 +3,17 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
-import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
+import {
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+  ControlsVisible,
+} from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useServices } from 'hooks/react-query/useServices';
 import { ModalAddEditServices } from './ModalAddEditServices';
@@ -17,6 +27,8 @@ export const ServicesView = () => {
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+
+  const [term2, setTerm2] = useState(true);
   const [pageCount, setPageCount] = useState();
 
   const columns = useMemo(() => {
@@ -86,7 +98,7 @@ export const ServicesView = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
-  const { getServices, deleteServices } = useServices({ term, pageIndex, pageSize, sortBy });
+  const { getServices, deleteServices } = useServices({ term, pageIndex, pageSize, sortBy, term2 });
   const { isSuccess: isServicesDataSuccess, data: servicesData } = getServices;
 
   useEffect(() => {
@@ -106,7 +118,9 @@ export const ServicesView = () => {
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
+  const searchItem2 = useAsyncDebounce((val) => {
+    setTerm2(val);
+  }, 200);
   return (
     <>
       <HtmlHead title={title} description={description} />
@@ -134,6 +148,7 @@ export const ServicesView = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
+                  <ControlsVisible checked={term2} onChange={() => searchItem2(!term2)} />
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
                   <ControlsDelete
                     tableInstance={tableInstance}

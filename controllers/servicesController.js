@@ -24,13 +24,18 @@ const getById = async (req, res = response) => {
 }
 
 const getServices = async (req, res = response) => {
-    const { pageIndex, pageSize, term, sortBy } = req.body;
+    const { pageIndex, pageSize, term, sortBy, term2 } = req.body;
     try {
         const offset = pageIndex * pageSize;
-
-        let baseQuery = 'SELECT * FROM services';
+        let activatedTerm2;
+        if(term2===true){
+            activatedTerm2=1
+        }else{
+            activatedTerm2=0
+        }
+        let baseQuery = `SELECT * FROM services WHERE activated='${activatedTerm2}'`;
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 

@@ -1,8 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
+import {
+  ButtonsAddNew,
+  ControlsPageSize,
+  ControlsAdd,
+  ControlsEdit,
+  ControlsSearch,
+  ControlsDelete,
+  Table,
+  TablePagination,
+  ControlsVisible,
+} from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch } from 'react-redux';
-import { Col, Form, Row } from 'react-bootstrap';
+import { Col, Form, Row, FormCheck } from 'react-bootstrap';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
@@ -12,16 +22,15 @@ import { ProductosModalAddEdit } from './ProductosModalAddEdit';
 import { ProductosTableListItem } from './ProductosTableListItem';
 import { ProductosTableListItemHeader } from './ProductosTableListItemHeader';
 
-
 const Productos = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Productos';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+  const [term2, setTerm2] = useState(true);
   const dispatch = useDispatch();
   const [pageCount, setPageCount] = useState();
 
@@ -100,6 +109,12 @@ const Productos = () => {
         hideColumn: true,
       },
       {
+        Header: f({ id: 'services.serviceState' }),
+        accessor: 'activated',
+        sortable: true,
+        headerClassName: 'text-muted text-medium text-uppercase col-lg-3',
+      },
+      {
         Header: '',
         id: 'action',
         headerClassName: 'empty w-10',
@@ -141,9 +156,9 @@ const Productos = () => {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
 
-  const { getProducts, inactivateProductos } = useProducts({ term, pageIndex, pageSize, sortBy });
+  const { getProducts, inactivateProductos } = useProducts({ term, pageIndex, pageSize, sortBy, term2 });
   const { isSuccess: isProductsDataSuccess, data: ProductsData } = getProducts;
-
+  console.log(term2);
   useEffect(() => {
     if (isProductsDataSuccess) {
       setData(ProductsData.items);
@@ -161,6 +176,9 @@ const Productos = () => {
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
+  const searchItem2 = useAsyncDebounce((val) => {
+    setTerm2(val);
+  }, 200);
 
   return (
     <>
@@ -174,6 +192,7 @@ const Productos = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
+
               <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
                 <ButtonsAddNew tableInstance={tableInstance} />
               </Col>
@@ -189,7 +208,8 @@ const Productos = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
+                  <ControlsVisible checked={term2} onChange={() => searchItem2(!term2)} /> <ControlsAdd tableInstance={tableInstance} />{' '}
+                  <ControlsEdit tableInstance={tableInstance} />{' '}
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
