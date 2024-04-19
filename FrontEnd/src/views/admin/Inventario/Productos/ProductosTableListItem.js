@@ -10,7 +10,7 @@ export const ProductosTableListItem = ({ tableInstance }) => {
       <div className="list mb-5">
         {page.map((row, i) => {
           prepareRow(row);
-          const { price_buy, size, name, provider_name, image, id_card, category_name, brand_name, price } = row.original;
+          const { price_buy, size, name, provider_name, image, id_card, category_name, brand_name, price, activated } = row.original;
           const { checked, onChange } = row.getToggleRowSelectedProps();
 
           return (
@@ -56,7 +56,7 @@ export const ProductosTableListItem = ({ tableInstance }) => {
                           })}
                         </div>
                       </Col>
-                      <Col xs="12" lg="3" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
+                      <Col xs="8" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <h5 className="text-primary font-weight-bold">
                           {parseFloat(price).toLocaleString('es-CR', {
                             style: 'currency',
@@ -66,7 +66,13 @@ export const ProductosTableListItem = ({ tableInstance }) => {
                           })}
                         </h5>
                       </Col>
-                      <Col xs="12" lg="3" className="d-flex flex-column mb-2 mb-lg-0 align-items-end order-2 order-lg-last justify-content-center">
+                      <Col xs="8" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
+                        <div className="lh-1 text-alternate id_card">
+                          {' '}
+                          {activated ? <span className="badge bg-outline-success">Activo</span> : <span className="badge bg-outline-danger">Inactivo</span>}
+                        </div>
+                      </Col>
+                      <Col xs="12" lg="2" className="d-flex flex-column mb-2 mb-lg-0 align-items-end order-2 order-lg-last justify-content-center">
                         <Form.Check className="form-check mt-2" type="checkbox" checked={checked} onChange={onChange} />
                       </Col>
                     </Row>

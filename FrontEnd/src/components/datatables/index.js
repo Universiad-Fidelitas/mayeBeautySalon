@@ -5,6 +5,7 @@ export * from './ControlsEdit';
 export * from './ControlsDelete';
 export * from './ControlsExportCSV';
 export * from './ControlsSearch';
+export * from './ControlsVisible';
 export * from './Table';
 export * from './ControlsAdd';
 export * from './TablePagination';

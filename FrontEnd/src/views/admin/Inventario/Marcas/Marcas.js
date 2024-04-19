@@ -37,12 +37,6 @@ const Marcas = () => {
         headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
-        Header: f({ id: 'services.serviceState' }),
-        accessor: 'activated',
-        sortable: true,
-        headerClassName: 'text-muted text-medium text-uppercase col-lg-3',
-      },
-      {
         Header: '',
         id: 'action',
         headerClassName: 'empty w-10',

@@ -26,11 +26,7 @@ export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDe
       </Button>
     );
   }
-  if (
-    selectedFlatRows.length === 1 &&
-    (type === 'service' || type === 'role' || type === 'brand' || type === 'expense' || type === 'category' || type === 'provider') &&
-    selectedFlatRows[0].original.activated === 0
-  ) {
+  if (selectedFlatRows.length === 1 && (type === 'service' || type === 'role' || type === 'product') && selectedFlatRows[0].original.activated === 0) {
     return (
       <>
         <OverlayTrigger placement="top" overlay={<Tooltip id="tooltip-top-delete">Reactivar</Tooltip>}>
@@ -40,10 +36,10 @@ export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDe
         </OverlayTrigger>
         <Modal className="modal-close-out" show={confirmDeleteModal} onHide={() => setConfirmDeleteModal(false)} centered>
           <Modal.Header closeButton>
-            <Modal.Title className="text-primary">Reactivar Objeto</Modal.Title>
+            <Modal.Title className="text-primary">Reactivar {type}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Quiere reactivar es objeto?</p>
+            <p>Quiere reactivar este {type}?</p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-body" onClick={() => setConfirmDeleteModal(false)}>
