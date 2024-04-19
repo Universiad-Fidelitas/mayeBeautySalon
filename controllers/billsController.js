@@ -163,7 +163,7 @@ const postBill = async (req, res = response) => {
 
         let userInsertId;
         if (userChecker.length === 0) {
-            const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
+            const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 7, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
@@ -225,13 +225,17 @@ const putBill = async (req, res = response) => {
 
         // Delete items not included in dataToInsert
         const existingItemIds = dataToInsert.map((data) => data.invetory_products_id).filter((id) => id !== 0);
-        const formattedIds = existingItemIds.join(',');
+        let formattedIds = existingItemIds.join(',');
+        if (formattedIds.endsWith(",")) {
+            formattedIds = formattedIds.slice(0, -1);
+        }
+
         if(formattedIds!==''){
             const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
             await dbService.query(deleteQuery, [ inventory_id])
         }
         
-       
+
         for (const data of dataToInsert) {
             if (data.invetory_products_id === 0) {
                 // Insert new item
@@ -278,15 +282,7 @@ const putBill = async (req, res = response) => {
 
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'bills', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la factura!",

@@ -57,7 +57,7 @@ export const GastosModalAddEdit = ({ tableInstance, apiParms }) => {
     { value: 'Otro', label: 'Otro' },
   ];
   const { data: CVdata } = getExpenseTypes;
-  console.log('Karo', CVdata);
+
   if (CVdata !== undefined) {
     let uniqueExpenseTypes = Array.from(new Set(CVdata.map((item) => item.expense_type)));
     const valuesToRemove = ['Otro', 'Renta', 'Recibo de Agua', 'Recibo de Luz', 'Recibo de Internet'];
