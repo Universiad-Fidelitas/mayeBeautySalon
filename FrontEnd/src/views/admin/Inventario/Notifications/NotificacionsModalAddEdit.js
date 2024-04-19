@@ -14,7 +14,7 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { updateNotification, addNotification } = useNotifications(apiParms);
 
-  const { getProducts } = useProducts({ term: '', sortBy: [], pageIndex: 0, pageSize: 100 });
+  const { getProducts } = useProducts({ term: '', sortBy: [], pageIndex: 0, pageSize: 100, term2: true });
   const { data: productsData } = getProducts;
   const productsDataDropdown = useMemo(
     () =>
@@ -24,30 +24,39 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
     [productsData]
   );
 
-  const onSubmit = useCallback((values) => {
+  const onSubmit = useCallback(
+    (values) => {
       if (selectedFlatRows.length === 1) {
         updateNotification.mutateAsync(values);
       } else {
         addNotification.mutateAsync(values);
       }
       setIsOpenAddEditModal(false);
-  }, [setIsOpenAddEditModal, selectedFlatRows, updateNotification, addNotification]);
+    },
+    [setIsOpenAddEditModal, selectedFlatRows, updateNotification, addNotification]
+  );
 
-  const initialValues = useMemo(() => ({
-    notification_id: selectedFlatRows?.[0]?.original.notification_id || '',
-    amount: selectedFlatRows?.[0]?.original.amount || '',
-    product_id: selectedFlatRows?.[0]?.original.product_id || '',
-  }), [selectedFlatRows]);
+  const initialValues = useMemo(
+    () => ({
+      notification_id: selectedFlatRows?.[0]?.original.notification_id || '',
+      amount: selectedFlatRows?.[0]?.original.amount || '',
+      product_id: selectedFlatRows?.[0]?.original.product_id || '',
+    }),
+    [selectedFlatRows]
+  );
 
-  const validationSchema = useMemo(() => Yup.object().shape({
-    amount: Yup.string()
-      .matches(/^\d+$/, f({ id: 'notifications.amountErrors.onlyNumbers' }))
-      .min(1, f({ id: 'notifications.amountErrors.minLength' }))
-      .max(3, f({ id: 'notifications.amountErrors.maxLength' }))
-      .required(f({ id: 'notifications.amountErrors.required' })),
-    product_id: Yup.string().required(f({ id: 'notifications.productErrors.required' })),
-  }), [f]);
-    
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        amount: Yup.string()
+          .matches(/^\d+$/, f({ id: 'notifications.amountErrors.onlyNumbers' }))
+          .min(1, f({ id: 'notifications.amountErrors.minLength' }))
+          .max(3, f({ id: 'notifications.amountErrors.maxLength' }))
+          .required(f({ id: 'notifications.amountErrors.required' })),
+        product_id: Yup.string().required(f({ id: 'notifications.productErrors.required' })),
+      }),
+    [f]
+  );
 
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
@@ -65,8 +74,8 @@ export const NotificacionsModalAddEdit = ({ tableInstance, apiParms }) => {
                       <label className="form-label">{f({ id: 'notifications.productsMinAmount' })}</label>
                       <NumberFormat
                         className={classNames('form-control', { 'is-invalid': errors.amount && touched.amount })}
-                        allowEmptyFormatting 
-                        isAllowed={({ value }) => (value <= 50) && true}
+                        allowEmptyFormatting
+                        isAllowed={({ value }) => value <= 50 && true}
                         value={values.amount}
                         onValueChange={({ value }) => {
                           setFieldValue('amount', value);

@@ -206,7 +206,7 @@ const Roles = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsVisible checked={term2} onChange={() => searchItem2(!term2)} />
+                  <ControlsVisible tableInstance={tableInstance} checked={term2} onChange={() => searchItem2(!term2)} />
                   <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
                   <ControlsDelete
                     tableInstance={tableInstance}

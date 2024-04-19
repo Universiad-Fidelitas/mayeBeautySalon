@@ -3,9 +3,10 @@ import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useIntl } from 'react-intl';
 
-export const ControlsVisible = ({ checked, onChange }) => {
+export const ControlsVisible = ({ tableInstance, checked, onChange }) => {
   const { formatMessage: f } = useIntl();
-
+  console.log(tableInstance);
+  const { setPageSize, gotoPage } = tableInstance;
   if (checked === true) {
     return (
       <>
@@ -14,7 +15,9 @@ export const ControlsVisible = ({ checked, onChange }) => {
             variant="outline-primary"
             className="btn-icon btn-icon-only shadow delete-datatable"
             onClick={() => {
+              gotoPage(0);
               onChange(true);
+              setPageSize(5);
             }}
           >
             <CsLineIcons icon="eye" />
@@ -32,6 +35,8 @@ export const ControlsVisible = ({ checked, onChange }) => {
           className="btn-icon btn-icon-only shadow delete-datatable"
           onClick={() => {
             onChange(false);
+            setPageSize(5);
+            gotoPage(0);
           }}
         >
           <CsLineIcons icon="eye-off" />
