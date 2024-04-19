@@ -8,14 +8,14 @@ export const Footer = () => {
     <footer className="bg-primary text-light">
       <Col className="col-12 general-padding-x">
         <Col className="col-12 px-0 py-3 border-bottom border-white d-flex">
-          <Col className="col-6 col-lg-2 p-0">Siguenos en redes sociales</Col>
+          <Col className="col-6 col-lg-2 p-0">Síguenos en redes sociales</Col>
           <Col className="col-6 col-lg-10 p-0 d-flex gap-2">
-            <Link className="text-light" to="https://www.instagram.com/maye_beautysalon/">
+            <a className="text-light" href="https://www.instagram.com/maye_beautysalon/">
               <CsLineIcons icon="instagram" />
-            </Link>
-            <Link className="text-light" to="https://www.instagram.com/maye_beautysalon/">
+            </a>
+            <a className="text-light" href="https://www.instagram.com/maye_beautysalon/">
               <CsLineIcons icon="facebook" />
-            </Link>
+            </a>
           </Col>
         </Col>
 
