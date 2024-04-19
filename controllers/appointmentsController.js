@@ -143,7 +143,7 @@ const saveAppointment = async (req, res = response) => {
 
 
         if (userChecker.length === 0) {
-            const queryAddUser = "INSERT INTO users (user_id, role_id, id_card, first_name, last_name, email, phone, id_card_type, activated, image, salary) VALUES (NULL, 1, ?, ?, ?, ?, ?, 'nacional', 1, '', NULL)";
+            const queryAddUser = "INSERT INTO users (user_id, role_id, id_card, first_name, last_name, email, phone, id_card_type, activated, image, salary) VALUES (NULL, 7, ?, ?, ?, ?, ?, 'nacional', 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card, first_name, last_name, email, phone]);
             const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id, activated) VALUES (NULL, ?, NULL, ?, ?, 1) ";
             await dbService.query(queryAddBill, [userInsertId, insertId, paymentInsertId]);
