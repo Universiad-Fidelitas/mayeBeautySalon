@@ -498,7 +498,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
                                     <Col className="col-6 m-0">
                                       {values.dataToInsert.length - 1 === index && (
-                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '' })}>
+                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
                                           <CsLineIcons icon="plus" />
                                         </Button>
                                       )}

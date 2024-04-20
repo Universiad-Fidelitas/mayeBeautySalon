@@ -205,7 +205,7 @@ const postBill = async (req, res = response) => {
 const putBill = async (req, res = response) => {
     const { bills_id } = req.params;
     const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, payment_id, inventory_id, appointment_id } = req.body;
-    console.log('karo', appointment_id)
+
     try {
         if(payment_id===null){
             const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number) VALUES (?,?,'',?)`;
@@ -234,12 +234,11 @@ const putBill = async (req, res = response) => {
             const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
             await dbService.query(deleteQuery, [ inventory_id])
         }
-        
 
         for (const data of dataToInsert) {
             if (data.invetory_products_id === 0) {
                 // Insert new item
-                if(data.inventory_id === undefined || data.inventory_id === null){
+                if(inventory_id === undefined || inventory_id === null || inventory_id === 0){
                     const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
                     const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
                     const queryAddBill =`UPDATE bills SET inventory_id = ? WHERE bills_id = ?`;
@@ -249,6 +248,7 @@ const putBill = async (req, res = response) => {
                 }else{
                     const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
                     await dbService.query(insertItemQuery, [data.amount, data.product_id, inventory_id]);
+                    
                 }
             } else {
                 // Update existing item
