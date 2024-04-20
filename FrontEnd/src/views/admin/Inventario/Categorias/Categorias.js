@@ -125,6 +125,7 @@ const Categorias = () => {
                     modalTitle="¿Desea eliminar la categoria seleccionada?"
                     modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="category"
+                    tipo="categoría"
                   />
                 </div>
                 <div className="d-inline-block">

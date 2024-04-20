@@ -326,7 +326,12 @@ const Facturas = () => {
     sinpe_phone_number: Yup.string()
       .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
       .min(8, f({ id: 'helper.phoneMinLength' }))
-      .max(10, f({ id: 'helper.phoneMaxLength' })),
+      .max(10, f({ id: 'helper.phoneMaxLength' }))
+      .when('payment_type', {
+        is: 'sinpe',
+        then: Yup.string().required('El número de SINPE es requerido'),
+        otherwise: Yup.string(),
+      }),
   });
 
   const formFields = [];
@@ -340,8 +345,7 @@ const Facturas = () => {
           <div className="page-title-container">
             <Row>
               <Col xs="12" md="7">
-                <h1 className="mb-0 pb-0 display-4">{title}</h1>
-                <BreadcrumbList items={breadcrumbs} />
+                <h1 className="mb-3 pb-0 display-4">{title}</h1>
               </Col>
               <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
                 <ButtonsAddNew tableInstance={tableInstance} />
@@ -375,6 +379,7 @@ const Facturas = () => {
                     modalTitle="¿Desea eliminar la factura seleccionado?"
                     modalDescription="La factura seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="bills"
+                    tipo="factura"
                   />
                   <ControlsExportCSV tableInstance={billsCSVData && billsCSVData.items} type="bills" />
                 </div>
@@ -389,6 +394,23 @@ const Facturas = () => {
               </Col>
               <Col xs="12">
                 <TablePagination tableInstance={tableInstance} />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="8">
+                <h6 className="text-primary font-weight-bold ">
+                  Total de facturas:
+                  {billsData && billsData.total && (
+                    <p className="text-secondary font-weight-bold ">
+                      {parseFloat(billsData.total).toLocaleString('es-CR', {
+                        style: 'currency',
+                        currency: 'CRC',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      })}
+                    </p>
+                  )}
+                </h6>
               </Col>
             </Row>
           </div>

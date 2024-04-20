@@ -216,6 +216,7 @@ const Productos = () => {
                     modalTitle="¿Desea eliminar el producto seleccionado?"
                     modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="product"
+                    tipo="producto"
                   />
                 </div>
                 <div className="d-inline-block">

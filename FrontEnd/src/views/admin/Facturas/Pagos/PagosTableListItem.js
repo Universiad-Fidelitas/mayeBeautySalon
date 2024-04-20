@@ -4,7 +4,15 @@ import classNames from 'classnames';
 
 export const PagosTableListItem = ({ tableInstance }) => {
   const { page, prepareRow } = tableInstance;
-
+  const formatDate = (value) => {
+    if (value === null) {
+      return '';
+    }
+    const dateObject = new Date(value);
+    const dateString = dateObject.toLocaleDateString();
+    const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return `${dateString} ${timeString}`;
+  };
   return (
     <>
       <div className="list mb-5">
@@ -56,14 +64,14 @@ export const PagosTableListItem = ({ tableInstance }) => {
                       <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate id_card">
                           <p className="m-0">
-                            <span className="text-primary">Fecha de Cita: </span> {appointment_date}
+                            <span className="text-primary">Fecha de Cita: </span> {formatDate(appointment_date)}
                           </p>
                         </div>
                       </Col>
                       <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
                         <div className="lh-1 text-alternate id_card">
                           <p className="m-0">
-                            <span className="text-primary">Fecha de venta: </span> {inventory_date}
+                            <span className="text-primary">Fecha de venta: </span> {formatDate(inventory_date)}
                           </p>
                         </div>
                       </Col>
