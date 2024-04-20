@@ -173,7 +173,7 @@ export const ServicesView = () => {
               </Col>
             </Row>
           </div>
-          {isOpenAddEditModal && <ModalAddEditServices tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />}
+          {isOpenAddEditModal && <ModalAddEditServices tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy, term2 }} />}
         </Col>
       </Row>
     </>

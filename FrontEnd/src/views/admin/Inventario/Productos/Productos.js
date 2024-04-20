@@ -232,7 +232,7 @@ const Productos = () => {
               </Col>
             </Row>
           </div>
-          <ProductosModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
+          <ProductosModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy, term2 }} />
         </Col>
       </Row>
     </>
