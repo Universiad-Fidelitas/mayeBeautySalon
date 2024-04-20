@@ -155,6 +155,7 @@ export const Notificacions = () => {
                     modalTitle="¿Desea eliminar la notificación seleccionada?"
                     modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="notification"
+                    tipo="notificación"
                   />
                 </div>
                 <div className="d-inline-block">

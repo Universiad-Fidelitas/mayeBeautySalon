@@ -214,6 +214,7 @@ const Roles = () => {
                     modalTitle="¿Desea eliminar el rol seleccionado?"
                     modalDescription="El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="role"
+                    tipo="rol"
                   />
                 </div>
                 <div className="d-inline-block">

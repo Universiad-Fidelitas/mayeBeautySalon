@@ -23,14 +23,16 @@ const getBills = async (req, res = response) => {
         const offset = pageIndex * pageSize;
 
         let baseQuery = 'select * from bill_view where activated = 1';
+        let querytotal = `SELECT COALESCE(appointment_price, 0) + COALESCE(inventory_price, 0) AS total_price FROM bill_view where activated = 1`;
         if (term) {
             baseQuery += ` AND id_card LIKE '%${term}%'`;
+            querytotal += ` AND id_card LIKE '%${term}%'`;
         }
         
         if (term2 && term3) {
             baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+            querytotal += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
         }
-        console.log(baseQuery);
         const orderByClauses = [];
 
         if (Array.isArray(sortBy)) {
@@ -44,15 +46,19 @@ const getBills = async (req, res = response) => {
 
         if (orderByClauses.length > 0) {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
+            querytotal += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
+        const ttoal = `SELECT SUM(total_price) AS TotalPrice from (${querytotal} LIMIT ${pageSize} OFFSET ${offset}) AS subquery_alias`;
         const rows = await dbService.query(query);
+        console.log(ttoal)
+        const total = await dbService.query(ttoal);
         for (const row of rows) {
             const inventoryId = row.inventory_id;
             const productQuery = `SELECT i.amount, i.product_id, i.invetory_products_id, p.name, p.price FROM inventory_products i left join products p on i.product_id = p.product_id WHERE inventory_id = ${inventoryId}`;
             const productData = await dbService.query(productQuery);
             row.dataToInsert = productData;
-        }
+        };
         const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_bills`);
         const totalRowCount = totalRowCountResult[0].count;
 
@@ -63,6 +69,7 @@ const getBills = async (req, res = response) => {
             pageIndex,
             pageCount,
             items: rows,
+            total: total[0].TotalPrice,
             rowCount: totalRowCount,
         };
 
