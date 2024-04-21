@@ -7,7 +7,7 @@
 */
 
 main {
-  min-height: calc(100vh - 311px);
+  min-height: calc(100vh - 282px);
   padding-left: calc(var(--nav-size) + var(--main-spacing-horizontal));
   padding-right: var(--main-spacing-horizontal);
   padding-top: var(--main-spacing-vertical);
@@ -102,5 +102,26 @@ html[data-placement='horizontal'] {
 html[data-placement='vertical'] {
   section.scroll-section {
     scroll-margin-top: var(--main-spacing-vertical);
+  }
+}
+
+.logs-card {
+  .card-body {
+    padding: 0;
+    h2 {
+      background-color: var(--primary);
+      color: #fff;
+      border-radius: 15px 15px 0 0;
+      padding: 20px 10px;
+      text-align: center;
+      height: auto;
+      font-weight: bold;
+    }
+    .os-host {
+      height: calc(100% - 65px);
+      padding: 15px 20px;
+      width: 100%;
+      margin: 0;
+    }
   }
 }

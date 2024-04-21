@@ -1,22 +1,22 @@
 import React from 'react';
 import { Col } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
-import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 
 export const Footer = () => {
   const { isLogin } = useSelector((state) => state.auth);
   return (
-    <footer className="bg-primary text-light">
+    <footer className="text-white">
       { !isLogin && (
-        <Col className="col-12 general-padding-x">
+        <Col className="col-12 general-padding-x bg-primary text-white">
           <Col className="col-12 px-0 py-3 border-bottom border-white d-flex">
             <Col className="col-6 col-lg-2 p-0">Síguenos en redes sociales</Col>
             <Col className="col-6 col-lg-10 p-0 d-flex gap-2">
-              <a className="text-light" href="https://www.instagram.com/maye_beautysalon/">
+              <a className="text-white" href="https://www.instagram.com/maye_beautysalon/">
                 <CsLineIcons icon="instagram" />
               </a>
-              <a className="text-light" href="https://www.instagram.com/maye_beautysalon/">
+              <a className="text-white" href="https://www.instagram.com/maye_beautysalon/">
                 <CsLineIcons icon="facebook" />
               </a>
             </Col>
@@ -43,7 +43,7 @@ export const Footer = () => {
           </Col>
         </Col>
       )}
-      <Col className="col-12 px-0 bg-secondary text-center py-3 text-dark copyright-footer">© 2024 Copyright | Maye Beauty Salon</Col>
+      <Col className={classNames({ 'bg-primary' : !isLogin })}><div className='g-0 col-12 px-0 bg-secondary text-center py-3 text-dark copyright-footer'>© 2024 Copyright | Maye Beauty Salon</div></Col>
     </footer>
   );
 };

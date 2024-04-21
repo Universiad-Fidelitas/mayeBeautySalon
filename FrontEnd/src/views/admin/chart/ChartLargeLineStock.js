@@ -87,7 +87,7 @@ const ChartLargeLineStock = ({ profits }) => {
           <div className="cta-2 text-primary value d-inline-block align-middle sw-4">{value}</div>
           <CsLineIcons icon={icon} className="icon d-inline-block align-middle text-primary" size="15" />
         </div>
-        <div className="text-small text-muted mb-1 text text-uppercase">{text}</div>
+        <div className="font-weight-bold text-uppercase">{text}</div>
       </>,
       tooltipRef.current
     );
@@ -208,8 +208,7 @@ const ChartLargeLineStock = ({ profits }) => {
   return (
     <>
       <Col xs="12" sm="auto" className="d-flex flex-column justify-content-between custom-tooltip pe-0 pe-sm-4">
-        <p className="heading title mb-1">Ganancias del mes</p>
-
+        <p className="font-weight-bold card-title h5 mb-1">Ganancias del mes</p>
         <div ref={tooltipRef} />
       </Col>
       <Col xs="12" className="col-sm sh-17">
