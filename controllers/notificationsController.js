@@ -9,6 +9,7 @@ const getById = async (req, res = response) => {
         res.status(500).json({notificationFound, status: true, message: 'Se ha encontrado la notification exitosamente.' });
     }
     catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -53,6 +54,7 @@ const getNotifications = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -61,7 +63,8 @@ const postNotification = async (req, res = response) => {
     const { product_id, amount } = req.body;
     try {
         const { insertId } = await dbService.query("CALL sp_notification('create', '0', ?, ?)", [amount, product_id]);
-        await dbService.query("CALL check_amount_after_notification(?,?)", [product_id, amount])
+        await dbService.query("CALL check_amount_after_notification(?,?)", [product_id, amount]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'create', 'Creación de notificación']);
 
         res.status(200).json({
             notification_id: insertId,
@@ -69,7 +72,8 @@ const postNotification = async (req, res = response) => {
             message: "¡La notificación ha sido agregada exitosamente!"
         })
     }
-    catch({ message }) {
+    catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar la notificación!",
@@ -84,6 +88,7 @@ const putNotification = async (req, res = response) => {
     try {
         const { insertId } = await dbService.query("CALL sp_notification('update', ?, ?, ?)", [notification_id, amount, product_id  ]);
         await dbService.query("CALL check_amount_after_notification(?,?)", [product_id, amount]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'update', 'Cambios en notificación']);
 
         res.status(200).json({
             notification_id: insertId,
@@ -92,6 +97,7 @@ const putNotification = async (req, res = response) => {
         })
     }
     catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la notificación!",
@@ -106,6 +112,7 @@ const deleteNotification = async (req, res = response) => {
         const userQuery = `CALL sp_notification('delete', ?, 0, 0);`;
         const rows = await dbService.query(userQuery, [notification_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'delete', 'Inactivación de notificación']);
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
@@ -118,6 +125,7 @@ const deleteNotification = async (req, res = response) => {
             });
         }
     } catch (error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Notificaciones', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!",

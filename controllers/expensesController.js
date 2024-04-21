@@ -9,15 +9,7 @@ const getById = async (req, res = response) => {
         res.status(500).json({expenseFound, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'gastos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (error) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -28,15 +20,7 @@ const getExpenseType = async ( req,res = response) => {
         res.status(200).json({items: rows, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'gastos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (error) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -81,15 +65,7 @@ const getExpenses = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'gastos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -99,30 +75,16 @@ const postExpense = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_expense('create', '0', ?,?);`;
         const { insertId } = await dbService.query(userQuery, [expense_type, price]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'create', 'Creación de gasto']);
 
-                res.status(200).json({
-                    expense_id: insertId,
-                    success: true,
-                    message: "¡El gasto ha sido agregado exitosamente!"
-                })
-                const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'gastos', NOW(), '', ?)
-            `;
-            await dbService.query(logQuery, ['crear gasto | nuevo: ' + expense_type, 11]);
-
-
+        res.status(200).json({
+            expense_id: insertId,
+            success: true,
+            message: "¡El gasto ha sido agregado exitosamente!"
+        })
     }
-    catch({ message }) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'gastos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+    catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar el gasto!",
@@ -136,30 +98,18 @@ const putExpense = async (req, res = response) => {
     const { expense_id } = req.params;
     const { expense_type, price } = req.body;
     try {
-        const [expenseBeforeUpdate] = await dbService.query('SELECT expense_type FROM expenses WHERE activated = 1 AND expense_id = ?', [expense_id]);
         const userQuery = `CALL sp_expense('update', ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [expense_id, expense_type, price ]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'update', 'Cambios en gasto']);
+
         res.status(200).json({
             expense_id: insertId,
             success: true,
             message: "¡El gasto ha sido editado exitosamente!"
         })
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('actualizar', ?, 'gastos', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['actualizar gastos | anterior: ' + expenseBeforeUpdate + ' | nuevo: ' + expense_type, 11]);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'expenses', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar el gasto!",
@@ -174,6 +124,8 @@ const deleteExpense = async (req, res = response) => {
         const userQuery = `CALL sp_expense('delete', ?, '',0);`;
         const rows = await dbService.query(userQuery, [expense_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'delete', 'Inactivación de gasto']);
+        
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
@@ -186,15 +138,7 @@ const deleteExpense = async (req, res = response) => {
             });
         }
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'gastos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"

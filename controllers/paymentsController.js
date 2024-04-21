@@ -11,15 +11,7 @@ const getById = async (req, res = response) => {
         res.json(data);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getOne', 'getOne error', 'pagos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -68,48 +60,25 @@ const getPayments = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'pagos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
 const postPayments = async (req, res = response) => {
     const { payment_type, sinpe_phone_number, status } = req.body;
     try {
-        
         const userQuery= `call sp_payment ('create', '0', ?, ?, ?, ?);`;
+        const { insertId } = await dbService.query(userQuery, [payment_type, sinpe_phone_number, req.file ? req.file.path : '', status]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'create', 'Creación de pago']);
 
-            const { insertId } = await dbService.query(userQuery, [payment_type, sinpe_phone_number, req.file ? req.file.path : '', status]);
-            res.status(200).json({
-                payment_id: insertId,
-                success: true,
-                message: "¡El pago ha sido agregado exitosamente!"
-            })
-
-
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('create', ?, 'pagos', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['crear pago | nuevo: ' + payment_type, 11]);
+        res.status(200).json({
+            payment_id: insertId,
+            success: true,
+            message: "¡El pago ha sido agregado exitosamente!"
+        })
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'pagos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar un pago duplicado!",
@@ -126,6 +95,7 @@ const putPayments= async (req, res = response) => {
 
     try {
         const userQuery = `CALL sp_payment('update', ?, ?, ?, ?, ?);`;
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'update', 'Cambios en pago']);
         if ('voucher_path' in req.body) {
             const { insertId } = await dbService.query(userQuery,[payment_id, payment_type, sinpe_phone_number, voucher_path, status]);
             res.status(200).json({
@@ -142,22 +112,23 @@ const putPayments= async (req, res = response) => {
             });
         }
     }
-        catch(error) {
-
-            res.status(200).json({
-                success: false,
-                message: "¡Se ha producido un error al editar el pago!",
-                error: error
-            })
-        }
+    catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'error', error.message]);
+        res.status(200).json({
+            success: false,
+            message: "¡Se ha producido un error al editar el pago!",
+            error: error
+        })
     }
+}
 const deletePayments = async (req, res = response) => {
         const { payment_id } = req.body;
         try {
-            const [paymentBeforeUpdate] = await dbService.query('SELECT payment_type FROM payments WHERE payment_id = ?', [payment_id]);
             const userQuery = `CALL sp_payment('delete', ?, '', '', '', '');`;
             const rows = await dbService.query(userQuery, [payment_id]);
             const { affectedRows } = helper.emptyOrRows(rows);
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'delete', 'Inactivación de pago']);
+
             if( affectedRows === 1 ) {
                 res.status(200).json({
                     success: true,
@@ -169,21 +140,8 @@ const deletePayments = async (req, res = response) => {
                     message: "¡Los pagos han sido eliminados exitosamente!"
                 });
             }
-            const logQuery = `
-            INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-            VALUES ('eliminar', ?, 'pagos', NOW(), '', ?)
-        `;
-        await dbService.query(logQuery, ['eliminar pagos | anterior: ' + paymentBeforeUpdate, 11]);
         } catch (error) {
-            try {
-                const logQuery = `
-                    INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('delete', 'delete error', 'pagos', NOW(), ?, ?)
-                `;
-                await dbService.query(logQuery, [error.message, 11]);
-            } catch (logError) {
-                console.error('Error al insertar en la tabla de Logs:', logError);
-            }
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Pagos', req.header('user_id'), 'error', error.message]);
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al ejecutar la acción.!"

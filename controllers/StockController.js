@@ -6,19 +6,10 @@ const getById = async (req, res = response) => {
     const { product_id } = req.params;
     try {
         const [product_found] = await dbService.query('SELECT * FROM `inventory_summary` WHERE activated = 1 AND product_id = ?', [product_id]);
-
         res.status(200).json({product_found, status: true, message: 'Se ha encontrado el producto exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'stocks', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Stock', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -76,15 +67,7 @@ const getStock = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'stocks', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Stock', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }

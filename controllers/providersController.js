@@ -9,15 +9,7 @@ const getById = async (req, res = response) => {
         res.status(500).json({providerFound, status: true, message: 'Se ha encontrado el proveedor exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'provedores', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -62,15 +54,7 @@ const getProviders = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'provedores', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -80,28 +64,16 @@ const postProvider = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_provider('create', '0', ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [name, phone,email]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'create', 'Creación de servicio']);
 
-                res.status(200).json({
-                    provider_id: insertId,
-                    success: true,
-                    message: "¡El proveedor ha sido agregado exitosamente!"
-                })
-                const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', ?, 'categories', NOW(), '', ?)
-            `;
-            await dbService.query(logQuery, ['crear proveedor | nuevo: ' + name, 11]);
+        res.status(200).json({
+            provider_id: insertId,
+            success: true,
+            message: "¡El proveedor ha sido agregado exitosamente!"
+        })
     }
-    catch({ message }) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('insert', 'insert error', 'proveedores', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+    catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar el proveedor!",
@@ -115,35 +87,18 @@ const putProvider = async (req, res = response) => {
     const { provider_id } = req.params;
     const { name, phone, email } = req.body;
     try {
-
-        const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
-        const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
-   
-
         const userQuery = `CALL sp_provider('update', ?, ?,?,?);`;
         const { insertId } = await dbService.query(userQuery, [provider_id, name, phone, email ]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'update', 'Cambios en proveedor']);
 
         res.status(200).json({
             provider_id: insertId,
             success: true,
             message: "¡El proveedor ha sido editado exitosamente!"
         })
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('update', ?, 'categories', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['actualizar proveedores | anterior: ' + providerNameBeforeUpdate + ' | nuevo: ' + name, 11]);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'providers', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar el proveedor!",
@@ -155,11 +110,11 @@ const putProvider = async (req, res = response) => {
 const deleteProvider = async (req, res = response) => {
     const { provider_id } = req.body;
     try {
-        const [providerBeforeUpdate] = await dbService.query('SELECT name FROM providers WHERE provider_id = ?', [provider_id]);
-        const providerNameBeforeUpdate = providerBeforeUpdate ? providerBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_provider('delete', ?, '', '', '');`;
         const rows = await dbService.query(userQuery, [provider_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'delete', 'Inactivación de proveedor']);
+
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
@@ -171,21 +126,8 @@ const deleteProvider = async (req, res = response) => {
                 message: "¡Los proveedores han sido eliminados exitosamente!"
             });
         }
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('eliminar', ?, 'proveedores', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['eliminar proveedores | anterior: ' + providerNameBeforeUpdate, 11]);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'proveedores', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Provedores', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"
