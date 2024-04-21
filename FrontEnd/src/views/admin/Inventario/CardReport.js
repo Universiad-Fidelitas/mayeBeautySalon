@@ -92,7 +92,7 @@ export const CardReport = () => {
 
   return (
     <>
-      <h2 className="medium-title mt-6 text-primary">Reporte de inventario</h2>
+      <h2 className="medium-title text-primary font-weight-bold mt-6 mb-3">Reporte de inventario</h2>
       <Row className="mb-3">
         <Col sm="12" md="7" lg="9" xxl="10">
           <div className="d-inline-block">
