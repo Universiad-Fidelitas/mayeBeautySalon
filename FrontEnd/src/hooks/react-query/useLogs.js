@@ -1,15 +1,18 @@
 import { baseApi } from 'api/apiConfig';
-import { useQuery } from 'react-query';
+import {  useQuery } from 'react-query';
 
-export const useLogs = () => {
-  const getLogs = async ({ term = '', sortBy = [], pageIndex = 0, pageSize = 100 }) => {
-    const tableStatus = { term, sortBy, pageIndex, pageSize };
-    const { data } = await baseApi.post('/logs', tableStatus);
+export const useActionLogs = () => {
+  const getActionLogs = async () => {
+    const { data } = await baseApi.get('/logs');
     return data;
   };
+  return useQuery(['project-action-logs'], getActionLogs);
+};
 
-  return useQuery(['project-logs'], () => getLogs({}), {
-    refetchOnWindowFocus: false,
-    onError: () => {},
-  });
+export const useErrorLogs = () => {
+  const getErrorLogs = async () => {
+    const { data } = await baseApi.get('/logs/errors');
+    return data;
+  };
+  return useQuery(['project-error-logs'], getErrorLogs);
 };

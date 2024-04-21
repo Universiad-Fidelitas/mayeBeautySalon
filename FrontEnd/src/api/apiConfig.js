@@ -17,13 +17,14 @@ const baseApi = axios.create({
 
 // Add a request interceptor to check token status
 baseApi.interceptors.request.use(async (config) => {
-  const { token } = store.getState().auth.currentUser;
+  const { token, user_id } = store.getState().auth.currentUser;
 
   if (token) {
     const isTokenValid = jwtDecode(token).exp * 1000 >= new Date().getTime();
 
     if (isTokenValid) {
       config.headers.Authorization = `Bearer ${token}`;
+      config.headers.user_id = user_id;
     } else {
       const Content = () => (
         <>

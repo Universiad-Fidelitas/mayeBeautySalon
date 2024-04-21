@@ -12,7 +12,7 @@ const getById = async (req, res = response) => {
         res.status(200).json({billFound, status: true, message: 'Se ha encontrado la factura exitosamente.' });
     }
     catch(error) {
-       
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -75,7 +75,7 @@ const getBills = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -140,6 +140,7 @@ const getUserBills = async (req, res = response) => {
         });
     }
     catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -150,10 +151,8 @@ const getUserBills = async (req, res = response) => {
 const postBill = async (req, res = response) => {
     const {  status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, appointment_id } = req.body;
     try {
-        console.log('1');
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
-        console.log('2');
         const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
         const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
 
@@ -169,6 +168,8 @@ const postBill = async (req, res = response) => {
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
 
         let userInsertId;
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'create', 'Creación de factura']);
+
         if (userChecker.length === 0) {
             const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 7, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
@@ -199,8 +200,8 @@ const postBill = async (req, res = response) => {
         }
 
     }
-    catch({ message }) {
-
+    catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar la factura!",
@@ -266,6 +267,8 @@ const putBill = async (req, res = response) => {
         const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
         let userInsertId;
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'update', 'Cambios en factura']);
+
         if (userChecker.length === 0) {
             const queryAddUser = "INSERT INTO users (role_id, id_card,id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?,?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
@@ -290,6 +293,7 @@ const putBill = async (req, res = response) => {
     }
     catch(error) {
 
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la factura!",
@@ -301,10 +305,11 @@ const putBill = async (req, res = response) => {
 const deleteBill = async (req, res = response) => {
     const { bills_id } = req.body;
     try {
-
         const userQuery = `UPDATE bills SET activated=0 WHERE FIND_IN_SET(bills_id, ?)`;
         const rows = await dbService.query(userQuery, [bills_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'delete', 'Inactivación de factura']);
+
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
@@ -317,18 +322,8 @@ const deleteBill = async (req, res = response) => {
                 message: "¡Las facturas han sido eliminados exitosamente!"
             });
         }
-
-        
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'bills', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"

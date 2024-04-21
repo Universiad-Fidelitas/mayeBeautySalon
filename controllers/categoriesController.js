@@ -9,15 +9,7 @@ const getById = async (req, res = response) => {
         res.status(500).json({categoryFound, status: true, message: 'Se ha encontrado la categoría exitosamente.' });
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getone', 'getone error', 'categorias', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -62,15 +54,7 @@ const getCategories = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'categories', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -80,29 +64,16 @@ const postCategory = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_category('create', '0', ?);`;
         const { insertId } = await dbService.query(userQuery, [name ]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'create', 'Creación de categoria']);
 
-                res.status(200).json({
-                    category_id: insertId,
-                    success: true,
-                    message: "¡La categoría ha sido agregada exitosamente!"
-                })
-                const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('crear', ?, 'categorias', NOW(), '', ?)
-            `;
-            await dbService.query(logQuery, ['crear categoria | nueva: ' + name, 11]);
-
+        res.status(200).json({
+            category_id: insertId,
+            success: true,
+            message: "¡La categoría ha sido agregada exitosamente!"
+        })
     }
     catch({ message }) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('insert', 'insert error', 'categorias', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar la categoría!",
@@ -116,31 +87,18 @@ const putCategory = async (req, res = response) => {
     const { category_id } = req.params;
     const { name } = req.body;
     try {
-        const [categorieBeforeUpdate] = await dbService.query('SELECT name FROM categories WHERE  category_id = ?', [category_id]);
-        const categorieNameBeforeUpdate = categorieBeforeUpdate ? categorieBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_category('update', ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [category_id, name ]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'update', 'Cambios en categoria']);
+
         res.status(200).json({
             category_id: insertId,
             success: true,
             message: "¡La categoría ha sido editada exitosamente!"
         })
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('actualizar', ?, 'categorias', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['actualizar categorias | anterior: ' + categorieNameBeforeUpdate + ' | nueva: ' + name, 11]);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'categorias', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la categoria!",
@@ -152,11 +110,11 @@ const putCategory = async (req, res = response) => {
 const deleteCategory = async (req, res = response) => {
     const { category_id } = req.body;
     try {
-        const [categorieBeforeUpdate] = await dbService.query('SELECT name FROM categories WHERE activated = 1 AND category_id = ?', [category_id]);
-        const categorieNameBeforeUpdate = categorieBeforeUpdate ? categorieBeforeUpdate.name : "Desconocido";
         const userQuery = `CALL sp_category('delete', ?, '');`;
         const rows = await dbService.query(userQuery, [category_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'delete', 'Inactivación de categoria']);
+
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
@@ -169,21 +127,8 @@ const deleteCategory = async (req, res = response) => {
             });
            
         }
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('eliminar', ?, 'categorias', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['eliminar categorias | anterior: ' + categorieNameBeforeUpdate, 11]);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'categorias', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"

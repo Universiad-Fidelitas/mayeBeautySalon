@@ -5,12 +5,27 @@ import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useReports2 } from 'hooks/react-query/useReports2';
 import { useReports3 } from 'hooks/react-query/useReports3';
+import { useActionLogs, useErrorLogs } from 'hooks/react-query/useLogs';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import moment from 'moment';
+import 'moment/locale/es';
+import classNames from 'classnames';
+import { useIntl } from 'react-intl';
 import ChartLargeLineStock from './chart/ChartLargeLineStock';
 import { CardReport } from './Inventario/CardReport';
+
+
 
 const Dashboard = () => {
   const title = 'Panel de control';
   const description = 'Analytic Dashboard';
+  moment.locale('es'); // Set the locale to SpanishC
+
+  const { data: actionLogs } = useActionLogs();
+  const { data: errorLogs } = useErrorLogs();
+  moment.locale('es'); // Set the locale to Spanish
+  const { formatDate } = useIntl();
+
 
   const breadcrumbs = [];
   const { data: reports2Data } = useReports2();
@@ -184,6 +199,94 @@ const Dashboard = () => {
         </Col>
       </Row>
 
+
+
+      <Row>
+        {/* Logs Start */}
+        <h2 className="medium-title text-primary">Logs</h2>
+        <Col xl="6" className="mb-5">
+          <h2 className="small-title">Acciónes de usuarios</h2>
+          <Card className="sh-40">
+            <Card.Body className="mb-n2 scroll-out h-100 p-4">
+              <OverlayScrollbarsComponent options={{ scrollbars: { autoHide: 'leave' }, overflowBehavior: { x: 'hidden', y: 'scroll' } }} className="h-100">
+
+                {
+                  actionLogs?.map(({ full_name, description: logDescription, date, affected_table, log_type }, index) => (
+                    <Row key={index} className={classNames('g-0 mb-2', { 'border-bottom pb-3': index !== actionLogs.length - 1 })}>
+                      <Col xs="auto">
+                        <div className="sw-3 d-inline-block d-flex justify-content-start align-items-center h-100">
+                          <div className="sh-3">
+                            {log_type === 'update' && <CsLineIcons icon="edit" className="text-warning align-top" />}
+                            {log_type === 'delete' && <CsLineIcons icon="bin" className="text-danger align-top" />}
+                            {log_type === 'create' && <CsLineIcons icon="plus" className="text-success align-top" />}
+                            {log_type === 'read' && <CsLineIcons icon="eye" className="text-info align-top" />}
+                          </div>
+                        </div>
+                      </Col>
+                      <Row className='flex-column gap-2'>
+                        <Col>
+                          <div className="text-muted">{ moment(date).calendar(null, {
+                            sameDay: '[Hoy] - h:mm A',
+                            nextDay: '[Mañana] - h:mm A',
+                            nextWeek: 'dddd - h:mm A',
+                            lastDay: '[Ayer] - h:mm A',
+                            lastWeek: '[El] dddd [pasado] - h:mm A',
+                            sameElse: 'L'
+                          })}
+                          </div>
+                        </Col>
+                        <Col>
+                          <div className="text-alternate mt-n1 lh-1-25"><span className='font-weight-bold text-primary'>{ affected_table }</span> | { logDescription } por { full_name }</div>
+                        </Col>
+                      </Row>
+                    </Row>
+                  ))
+                }
+              </OverlayScrollbarsComponent>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col xl="6" className="mb-5">
+          <h2 className="small-title">Alertas</h2>
+          <Card className="sh-40">
+            <Card.Body className="mb-n2 scroll-out h-100 p-4">
+              <OverlayScrollbarsComponent options={{ scrollbars: { autoHide: 'leave' }, overflowBehavior: { x: 'hidden', y: 'scroll' } }} className="h-100">
+
+                {
+                  errorLogs?.map(({ description: logDescription, date, affected_table, log_type }, index) => (
+                    <Row key={index} className={classNames('g-0 mb-2', { 'border-bottom pb-3': index !== errorLogs.length - 1 })}>
+                      <Col xs="auto">
+                        <div className="sw-3 d-inline-block d-flex justify-content-start align-items-center h-100">
+                          <div className="sh-3">
+                            {log_type === 'error' && <CsLineIcons icon="warning-hexagon" className="text-danger align-top" />}
+                          </div>
+                        </div>
+                      </Col>
+                      <Row className='flex-column gap-2'>
+                        <Col>
+                          <div className="text-muted">{ moment(date).calendar(null, {
+                            sameDay: '[Hoy] - h:mm A',
+                            nextDay: '[Mañana] - h:mm A',
+                            nextWeek: 'dddd - h:mm A',
+                            lastDay: '[Ayer] - h:mm A',
+                            lastWeek: '[El] dddd [pasado] - h:mm A',
+                            sameElse: 'L'
+                          })}
+                          </div>
+                        </Col>
+                        <Col>
+                          <div className="text-alternate mt-n1 lh-1-25"><span className='font-weight-bold text-primary'>{ affected_table }</span> | { logDescription }</div>
+                        </Col>
+                      </Row>
+                    </Row>
+                  ))
+                }
+              </OverlayScrollbarsComponent>
+            </Card.Body>
+          </Card>
+        </Col>
+        {/* Logs End */}
+        </Row>
       <Row>
         <CardReport />{' '}
       </Row>

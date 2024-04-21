@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row, Col, Card, Form } from 'react-bootstrap';
 import classNames from 'classnames';
+import CsLineIcons from 'cs-line-icons/CsLineIcons';
 
 const UsuariosItemList = ({ tableInstance }) => {
   const { page, prepareRow, toggleAllPageRowsSelected, setIsOpenAddEditModal } = tableInstance;
@@ -16,8 +17,7 @@ const UsuariosItemList = ({ tableInstance }) => {
       <div className="list mb-5">
         {page.map((row, i) => {
           prepareRow(row);
-          const { email, activated, first_name, last_name, phone, image, id_card, id_card_type } = row.original;
-          const { checked, onChange } = row.getToggleRowSelectedProps();
+          const { email, activated, first_name, last_name, phone, image, id_card } = row.original;
 
           return (
             <Card key={`card.${i}`} {...row.getRowProps()} className={classNames('mb-2', { selected: row.isSelected })}>
@@ -53,7 +53,7 @@ const UsuariosItemList = ({ tableInstance }) => {
                         {activated === 1 ? <span className="badge bg-outline-success">Activo</span> : <span className="badge bg-outline-danger">Inactivo</span>}
                       </Col>
                       <Col xs="1" lg="1" className="d-flex flex-column mb-2 mb-lg-0 align-items-end order-2 order-lg-last">
-                        <Form.Check className="form-check mt-2" type="checkbox" checked={checked} onChange={onChange} />
+                        <CsLineIcons className='link-secondary' icon="edit" />
                       </Col>
                     </Row>
                   </Card.Body>

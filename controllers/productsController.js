@@ -10,15 +10,7 @@ const getById = async (req, res = response) => {
         res.json(data);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('getOne', 'getOne error', 'productos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -71,15 +63,7 @@ const getProducts = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('get', 'get error', 'productos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -90,28 +74,16 @@ const postProducts = async (req, res = response) => {
         
         const userQuery= `call sp_product ('create', '0', ?, ?, ?, ?, ?, ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [name, brand_id, price, size, req.file.path, provider_id, category_id, price_buy]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'create', 'Creación de producto']);
 
         res.status(200).json({
             product_id: insertId,
             success: true,
             message: "¡El producto ha sido agregado exitosamente!"
         })
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('crear', ?, 'productos', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['crear producto | nuevo: ' + name, 11]);
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('create', 'create error', 'productos', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar un producto duplicado!",
@@ -123,13 +95,12 @@ const postProducts = async (req, res = response) => {
 const putProducts = async (req, res = response) => {
     const { product_id } = req.params;
     const { name, brand_id, price, size, provider_id, category_id, price_buy } = req.body;
-    if ('image' in req.body) {
-        ({ image } = req.body);
-    }
     try {
-        const [productBeforeUpdate] = await dbService.query('SELECT name FROM products WHERE product_id = ?', [product_id]);
-        const productNameBeforeUpdate = productBeforeUpdate ? productBeforeUpdate.name : "Desconocido";
+        if ('image' in req.body) {
+            ({ image } = req.body);
+        }
         const userQuery = `call sp_product ('update', ?, ?, ?, ?, ?, ?, ?, ?,?);`;
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'update', 'Cambios en producto']);
         if ('image' in req.body) {
             const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, image, provider_id, category_id, price_buy]);
             res.status(200).json({
@@ -145,22 +116,9 @@ const putProducts = async (req, res = response) => {
                 message: "¡El producto ha sido editado exitosamente!"
             });
         }
-        const logQuery = `
-        INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-        VALUES ('actualizar', ?, 'productos', NOW(), '', ?)
-    `;
-    await dbService.query(logQuery, ['actualizar productos | anterior: ' + productNameBeforeUpdate + ' | nuevo: ' + name, 11]);
     }
         catch(error) {
-            try {
-                const logQuery = `
-                    INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('update', 'update error', 'products', NOW(), ?, ?)
-                `;
-                await dbService.query(logQuery, [error.message, 11]);
-            } catch (logError) {
-                console.error('Error al insertar en la tabla de Logs:', logError);
-            }
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al editar el producto!",
@@ -172,11 +130,11 @@ const putProducts = async (req, res = response) => {
     const deleteProducts = async (req, res = response) => {
         const { product_id } = req.body;
         try {
-             const [productBeforeUpdate] = await dbService.query('SELECT name FROM products WHERE product_id = ?', [product_id]);
-             const productNameBeforeUpdate = productBeforeUpdate ? productBeforeUpdate.name : "Desconocido";
             const userQuery = `call sp_product ('delete', ?, '', 0, 0, '', '', 0, 0, 0);`;
             const rows = await dbService.query(userQuery, [product_id]);
             const { affectedRows } = helper.emptyOrRows(rows);
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'delete', 'Inactivación de producto']);
+            
             if( affectedRows === 1 ) {
                 res.status(200).json({
                     success: true,
@@ -188,21 +146,8 @@ const putProducts = async (req, res = response) => {
                     message: "¡Los productos han sido desactivados/reactivados exitosamente!"
                 });
             }
-            const logQuery = `
-            INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-            VALUES ('delete', ?, 'productos', NOW(), '', ?)
-        `;
-        await dbService.query(logQuery, ['eliminar productos | anterior: ' + productNameBeforeUpdate, 11]);
         } catch (error) {
-            try {
-                const logQuery = `
-                    INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                    VALUES ('delete', 'delete error', 'productos', NOW(), ?, ?)
-                `;
-                await dbService.query(logQuery, [error.message, 11]);
-            } catch (logError) {
-                console.error('Error al insertar en la tabla de Logs:', logError);
-            }
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al ejecutar la acción.!"

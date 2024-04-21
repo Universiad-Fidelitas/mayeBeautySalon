@@ -167,7 +167,6 @@ const Usuarios = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   {userHasPermission('C_USERS') && <ControlsAdd tableInstance={tableInstance} />}
-                  {userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
