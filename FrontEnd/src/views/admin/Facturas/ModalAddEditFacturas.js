@@ -11,6 +11,7 @@ import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ReactToPrint from 'react-to-print';
 import { useBills } from 'hooks/react-query/useBills';
+import NumberFormat from 'react-number-format';
 
 export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
@@ -358,15 +359,27 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                         </div>
                       </Col>
                     </Row>
-                    <div className="mb-3" key="sinpe_phone_number">
-                      <label className="form-label">Número de SINPE</label>
-                      <Field className="form-control" type="text" id="sinpe_phone_number" name="sinpe_phone_number" />
-                      <ErrorMessage name="sinpe_phone_number" component="div" />
-                    </div>
+                    {values.payment_type === 'sinpe' && (
+                      <div className="mb-3" key="sinpe_phone_number">
+                        <label className="form-label">Número de SINPE</label>
+                        <NumberFormat
+                          className="form-control"
+                          mask="_"
+                          format="####-####"
+                          allowEmptyFormatting
+                          value={values.sinpe_phone_number}
+                          onValueChange={({ value }) => {
+                            setFieldValue('sinpe_phone_number', value);
+                          }}
+                        />
+
+                        <ErrorMessage name="sinpe_phone_number" component="div" className="text-danger" />
+                      </div>
+                    )}
                     <div className="mb-3" key="description">
                       <label className="form-label">Descripción</label>
                       <Field as="textarea" className="form-control" type="text" id="description" name="description" />
-                      <ErrorMessage name="description" component="div" />
+                      <ErrorMessage name="description" component="div" className="text-danger" />
                     </div>
                     {selectedFlatRows.length === 1 && (
                       <>
@@ -399,7 +412,20 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                       <Col className="col-9">
                         <div className="mb-3" key="id_card">
                           <label className="form-label">Cédula</label>
-                          <Field className="form-control" type="text" id="id_card" name="id_card" disabled={!values.id_card_type} />
+                          <NumberFormat
+                            className="form-control"
+                            mask="_"
+                            format={values.id_card_type && values.id_card_type !== 'nacional' ? '####-####-####' : '#-####-####'}
+                            allowEmptyFormatting
+                            value={values.id_card}
+                            onValueChange={({ value }) => {
+                              setFieldValue('id_card', value);
+                            }}
+                            id="id_card"
+                            name="id_card"
+                            disabled={!values.id_card_type}
+                          />
+
                           <ErrorMessage name="id_card" component="div" className="text-danger" />
                         </div>
                       </Col>
@@ -498,7 +524,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
                                     <Col className="col-6 m-0">
                                       {values.dataToInsert.length - 1 === index && (
-                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '' })}>
+                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
                                           <CsLineIcons icon="plus" />
                                         </Button>
                                       )}

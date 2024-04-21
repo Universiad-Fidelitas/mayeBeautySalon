@@ -5,15 +5,17 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 
 /* eslint-disable react-hooks/rules-of-hooks */
-export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
+export const useProducts = ({ term, pageIndex, pageSize, sortBy, term2 }) => {
   const { formatMessage: f } = useIntl();
 
   const getProducts = async () => {
+    console.log('test', term2);
     const { data } = await baseApi.post('/products', {
       term,
       pageIndex,
       pageSize,
       sortBy,
+      term2,
     });
     return data;
   };
@@ -34,10 +36,10 @@ export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(addProductApi, {
       onMutate: async (newProduct) => {
-        await queryClient.cancelQueries(['project-products', { term, pageIndex, pageSize, sortBy }]);
-        const previousData = queryClient.getQueryData(['project-products', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.cancelQueries(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
+        const previousData = queryClient.getQueryData(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
 
-        queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy }], (oldData) => {
+        queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => {
           const newItems = [newProduct, ...oldData.items.slice(0, 4)];
           return {
             ...oldData,
@@ -50,9 +52,9 @@ export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
       },
 
       onSettled: async ({ pageCount }, error) => {
-        await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
         if (!error && pageCount) {
-          queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
+          queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => ({
             ...oldData,
             pageCount,
           }));
@@ -77,10 +79,10 @@ export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(updateProductApi, {
       onMutate: async (productData) => {
-        await queryClient.cancelQueries(['project-products', { term, pageIndex, pageSize, sortBy }]);
-        const previousData = queryClient.getQueryData(['project-products', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.cancelQueries(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
+        const previousData = queryClient.getQueryData(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
 
-        queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy }], (oldData) => {
+        queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => {
           const newItems = oldData.items.map((item) => {
             if (item.product_id === productData.get('product_id')) {
               return productData;
@@ -98,9 +100,9 @@ export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
       },
 
       onSettled: async ({ pageCount }, error) => {
-        await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
         if (!error && pageCount) {
-          queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
+          queryClient.setQueryData(['project-products', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => ({
             ...oldData,
             pageCount,
           }));
@@ -123,13 +125,13 @@ export const useProducts = ({ term, pageIndex, pageSize, sortBy }) => {
     }, []);
     return useMutation(inactivateProductosApi, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-products', { term, pageIndex, pageSize, sortBy, term2 }]);
       },
     });
   };
 
   return {
-    getProducts: useQuery(['project-products', { term, pageIndex, pageSize, sortBy }], getProducts),
+    getProducts: useQuery(['project-products', { term, pageIndex, pageSize, sortBy, term2 }], getProducts),
     addProduct: addProduct(),
     updateProduct: updateProduct(),
     inactivateProductos: inactivateProductos(),

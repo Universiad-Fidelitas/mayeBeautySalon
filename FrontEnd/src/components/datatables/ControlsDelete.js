@@ -3,7 +3,7 @@ import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useIntl } from 'react-intl';
 
-export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDescription, type }) => {
+export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDescription, type, tipo }) => {
   const { formatMessage: f } = useIntl();
   const { selectedFlatRows } = tableInstance;
 
@@ -26,7 +26,7 @@ export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDe
       </Button>
     );
   }
-  if (selectedFlatRows.length === 1 && (type === 'service' || type === 'role') && selectedFlatRows[0].original.activated === 0) {
+  if (selectedFlatRows.length === 1 && (type === 'service' || type === 'role' || type === 'product') && selectedFlatRows[0].original.activated === 0) {
     return (
       <>
         <OverlayTrigger placement="top" overlay={<Tooltip id="tooltip-top-delete">Reactivar</Tooltip>}>
@@ -36,10 +36,10 @@ export const ControlsDelete = ({ tableInstance, deleteItems, modalTitle, modalDe
         </OverlayTrigger>
         <Modal className="modal-close-out" show={confirmDeleteModal} onHide={() => setConfirmDeleteModal(false)} centered>
           <Modal.Header closeButton>
-            <Modal.Title className="text-primary">Reactivar servicio</Modal.Title>
+            <Modal.Title className="text-primary">Reactivar {tipo}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Quiere reactivar el servicio?</p>
+            <p>¿Quiere reactivar este {tipo}?</p>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="outline-body" onClick={() => setConfirmDeleteModal(false)}>

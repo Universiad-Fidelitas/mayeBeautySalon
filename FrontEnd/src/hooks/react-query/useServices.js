@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 
 /* eslint-disable react-hooks/rules-of-hooks */
-export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
+export const useServices = ({ term, pageIndex, pageSize, sortBy, term2 }) => {
   const { formatMessage: f } = useIntl();
   const getServices = async () => {
     const { data } = await baseApi.post('/services', {
@@ -13,6 +13,7 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
       pageIndex,
       pageSize,
       sortBy,
+      term2,
     });
     return data;
   };
@@ -33,10 +34,10 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(addServicesApi, {
       onMutate: async (newService) => {
-        await queryClient.cancelQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
-        const previousData = queryClient.getQueryData(['project-services', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.cancelQueries(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
+        const previousData = queryClient.getQueryData(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
 
-        queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => {
+        queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => {
           const newItems = [newService, ...oldData.items.slice(0, 4)];
           return {
             ...oldData,
@@ -49,9 +50,9 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
       },
 
       onSettled: async ({ pageCount }, error) => {
-        await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
         if (!error && pageCount) {
-          queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
+          queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => ({
             ...oldData,
             pageCount,
           }));
@@ -76,10 +77,10 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(updateServicesApi, {
       onMutate: async (newService) => {
-        await queryClient.cancelQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
-        const previousData = queryClient.getQueryData(['project-services', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.cancelQueries(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
+        const previousData = queryClient.getQueryData(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
 
-        queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => {
+        queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => {
           const newItems = oldData.items.map((item) => {
             if (item.service_id === newService.service_id) {
               return newService;
@@ -97,9 +98,9 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
       },
 
       onSettled: async ({ pageCount }, error) => {
-        await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
         if (!error && pageCount) {
-          queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
+          queryClient.setQueryData(['project-services', { term, pageIndex, pageSize, sortBy, term2 }], (oldData) => ({
             ...oldData,
             pageCount,
           }));
@@ -124,13 +125,13 @@ export const useServices = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(deleteServicesApi, {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy }]);
+        await queryClient.invalidateQueries(['project-services', { term, pageIndex, pageSize, sortBy, term2 }]);
       },
     });
   };
 
   return {
-    getServices: useQuery(['project-services', { term, pageIndex, pageSize, sortBy }], getServices),
+    getServices: useQuery(['project-services', { term, pageIndex, pageSize, sortBy, term2 }], getServices),
     addServices: addServices(),
     updateServices: updateServices(),
     deleteServices: deleteServices(),

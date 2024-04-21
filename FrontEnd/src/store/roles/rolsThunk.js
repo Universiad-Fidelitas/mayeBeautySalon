@@ -23,7 +23,7 @@ const postRol = (newRol) => {
       const { data } = await baseApi.post('/roles/add', newRol);
       const { success, message } = data;
       if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
+        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5, term2: true }));
         toast(message, { className: 'success' });
       } else {
         toast(message, { className: 'danger' });
@@ -40,7 +40,7 @@ const editRol = ({ role_id, name, permissions, activated }) => {
       const { data } = await baseApi.put(`/roles/${role_id}`, { name, permissions, activated });
       const { success, message } = data;
       if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
+        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5, term2: true }));
         toast(message, { className: 'success' });
       }
     } catch (error) {
@@ -55,7 +55,7 @@ const deleteRols = (rol_ids) => {
       const { data } = await baseApi.post('/roles/delete', { role_id: rol_ids.toString() });
       const { success, message } = data;
       if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5 }));
+        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5, term2: true }));
         toast(message, { className: 'success' });
       }
     } catch (error) {

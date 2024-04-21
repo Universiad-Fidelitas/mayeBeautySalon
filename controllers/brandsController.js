@@ -27,7 +27,7 @@ const getBrands = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select brand_id, name from brands where activated = 1';
+        let baseQuery = 'select brand_id, name, activated from brands WHERE activated = 1';
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }

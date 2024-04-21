@@ -128,6 +128,7 @@ const Marcas = () => {
                     modalTitle="¿Desea eliminar la marca seleccionada?"
                     modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="brand"
+                    tipo="marca"
                   />
                 </div>
                 <div className="d-inline-block">

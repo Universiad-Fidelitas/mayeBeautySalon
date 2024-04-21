@@ -132,6 +132,7 @@ const Gastos = () => {
                     modalTitle="¿Desea eliminar el gasto seleccionado?"
                     modalDescription="El gasto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="expense"
+                    tipo="gasto"
                   />
                 </div>
                 <div className="d-inline-block">

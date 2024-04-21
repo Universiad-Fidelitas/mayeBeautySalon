@@ -24,12 +24,16 @@ const getById = async (req, res = response) => {
 }
 
 const getProducts = async (req, res = response) => {
-    const { pageIndex, pageSize, term, sortBy } = req.body;
+    const { pageIndex, pageSize, term, sortBy, term2 } = req.body;
     try {
         const offset = pageIndex * pageSize;
-
-        let baseQuery = 'SELECT * FROM product_info WHERE activated=1';
-
+        let activatedTerm2;
+        if(term2===true){
+            activatedTerm2=1
+        }else{
+            activatedTerm2=0
+        }
+        let baseQuery = `SELECT * FROM product_info WHERE activated='${activatedTerm2}'`;
         if (term) {
             baseQuery += ` AND name LIKE '%${term}%'`;
         }
@@ -176,12 +180,12 @@ const putProducts = async (req, res = response) => {
             if( affectedRows === 1 ) {
                 res.status(200).json({
                     success: true,
-                    message: "¡El producto ha sido eliminado exitosamente!"
+                    message: "¡El producto ha sido desactivado/reactivado exitosamente!"
                 });
             } else {
                 res.status(200).json({
                     success: true,
-                    message: "¡Los productos han sido eliminados exitosamente!"
+                    message: "¡Los productos han sido desactivados/reactivados exitosamente!"
                 });
             }
             const logQuery = `

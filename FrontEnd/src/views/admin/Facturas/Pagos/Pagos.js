@@ -174,9 +174,10 @@ const Pagos = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el producto seleccionado?"
+                    modalTitle="¿Desea eliminar el pago seleccionado?"
                     modalDescription="El pago seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="payment"
+                    tipo="pago"
                   />
                 </div>
                 <div className="d-inline-block">

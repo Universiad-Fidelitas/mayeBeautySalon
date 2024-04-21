@@ -84,8 +84,8 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
                     <label className="form-label">{f({ id: 'services.servicePrice' })}</label>
                     <NumberFormat
                       className={classNames('form-control', { 'is-invalid': errors.price && touched.price })}
-                      thousandSeparator="."
-                      decimalSeparator=","
+                      thousandSeparator=","
+                      decimalSeparator="."
                       prefix="₡"
                       allowNegative={false}
                       value={values.price}
