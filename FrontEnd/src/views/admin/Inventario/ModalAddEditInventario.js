@@ -130,7 +130,7 @@ export const ModalAddEditInventario = ({ tableInstance, addItem, validationSchem
                                   })}
                                   allowEmptyFormatting
                                   isAllowed={({ value }) => value <= 50 && true}
-                                  value={values.dataToInsert[index].cantidad}
+                                  value={values.dataToInsert[index].amount}
                                   onValueChange={({ value }) => {
                                     setFieldValue(`dataToInsert.${index}.amount`, value);
                                   }}

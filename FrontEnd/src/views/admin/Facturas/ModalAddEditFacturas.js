@@ -9,6 +9,8 @@ import { useIntl } from 'react-intl';
 import { baseApi } from 'api/apiConfig';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
+import { SelectField } from 'components/SelectField';
+import classNames from 'classnames';
 import ReactToPrint from 'react-to-print';
 import { useBills } from 'hooks/react-query/useBills';
 import NumberFormat from 'react-number-format';
@@ -169,22 +171,24 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
     { value: 'transferencia', label: 'Transferencia' },
   ];
 
-  const CustomSelect2 = ({ field, form, options }) => (
-    <Select
-      classNamePrefix="react-select"
-      options={options}
-      name={field.name}
-      value={options ? options.find((option) => option.value === field.value) : ''}
-      onChange={(option) => {
-        form.setFieldValue(field.name, option.value);
-        if (option.value) {
-          setIsIdCardDisabled(false);
-        } else {
-          setIsIdCardDisabled(true);
-        }
-      }}
-      placeholder="Seleccione una opcion"
-    />
+  const CustomSelect2 = ({ field, form, options, errors, touched }) => (
+    <>
+      <SelectField
+        label="Tipo de cédula"
+        name="id_card_type"
+        placeholder="Seleccione una opción"
+        options={options}
+        isError={errors.id_card_type && touched.id_card_type}
+        onChange={(option) => {
+          form.setFieldValue(field.name, option.value);
+          if (option.value) {
+            setIsIdCardDisabled(false);
+          } else {
+            setIsIdCardDisabled(true);
+          }
+        }}
+      />
+    </>
   );
 
   const PrintValuesComponent = forwardRef(({ values }, ref) => {
@@ -312,7 +316,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
           onSubmit={onSubmit}
           validationSchema={validationSchema}
         >
-          {({ values, setFieldValue }) => {
+          {({ errors, touched, values, setFieldValue }) => {
             useEffect(() => {
               setFormValues(values);
             }, [values]);
@@ -346,24 +350,32 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                     <Row className="g-3 mb-3">
                       <Col className="col-6">
                         <div className="mb-3">
-                          <label className="form-label">Estado del Pago</label>
-                          <Field className="form-control" name="status" id="status" component={CustomSelect} options={optionsStatus} required />
-                          <ErrorMessage name="status" component="div" className="text-danger" />
+                          <SelectField
+                            label="Estado del Pago"
+                            name="status"
+                            placeholder="Seleccione una opcion"
+                            options={optionsStatus}
+                            isError={errors.status && touched.status}
+                          />
                         </div>
                       </Col>
                       <Col className="col-6">
                         <div className="mb-3">
-                          <label className="form-label">Tipo de Pago</label>
-                          <Field className="form-control" name="payment_type" id="payment_type" component={CustomSelect} options={optionsPayment} required />
-                          <ErrorMessage name="payment_type" component="div" className="text-danger" />
+                          <SelectField
+                            label="Tipo de Pago"
+                            name="payment_type"
+                            placeholder="Seleccione una opcion"
+                            options={optionsPayment}
+                            isError={errors.payment_type && touched.payment_type}
+                          />
                         </div>
                       </Col>
                     </Row>
                     {values.payment_type === 'sinpe' && (
-                      <div className="mb-3" key="sinpe_phone_number">
+                      <div className="mb-3 top-label" key="sinpe_phone_number">
                         <label className="form-label">Número de SINPE</label>
                         <NumberFormat
-                          className="form-control"
+                          className={`form-control ${errors.sinpe_phone_number && touched.sinpe_phone_number ? 'is-invalid' : ''}`}
                           mask="_"
                           format="####-####"
                           allowEmptyFormatting
@@ -376,9 +388,15 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                         <ErrorMessage name="sinpe_phone_number" component="div" className="text-danger" />
                       </div>
                     )}
-                    <div className="mb-3" key="description">
+                    <div className="mb-3 top-label" key="description">
                       <label className="form-label">Descripción</label>
-                      <Field as="textarea" className="form-control" type="text" id="description" name="description" />
+                      <Field
+                        as="textarea"
+                        className={`form-control ${errors.description && touched.description ? 'is-invalid' : ''}`}
+                        type="text"
+                        id="description"
+                        name="description"
+                      />
                       <ErrorMessage name="description" component="div" className="text-danger" />
                     </div>
                     {selectedFlatRows.length === 1 && (
@@ -401,19 +419,23 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                       </>
                     )}
                     <div className="mb-3">
-                      <label className="form-label" htmlFor="id_card_type">
-                        Tipo de Cedula
-                      </label>
-                      <Field className="form-control" name="id_card_type" id="id_card_type" component={CustomSelect2} options={idTypeDropdown} required />
-                      <ErrorMessage name="id_card_type" className="text-danger" component="div" />
+                      <Field
+                        className={`form-control ${errors.id_card_type && touched.id_card_type ? 'is-invalid' : ''}`}
+                        name="id_card_type"
+                        id="id_card_type"
+                        component={CustomSelect2}
+                        options={idTypeDropdown}
+                        errors={errors}
+                        touched={touched}
+                      />
                     </div>
                     <Row className="g-3 mb-3">
                       {selectedFlatRows.length === 1 && setIsIdCardDisabled(false)}
                       <Col className="col-9">
-                        <div className="mb-3" key="id_card">
+                        <div className="mb-3 top-label" key="id_card">
                           <label className="form-label">Cédula</label>
                           <NumberFormat
-                            className="form-control"
+                            className={`form-control ${errors.id_card && touched.id_card ? 'is-invalid' : ''}`}
                             mask="_"
                             format={values.id_card_type && values.id_card_type !== 'nacional' ? '####-####-####' : '#-####-####'}
                             allowEmptyFormatting
@@ -430,9 +452,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                         </div>
                       </Col>
                       <Col className="col-3">
-                        <div className="mb-3">
-                          <label className="form-label">Buscar</label>
-                          <br />
+                        <div className="mt-2">
                           <Button variant="primary" onClick={() => SearchUser(values.id_card, { setFieldValue })} disabled={!values.id_card}>
                             Buscar
                           </Button>
@@ -443,32 +463,56 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                       <>
                         <Row className="g-3 mb-3">
                           <Col className="col-6">
-                            <div className="mb-3" key="first_name">
+                            <div className="mb-3 top-label" key="first_name">
                               <label className="form-label">Nombre</label>
-                              <Field className="form-control" type="text" id="first_name" name="first_name" disabled={IsUserFound2} />
+                              <Field
+                                className={`form-control ${errors.first_name && touched.first_name ? 'is-invalid' : ''}`}
+                                type="text"
+                                id="first_name"
+                                name="first_name"
+                                disabled={IsUserFound2}
+                              />
                               <ErrorMessage name="first_name" component="div" className="text-danger" />
                             </div>
                           </Col>
                           <Col className="col-6">
-                            <div className="mb-3" key="last_name">
+                            <div className="mb-3 top-label" key="last_name">
                               <label className="form-label">Apellido</label>
-                              <Field className="form-control" type="text" id="last_name" name="last_name" disabled={IsUserFound2} />
+                              <Field
+                                className={`form-control ${errors.last_name && touched.last_name ? 'is-invalid' : ''}`}
+                                type="text"
+                                id="last_name"
+                                name="last_name"
+                                disabled={IsUserFound2}
+                              />
                               <ErrorMessage name="last_name" component="div" className="text-danger" />
                             </div>
                           </Col>
                         </Row>
                         <Row className="g-3 mb-3">
                           <Col className="col-8">
-                            <div className="mb-3" key="email">
+                            <div className="mb-3 top-label" key="email">
                               <label className="form-label">Correo eletrónico</label>
-                              <Field className="form-control" type="text" id="email" name="email" disabled={IsUserFound2} />
+                              <Field
+                                className={`form-control ${errors.email && touched.email ? 'is-invalid' : ''}`}
+                                type="text"
+                                id="email"
+                                name="email"
+                                disabled={IsUserFound2}
+                              />
                               <ErrorMessage name="email" component="div" className="text-danger" />
                             </div>
                           </Col>
                           <Col className="col-4">
-                            <div className="mb-3" key="phone">
+                            <div className="mb-3 top-label" key="phone">
                               <label className="form-label">Número de teléfono</label>
-                              <Field className="form-control" type="text" id="phone" name="phone" disabled={IsUserFound2} />
+                              <Field
+                                className={`form-control ${errors.phone && touched.phone ? 'is-invalid' : ''}`}
+                                type="text"
+                                id="phone"
+                                name="phone"
+                                disabled={IsUserFound2}
+                              />
                               <ErrorMessage name="phone" component="div" className="text-danger" />
                             </div>
                           </Col>
@@ -485,50 +529,60 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                                   {productsDataDropdown && (
                                     <>
                                       <div className="mb-3">
-                                        <label className="form-label" htmlFor={`dataToInsert.${index}.product_id`}>
-                                          Productos
-                                        </label>
-
-                                        <Field
-                                          className="form-control"
+                                        <SelectField
+                                          className="m-0"
+                                          label="Productos"
                                           name={`dataToInsert.${index}.product_id`}
-                                          id="product_id"
-                                          component={CustomSelect}
+                                          placeholder="Seleccione producto"
                                           options={productsDataDropdown}
+                                          isError={
+                                            errors.dataToInsert &&
+                                            errors.dataToInsert[index]?.product_id &&
+                                            touched.dataToInsert &&
+                                            touched.dataToInsert[index]?.product_id
+                                          }
                                         />
-                                        <ErrorMessage name={`dataToInsert.${index}.product_id`} className="text-danger" component="div" />
                                       </div>
                                     </>
                                   )}
                                 </Col>
                                 <Col className="col-3 m-0">
-                                  <div className="mb-3">
-                                    <label className="form-label" htmlFor={`dataToInsert.${index}.amount`}>
-                                      Cantidad
-                                    </label>
-                                    <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
-                                    <ErrorMessage name={`dataToInsert.${index}.amount`} component="div" className="text-danger" />
+                                  <div className="top-label">
+                                    <label className="form-label">Cantidad</label>
+                                    <NumberFormat
+                                      className={classNames('form-control', {
+                                        'is-invalid':
+                                          errors.dataToInsert &&
+                                          errors.dataToInsert[index]?.amount &&
+                                          touched.dataToInsert &&
+                                          touched.dataToInsert[index]?.amount,
+                                      })}
+                                      allowEmptyFormatting
+                                      isAllowed={({ value }) => value <= 50 && true}
+                                      value={values.dataToInsert[index].amount}
+                                      onValueChange={({ value }) => {
+                                        setFieldValue(`dataToInsert.${index}.amount`, value);
+                                      }}
+                                    />
+                                    <ErrorMessage className="text-danger" name={`dataToInsert.${index}.amount`} component="div" />
                                   </div>
                                 </Col>
                                 <Col className="col-3 m-0">
-                                  <Row className="g-3 mb-3 m-0">
-                                    {index > 0 && (
-                                      <Col className="col-6 m-0">
-                                        <div className="mb-3">
-                                          <Button variant="danger w-100 p-2 mt-5" onClick={() => remove(index)}>
-                                            <CsLineIcons icon="bin" />
-                                          </Button>
-                                        </div>
-                                      </Col>
-                                    )}
-
-                                    <Col className="col-6 m-0">
-                                      {values.dataToInsert.length - 1 === index && (
-                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
+                                  <Row className="g-3 m-0">
+                                    {values.dataToInsert.length - 1 === index && (
+                                      <Col className="col-6 m-0 mt-1">
+                                        <Button variant="success w-100 p-2" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
                                           <CsLineIcons icon="plus" />
                                         </Button>
-                                      )}
-                                    </Col>
+                                      </Col>
+                                    )}
+                                    {index > 0 && (
+                                      <Col className="col-6 m-0 mt-1">
+                                        <Button variant="danger w-100 p-2" onClick={() => remove(index)}>
+                                          <CsLineIcons icon="bin" />
+                                        </Button>
+                                      </Col>
+                                    )}
                                   </Row>
                                 </Col>
                               </Row>
