@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { Field } from 'formik';
 import {
   ModalAddEdit,
   ButtonsAddNew,
@@ -7,8 +8,10 @@ import {
   ControlsEdit,
   ControlsSearch,
   ControlsDelete,
+  ControlsExportCSV,
   Table,
   TablePagination,
+  ControlsDatePicker,
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +21,7 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import { useBills } from 'hooks/react-query/useBills';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
+import { SelectField } from 'components/SelectField';
 import { ModalAddEditFacturas } from './ModalAddEditFacturas';
 
 const Facturas = () => {
@@ -28,115 +32,119 @@ const Facturas = () => {
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
+  const [term2, setTerm2] = useState('');
+  const [term3, setTerm3] = useState('');
   const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
 
   const columns = React.useMemo(() => {
     return [
       {
-        Header: 'Bill Id',
+        Header: 'No. Factura',
         accessor: 'bills_id',
         hideColumn: true,
+
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Activado',
         accessor: 'activated',
         sortable: true,
         hideColumn: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Correo electrónico',
         accessor: 'email',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-20',
       },
       {
         Header: 'Nombre',
         accessor: 'first_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Apellido',
         accessor: 'last_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'User ID',
         accessor: 'user_id',
         sortable: true,
         hideColumn: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Telefóno',
         accessor: 'phone',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Cédula',
         accessor: 'id_card',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Tipo de cédula',
         accessor: 'id_card_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Pago ID',
         accessor: 'payment_id',
         sortable: true,
         hideColumn: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Tipo pago',
         accessor: 'payment_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-15',
       },
       {
         Header: 'Número de Sinpe',
         accessor: 'sinpe_phone_number',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Estado de Pago',
         accessor: 'status',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Inventory ID',
         accessor: 'inventory_id',
         sortable: true,
         hideColumn: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio inventorio',
         accessor: 'inventory_price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Descripción',
         accessor: 'description',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Fecha de Venta',
         accessor: 'inventory_date',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-20',
         Cell: ({ value }) => {
           if (value === null) {
             return '';
@@ -151,13 +159,13 @@ const Facturas = () => {
         Header: 'appointment id',
         accessor: 'appointment_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Fecha de Cita',
         accessor: 'appointment_date',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-20',
         Cell: ({ value }) => {
           if (value === null) {
             return '';
@@ -172,7 +180,7 @@ const Facturas = () => {
         Header: 'Precio de Cita',
         accessor: 'appointment_price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',
@@ -204,7 +212,6 @@ const Facturas = () => {
         pageSize: 5,
         sortBy: [{ id: 'bills_id', desc: false }],
         hiddenColumns: [
-          'bills_id',
           'inventory_id',
           'payment_id',
           'user_id',
@@ -230,9 +237,9 @@ const Facturas = () => {
   const {
     state: { pageIndex, pageSize, sortBy },
   } = tableInstance;
-  const { getBills, deleteBills, addBill, updateBill } = useBills({ term, pageIndex, pageSize, sortBy });
+  const { getBills, deleteBills, addBill, updateBill, getBillsCSV } = useBills({ term, term2, term3, pageIndex, pageSize, sortBy });
   const { isSuccess: isBillsDataSuccess, data: billsData } = getBills;
-
+  const { data: billsCSVData } = getBillsCSV;
   useEffect(() => {
     if (isBillsDataSuccess) {
       setData(billsData.items);
@@ -266,6 +273,12 @@ const Facturas = () => {
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
+  }, 200);
+  const searchItem2 = useAsyncDebounce((val) => {
+    setTerm2(val || undefined);
+  }, 200);
+  const searchItem3 = useAsyncDebounce((val) => {
+    setTerm3(val || undefined);
   }, 200);
 
   const validationSchema = Yup.object().shape({
@@ -313,7 +326,12 @@ const Facturas = () => {
     sinpe_phone_number: Yup.string()
       .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
       .min(8, f({ id: 'helper.phoneMinLength' }))
-      .max(10, f({ id: 'helper.phoneMaxLength' })),
+      .max(10, f({ id: 'helper.phoneMaxLength' }))
+      .when('payment_type', {
+        is: 'sinpe',
+        then: Yup.string().required('El número de SINPE es requerido'),
+        otherwise: Yup.string(),
+      }),
   });
 
   const formFields = [];
@@ -327,8 +345,7 @@ const Facturas = () => {
           <div className="page-title-container">
             <Row>
               <Col xs="12" md="7">
-                <h1 className="mb-0 pb-0 display-4">{title}</h1>
-                <BreadcrumbList items={breadcrumbs} />
+                <h1 className="mb-3 pb-0 display-4">{title}</h1>
               </Col>
               <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
                 <ButtonsAddNew tableInstance={tableInstance} />
@@ -338,21 +355,33 @@ const Facturas = () => {
 
           <div>
             <Row className="mb-3">
-              <Col sm="12" md="5" lg="3" xxl="2">
+              <Col sm="12" md="4" lg="4" xxl="4">
                 <div className="d-inline-block float-md-start me-1 mb-1 mb-md-0 search-input-container w-100 shadow bg-foreground">
                   <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
-              <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
+              <Col sm="12" md="4" lg="4" xxl="4">
+                <div className="mb-1">
+                  <ControlsDatePicker tableInstance={tableInstance} onChange={searchItem2} />
+                </div>
+              </Col>
+              <Col sm="12" md="4" lg="4" xxl="4">
+                <div className="mb-1">
+                  <ControlsDatePicker tableInstance={tableInstance} onChange={searchItem3} />
+                </div>
+              </Col>
+              <Col sm="12" md="12" lg="12" xxl="12" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
+                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
                     modalTitle="¿Desea eliminar la factura seleccionado?"
                     modalDescription="La factura seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="bills"
+                    tipo="factura"
                   />
+                  <ControlsExportCSV tableInstance={billsCSVData && billsCSVData.items} type="bills" />
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
@@ -365,6 +394,23 @@ const Facturas = () => {
               </Col>
               <Col xs="12">
                 <TablePagination tableInstance={tableInstance} />
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="8">
+                <h6 className="text-primary font-weight-bold ">
+                  Total de facturas:
+                  {billsData && billsData.total && (
+                    <p className="text-secondary font-weight-bold ">
+                      {parseFloat(billsData.total).toLocaleString('es-CR', {
+                        style: 'currency',
+                        currency: 'CRC',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      })}
+                    </p>
+                  )}
+                </h6>
               </Col>
             </Row>
           </div>

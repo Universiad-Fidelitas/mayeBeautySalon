@@ -75,6 +75,7 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem }) => {
             : {
                 name: '',
                 permissions: '',
+                activated: '',
               }
         }
         onSubmit={onSubmit}
@@ -92,6 +93,12 @@ export const ModalEditPermissions = ({ tableInstance, addItem, editItem }) => {
                     <label className="form-label">Nombre del rol</label>
                     <Field className={`form-control ${errors.name && touched.name ? 'is-invalid' : ''}`} id="name" name="name" />
                     <ErrorMessage className="text-danger" name="name" component="div" />
+                  </div>
+                </Col>
+                <Col className="col-3">
+                  <div className="d-flex flex-row justify-content-between align-items-center activationSwitch">
+                    <label className="form-label">{f({ id: 'services.serviceState' })}</label>
+                    <FormCheck className="form-check" type="switch" checked={values.activated} onChange={() => setFieldValue('activated', !values.activated)} />
                   </div>
                 </Col>
               </Row>

@@ -20,7 +20,6 @@ import inventoryReducer from 'store/inventory/inventorySlice';
 import categoriesReducer from 'store/categories/categoriesSlice';
 import notificationsReducer from 'store/notifications/notificationsSlice';
 import stockReducer from 'store/stock/stockSlice';
-import logsReducer from 'store/logs/logsSlice';
 import reportsReducer from 'store/reports/reportsSlice';
 import reports2Reducer from 'store/reports/reports2Slice';
 import reports3Reducer from 'store/reports/reports3Slice';
@@ -47,7 +46,6 @@ const persistedReducer = persistReducer(
     stock: stockReducer,
     users: usersReducer,
     expenses: expensesReducer,
-    logs: logsReducer,
     inventory: inventoryReducer,
     categories: categoriesReducer,
     reports: reportsReducer,

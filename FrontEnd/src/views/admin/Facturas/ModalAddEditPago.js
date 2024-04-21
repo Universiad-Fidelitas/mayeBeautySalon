@@ -88,9 +88,7 @@ export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validation
   const options2 = [
     { value: 'P', label: 'Pendiente' },
     { value: 'R', label: 'Pagado' },
- 
   ];
-  
 
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
@@ -106,24 +104,21 @@ export const ModalAddEditPagos = ({ tableInstance, addItem, editItem, validation
             <div className="mb-3" key="size">
               <label className="form-label">Tipo</label>
               <Row>
-            
                 <Col sm="12">
                   <Field className="form-control" id="payment_type" name="payment_type" component={CustomSelect} options={options} required />
                 </Col>
-              
-            {formFields.map(({ id, label, type }) => (
-              <div className="mb-3" key={id}>
-                <label className="form-label">{label}</label>
-                <Field className="form-control" type={type} id={id} name={id} />
-                <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
-              </div>
-            ))}
-            <label className="form-label">Estado</label>
-            <Col sm="12">
+
+                {formFields.map(({ id, label, type }) => (
+                  <div className="mb-3" key={id}>
+                    <label className="form-label">{label}</label>
+                    <Field className="form-control" type={type} id={id} name={id} />
+                    <ErrorMessage style={{ color: 'red' }} name={id} component="div" />
+                  </div>
+                ))}
+                <label className="form-label">Estado</label>
+                <Col sm="12">
                   <Field className="form-control" id="status" name="status" component={CustomSelect2} options2={options2} required />
                 </Col>
-          
-                
               </Row>
 
               <ErrorMessage style={{ color: 'red' }} name="size" component="div" />

@@ -45,6 +45,7 @@ const userLogin = async (req, res) => {
             token: generateToken(userWithoutSensitiveData),
         });
     } catch (error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Autenticación', req.header('user_id'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 };
@@ -56,6 +57,7 @@ const tokenValidation = async (req, res) => {
             jwt.verify(token, secretKey);
             res.json({ valid:  true});
           } catch (error) {
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Autenticación', req.header('user_id'), 'error', error.message]);
             res.json({ valid:  false});
         }
     }
@@ -97,6 +99,7 @@ const resetPasswordTokenValidation = async (req, res) => {
             res.json({ status: false, message: 'El token de validación ha expirado. Por favor, inténtalo de nuevo.' });
         }
       } catch (error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Autenticación', req.header('user_id'), 'error', error.message]);
         res.json({ status: false, message: 'El token de validación ha expirado. Por favor, inténtalo de nuevo.' });
     }
 };
@@ -118,6 +121,7 @@ const updatingUserPassword = async (req, res) => {
             res.json({ status: false, message: 'El token de validación ha expirado. Por favor, inténtalo de nuevo.' });
         }
       } catch (error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Autenticación', req.header('user_id'), 'error', error.message]);
         res.json({ status: false, message: 'Se ha producido un error al intentar actualizar la contraseña. Por favor, inténtalo de nuevo.' });
     }
 };

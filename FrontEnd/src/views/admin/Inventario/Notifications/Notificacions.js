@@ -27,32 +27,32 @@ export const Notificacions = () => {
         Header: 'notification_id',
         accessor: 'notification_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
         Header: 'Producto',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Estado',
         accessor: 'activated',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-lg-3',
       },
       {
         Header: 'Producto ID',
         accessor: 'product_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Cantidad mínima de producto',
         accessor: 'amount',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',
@@ -155,6 +155,7 @@ export const Notificacions = () => {
                     modalTitle="¿Desea eliminar la notificación seleccionada?"
                     modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="notification"
+                    tipo="notificación"
                   />
                 </div>
                 <div className="d-inline-block">

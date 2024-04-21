@@ -11,6 +11,7 @@ import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
 import ReactToPrint from 'react-to-print';
 import { useBills } from 'hooks/react-query/useBills';
+import NumberFormat from 'react-number-format';
 
 export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validationSchema, formFields }) => {
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
@@ -159,7 +160,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
   const optionsStatus = [
     { value: 'Pagado', label: 'Pagado' },
     { value: 'Pendiente', label: 'Pendiente de Pago' },
-    { value: 'Cancelado', label: 'Cancelado' },
+    { value: 'Anulado', label: 'Anulado' },
   ];
   const optionsPayment = [
     { value: 'tarjeta', label: 'Tarjeta' },
@@ -347,26 +348,38 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                         <div className="mb-3">
                           <label className="form-label">Estado del Pago</label>
                           <Field className="form-control" name="status" id="status" component={CustomSelect} options={optionsStatus} required />
-                          <ErrorMessage style={{ color: 'red' }} name="status" component="div" className="field-error" />
+                          <ErrorMessage name="status" component="div" className="text-danger" />
                         </div>
                       </Col>
                       <Col className="col-6">
                         <div className="mb-3">
                           <label className="form-label">Tipo de Pago</label>
                           <Field className="form-control" name="payment_type" id="payment_type" component={CustomSelect} options={optionsPayment} required />
-                          <ErrorMessage style={{ color: 'red' }} name="payment_type" component="div" className="field-error" />
+                          <ErrorMessage name="payment_type" component="div" className="text-danger" />
                         </div>
                       </Col>
                     </Row>
-                    <div className="mb-3" key="sinpe_phone_number">
-                      <label className="form-label">Número de SINPE</label>
-                      <Field className="form-control" type="text" id="sinpe_phone_number" name="sinpe_phone_number" />
-                      <ErrorMessage style={{ color: 'red' }} name="sinpe_phone_number" component="div" />
-                    </div>
+                    {values.payment_type === 'sinpe' && (
+                      <div className="mb-3" key="sinpe_phone_number">
+                        <label className="form-label">Número de SINPE</label>
+                        <NumberFormat
+                          className="form-control"
+                          mask="_"
+                          format="####-####"
+                          allowEmptyFormatting
+                          value={values.sinpe_phone_number}
+                          onValueChange={({ value }) => {
+                            setFieldValue('sinpe_phone_number', value);
+                          }}
+                        />
+
+                        <ErrorMessage name="sinpe_phone_number" component="div" className="text-danger" />
+                      </div>
+                    )}
                     <div className="mb-3" key="description">
                       <label className="form-label">Descripción</label>
                       <Field as="textarea" className="form-control" type="text" id="description" name="description" />
-                      <ErrorMessage style={{ color: 'red' }} name="description" component="div" />
+                      <ErrorMessage name="description" component="div" className="text-danger" />
                     </div>
                     {selectedFlatRows.length === 1 && (
                       <>
@@ -383,7 +396,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                             options={appointmentOptions}
                             required
                           />
-                          <ErrorMessage style={{ color: 'red' }} name="appointment_id" className="field-error" component="div" />
+                          <ErrorMessage name="appointment_id" className="text-danger" component="div" />
                         </div>
                       </>
                     )}
@@ -392,15 +405,28 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                         Tipo de Cedula
                       </label>
                       <Field className="form-control" name="id_card_type" id="id_card_type" component={CustomSelect2} options={idTypeDropdown} required />
-                      <ErrorMessage style={{ color: 'red' }} name="id_card_type" className="field-error" component="div" />
+                      <ErrorMessage name="id_card_type" className="text-danger" component="div" />
                     </div>
                     <Row className="g-3 mb-3">
                       {selectedFlatRows.length === 1 && setIsIdCardDisabled(false)}
                       <Col className="col-9">
                         <div className="mb-3" key="id_card">
                           <label className="form-label">Cédula</label>
-                          <Field className="form-control" type="text" id="id_card" name="id_card" disabled={!values.id_card_type} />
-                          <ErrorMessage style={{ color: 'red' }} name="id_card" component="div" />
+                          <NumberFormat
+                            className="form-control"
+                            mask="_"
+                            format={values.id_card_type && values.id_card_type !== 'nacional' ? '####-####-####' : '#-####-####'}
+                            allowEmptyFormatting
+                            value={values.id_card}
+                            onValueChange={({ value }) => {
+                              setFieldValue('id_card', value);
+                            }}
+                            id="id_card"
+                            name="id_card"
+                            disabled={!values.id_card_type}
+                          />
+
+                          <ErrorMessage name="id_card" component="div" className="text-danger" />
                         </div>
                       </Col>
                       <Col className="col-3">
@@ -420,14 +446,14 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                             <div className="mb-3" key="first_name">
                               <label className="form-label">Nombre</label>
                               <Field className="form-control" type="text" id="first_name" name="first_name" disabled={IsUserFound2} />
-                              <ErrorMessage style={{ color: 'red' }} name="first_name" component="div" />
+                              <ErrorMessage name="first_name" component="div" className="text-danger" />
                             </div>
                           </Col>
                           <Col className="col-6">
                             <div className="mb-3" key="last_name">
                               <label className="form-label">Apellido</label>
                               <Field className="form-control" type="text" id="last_name" name="last_name" disabled={IsUserFound2} />
-                              <ErrorMessage style={{ color: 'red' }} name="last_name" component="div" />
+                              <ErrorMessage name="last_name" component="div" className="text-danger" />
                             </div>
                           </Col>
                         </Row>
@@ -436,14 +462,14 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                             <div className="mb-3" key="email">
                               <label className="form-label">Correo eletrónico</label>
                               <Field className="form-control" type="text" id="email" name="email" disabled={IsUserFound2} />
-                              <ErrorMessage style={{ color: 'red' }} name="email" component="div" />
+                              <ErrorMessage name="email" component="div" className="text-danger" />
                             </div>
                           </Col>
                           <Col className="col-4">
                             <div className="mb-3" key="phone">
                               <label className="form-label">Número de teléfono</label>
                               <Field className="form-control" type="text" id="phone" name="phone" disabled={IsUserFound2} />
-                              <ErrorMessage style={{ color: 'red' }} name="phone" component="div" />
+                              <ErrorMessage name="phone" component="div" className="text-danger" />
                             </div>
                           </Col>
                         </Row>
@@ -470,12 +496,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                                           component={CustomSelect}
                                           options={productsDataDropdown}
                                         />
-                                        <ErrorMessage
-                                          style={{ color: 'red' }}
-                                          name={`dataToInsert.${index}.product_id`}
-                                          className="field-error"
-                                          component="div"
-                                        />
+                                        <ErrorMessage name={`dataToInsert.${index}.product_id`} className="text-danger" component="div" />
                                       </div>
                                     </>
                                   )}
@@ -486,7 +507,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                                       Cantidad
                                     </label>
                                     <Field name={`dataToInsert.${index}.amount`} className="form-control" type="number" id="amount" />
-                                    <ErrorMessage style={{ color: 'red' }} name={`dataToInsert.${index}.amount`} component="div" className="field-error" />
+                                    <ErrorMessage name={`dataToInsert.${index}.amount`} component="div" className="text-danger" />
                                   </div>
                                 </Col>
                                 <Col className="col-3 m-0">
@@ -503,7 +524,7 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
 
                                     <Col className="col-6 m-0">
                                       {values.dataToInsert.length - 1 === index && (
-                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '' })}>
+                                        <Button variant="success w-100 p-2 mt-5" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
                                           <CsLineIcons icon="plus" />
                                         </Button>
                                       )}

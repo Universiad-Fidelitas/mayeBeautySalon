@@ -16,8 +16,7 @@ const Usuarios = () => {
   const { formatMessage: f } = useIntl();
   const title = f({ id: 'users.userTitle' });
   const description = f({ id: 'users.userDescription' });
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -30,70 +29,70 @@ const Usuarios = () => {
         Header: 'user_id',
         accessor: 'user_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
         Header: f({ id: 'users.first_name' }),
         accessor: 'first_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
       },
       {
         Header: f({ id: 'users.last_name' }),
         accessor: 'last_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
         Header: f({ id: 'users.id_card' }),
         accessor: 'id_card',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-2',
       },
       {
         Header: f({ id: 'users.id_card_type' }),
         accessor: 'id_card_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
         Header: f({ id: 'users.email' }),
         accessor: 'email',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
       },
       {
         Header: f({ id: 'users.phone' }),
         accessor: 'phone',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-2',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-2',
       },
       {
         Header: f({ id: 'users.state' }),
         accessor: 'activated',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
       },
       {
         accessor: 'image',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
         accessor: 'role_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
         Header: 'Salario',
         accessor: 'salary',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
     ];
@@ -168,7 +167,6 @@ const Usuarios = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   {userHasPermission('C_USERS') && <ControlsAdd tableInstance={tableInstance} />}
-                  {userHasPermission('U_USERS') && <ControlsEdit tableInstance={tableInstance} />}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

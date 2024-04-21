@@ -12,19 +12,85 @@ const getById = async (req, res = response) => {
         res.status(200).json({billFound, status: true, message: 'Se ha encontrado la factura exitosamente.' });
     }
     catch(error) {
-       
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
 
 const getBills = async (req, res = response) => {
-    const { pageIndex, pageSize, term, sortBy } = req.body;
+    const { pageIndex, pageSize, term, sortBy, term2, term3} = req.body;
     try {
         const offset = pageIndex * pageSize;
 
         let baseQuery = 'select * from bill_view where activated = 1';
+        let querytotal = `SELECT COALESCE(appointment_price, 0) + COALESCE(inventory_price, 0) AS total_price FROM bill_view where activated = 1`;
         if (term) {
-            baseQuery += ` AND first_name LIKE '%${term}%'`;
+            baseQuery += ` AND id_card LIKE '%${term}%'`;
+            querytotal += ` AND id_card LIKE '%${term}%'`;
+        }
+        
+        if (term2 && term3) {
+            baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+            querytotal += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+        }
+        const orderByClauses = [];
+
+        if (Array.isArray(sortBy)) {
+            for (const sortItem of sortBy) {
+                const { id, desc } = sortItem;
+                if (id) {
+                    orderByClauses.push(`${id} ${desc ? 'DESC' : 'ASC'}`);
+                }
+            }
+        }
+
+        if (orderByClauses.length > 0) {
+            baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
+            querytotal += ` ORDER BY ${orderByClauses.join(', ')}`;
+        }
+        const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
+        const ttoal = `SELECT SUM(total_price) AS TotalPrice from (${querytotal} LIMIT ${pageSize} OFFSET ${offset}) AS subquery_alias`;
+        const rows = await dbService.query(query);
+        console.log(ttoal)
+        const total = await dbService.query(ttoal);
+        for (const row of rows) {
+            const inventoryId = row.inventory_id;
+            const productQuery = `SELECT i.amount, i.product_id, i.invetory_products_id, p.name, p.price FROM inventory_products i left join products p on i.product_id = p.product_id WHERE inventory_id = ${inventoryId}`;
+            const productData = await dbService.query(productQuery);
+            row.dataToInsert = productData;
+        };
+        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_bills`);
+        const totalRowCount = totalRowCountResult[0].count;
+
+        const pageCount = Math.ceil(totalRowCount / pageSize);
+
+        const response = {
+            pageSize,
+            pageIndex,
+            pageCount,
+            items: rows,
+            total: total[0].TotalPrice,
+            rowCount: totalRowCount,
+        };
+
+        res.json(response);
+    } catch (error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const getBillsCSV = async (req, res = response) => {
+    const { term, sortBy, term2, term3} = req.body;
+    try {
+
+        let baseQuery = 'select * from bill_view where activated = 1';
+        if (term) {
+            baseQuery += ` AND id_card LIKE '%${term}%'`;
+        }
+        
+        if (term2 && term3) {
+            baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
         }
         const orderByClauses = [];
 
@@ -40,7 +106,7 @@ const getBills = async (req, res = response) => {
         if (orderByClauses.length > 0) {
             baseQuery += ` ORDER BY ${orderByClauses.join(', ')}`;
         }
-        const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
+        const query = `${baseQuery}`;
         const rows = await dbService.query(query);
         for (const row of rows) {
             const inventoryId = row.inventory_id;
@@ -48,17 +114,9 @@ const getBills = async (req, res = response) => {
             const productData = await dbService.query(productQuery);
             row.dataToInsert = productData;
         }
-        const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_bills`);
-        const totalRowCount = totalRowCountResult[0].count;
-
-        const pageCount = Math.ceil(totalRowCount / pageSize);
 
         const response = {
-            pageSize,
-            pageIndex,
-            pageCount,
-            items: rows,
-            rowCount: totalRowCount,
+            items: rows
         };
 
         res.json(response);
@@ -67,6 +125,7 @@ const getBills = async (req, res = response) => {
         res.status(500).json({ message: error.message });
     }
 }
+
 const getUserBills = async (req, res = response) => {
     try {
         const { id_card } = req.body;
@@ -81,6 +140,7 @@ const getUserBills = async (req, res = response) => {
         });
     }
     catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -91,10 +151,8 @@ const getUserBills = async (req, res = response) => {
 const postBill = async (req, res = response) => {
     const {  status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, appointment_id } = req.body;
     try {
-        console.log('1');
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
-        console.log('2');
         const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
         const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
 
@@ -110,8 +168,10 @@ const postBill = async (req, res = response) => {
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
 
         let userInsertId;
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'create', 'Creación de factura']);
+
         if (userChecker.length === 0) {
-            const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
+            const queryAddUser = "INSERT INTO users (role_id, id_card, id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 7, ?, ?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
             const queryAddBill =`INSERT INTO bills(user_id, inventory_id, payment_id, activated) VALUES (?, ?, ?, 1)`;
             const { insertId: billInsertId } = await dbService.query(queryAddBill, [userInsertId, inventoryInsertId, paymentInsertId]);
@@ -140,8 +200,8 @@ const postBill = async (req, res = response) => {
         }
 
     }
-    catch({ message }) {
-
+    catch(error) {
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar la factura!",
@@ -153,7 +213,7 @@ const postBill = async (req, res = response) => {
 const putBill = async (req, res = response) => {
     const { bills_id } = req.params;
     const { status, payment_type, sinpe_phone_number, description, dataToInsert, id_card,id_card_type, first_name, last_name, email, phone, payment_id, inventory_id, appointment_id } = req.body;
-    console.log('karo', appointment_id)
+
     try {
         if(payment_id===null){
             const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number) VALUES (?,?,'',?)`;
@@ -173,17 +233,20 @@ const putBill = async (req, res = response) => {
 
         // Delete items not included in dataToInsert
         const existingItemIds = dataToInsert.map((data) => data.invetory_products_id).filter((id) => id !== 0);
-        const formattedIds = existingItemIds.join(',');
+        let formattedIds = existingItemIds.join(',');
+        if (formattedIds.endsWith(",")) {
+            formattedIds = formattedIds.slice(0, -1);
+        }
+
         if(formattedIds!==''){
             const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
             await dbService.query(deleteQuery, [ inventory_id])
         }
-        
-       
+
         for (const data of dataToInsert) {
             if (data.invetory_products_id === 0) {
                 // Insert new item
-                if(data.inventory_id === undefined || data.inventory_id === null){
+                if(inventory_id === undefined || inventory_id === null || inventory_id === 0){
                     const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
                     const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
                     const queryAddBill =`UPDATE bills SET inventory_id = ? WHERE bills_id = ?`;
@@ -193,6 +256,7 @@ const putBill = async (req, res = response) => {
                 }else{
                     const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
                     await dbService.query(insertItemQuery, [data.amount, data.product_id, inventory_id]);
+                    
                 }
             } else {
                 // Update existing item
@@ -203,6 +267,8 @@ const putBill = async (req, res = response) => {
         const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
         const userChecker = await dbService.query(queryUserChecker, [id_card]); 
         let userInsertId;
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'update', 'Cambios en factura']);
+
         if (userChecker.length === 0) {
             const queryAddUser = "INSERT INTO users (role_id, id_card,id_card_type, first_name, last_name, email, phone, activated, image, salary) VALUES ( 1, ?,?, ?, ?, ?, ?, 1, '', NULL)";
             const { insertId: userInsertId } = await dbService.query(queryAddUser, [id_card,id_card_type, first_name, last_name, email, phone]);
@@ -226,15 +292,8 @@ const putBill = async (req, res = response) => {
 
     }
     catch(error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('update', 'update error', 'bills', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 11]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la factura!",
@@ -246,10 +305,11 @@ const putBill = async (req, res = response) => {
 const deleteBill = async (req, res = response) => {
     const { bills_id } = req.body;
     try {
-
         const userQuery = `UPDATE bills SET activated=0 WHERE FIND_IN_SET(bills_id, ?)`;
         const rows = await dbService.query(userQuery, [bills_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'delete', 'Inactivación de factura']);
+
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,
@@ -262,18 +322,8 @@ const deleteBill = async (req, res = response) => {
                 message: "¡Las facturas han sido eliminados exitosamente!"
             });
         }
-
-        
     } catch (error) {
-        try {
-            const logQuery = `
-                INSERT INTO logs (action, activity, affected_table, date, error_message, user_id)
-                VALUES ('delete', 'delete error', 'bills', NOW(), ?, ?)
-            `;
-            await dbService.query(logQuery, [error.message, 1]);
-        } catch (logError) {
-            console.error('Error al insertar en la tabla de Logs:', logError);
-        }
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('user_id'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"
@@ -283,6 +333,7 @@ const deleteBill = async (req, res = response) => {
 
 module.exports = {
     getBills,
+    getBillsCSV,
     postBill,
     putBill,
     deleteBill,

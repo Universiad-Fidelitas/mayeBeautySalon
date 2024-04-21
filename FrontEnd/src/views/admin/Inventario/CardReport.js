@@ -19,36 +19,36 @@ export const CardReport = () => {
         Header: 'Imagen',
         accessor: 'image',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
         hideColumn: true,
       },
       {
         Header: 'Producto',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Cantidad en producto',
         accessor: 'total_amount',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Estado del inventario',
         accessor: 'stock_status',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Cantidad vendida',
         accessor: 'Sold_amount',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
       },
       {
         Header: 'Product_id',
         accessor: 'product_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-10',
         hideColumn: true,
       },
     ];
@@ -92,7 +92,7 @@ export const CardReport = () => {
 
   return (
     <>
-      <h2 className="small-title">Reporte de inventario</h2>
+      <h2 className="medium-title text-primary font-weight-bold mt-6 mb-3">Reporte de inventario</h2>
       <Row className="mb-3">
         <Col sm="12" md="7" lg="9" xxl="10">
           <div className="d-inline-block">

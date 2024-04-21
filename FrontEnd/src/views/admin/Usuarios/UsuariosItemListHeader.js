@@ -21,7 +21,7 @@ const UsuariosItemListHeader = ({ tableInstance }) => {
                     return (
                       <div key={`header.${headerIndex}`} className={column.headerClassName} {...column.getHeaderProps(column.getSortByToggleProps())}>
                         <div
-                          className={classNames('text-muted text-small cursor-pointer text-uppercase ', {
+                          className={classNames('text-muted text-medium cursor-pointer text-uppercase ', {
                             sort: column.sortable,
                             desc: column.isSortedDesc,
                             asc: column.isSorted && !column.isSortedDesc,

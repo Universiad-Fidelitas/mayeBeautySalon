@@ -50,6 +50,30 @@ const Pagos = () => {
         headerClassName: 'col-10 col-lg-2',
       },
       {
+        Header: 'Nombre Cliente',
+        accessor: 'first_name',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'Fecha de Cita',
+        accessor: 'appointment_date',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'Fecha de Venta',
+        accessor: 'inventory_date',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
+        Header: 'No Factura',
+        accessor: 'bills_id',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
         Header: 'Número de teléfono del SINPE',
         accessor: 'sinpe_phone_number',
         sortable: true,
@@ -150,9 +174,10 @@ const Pagos = () => {
                   <ControlsDelete
                     tableInstance={tableInstance}
                     deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el producto seleccionado?"
+                    modalTitle="¿Desea eliminar el pago seleccionado?"
                     modalDescription="El pago seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="payment"
+                    tipo="pago"
                   />
                 </div>
                 <div className="d-inline-block">

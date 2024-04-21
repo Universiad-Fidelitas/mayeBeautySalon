@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { ControlsPageSize, ControlsSearch, Table, TablePagination } from 'components/datatables';
+import { ControlsPageSize, ControlsExportCSV, ControlsSearch, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
 import { getStock } from 'store/stock/stockThunk';
@@ -14,8 +14,7 @@ const Stock = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Inventario';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
@@ -37,32 +36,32 @@ const Stock = () => {
         Header: 'Imagen',
         accessor: 'image',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-1',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-1',
         hideColumn: true,
       },
       {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio',
         accessor: 'price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Tamaño',
         accessor: 'size',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Cantidad',
         accessor: 'total_amount',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
     ];
   }, []);
@@ -151,10 +150,11 @@ const Stock = () => {
                   <ControlsSearch tableInstance={tableInstance} onChange={searchItem} />
                 </div>
               </Col>
+              <Col sm="34" md="15" lg="15" xxl="15" className="text-end">
+                <div className="d-inline-block me-3">
+                  <ControlsExportCSV tableInstance={tableInstance && tableInstance.data} type="inventory" />
+                </div>
 
-              <Col sm="24" md="3" lg="3" xxl="3" className="text-end">
-                <label className="form-label">Tamaño de paginación</label>
-                <br />
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
                 </div>

@@ -14,8 +14,7 @@ const Inventory = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Movimiento de Inventario';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
- ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -28,66 +27,66 @@ const Inventory = () => {
         Header: 'Inventory_Id',
         accessor: 'inventory_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
         hideColumn: true,
       },
       {
         Header: 'Producto',
         accessor: 'product_name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Fecha',
         accessor: 'date',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Tipo de Movimiento',
         accessor: 'action',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Descripción',
         accessor: 'description',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio',
         accessor: 'inventory_price',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio Producto',
         accessor: 'product_price',
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
 
       {
         Header: 'Inventory_products_id',
         accessor: 'inventory_products_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
         hideColumn: true,
       },
       {
         Header: 'Cantidad',
         accessor: 'amount',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Tamaño',
         accessor: 'size',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Product_id',
         accessor: 'product_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
         hideColumn: true,
       },
     ];
@@ -153,10 +152,7 @@ const Inventory = () => {
       .of(
         Yup.object().shape({
           product_id: Yup.string().required('El producto es requerido'),
-          amount: Yup.number()
-            .min(0, 'La cantidad debe ser mayor a 0')
-            .typeError('La cantidad solo acepta números')
-            .required('La cantidad es requerida'),
+          amount: Yup.number().min(0, 'La cantidad debe ser mayor a 0').typeError('La cantidad solo acepta números').required('La cantidad es requerida'),
         })
       )
       .required('Must have product')

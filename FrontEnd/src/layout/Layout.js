@@ -2,12 +2,15 @@ import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import useLayout from 'hooks/useLayout';
-import Footer from 'layout/footer/Footer';
+import { Footer } from 'layout/footer/Footer';
 import Nav from 'layout/nav/Nav';
 import RightButtons from 'layout/right-buttons/RightButtons';
 import SidebarMenu from 'layout/nav/sidebar-menu/SidebarMenu';
+import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 
 const Layout = ({ children }) => {
+  const { isLogin } = useSelector((state) => state.auth);
   useLayout();
 
   const { pathname } = useLocation();
@@ -22,7 +25,7 @@ const Layout = ({ children }) => {
     return (
       <>
         <Nav />
-        <main className="p-0">
+        <main className={classNames('p-0', { isadmin: isLogin })}>
           <Row className="h-100">
             <SidebarMenu />
             <Col className="h-100" id="contentArea">
@@ -38,7 +41,7 @@ const Layout = ({ children }) => {
   return (
     <>
       <Nav />
-      <main>
+      <main className={classNames({ isadmin: isLogin })}>
         <Container>
           <Row className="h-100">
             <SidebarMenu />

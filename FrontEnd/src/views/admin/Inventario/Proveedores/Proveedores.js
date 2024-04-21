@@ -1,14 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch } from 'react-redux';
 import { Col, Form, Row } from 'react-bootstrap';
@@ -18,13 +9,11 @@ import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useProviders } from 'hooks/react-query/useProviders';
 import { ProveedoresModalAddEdit } from './ProveedoresModalAddEdit';
 
-
 const Marcas = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Proveedores';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
-  ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -37,26 +26,26 @@ const Marcas = () => {
         Header: 'provider_id',
         accessor: 'provider_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Número de telefono',
         accessor: 'phone',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Correo electrónico',
         accessor: 'email',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',
@@ -105,9 +94,12 @@ const Marcas = () => {
     }
   }, [isProvidersDataSuccess, providersData]);
 
-  const deleteItems = useCallback(async (values) => {
-    inactivateProviders.mutate(values);
-  }, [dispatch]);
+  const deleteItems = useCallback(
+    async (values) => {
+      inactivateProviders.mutate(values);
+    },
+    [dispatch]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
@@ -147,6 +139,7 @@ const Marcas = () => {
                     modalTitle="¿Desea eliminar el proveedor seleccionado?"
                     modalDescription="El proveedor seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="provider"
+                    tipo="proveedor"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -163,7 +156,7 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <ProveedoresModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/>
+          <ProveedoresModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>

@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-plusplus */
 import classNames from 'classnames';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -28,7 +27,7 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
     return badgeVariant;
   }
   return (
-    <>
+    <div className="table-responsive">
       <table className={className} {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup, headerIndex) => (
@@ -111,8 +110,8 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
                           <span className="badge bg-outline-success">Pagado</span>
                         ) : cell.value === 'Pendiente' ? (
                           <span className="badge bg-outline-warning">Pendiente de pago</span>
-                        ) : cell.value === 'Cancelado' ? (
-                          <span className="badge bg-outline-danger">Cancelado</span>
+                        ) : cell.value === 'Anulado' ? (
+                          <span className="badge bg-outline-danger">Anulado</span>
                         ) : (
                           <span className="badge bg-outline-danger">{f({ id: 'helper.inactivated' })}</span>
                         )}
@@ -143,6 +142,6 @@ export const Table = ({ tableInstance, className = 'react-table boxed' }) => {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 };

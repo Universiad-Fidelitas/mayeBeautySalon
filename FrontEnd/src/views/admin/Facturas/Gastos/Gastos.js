@@ -26,19 +26,19 @@ const Gastos = () => {
         Header: 'ID',
         accessor: 'expense_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Nombre',
         accessor: 'expense_type',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: 'Precio',
         accessor: 'price',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',
@@ -132,6 +132,7 @@ const Gastos = () => {
                     modalTitle="¿Desea eliminar el gasto seleccionado?"
                     modalDescription="El gasto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="expense"
+                    tipo="gasto"
                   />
                 </div>
                 <div className="d-inline-block">

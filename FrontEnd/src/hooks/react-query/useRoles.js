@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 
 export const useRoles = () => {
   const getRols = async () => {
-    const tableStatus = { term: '', sortBy: [], pageIndex: 0, pageSize: 100 };
+    const tableStatus = { term: '', sortBy: [], pageIndex: 0, pageSize: 100, term2: true };
     const { data } = await baseApi.post('/roles', tableStatus);
     return data;
   };

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Button, Col, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Modal, Row, FormCheck } from 'react-bootstrap';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Select from 'react-select';
@@ -7,7 +7,6 @@ import { useServices } from 'hooks/react-query/useServices';
 import { useIntl } from 'react-intl';
 import classNames from 'classnames';
 import NumberFormat from 'react-number-format';
-
 
 export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
   const { formatMessage: f } = useIntl();
@@ -17,12 +16,16 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
   const generateHourOptions = useMemo(() => Array.from({ length: 13 }, (_, i) => ({ value: i, label: i })), []);
   const { addServices, updateServices } = useServices(apiParms);
 
-  const initialValues = useMemo(() => ({
-    service_id: selectedFlatRows?.[0]?.original.service_id || '',
-    name: selectedFlatRows?.[0]?.original.name || '',
-    duration: selectedFlatRows?.[0]?.original.duration || '',
-    price: selectedFlatRows?.[0]?.original.price || '',
-  }), [selectedFlatRows]);
+  const initialValues = useMemo(
+    () => ({
+      service_id: selectedFlatRows?.[0]?.original.service_id || '',
+      name: selectedFlatRows?.[0]?.original.name || '',
+      duration: selectedFlatRows?.[0]?.original.duration || '',
+      price: selectedFlatRows?.[0]?.original.price || '',
+      activated: selectedFlatRows?.[0]?.original.activated || '',
+    }),
+    [selectedFlatRows]
+  );
 
   const validationSchema = useMemo(
     () =>
@@ -37,7 +40,7 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
           .positive(f({ id: 'services.servicePricePositive' })),
         duration: Yup.string()
           .required(f({ id: 'service.timeErrors.required' }))
-          .test('not-zero-point-zero', f({ id: 'service.timeErrors.noValidTime' }), (value) => value && value !== '0.0' && !value.includes('NaN'))
+          .test('not-zero-point-zero', f({ id: 'service.timeErrors.noValidTime' }), (value) => value && value !== '0.0' && !value.includes('NaN')),
       }),
     [f]
   );
@@ -60,22 +63,29 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
               <Modal.Title>{selectedFlatRows.length === 1 ? f({ id: 'helper.edit' }) : f({ id: 'helper.add' })}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-
+              <Row className="g-3 mb-3">
+                <Col className="col-3">
+                  <div className="d-flex flex-row justify-content-between align-items-center activationSwitch">
+                    <label className="form-label">{f({ id: 'services.serviceState' })}</label>
+                    <FormCheck className="form-check" type="switch" checked={values.activated} onChange={() => setFieldValue('activated', !values.activated)} />
+                  </div>
+                </Col>
+              </Row>
               <Row className="g-3 mb-3">
                 <Col className="col-6">
                   <div className="top-label">
-                  <label className="form-label">{f({ id: 'services.serviceName' })}</label>
+                    <label className="form-label">{f({ id: 'services.serviceName' })}</label>
                     <Field className={`form-control ${errors.name && touched.name ? 'is-invalid' : ''}`} id="name" name="name" />
                     <ErrorMessage className="text-danger" name="name" component="div" />
                   </div>
                 </Col>
                 <Col className="col-6">
                   <div className="top-label">
-                  <label className="form-label">{f({ id: 'services.servicePrice' })}</label>
+                    <label className="form-label">{f({ id: 'services.servicePrice' })}</label>
                     <NumberFormat
                       className={classNames('form-control', { 'is-invalid': errors.price && touched.price })}
-                      thousandSeparator="."
-                      decimalSeparator=","
+                      thousandSeparator=","
+                      decimalSeparator="."
                       prefix="₡"
                       allowNegative={false}
                       value={values.price}
@@ -91,17 +101,22 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
               <Row className="g-3 mb-3">
                 <Col className="col-6">
                   <div className="top-label">
-                  <label>{f({ id: 'service.hours' })}</label>
+                    <label>{f({ id: 'service.hours' })}</label>
                     <Select
                       className={classNames(errors.duration && touched.duration && 'is-invalid')}
                       classNamePrefix="react-select"
                       options={generateHourOptions}
-                      value={parseInt(values.duration.split('.')[0], 10) >= 0 && { value: parseInt(values.duration.split('.')[0], 10), label: parseInt(values.duration.split('.')[0], 10) }}
+                      value={
+                        parseInt(values.duration.split('.')[0], 10) >= 0 && {
+                          value: parseInt(values.duration.split('.')[0], 10),
+                          label: parseInt(values.duration.split('.')[0], 10),
+                        }
+                      }
                       onChange={({ value }) => setFieldValue('duration', `${value}.${parseInt(values.duration.split('.')[1], 10)}`)}
                       placeholder={f({ id: 'service.selectHours' })}
                     />
                   </div>
-                  {errors.duration && touched.duration && <ErrorMessage className="text-danger" name='duration' component="div" />}
+                  {errors.duration && touched.duration && <ErrorMessage className="text-danger" name="duration" component="div" />}
                 </Col>
                 <Col className="col-6">
                   <div className="top-label">
@@ -110,12 +125,17 @@ export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
                       className={classNames(errors.duration && touched.duration && 'is-invalid')}
                       classNamePrefix="react-select"
                       options={generateMinuteOptions}
-                      value={parseInt(values.duration.split('.')[1], 10) >= 0 && { value: parseInt(values.duration.split('.')[1], 10), label: parseInt(values.duration.split('.')[1], 10) }}
+                      value={
+                        parseInt(values.duration.split('.')[1], 10) >= 0 && {
+                          value: parseInt(values.duration.split('.')[1], 10),
+                          label: parseInt(values.duration.split('.')[1], 10),
+                        }
+                      }
                       onChange={({ value }) => setFieldValue('duration', `${parseInt(values.duration.split('.')[0], 10)}.${value}`)}
                       placeholder={f({ id: 'service.selectMinutes' })}
                     />
                   </div>
-                  {errors.duration && touched.duration && <ErrorMessage className="text-danger" name='duration' component="div" />}
+                  {errors.duration && touched.duration && <ErrorMessage className="text-danger" name="duration" component="div" />}
                 </Col>
               </Row>
             </Modal.Body>

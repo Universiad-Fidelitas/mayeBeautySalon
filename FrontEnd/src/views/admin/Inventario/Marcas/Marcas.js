@@ -1,14 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  ButtonsAddNew,
-  ControlsPageSize,
-  ControlsAdd,
-  ControlsEdit,
-  ControlsSearch,
-  ControlsDelete,
-  Table,
-  TablePagination,
-} from 'components/datatables';
+import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsEdit, ControlsSearch, ControlsDelete, Table, TablePagination } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useDispatch } from 'react-redux';
 // import { deleteBrands } from 'store/brands/brandsThunk';
@@ -23,8 +14,7 @@ const Marcas = () => {
   const { formatMessage: f } = useIntl();
   const title = 'Marcas';
   const description = 'Server side api implementation.';
-  const breadcrumbs = [
- ];
+  const breadcrumbs = [];
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -37,14 +27,14 @@ const Marcas = () => {
         Header: 'brand_id',
         accessor: 'brand_id',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase col-10 col-lg-3',
+        headerClassName: 'text-muted text-medium text-uppercase col-10 col-lg-3',
         hideColumn: true,
       },
       {
         Header: 'Nombre',
         accessor: 'name',
         sortable: true,
-        headerClassName: 'text-muted text-small text-uppercase w-30',
+        headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
         Header: '',
@@ -93,14 +83,16 @@ const Marcas = () => {
     }
   }, [isBrandsDataSuccess, BrandsData]);
 
-  const deleteItems = useCallback(async (values) => {
-    inactivateBrands.mutateAsync(values);
-  }, [dispatch]);
+  const deleteItems = useCallback(
+    async (values) => {
+      inactivateBrands.mutateAsync(values);
+    },
+    [dispatch]
+  );
 
   const searchItem = useAsyncDebounce((val) => {
     setTerm(val || undefined);
   }, 200);
-
 
   return (
     <>
@@ -136,6 +128,7 @@ const Marcas = () => {
                     modalTitle="¿Desea eliminar la marca seleccionada?"
                     modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
                     type="brand"
+                    tipo="marca"
                   />
                 </div>
                 <div className="d-inline-block">
@@ -152,7 +145,7 @@ const Marcas = () => {
               </Col>
             </Row>
           </div>
-          <MarcasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }}/> 
+          <MarcasModalAddEdit tableInstance={tableInstance} apiParms={{ term, pageIndex, pageSize, sortBy }} />
         </Col>
       </Row>
     </>
