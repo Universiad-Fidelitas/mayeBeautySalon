@@ -23,16 +23,26 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
   const { data: employmentsData, isSuccess: isEmploymentsDataSuccess } = useGetEmployments();
   const { selectedEvent } = useSelector((state) => state.calendar);
 
-  const employmentsOptions = useMemo(() =>
-  isEmploymentsDataSuccess ? employmentsData.employments.map((employment) => {
-    return { value: employment.user_id, label: employment.full_name, image: employment.image };
-  }) : [],
-[employmentsData, isEmploymentsDataSuccess]);
+  const employmentsOptions = useMemo(
+    () =>
+      isEmploymentsDataSuccess
+        ? employmentsData.employments.map((employment) => {
+            return { value: employment.user_id, label: employment.full_name, image: employment.image };
+          })
+        : [],
+    [employmentsData, isEmploymentsDataSuccess]
+  );
 
-const { data: servicesData, isSuccess: isServicesDataSuccess } = useGetAllServices();
-const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.services.map(({ service_id, name }) => {
-  return { value: service_id, label: name };
-}) : [],[servicesData, isServicesDataSuccess]);
+  const { data: servicesData, isSuccess: isServicesDataSuccess } = useGetAllServices();
+  const servicesOptions = useMemo(
+    () =>
+      isServicesDataSuccess
+        ? servicesData.services.map(({ service_id, name }) => {
+            return { value: service_id, label: name };
+          })
+        : [],
+    [servicesData, isServicesDataSuccess]
+  );
 
   const { data, isSuccess: isServicesSuccess } = useGetAllServices();
   const services = useMemo(
@@ -73,7 +83,7 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
 
   const timeOptions = React.useMemo(() => {
     const options = [];
-    for (let h = 6; h <= 18; h += 1) {
+    for (let h = 9; h <= 20; h += 1) {
       ['00', '15', '30', '45'].forEach((m) => {
         const hour12 = h > 12 ? h - 12 : h;
         const period = h >= 12 ? 'PM' : 'AM';
@@ -107,8 +117,8 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
       } else {
         const itemSubmit = {
           title: services.find((x) => x.value === service_id).label,
-          start: `${moment(serviceDate).format("YYYY-MM-DD")}T${moment(startTime, 'hh:mm A').format('HH:mm')}`,
-          end: `${moment(serviceDate).format("YYYY-MM-DD")}T${moment(endTime, 'hh:mm A').format('HH:mm')}`,
+          start: `${moment(serviceDate).format('YYYY-MM-DD')}T${moment(startTime, 'hh:mm A').format('HH:mm')}`,
+          end: `${moment(serviceDate).format('YYYY-MM-DD')}T${moment(endTime, 'hh:mm A').format('HH:mm')}`,
           service_id,
           extra_description: extraDescription?.length > 0 ? extraDescription : '',
           extra: extra?.toString().length > 0 ? extra : 0,
@@ -117,7 +127,7 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
         };
         addAppointment.mutateAsync(itemSubmit);
       }
-      setIsOpenAddEditModal(false)
+      setIsOpenAddEditModal(false);
     },
     [selectedItem, services, updateAppointment, addAppointment, setIsOpenAddEditModal]
   );
@@ -162,7 +172,7 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
 
   const deleteItemApprove = useCallback(() => {
     setIsShowDeleteConfirmModal(false);
-    setIsOpenAddEditModal(false)
+    setIsOpenAddEditModal(false);
     deleteAppointment.mutateAsync(selectedItem);
   }, [deleteAppointment, selectedItem, setIsOpenAddEditModal, setIsShowDeleteConfirmModal]);
 
@@ -192,104 +202,114 @@ const servicesOptions = useMemo(() => isServicesDataSuccess ? servicesData.servi
       <>
         <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
           <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-          {({ errors, touched, dirty, values, setFieldValue }) => (
-            <Form>
-              <Modal.Header>
-                <Modal.Title>{selectedEvent.id !== 0 ? f({ id: 'appointments.editAppointment' }) : f({ id: 'appointments.addAppointment' })}</Modal.Title>
-              </Modal.Header>
-              <Modal.Body className="d-flex flex-column">
-                <Row className="g-0">
-                  <DatepickerField label={f({ id: 'appointments.appointmentDate' })} name="serviceDate" showFullMonthYearPicker />
-                </Row>
-                <Row className="g-3">
+            {({ errors, touched, dirty, values, setFieldValue }) => (
+              <Form>
+                <Modal.Header>
+                  <Modal.Title>{selectedEvent.id !== 0 ? f({ id: 'appointments.editAppointment' }) : f({ id: 'appointments.addAppointment' })}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="d-flex flex-column">
+                  <Row className="g-0">
+                    <DatepickerField label={f({ id: 'appointments.appointmentDate' })} name="serviceDate" showFullMonthYearPicker />
+                  </Row>
+                  <Row className="g-3">
                     <Col className="col-8">
-                        <SelectField
-                            label="Servicio"
-                            name="service_id"
-                            placeholder="Seleccionar Servicio"
-                            options={servicesOptions}
-                            isError={errors.service_id && touched.service_id}
-                        />
+                      <SelectField
+                        label="Servicio"
+                        name="service_id"
+                        placeholder="Seleccionar Servicio"
+                        options={servicesOptions}
+                        isError={errors.service_id && touched.service_id}
+                      />
                     </Col>
                     <Col className="col-4">
-                        <div className="top-label">
-                            <label className="form-label bg-transparent">Precio</label>
-                            <NumberFormat
-                                className="form-control"
-                                thousandSeparator="."
-                                decimalSeparator=","
-                                prefix="₡"
-                                allowNegative={false}
-                                value={values.service_id ? servicesData.services?.find((x) => x.service_id === values.service_id).price : 0}
-                                disabled
-                            />
-                      </div>
-                    </Col>
-                </Row>
-                
-                <Row className="g-3">
-                  <Col>
-                    <SelectField label={f({ id: 'appointments.startTime' })} name="startTime" options={timeOptions} isError={errors.startTime && touched.startTime}/>
-                  </Col>
-                  <Col>
-                    <SelectField label={f({ id: 'appointments.endTime' })} name="endTime" options={timeOptions} isError={errors.endTime && touched.endTime} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col className="col-12">
-                    <SelectField label="Empleado" name="employee" options={employmentsOptions} isError={errors.employee && touched.employee}/>
-                  </Col>
-                </Row>
-                <Row className="g-0">
-                  <div className="mb-3 top-label">
-                    <label className="form-label">{f({ id: 'appointments.extra' })}</label>
-                    <NumberFormat
-                          className={classNames('form-control', { 'is-invalid': errors.extra && touched.extra })}
-                          thousandSeparator="."
-                          decimalSeparator=","
+                      <div className="top-label">
+                        <label className="form-label bg-transparent">Precio</label>
+                        <NumberFormat
+                          className="form-control"
+                          thousandSeparator=","
+                          decimalSeparator="."
                           prefix="₡"
                           allowNegative={false}
-                          value={values.extra}
-                          onValueChange={({ value }) => {
-                            setFieldValue('extra', value);
-                          }}
-                    />
-                    <ErrorMessage className="text-danger" name="extra" component="div" />
-                  </div>
-                </Row>
-                <Row className="g-0 mb-2">
-                  <div className="top-label">
-                    <label className="form-label">{f({ id: 'appointments.extraDescription' })}</label>
-                    <Field as="textarea" className="form-control" type="text" id="extraDescription" name="extraDescription" />
-                    <ErrorMessage className="text-danger" name="extraDescription" component="div" />
-                  </div>
-                </Row>
-                <hr />
-                <h4 className="mb-3">{f({ id: 'appointments.customerInformation' })}</h4>
-                <SelectField label={f({ id: 'appointments.service' })} name="activeUser" options={activeUsers} isError={errors.activeUser && touched.activeUser} />
-                <UserInformationField />
-              </Modal.Body>
-              <Modal.Footer>
-                {selectedEvent.id !== 0 ? (
-                  <>
-                    <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>{f({ id: 'appointments.deleteAppointment' })}</Tooltip>} placement="top">
-                      <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
-                        <CsLineIcons icon="bin" />
-                      </Button>
-                    </OverlayTrigger>
+                          value={values.service_id ? servicesData.services?.find((x) => x.service_id === values.service_id).price : 0}
+                          disabled
+                        />
+                      </div>
+                    </Col>
+                  </Row>
 
-                    <Button disabled={!dirty} className="btn-icon btn-icon-end" type="submit">
-                      <span>{f({ id: 'appointments.saveAppointment' })}</span> <CsLineIcons icon="check" />
+                  <Row className="g-3">
+                    <Col>
+                      <SelectField
+                        label={f({ id: 'appointments.startTime' })}
+                        name="startTime"
+                        options={timeOptions}
+                        isError={errors.startTime && touched.startTime}
+                      />
+                    </Col>
+                    <Col>
+                      <SelectField label={f({ id: 'appointments.endTime' })} name="endTime" options={timeOptions} isError={errors.endTime && touched.endTime} />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="col-12">
+                      <SelectField label="Empleado" name="employee" options={employmentsOptions} isError={errors.employee && touched.employee} />
+                    </Col>
+                  </Row>
+                  <Row className="g-0">
+                    <div className="mb-3 top-label">
+                      <label className="form-label">{f({ id: 'appointments.extra' })}</label>
+                      <NumberFormat
+                        className={classNames('form-control', { 'is-invalid': errors.extra && touched.extra })}
+                        thousandSeparator="."
+                        decimalSeparator=","
+                        prefix="₡"
+                        allowNegative={false}
+                        value={values.extra}
+                        onValueChange={({ value }) => {
+                          setFieldValue('extra', value);
+                        }}
+                      />
+                      <ErrorMessage className="text-danger" name="extra" component="div" />
+                    </div>
+                  </Row>
+                  <Row className="g-0 mb-2">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'appointments.extraDescription' })}</label>
+                      <Field as="textarea" className="form-control" type="text" id="extraDescription" name="extraDescription" />
+                      <ErrorMessage className="text-danger" name="extraDescription" component="div" />
+                    </div>
+                  </Row>
+                  <hr />
+                  <h4 className="mb-3">{f({ id: 'appointments.customerInformation' })}</h4>
+                  <SelectField
+                    label={f({ id: 'appointments.service' })}
+                    name="activeUser"
+                    options={activeUsers}
+                    isError={errors.activeUser && touched.activeUser}
+                  />
+                  <UserInformationField />
+                </Modal.Body>
+                <Modal.Footer>
+                  {selectedEvent.id !== 0 ? (
+                    <>
+                      <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>{f({ id: 'appointments.deleteAppointment' })}</Tooltip>} placement="top">
+                        <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
+                          <CsLineIcons icon="bin" />
+                        </Button>
+                      </OverlayTrigger>
+
+                      <Button disabled={!dirty} className="btn-icon btn-icon-end" type="submit">
+                        <span>{f({ id: 'appointments.saveAppointment' })}</span> <CsLineIcons icon="check" />
+                      </Button>
+                    </>
+                  ) : (
+                    <Button disabled={!dirty} className="btn-icon btn-icon-start" type="submit">
+                      <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
                     </Button>
-                  </>
-                ) : (
-                  <Button disabled={!dirty} className="btn-icon btn-icon-start" type="submit">
-                    <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
-                  </Button>
-                )}
-              </Modal.Footer>
-            </Form>
-          )}
+                  )}
+                </Modal.Footer>
+              </Form>
+            )}
           </Formik>
         </Modal>
 

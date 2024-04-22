@@ -147,15 +147,18 @@ const Citas = () => {
     );
   };
 
-  const daysOfWeek = useMemo(() => ({
-    Sun:'Domingo',
-    Mon:'Lunes',
-    Tue:'Martes',
-    Wed:'Miércoles',
-    Thu:'Jueves',
-    Fri:'Viernes',
-    Sat:'Sábado',
-  }), []);
+  const daysOfWeek = useMemo(
+    () => ({
+      Sun: 'Domingo',
+      Mon: 'Lunes',
+      Tue: 'Martes',
+      Wed: 'Miércoles',
+      Thu: 'Jueves',
+      Fri: 'Viernes',
+      Sat: 'Sábado',
+    }),
+    []
+  );
 
   return (
     <>
@@ -167,7 +170,6 @@ const Citas = () => {
           <Col xs="auto" className="mb-2 mb-md-0 me-auto">
             <div className="w-auto sw-md-30">
               <h1 className="mb-0 pb-0 display-4">{htmlTitle}</h1>
-              <BreadcrumbList items={breadcrumbs} />
             </div>
           </Col>
           <div className="w-100 d-md-none" />
@@ -258,15 +260,12 @@ const Citas = () => {
             const formattedDayName = formatDate(date, {
               weekday: 'long',
             });
-            console.log('dayHeaderContent', daysOfWeek[text])
+            console.log('dayHeaderContent', daysOfWeek[text]);
             return <b>{daysOfWeek[text]}</b>;
           }}
         />
       </Card>
-      <AppointmentsModalAddEdit
-        isOpenAddEditModal={isShowModalAddEdit}
-        setIsOpenAddEditModal={setIsShowModalAddEdit}
-      />
+      <AppointmentsModalAddEdit isOpenAddEditModal={isShowModalAddEdit} setIsOpenAddEditModal={setIsShowModalAddEdit} />
     </>
   );
 };

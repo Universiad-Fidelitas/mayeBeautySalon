@@ -141,7 +141,7 @@ const saveAppointment = async (req, res = response) => {
 
         // se agrega estas lineas para evitar un error en la creacion del bill
         const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number, activated) VALUES (?,?,'','', 1)`;
-        const { insertId: paymentInsertId } = await dbService.query(userQuery, ['pending', 'efectivo']);
+        const { insertId: paymentInsertId } = await dbService.query(userQuery, ['Pendiente', 'efectivo']);
 
 
         if (userChecker.length === 0) {
@@ -276,7 +276,7 @@ const addAppointment = async (req, res = response) => {
         // se agrega estas lineas para evitar un error en la creacion del bill
 
         const userQuery = `INSERT INTO payments(status, payment_type, voucher_path, sinpe_phone_number, activated) VALUES (?,?,'','', 1)`;
-        const { insertId: paymentInsertId } = await dbService.query(userQuery, ['pending', 'efectivo']);
+        const { insertId: paymentInsertId } = await dbService.query(userQuery, ['Pendiente', 'efectivo']);
 
         const queryAddServicesAppointmets = 'INSERT INTO `services-appointments` (service_appointment_id, service_id, appointment_id, extra, extra_description) VALUES (NULL, ?, ?, ?, ?)';
         await dbService.query(queryAddServicesAppointmets, [service_id, insertId, extra, extra_description]);
