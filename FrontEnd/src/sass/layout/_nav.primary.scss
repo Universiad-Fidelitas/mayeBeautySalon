@@ -760,6 +760,15 @@ html[data-placement='horizontal'][data-dimension='mobile'] {
     .logo a {
       width: 30px;
     }
+    .user-container {
+      button {
+        margin-top: 30px;
+        span {
+          display: none;
+          transition-duration: var(--transition-time);
+        }
+      }
+    }
 
     .menu-icons,
     .language-switch-container {
