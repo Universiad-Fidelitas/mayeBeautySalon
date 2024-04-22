@@ -93,7 +93,7 @@ export const SecondDataRequestTap = ({ formRef }) => {
   );
 
   const onFormSubmit = useCallback(() => {
-    console.log('first')
+    console.log('first');
   }, [initialValues, dispatch]);
 
   const idTypeDropdown = useMemo(() => {
@@ -104,19 +104,19 @@ export const SecondDataRequestTap = ({ formRef }) => {
   }, []);
 
   return (
-    <div className='mb-5 mt-5'>
+    <div className="mb-5 mt-5">
       <Row className="mb-3 mt-5">
         <h2 className="medium-title text-primary font-weight-bold m-0 text-center">Información del Cliente</h2>
         <p className="card-text m-0 text-center">Por favor, complete la información del cliente</p>
       </Row>
 
       <Formik initialValues={{ id_card: '', id_card_type: '' }} onSubmit={onCustomerFinder} validationSchema={validationSchemaCard}>
-      {({ errors, touched, setFieldValue, values }) => (
-        <Form>
-          <Row className='justify-content-center'>
-            <Col className="col-12 col-lg-4">
-              <Row className="mb-3">
-                <Col className="col-12">
+        {({ errors, touched, setFieldValue, values }) => (
+          <Form>
+            <Row className="justify-content-center">
+              <Col className="col-12 col-lg-4">
+                <Row className="mb-3">
+                  <Col className="col-12">
                     <SelectField
                       label={f({ id: 'helper.idcardtype' })}
                       name="id_card_type"
@@ -124,12 +124,12 @@ export const SecondDataRequestTap = ({ formRef }) => {
                       options={idTypeDropdown}
                       isError={errors.id_card_type && touched.id_card_type}
                     />
-                </Col>
-                
-                <Row>
-                  <Col className="col-6">
-                    <div className="top-label">
-                        <label className="form-label bg-transparent">{f({ id: 'helper.name' })}</label>
+                  </Col>
+
+                  <Row>
+                    <Col className="col-6">
+                      <div className="top-label">
+                        <label className="form-label bg-transparent">Cédula</label>
                         <NumberFormat
                           className="form-control"
                           mask="_"
@@ -140,24 +140,20 @@ export const SecondDataRequestTap = ({ formRef }) => {
                             setFieldValue('id_card', value);
                           }}
                         />
-                    </div>    
-                  </Col>
-                  <Col className="col-6">
-                    <Button variant="outline-primary h-100 w-100" type="submit" disabled={isFindingCustomer}>
-                      {isFindingCustomer ? (
-                        <Spinner size="sm" animation="border" variant="primary" className="m-0" />
-                      ) : (
-                        <span>Buscar Información</span>
-                      )}
-                    </Button>
-                  </Col>
-                  <ErrorMessage className="text-danger" name="id_card" component="div" />
+                      </div>
+                    </Col>
+                    <Col className="col-6">
+                      <Button variant="outline-primary h-100 w-100" type="submit" disabled={isFindingCustomer}>
+                        {isFindingCustomer ? <Spinner size="sm" animation="border" variant="primary" className="m-0" /> : <span>Buscar Información</span>}
+                      </Button>
+                    </Col>
+                    <ErrorMessage className="text-danger" name="id_card" component="div" />
+                  </Row>
                 </Row>
-              </Row>
-            </Col>
-          </Row>
-        </Form>
-      )}
+              </Col>
+            </Row>
+          </Form>
+        )}
       </Formik>
       {showUserInfoForm && (
         <Formik
@@ -169,60 +165,59 @@ export const SecondDataRequestTap = ({ formRef }) => {
           enableReinitialize
         >
           {({ errors, touched, setFieldValue, values }) => (
-          <Form>
-          <Row className='justify-content-center'>
-              <Col className="col-12 col-lg-4">
-                <hr/>
-                <h2 className="medium-title text-primary font-weight-bold mb-3">Información del cliente</h2>
-                <Row className="g-3 mb-3">
-                  <Col className="col-6">
-                    <div className="top-label">
-                      <label className="form-label bg-transparent">{f({ id: 'helper.name' })}</label>
-                      <Field className="form-control" id="first_name" name="first_name" disabled={userPrefilled} />
-                      <ErrorMessage className="text-danger" name="first_name" component="div" />
-                    </div>
-                  </Col>
-                  <Col className="col-6">
-                    <div className="top-label">
-                      <label className="form-label bg-transparent">{f({ id: 'helper.lastname' })}</label>
-                      <Field className="form-control" id="last_name" name="last_name" disabled={userPrefilled} />
-                      <ErrorMessage className="text-danger" name="last_name" component="div" />
-                    </div>
-                  </Col>
-                </Row>
+            <Form>
+              <Row className="justify-content-center">
+                <Col className="col-12 col-lg-4">
+                  <hr />
+                  <h2 className="medium-title text-primary font-weight-bold mb-3">Información del cliente</h2>
+                  <Row className="g-3 mb-3">
+                    <Col className="col-6">
+                      <div className="top-label">
+                        <label className="form-label bg-transparent">{f({ id: 'helper.name' })}</label>
+                        <Field className="form-control" id="first_name" name="first_name" disabled={userPrefilled} />
+                        <ErrorMessage className="text-danger" name="first_name" component="div" />
+                      </div>
+                    </Col>
+                    <Col className="col-6">
+                      <div className="top-label">
+                        <label className="form-label bg-transparent">{f({ id: 'helper.lastname' })}</label>
+                        <Field className="form-control" id="last_name" name="last_name" disabled={userPrefilled} />
+                        <ErrorMessage className="text-danger" name="last_name" component="div" />
+                      </div>
+                    </Col>
+                  </Row>
 
-                <Row className="g-3 mb-3">
-                  <Col className="col-4">
-                    <div className="top-label">
-                      <label className="form-label bg-transparent">{f({ id: 'helper.phone' })}</label>
-                      {/* <Field className="form-control" id="phone" name="phone" disabled={userPrefilled} /> */}
-                      <NumberFormat
-                        className="form-control"
-                        mask="_"
-                        format="####-####"
-                        disabled={userPrefilled}
-                        allowEmptyFormatting
-                        value={values.phone}
-                        onValueChange={({ value }) => {
-                          setFieldValue('phone', value);
-                        }}
-                      />
-                      <ErrorMessage className="text-danger" name="phone" component="div" />
-                    </div>
-                  </Col>
-                  <Col className="col-8">
-                    <div className="top-label">
-                      <label className="form-label bg-transparent">{f({ id: 'helper.email' })}</label>
-                      <Field className="form-control" id="email" name="email" disabled={userPrefilled} />
-                      <ErrorMessage className="text-danger" name="email" component="div" />
-                    </div>
-                  </Col>
-                </Row>
-                
-              </Col>
-            </Row>
-          </Form>
-        )}
+                  <Row className="g-3 mb-3">
+                    <Col className="col-4">
+                      <div className="top-label">
+                        <label className="form-label bg-transparent">{f({ id: 'helper.phone' })}</label>
+                        {/* <Field className="form-control" id="phone" name="phone" disabled={userPrefilled} /> */}
+                        <NumberFormat
+                          className="form-control"
+                          mask="_"
+                          format="####-####"
+                          disabled={userPrefilled}
+                          allowEmptyFormatting
+                          value={values.phone}
+                          onValueChange={({ value }) => {
+                            setFieldValue('phone', value);
+                          }}
+                        />
+                        <ErrorMessage className="text-danger" name="phone" component="div" />
+                      </div>
+                    </Col>
+                    <Col className="col-8">
+                      <div className="top-label">
+                        <label className="form-label bg-transparent">{f({ id: 'helper.email' })}</label>
+                        <Field className="form-control" id="email" name="email" disabled={userPrefilled} />
+                        <ErrorMessage className="text-danger" name="email" component="div" />
+                      </div>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </Form>
+          )}
         </Formik>
       )}
     </div>
