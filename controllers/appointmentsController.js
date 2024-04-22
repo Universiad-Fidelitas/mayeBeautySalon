@@ -78,7 +78,7 @@ const getServiceStatus = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -101,7 +101,7 @@ const getUserDataPrefill = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -153,7 +153,7 @@ const saveAppointment = async (req, res = response) => {
             const queryAddBill = "INSERT INTO bills (bills_id, user_id, inventory_id, appointment_id, payment_id, activated) VALUES (NULL, ?, NULL, ?, ?, 1) ";
             await dbService.query(queryAddBill, [userChecker[0].user_id, insertId, paymentInsertId]);
         }
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'create', 'Creación de cita']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'create', 'Creación de cita']);
         
         res.status(200).json({
             userCheckers: userChecker.length === 0,
@@ -166,7 +166,7 @@ const saveAppointment = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -189,7 +189,7 @@ const getAppointments = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -210,7 +210,7 @@ const getAppointmentsUsers = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -244,7 +244,7 @@ const updateAppointment = async (req, res = response) => {
             selectedTime: moment(start).format('hh:mm A'),
             servicePrice: serviceData[0].price,
         });
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'update', 'Cambios en cita']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'update', 'Cambios en cita']);
         
         res.status(200).json({
             success: true,
@@ -253,7 +253,7 @@ const updateAppointment = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "appointments.errorEdit",
@@ -296,7 +296,7 @@ const addAppointment = async (req, res = response) => {
             selectedTime: moment(start).format('hh:mm A'),
             servicePrice: serviceData[0].price,
         });
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'create', 'Creación de cita']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'create', 'Creación de cita']);
         
         res.status(200).json({
             success: true,
@@ -306,7 +306,7 @@ const addAppointment = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "appointments.errorAdd",
@@ -321,7 +321,7 @@ const disableAppointment = async (req, res = response) => {
 
         const queryUpdateAppointment = 'UPDATE appointments SET activated = 0, price = 0 WHERE appointment_id = ?';
         const updatedAppointment = await dbService.query(queryUpdateAppointment, [id]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'delete', 'Inactivación de cita']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'delete', 'Inactivación de cita']);
         
         res.status(200).json({
             success: true,
@@ -330,7 +330,7 @@ const disableAppointment = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Citas', 11, 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "appointments.errorDelete",

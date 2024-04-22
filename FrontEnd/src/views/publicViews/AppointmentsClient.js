@@ -103,31 +103,7 @@ export const AppointmentsClient = () => {
               </ul>
             )}
           />
-          <WithWizard
-            render={({ next, previous, step, steps }) => (
-              <div className={`wizard-buttons d-flex justify-content-center ${bottomNavHidden && 'invisible'}`}>
-                <Button
-                  variant="outline-primary"
-                  className={`btn-icon btn-icon-start me-1 ${steps.indexOf(step) <= 0 ? 'disabled' : ''}`}
-                  onClick={() => {
-                    onClickPrev(previous, steps, step);
-                  }}
-                >
-                  <CsLineIcons icon="chevron-left" /> <span>{f({ id: 'helper.Back' })}</span>
-                </Button>
-                <Button
-                  variant="outline-primary"
-                  disabled={!isAbleToNext}
-                  className={`btn-icon btn-icon-end ${steps.indexOf(step) >= steps.length - 1 ? 'disabled' : ''}`}
-                  onClick={() => {
-                    onClickNext(next, steps, step);
-                  }}
-                >
-                  <span>{f({ id: 'helper.Next' })}</span> <CsLineIcons icon="chevron-right" />
-                </Button>
-              </div>
-            )}
-          />
+
           <Steps>
             <Step id="step1" name="Primer Paso" desc={f({ id: 'appointments.FirstTaptitle' })}>
               <FirstDataRequestTap formRef={forms} />

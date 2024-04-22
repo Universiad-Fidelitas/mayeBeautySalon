@@ -16,11 +16,6 @@ export const HomeView = () => {
                 Nuestro equipo de estilistas expertos está aquí para realzar tu estilo en nuestro salón unisex. Accede a tu cuenta para disfrutar de una
                 experiencia exclusiva y descubre un mundo de belleza hecho a tu medida....
               </p>
-              <div className="mb-5">
-                <Button size="lg" variant="outline-white" href="/">
-                  Conocer más
-                </Button>
-              </div>
             </div>
           </div>
         </div>
