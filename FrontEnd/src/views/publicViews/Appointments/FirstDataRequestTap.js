@@ -10,17 +10,14 @@ import { useGetWeekAppointments } from 'hooks/react-query/useAppointments';
 import moment from 'moment/moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetEmployments } from 'hooks/react-query/useUsers';
-import * as Yup from 'yup';
-import { setAppointmentServiceInformation, setIsAbleToNext, setIsEnd } from 'store/appointments/appointmentsSlice';
+import { setIsAbleToNext } from 'store/appointments/appointmentsSlice';
 
 export const FirstDataRequestTap = ({ formRef }) => {
   const [serviceDate, setServiceDate] = useState(moment().add(1, 'day').toDate());
   const [serviceId, setServiceId] = useState();
   const [employee, setEmployee] = useState();
-  const [isBack, setIsBack] = useState(false);
   const { appointmentServiceInformation, isEnd } = useSelector((state) => state.appointments);
   const { service_date, service_time, service_id, employment_id } = appointmentServiceInformation;
-  console.log('setIsEnd', isEnd);
 
   const { isSuccess, data } = useGetAllServices();
   const {
@@ -32,19 +29,6 @@ export const FirstDataRequestTap = ({ formRef }) => {
     serviceId: service_id || serviceId,
     employee: employment_id || employee,
   });
-
-  // useEffect(() => {
-  //   setServiceDate(moment(service_date).toDate());
-  //   setServiceId(service_id);
-  //   setEmployee(employment_id);
-  //   setIsBack(true);
-  // }, [service_date, service_id, employment_id, appointmentServiceInformation]);
-
-  // useEffect(() => {
-  //   if(isBack){
-  //     refetch();
-  //   }
-  // }, [isBack])
 
   useEffect(() => {
     refetch();
@@ -122,10 +106,13 @@ export const FirstDataRequestTap = ({ formRef }) => {
         {({ dirty, values, setFieldValue }) => {
           return (
             <Form>
-              <h5 className="card-title">{f({ id: 'appointments.FirstTaptitle' })}</h5>
-              <p className="card-text text-alternate mb-4">{f({ id: 'appointments.FirstTapDescription' })} </p>
+            <Row className="mb-3 mt-5">
+              <h2 className="medium-title text-primary font-weight-bold m-0 text-center">Elegir Servicio</h2>
+              <p className="card-text m-0 text-center">Por favor, elija el servicio, fecha y su estilista de preferencia para la cita</p>
+            </Row>
 
-              <Row className="mb-3">
+
+              <Row className="mb-3 justify-content-center">
                 <Col className="col-12 col-lg-4">
                   <Row className="mb-3">
                     <Col className="col-12">
@@ -188,7 +175,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
               {values.service_date && (
                 <>
                   <section className="scroll-section">
-                    <h2 className="small-title">Citas disponibles</h2>
+                    <h2 className="medium-title text-primary font-weight-bold mb-3">Citas disponibles</h2>
                     <Card body className="mb-5 appointments-table">
                       <Table striped hover>
                         <thead>

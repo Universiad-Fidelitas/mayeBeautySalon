@@ -26,12 +26,12 @@ const Layout = ({ children }) => {
       <>
         <Nav />
         <main className={classNames('p-0', { isadmin: isLogin })}>
-          <Row className="h-100">
+          <div className="h-100">
             <SidebarMenu />
             <Col className="h-100" id="contentArea">
               {children}
             </Col>
-          </Row>
+          </div>
         </main>
         <Footer />
         <RightButtons />
