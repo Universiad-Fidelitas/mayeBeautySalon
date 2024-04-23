@@ -10,7 +10,7 @@ const getByIdUser = async (req, res = response) => {
         res.json({userFound, status: true, message: 'Se ha encontrado el usuario exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -58,7 +58,7 @@ const getUser = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -80,10 +80,10 @@ const postUser = async (req, res = response) => {
                 })
             }
         }
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'create', 'Creación de usuario']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'create', 'Creación de usuario']);
     }
     catch({ message }) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar usuario!",
@@ -116,10 +116,10 @@ const putUser = async (req, res = response) => {
                 message: "¡El usuario ha sido editado exitosamente!"
             });
         }
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'update', 'Cambios en usuario']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'update', 'Cambios en usuario']);
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la acción.!",
@@ -147,9 +147,9 @@ const deleteUser = async (req, res = response) => {
                 message: "¡Los usuarios se han inactivado exitosamente!"
             });
         }
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'delete', 'Inactivación de usuario']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'delete', 'Inactivación de usuario']);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"
@@ -168,7 +168,7 @@ const getEmployments = async (req, res = response) => {
         });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Usuarios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",

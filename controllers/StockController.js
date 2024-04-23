@@ -9,7 +9,7 @@ const getById = async (req, res = response) => {
         res.status(200).json({product_found, status: true, message: 'Se ha encontrado el producto exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Stock', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Stock', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -67,7 +67,7 @@ const getStock = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Stock', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Stock', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }

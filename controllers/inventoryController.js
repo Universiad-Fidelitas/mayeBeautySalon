@@ -9,7 +9,7 @@ const getById = async (req, res = response) => {
         res.status(200).json({product_found, status: true, message: 'Se ha encontrado el producto exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -54,7 +54,7 @@ const getInventory = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -70,7 +70,7 @@ const postInventory = async (req, res = response) => {
             const { insertId } = await dbService.query(query, [data.amount, inventoryInsertId, data.product_id]);
             insertIds.push(insertId);
         }
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('user_id'), 'create', 'Creación de movimiento de inventario']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('CurrentUserId'), 'create', 'Creación de movimiento de inventario']);
         res.status(200).json({
             inventory_id: inventoryInsertId,
             product_ids: insertIds,
@@ -79,7 +79,7 @@ const postInventory = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Inventario', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar el movimiento de inventario!",
