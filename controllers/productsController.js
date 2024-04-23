@@ -10,7 +10,7 @@ const getById = async (req, res = response) => {
         res.json(data);
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -63,7 +63,7 @@ const getProducts = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -74,7 +74,7 @@ const postProducts = async (req, res = response) => {
         
         const userQuery= `call sp_product ('create', '0', ?, ?, ?, ?, ?, ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [name, brand_id, price, size, req.file.path, provider_id, category_id, price_buy]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'create', 'Creación de producto']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'create', 'Creación de producto']);
 
         res.status(200).json({
             product_id: insertId,
@@ -83,7 +83,7 @@ const postProducts = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar un producto duplicado!",
@@ -100,7 +100,7 @@ const putProducts = async (req, res = response) => {
             ({ image } = req.body);
         }
         const userQuery = `call sp_product ('update', ?, ?, ?, ?, ?, ?, ?, ?,?);`;
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'update', 'Cambios en producto']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'update', 'Cambios en producto']);
         if ('image' in req.body) {
             const { insertId } = await dbService.query(userQuery, [product_id, name, brand_id, price, size, image, provider_id, category_id, price_buy]);
             res.status(200).json({
@@ -118,7 +118,7 @@ const putProducts = async (req, res = response) => {
         }
     }
         catch(error) {
-            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'error', error.message]);
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al editar el producto!",
@@ -133,7 +133,7 @@ const putProducts = async (req, res = response) => {
             const userQuery = `call sp_product ('delete', ?, '', 0, 0, '', '', 0, 0, 0);`;
             const rows = await dbService.query(userQuery, [product_id]);
             const { affectedRows } = helper.emptyOrRows(rows);
-            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'delete', 'Inactivación de producto']);
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'delete', 'Inactivación de producto']);
             
             if( affectedRows === 1 ) {
                 res.status(200).json({
@@ -147,7 +147,7 @@ const putProducts = async (req, res = response) => {
                 });
             }
         } catch (error) {
-            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('user_id'), 'error', error.message]);
+            await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Productos', req.header('CurrentUserId'), 'error', error.message]);
             res.status(200).json({
                 success: false,
                 message: "¡Se ha producido un error al ejecutar la acción.!"

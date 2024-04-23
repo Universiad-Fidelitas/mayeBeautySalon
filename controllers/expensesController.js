@@ -9,7 +9,7 @@ const getById = async (req, res = response) => {
         res.status(500).json({expenseFound, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -20,7 +20,7 @@ const getExpenseType = async ( req,res = response) => {
         res.status(200).json({items: rows, status: true, message: 'Se ha encontrado el gasto exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -65,7 +65,7 @@ const getExpenses = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -75,7 +75,7 @@ const postExpense = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_expense('create', '0', ?,?);`;
         const { insertId } = await dbService.query(userQuery, [expense_type, price]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'create', 'Creación de gasto']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'create', 'Creación de gasto']);
 
         res.status(200).json({
             expense_id: insertId,
@@ -84,7 +84,7 @@ const postExpense = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar el gasto!",
@@ -100,7 +100,7 @@ const putExpense = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_expense('update', ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [expense_id, expense_type, price ]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'update', 'Cambios en gasto']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'update', 'Cambios en gasto']);
 
         res.status(200).json({
             expense_id: insertId,
@@ -109,7 +109,7 @@ const putExpense = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar el gasto!",
@@ -124,7 +124,7 @@ const deleteExpense = async (req, res = response) => {
         const userQuery = `CALL sp_expense('delete', ?, '',0);`;
         const rows = await dbService.query(userQuery, [expense_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'delete', 'Inactivación de gasto']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'delete', 'Inactivación de gasto']);
         
         if( affectedRows === 1 ) {
             res.status(200).json({
@@ -138,7 +138,7 @@ const deleteExpense = async (req, res = response) => {
             });
         }
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Gastos', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"

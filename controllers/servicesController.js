@@ -69,7 +69,7 @@ const postServices = async (req, res = response) => {
     try {
         const { name, duration, price } = req.body;
         const { insertId } = await dbService.query(`INSERT INTO services (name, duration, price, activated) VALUES (?, ?, ?, 1)`, [name, duration, price]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'create', 'Creación de servicio']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('CurrentUserId'), 'create', 'Creación de servicio']);
         res.status(200).json({
             success: true,
             insertId,
@@ -77,7 +77,7 @@ const postServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorAdd",
@@ -91,7 +91,7 @@ const putServices = async (req, res = response) => {
         const { service_id } = req.params;
         const { name, duration, price, activated} = req.body;
         const  { changedRows }  = await dbService.query('UPDATE services SET name = ?, duration = ?, price = ?, activated = ? WHERE service_id = ?', [name, duration, price, activated, service_id]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'update', 'Cambios en servicio']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('CurrentUserId'), 'update', 'Cambios en servicio']);
 
         res.status(200).json({
             success: true,
@@ -100,7 +100,7 @@ const putServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorEdit",
@@ -115,7 +115,7 @@ const deleteServices = async (req, res = response) => {
         const placeholders = service_ids.map(() => '?').join(',');
         const query = `UPDATE services SET activated = NOT activated WHERE service_id IN (${placeholders});`;
         const { affectedRows } = await dbService.query(query, service_ids);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'delete', 'Inactivación de servicio']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('CurrentUserId'), 'delete', 'Inactivación de servicio']);
 
         res.status(200).json({
             success: true,
@@ -124,7 +124,7 @@ const deleteServices = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Servicios', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "services.errorDelete",

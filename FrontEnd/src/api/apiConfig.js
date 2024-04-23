@@ -24,7 +24,7 @@ baseApi.interceptors.request.use(async (config) => {
 
     if (isTokenValid) {
       config.headers.Authorization = `Bearer ${token}`;
-      config.headers.user_id = user_id;
+      config.headers.CurrentUserId = user_id;
     } else {
       const Content = () => (
         <>
