@@ -86,7 +86,7 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
   const timeOptions = React.useMemo(() => {
     const options = [];
     for (let h = 9; h <= 20; h += 1) {
-      ['00', '15', '30', '45'].forEach((m) => {
+      ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'].forEach((m) => {
         const hour12 = h > 12 ? h - 12 : h;
         const period = h >= 12 ? 'PM' : 'AM';
         const time = `${hour12.toString().padStart(2, '0')}:${m} ${period}`;
@@ -171,7 +171,7 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
       employee: selectedEvent?.employee_id || selectedEvent?.employee || '',
     };
   }, [selectedItem]);
-
+  console.log('iv', initialValues);
   const deleteItemApprove = useCallback(() => {
     setIsShowDeleteConfirmModal(false);
     setIsOpenAddEditModal(false);
