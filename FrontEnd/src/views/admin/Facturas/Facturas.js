@@ -171,9 +171,14 @@ const Facturas = () => {
             return '';
           }
           const dateObject = new Date(value);
-          const dateString = dateObject.toLocaleDateString();
-          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          return `${dateString} ${timeString}`;
+          const month = dateObject.getMonth() + 1;
+          const day = dateObject.getDate();
+          const year = dateObject.getFullYear();
+          const hours = dateObject.getHours();
+          const minutes = String(dateObject.getMinutes()).padStart(2, '0');
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          const formattedHours = hours % 12 || 12; // Convert hours to 12-hour format
+          return `${month}/${day}/${year} ${formattedHours}:${minutes} ${ampm}`;
         },
       },
       {
