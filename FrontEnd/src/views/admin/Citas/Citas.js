@@ -115,10 +115,23 @@ const Citas = () => {
   };
 
   const month = useMemo(() => {
-    return formatDate(moment(dateTitle, 'MMMM YYYY').format('MM-DD-YYYY'), {
-      month: 'long',
-      year: 'numeric',
-    });
+    const monthSelected = dateTitle.split(' ')[0];
+    const months = {
+      January: 'Enero',
+      February: 'Febrero',
+      March: 'Marzo',
+      April: 'Abril',
+      May: 'Mayo',
+      June: 'Junio',
+      July: 'Julio',
+      August: 'Agosto',
+      September: 'Septiembre',
+      October: 'Octubre',
+      November: 'Noviembre',
+      December: 'Diciembre',
+    };
+    return `${months[monthSelected]} ${dateTitle.split(' ')[1]}`
+    
   }, [dateTitle, formatDate]);
 
   // handlers that initiate reads/writes via the 'action' props
@@ -147,15 +160,18 @@ const Citas = () => {
     );
   };
 
-  const daysOfWeek = useMemo(() => ({
-    Sun:'Domingo',
-    Mon:'Lunes',
-    Tue:'Martes',
-    Wed:'Miércoles',
-    Thu:'Jueves',
-    Fri:'Viernes',
-    Sat:'Sábado',
-  }), []);
+  const daysOfWeek = useMemo(
+    () => ({
+      Sun: 'Domingo',
+      Mon: 'Lunes',
+      Tue: 'Martes',
+      Wed: 'Miércoles',
+      Thu: 'Jueves',
+      Fri: 'Viernes',
+      Sat: 'Sábado',
+    }),
+    []
+  );
 
   return (
     <>
@@ -167,7 +183,6 @@ const Citas = () => {
           <Col xs="auto" className="mb-2 mb-md-0 me-auto">
             <div className="w-auto sw-md-30">
               <h1 className="mb-0 pb-0 display-4">{htmlTitle}</h1>
-              <BreadcrumbList items={breadcrumbs} />
             </div>
           </Col>
           <div className="w-100 d-md-none" />
@@ -190,7 +205,7 @@ const Citas = () => {
       {/* Title End */}
       {/* Calendar Title Start */}
       <div className="d-flex justify-content-between">
-        <h2 className="small-title">{month.charAt(0).toUpperCase() + month.slice(1)}</h2>
+        <h2 className="small-title">{month}</h2>
         <Dropdown>
           <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" />
           <Dropdown.Menu
@@ -238,16 +253,14 @@ const Citas = () => {
           initialView="dayGridMonth"
           themeSystem="bootstrap"
           editable
-          selectable
+          selectable={false}
           selectMirror
           dayMaxEvents
           weekends
-          // datesSet={handleDates}
           select={handleDateSelect}
           events={appointmentsData}
-          eventContent={renderEventContent} // custom render function
+          eventContent={renderEventContent}
           eventClick={handleEventClick}
-          // eventChange={handleEventChange} // called for drag-n-drop/resize
           viewDidMount={viewDidMount}
           eventTimeFormat={{
             hour: '2-digit',
@@ -255,18 +268,11 @@ const Citas = () => {
             meridiem: false,
           }}
           dayHeaderContent={({ date, text }) => {
-            const formattedDayName = formatDate(date, {
-              weekday: 'long',
-            });
-            console.log('dayHeaderContent', daysOfWeek[text])
             return <b>{daysOfWeek[text]}</b>;
           }}
         />
       </Card>
-      <AppointmentsModalAddEdit
-        isOpenAddEditModal={isShowModalAddEdit}
-        setIsOpenAddEditModal={setIsShowModalAddEdit}
-      />
+      <AppointmentsModalAddEdit isOpenAddEditModal={isShowModalAddEdit} setIsOpenAddEditModal={setIsShowModalAddEdit} />
     </>
   );
 };
