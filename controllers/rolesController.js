@@ -9,7 +9,7 @@ const getById = async (req, res = response) => {
         res.json({roleFound, status: true, message: 'Se ha encontrado el rol exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -59,7 +59,7 @@ const getRoles = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -69,7 +69,7 @@ const postRole = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_role('create', 0, ?, ?, 0);`;
         const { insertId } = await dbService.query(userQuery, [name, JSON.stringify(permissions) ]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'create', 'Creación de rol']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'create', 'Creación de rol']);
         res.status(200).json({
             role_id: insertId,
             success: true,
@@ -77,7 +77,7 @@ const postRole = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar role!",
@@ -93,7 +93,7 @@ const putRole = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_role('update', ?, ?, ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [role_id, name, JSON.stringify(permissions), activated ]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'update', 'Cambios en rol']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'update', 'Cambios en rol']);
 
         res.status(200).json({
             role_id: insertId,
@@ -102,7 +102,7 @@ const putRole = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la acción.!",
@@ -117,7 +117,7 @@ const deleteRole = async (req, res = response) => {
         const userQuery = `CALL sp_role('delete', ?, '', '', 0);`;
         const rows = await dbService.query(userQuery, [role_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'delete', 'Inactivación de rol']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'delete', 'Inactivación de rol']);
         
         if( affectedRows === 1 ) {
             res.status(200).json({
@@ -131,7 +131,7 @@ const deleteRole = async (req, res = response) => {
             });
         }
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Roles', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"

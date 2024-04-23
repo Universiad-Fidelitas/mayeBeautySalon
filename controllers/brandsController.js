@@ -9,7 +9,7 @@ const getById = async (req, res = response) => {
         res.status(200).json({brandFound, status: true, message: 'Se ha encontrado la marca exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -54,7 +54,7 @@ const getBrands = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -64,7 +64,7 @@ const postBrand = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_brand('create', '0', ?);`;
         const { insertId } = await dbService.query(userQuery, [name]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'create', 'Creación de marca']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'create', 'Creación de marca']);
 
         res.status(200).json({
             brand_id: insertId,
@@ -73,7 +73,7 @@ const postBrand = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar la marca!",
@@ -89,7 +89,7 @@ const putBrand = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_brand('update', ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [brand_id, name ]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'update', 'Cambios en marca']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'update', 'Cambios en marca']);
      
         res.status(200).json({
             brand_id: insertId,
@@ -98,7 +98,7 @@ const putBrand = async (req, res = response) => {
         })    
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la marca!",
@@ -113,7 +113,7 @@ const deleteBrand = async (req, res = response) => {
         const userQuery = `CALL sp_brand('delete', ?, '');`;
         const rows = await dbService.query(userQuery, [brand_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'delete', 'Inactivación de marca']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'delete', 'Inactivación de marca']);
         
         if( affectedRows === 1 ) {
             res.status(200).json({
@@ -128,7 +128,7 @@ const deleteBrand = async (req, res = response) => {
             });
         }
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Marcas', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"

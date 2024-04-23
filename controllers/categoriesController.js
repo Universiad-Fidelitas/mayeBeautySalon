@@ -9,7 +9,7 @@ const getById = async (req, res = response) => {
         res.status(500).json({categoryFound, status: true, message: 'Se ha encontrado la categoría exitosamente.' });
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({message: error.message})
     }
 }
@@ -54,7 +54,7 @@ const getCategories = async (req, res = response) => {
 
         res.json(response);
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'error', error.message]);
         res.status(500).json({ message: error.message });
     }
 }
@@ -64,7 +64,7 @@ const postCategory = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_category('create', '0', ?);`;
         const { insertId } = await dbService.query(userQuery, [name ]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'create', 'Creación de categoria']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'create', 'Creación de categoria']);
 
         res.status(200).json({
             category_id: insertId,
@@ -73,7 +73,7 @@ const postCategory = async (req, res = response) => {
         })
     }
     catch({ message }) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡No es posible agregar la categoría!",
@@ -89,7 +89,7 @@ const putCategory = async (req, res = response) => {
     try {
         const userQuery = `CALL sp_category('update', ?, ?);`;
         const { insertId } = await dbService.query(userQuery, [category_id, name ]);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'update', 'Cambios en categoria']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'update', 'Cambios en categoria']);
 
         res.status(200).json({
             category_id: insertId,
@@ -98,7 +98,7 @@ const putCategory = async (req, res = response) => {
         })
     }
     catch(error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al editar la categoria!",
@@ -113,7 +113,7 @@ const deleteCategory = async (req, res = response) => {
         const userQuery = `CALL sp_category('delete', ?, '');`;
         const rows = await dbService.query(userQuery, [category_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'delete', 'Inactivación de categoria']);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'delete', 'Inactivación de categoria']);
 
         if( affectedRows === 1 ) {
             res.status(200).json({
@@ -128,7 +128,7 @@ const deleteCategory = async (req, res = response) => {
            
         }
     } catch (error) {
-        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('user_id'), 'error', error.message]);
+        await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Categorias', req.header('CurrentUserId'), 'error', error.message]);
         res.status(200).json({
             success: false,
             message: "¡Se ha producido un error al ejecutar la acción.!"
