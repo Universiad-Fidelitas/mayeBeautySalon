@@ -38,7 +38,7 @@ const getPayments = async (req, res = response) => {
         }
 
         if (orderByClauses.length > 0) {
-            baseQuery += `GROUP BY p.payment_id ORDER BY ${orderByClauses.join(', ')}`;
+            baseQuery += `GROUP BY p.payment_id, b.bills_id ORDER BY ${orderByClauses.join(', ')}`;
         }
 
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
