@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useBrands } from 'hooks/react-query/useBrands';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { MarcasModalAddEdit } from './MarcasModalAddEdit';
 
 const Marcas = () => {
@@ -20,7 +21,7 @@ const Marcas = () => {
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
   const [pageCount, setPageCount] = useState();
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -106,9 +107,11 @@ const Marcas = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_BRANDS') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -121,15 +124,18 @@ const Marcas = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la marca seleccionada?"
-                    modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="brand"
-                    tipo="marca"
-                  />
+                  {userHasPermission('C_BRANDS') && <ControlsAdd tableInstance={tableInstance} />}
+                  {userHasPermission('U_BRANDS') && <ControlsEdit tableInstance={tableInstance} />}
+                  {userHasPermission('D_BRANDS') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar la marca seleccionada?"
+                      modalDescription="La marca seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="brand"
+                      tipo="marca"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

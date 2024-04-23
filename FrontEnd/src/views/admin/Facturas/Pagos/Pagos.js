@@ -8,6 +8,7 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 import { usePayments } from 'hooks/react-query/usePayments';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { PagosModalAddEdit } from './PagosModalAddEdit';
 import { PagosTableListItem } from './PagosTableListItem';
 import { PagosTableListItemHeader } from './PAgosTableListItemHeader';
@@ -22,7 +23,7 @@ const Pagos = () => {
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
   const [pageCount, setPageCount] = useState();
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -155,9 +156,11 @@ const Pagos = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_PAYMENTS') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -170,15 +173,18 @@ const Pagos = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el pago seleccionado?"
-                    modalDescription="El pago seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="payment"
-                    tipo="pago"
-                  />
+                  {userHasPermission('C_PAYMENTS') && <ControlsAdd tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('U_PAYMENTS') && <ControlsEdit tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('D_PAYMENTS') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar el pago seleccionado?"
+                      modalDescription="El pago seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="payment"
+                      tipo="pago"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
