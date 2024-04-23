@@ -160,13 +160,13 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
       service_id: selectedEvent?.service_id || '',
       startTime: selectedItem.startTime && moment(selectedItem.startTime, 'HH:mm').format('hh:mm A'),
       endTime: selectedItem.endTime && moment(selectedItem.endTime, 'HH:mm').format('hh:mm A'),
-      serviceDate: selectedItem.startDate ? selectedItem.startDate : new Date(),
+      serviceDate: selectedItem.startDate ? selectedItem.startDate : moment().add(1, 'day').toDate(),
       extra: selectedItem?.extra !== 0 ? selectedItem.extra : '',
       extraDescription: selectedItem.extra_description ? selectedItem.extra_description : '',
       email: selectedItem.email ? selectedItem.email : '',
       phone: selectedItem.phone ? selectedItem.phone : '',
       activeUser: selectedEvent?.user_id || '',
-      employee: selectedEvent?.employee_id || '',
+      employee: selectedEvent?.employee_id || selectedEvent?.employee || '',
     };
   }, [selectedItem]);
 
