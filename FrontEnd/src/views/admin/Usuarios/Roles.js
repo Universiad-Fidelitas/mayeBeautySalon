@@ -19,6 +19,7 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 import { DB_TABLE_ROLS } from 'data/rolsData';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { ModalEditPermissions } from './ModalEditPermissions';
 
 const Roles = () => {
@@ -32,6 +33,7 @@ const Roles = () => {
   const [term2, setTerm2] = useState(true);
   const dispatch = useDispatch();
   const { isRolesLoading, rols, pageCount } = useSelector((state) => state.rols);
+  const { userHasPermission } = useUserPermissions();
 
   const returnColorName = (permissionType) => {
     if (permissionType === 'C') {
@@ -191,9 +193,11 @@ const Roles = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_ROLES') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -207,15 +211,18 @@ const Roles = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsVisible tableInstance={tableInstance} checked={term2} onChange={() => searchItem2(!term2)} />
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el rol seleccionado?"
-                    modalDescription="El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="role"
-                    tipo="rol"
-                  />
+                  {userHasPermission('C_ROLES') && <ControlsAdd tableInstance={tableInstance} />}
+                  {userHasPermission('U_ROLES') && <ControlsEdit tableInstance={tableInstance} />}
+                  {userHasPermission('D_ROLES') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar el rol seleccionado?"
+                      modalDescription="El rol seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="role"
+                      tipo="rol"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

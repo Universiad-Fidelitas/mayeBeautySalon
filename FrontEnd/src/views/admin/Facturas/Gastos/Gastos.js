@@ -7,6 +7,7 @@ import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useExpenses } from 'hooks/react-query/useExpenses';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { GastosModalAddEdit } from './GastosModalAddEdit';
 
 const Gastos = () => {
@@ -19,7 +20,7 @@ const Gastos = () => {
   const [term, setTerm] = useState('');
   const [pageCount, setPageCount] = useState();
   const dispatch = useDispatch();
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -110,9 +111,11 @@ const Gastos = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_EXPENSES') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -125,15 +128,18 @@ const Gastos = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el gasto seleccionado?"
-                    modalDescription="El gasto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="expense"
-                    tipo="gasto"
-                  />
+                  {userHasPermission('C_EXPENSES') && <ControlsAdd tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('U_EXPENSES') && <ControlsEdit tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('D_EXPENSES') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar el gasto seleccionado?"
+                      modalDescription="El gasto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="expense"
+                      tipo="gasto"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

@@ -8,6 +8,7 @@ import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useNotifications } from 'hooks/react-query/useNotificacions';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { NotificacionsModalAddEdit } from './NotificacionsModalAddEdit';
 
 export const Notificacions = () => {
@@ -20,7 +21,7 @@ export const Notificacions = () => {
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
   const [pageCount, setPageCount] = useState();
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -133,9 +134,11 @@ export const Notificacions = () => {
                 <br />
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_NOTIFICATIONS') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -148,15 +151,18 @@ export const Notificacions = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la notificación seleccionada?"
-                    modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="notification"
-                    tipo="notificación"
-                  />
+                  {userHasPermission('C_NOTIFICATIONS') && <ControlsAdd tableInstance={tableInstance} />}
+                  {userHasPermission('U_NOTIFICATIONS') && <ControlsEdit tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('D_NOTIFICATIONS') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar la notificación seleccionada?"
+                      modalDescription="La notificacion seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="notification"
+                      tipo="notificación"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

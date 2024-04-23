@@ -1,5 +1,9 @@
 export const DB_TABLE_ROLS = [
   {
+    permissionName: 'Citas',
+    permissionKey: 'APPOINTMENTS',
+  },
+  {
     permissionName: 'Usuarios',
     permissionKey: 'USERS',
   },
@@ -8,7 +12,7 @@ export const DB_TABLE_ROLS = [
     permissionKey: 'ROLES',
   },
   {
-    permissionName: 'Inventario',
+    permissionName: 'Movimientos de Inventario',
     permissionKey: 'INVENTORY',
   },
   {
@@ -28,11 +32,23 @@ export const DB_TABLE_ROLS = [
     permissionKey: 'SERVICES',
   },
   {
+    permissionName: 'Inventario',
+    permissionKey: 'STOCK',
+  },
+  {
+    permissionName: 'Notificaciones',
+    permissionKey: 'NOTIFICATIONS',
+  },
+  {
     permissionName: 'Facturas',
     permissionKey: 'BILLS',
   },
   {
-    permissionName: 'Transacciones',
-    permissionKey: 'TRANSACTIONS',
+    permissionName: 'Gastos',
+    permissionKey: 'EXPENSES',
+  },
+  {
+    permissionName: 'Pagos',
+    permissionKey: 'PAYMENTS',
   },
 ];

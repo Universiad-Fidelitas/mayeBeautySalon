@@ -6,6 +6,7 @@ import { useCategories } from 'hooks/react-query/useCategories';
 import { useIntl } from 'react-intl';
 import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { CategoriasModalAddEdit } from './CategoriasModalAddEdit';
 
 const Categorias = () => {
@@ -17,7 +18,7 @@ const Categorias = () => {
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
   const [pageCount, setPageCount] = useState();
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -103,9 +104,11 @@ const Categorias = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_CATEGORIES') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -118,15 +121,18 @@ const Categorias = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la categoria seleccionada?"
-                    modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="category"
-                    tipo="categoría"
-                  />
+                  {userHasPermission('C_CATEGORIES') && <ControlsAdd tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('U_CATEGORIES') && <ControlsEdit tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('D_CATEGORIES') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar la categoria seleccionada?"
+                      modalDescription="La categoria seleccionada se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="category"
+                      tipo="categoría"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
