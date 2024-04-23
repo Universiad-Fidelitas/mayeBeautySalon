@@ -11,8 +11,8 @@ import NumberFormat from 'react-number-format';
 export const ModalAddEditServices = ({ tableInstance, apiParms }) => {
   const { formatMessage: f } = useIntl();
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-
-  const generateMinuteOptions = useMemo(() => Array.from({ length: 60 }, (_, i) => ({ value: i, label: i })), []);
+  const generateMinuteOptions = useMemo(() => Array.from({ length: 12 }, (_, i) => ({ value: i * 5, label: i * 5 })), []);
+  // const generateMinuteOptions = useMemo(() => Array.from({ length: 60 }, (_, i) => ({ value: i, label: i })), []);
   const generateHourOptions = useMemo(() => Array.from({ length: 13 }, (_, i) => ({ value: i, label: i })), []);
   const { addServices, updateServices } = useServices(apiParms);
 

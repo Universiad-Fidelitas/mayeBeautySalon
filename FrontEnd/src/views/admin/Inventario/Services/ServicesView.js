@@ -16,6 +16,7 @@ import {
 } from 'components/datatables';
 import { useTable, useGlobalFilter, useSortBy, usePagination, useRowSelect, useRowState, useAsyncDebounce } from 'react-table';
 import { useServices } from 'hooks/react-query/useServices';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { ModalAddEditServices } from './ModalAddEditServices';
 
 export const ServicesView = () => {
@@ -23,7 +24,7 @@ export const ServicesView = () => {
   const title = f({ id: 'services.title' });
   const description = f({ id: 'services.description' });
   const breadcrumbs = [];
-
+  const { userHasPermission } = useUserPermissions();
   const [data, setData] = useState([]);
   const [isOpenAddEditModal, setIsOpenAddEditModal] = useState(false);
   const [term, setTerm] = useState('');
@@ -133,9 +134,11 @@ export const ServicesView = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_SERVICES') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -149,15 +152,18 @@ export const ServicesView = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsVisible checked={term2} tableInstance={tableInstance} onChange={() => searchItem2(!term2)} />
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el servicio seleccionado?"
-                    modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="service"
-                    tipo="servicio"
-                  />
+                  {userHasPermission('C_SERVICES') && <ControlsAdd tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('U_SERVICES') && <ControlsEdit tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('D_SERVICES') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar el servicio seleccionado?"
+                      modalDescription="El servicio seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="service"
+                      tipo="servicio"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

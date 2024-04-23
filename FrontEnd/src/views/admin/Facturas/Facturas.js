@@ -22,9 +22,11 @@ import { useBills } from 'hooks/react-query/useBills';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 import { SelectField } from 'components/SelectField';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { ModalAddEditFacturas } from './ModalAddEditFacturas';
 
 const Facturas = () => {
+  const { userHasPermission } = useUserPermissions();
   const { formatMessage: f } = useIntl();
   const title = 'Facturas';
   const description = 'Server side api implementation.';
@@ -171,9 +173,14 @@ const Facturas = () => {
             return '';
           }
           const dateObject = new Date(value);
-          const dateString = dateObject.toLocaleDateString();
-          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          return `${dateString} ${timeString}`;
+          const month = dateObject.getMonth() + 1;
+          const day = dateObject.getDate();
+          const year = dateObject.getFullYear();
+          const hours = dateObject.getHours();
+          const minutes = String(dateObject.getMinutes()).padStart(2, '0');
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          const formattedHours = hours % 12 || 12; // Convert hours to 12-hour format
+          return `${month}/${day}/${year} ${formattedHours}:${minutes} ${ampm}`;
         },
       },
       {
@@ -347,9 +354,11 @@ const Facturas = () => {
               <Col xs="12" md="7">
                 <h1 className="mb-3 pb-0 display-4">{title}</h1>
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_BILLS') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -372,15 +381,18 @@ const Facturas = () => {
               </Col>
               <Col sm="12" md="12" lg="12" xxl="12" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar la factura seleccionado?"
-                    modalDescription="La factura seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="bills"
-                    tipo="factura"
-                  />
+                  {userHasPermission('C_BILLS') && <ControlsAdd tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('U_BILLS') && <ControlsEdit tableInstance={tableInstance} />}
+                  {userHasPermission('D_BILLS') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar la factura seleccionado?"
+                      modalDescription="La factura seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="bills"
+                      tipo="factura"
+                    />
+                  )}
                   <ControlsExportCSV tableInstance={billsCSVData && billsCSVData.items} type="bills" />
                 </div>
                 <div className="d-inline-block">

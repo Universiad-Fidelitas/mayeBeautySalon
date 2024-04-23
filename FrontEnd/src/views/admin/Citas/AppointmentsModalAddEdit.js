@@ -13,6 +13,7 @@ import { SelectField } from 'components/SelectField';
 import { useGetEmployments } from 'hooks/react-query/useUsers';
 import NumberFormat from 'react-number-format';
 import classNames from 'classnames';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 
 export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditModal }) => {
   const { formatMessage: f } = useIntl();
@@ -22,7 +23,8 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
   const { data: usersData, isSuccess: isAppointmentUsersSuccess } = useGetAppointmentUsers();
   const { data: employmentsData, isSuccess: isEmploymentsDataSuccess } = useGetEmployments();
   const { selectedEvent } = useSelector((state) => state.calendar);
-
+  const { userHasPermission } = useUserPermissions();
+  console.log('test delete', userHasPermission('D_APPOINTMENTS'));
   const employmentsOptions = useMemo(
     () =>
       isEmploymentsDataSuccess
@@ -84,7 +86,7 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
   const timeOptions = React.useMemo(() => {
     const options = [];
     for (let h = 9; h <= 20; h += 1) {
-      ['00', '15', '30', '45'].forEach((m) => {
+      ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'].forEach((m) => {
         const hour12 = h > 12 ? h - 12 : h;
         const period = h >= 12 ? 'PM' : 'AM';
         const time = `${hour12.toString().padStart(2, '0')}:${m} ${period}`;
@@ -169,7 +171,7 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
       employee: selectedEvent?.employee_id || selectedEvent?.employee || '',
     };
   }, [selectedItem]);
-
+  console.log('iv', initialValues);
   const deleteItemApprove = useCallback(() => {
     setIsShowDeleteConfirmModal(false);
     setIsOpenAddEditModal(false);
@@ -293,9 +295,11 @@ export const AppointmentsModalAddEdit = ({ isOpenAddEditModal, setIsOpenAddEditM
                   {selectedEvent.id !== 0 ? (
                     <>
                       <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>{f({ id: 'appointments.deleteAppointment' })}</Tooltip>} placement="top">
-                        <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
-                          <CsLineIcons icon="bin" />
-                        </Button>
+                        {userHasPermission && userHasPermission('D_APPOINTMENTS') && (
+                          <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
+                            <CsLineIcons icon="bin" />
+                          </Button>
+                        )}
                       </OverlayTrigger>
 
                       <Button disabled={!dirty} className="btn-icon btn-icon-end" type="submit">

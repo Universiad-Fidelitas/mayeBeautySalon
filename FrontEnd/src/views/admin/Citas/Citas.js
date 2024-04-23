@@ -12,6 +12,7 @@ import bootstrapPlugin from '@fullcalendar/bootstrap';
 import moment from 'moment';
 import { useIntl } from 'react-intl';
 import { useGetMonthAppointments } from 'hooks/react-query/useAppointments';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import ModalAddEdit from './components/ModalAddEdit';
 import { setSelectedEvent } from './calendarSlice';
 import { AppointmentsModalAddEdit } from './AppointmentsModalAddEdit';
@@ -32,6 +33,7 @@ const CustomToggle = React.forwardRef(({ onClick }, ref) => (
 ));
 
 const Citas = () => {
+  const { userHasPermission } = useUserPermissions();
   const { formatMessage: f, formatDate } = useIntl();
   const htmlTitle = f({ id: 'appointments.appointmentsTitle' });
   const htmlDescription = 'Implementation for a basic events and schedule application that built on top of Full Calendar plugin.';
@@ -130,8 +132,7 @@ const Citas = () => {
       November: 'Noviembre',
       December: 'Diciembre',
     };
-    return `${months[monthSelected]} ${dateTitle.split(' ')[1]}`
-    
+    return `${months[monthSelected]} ${dateTitle.split(' ')[1]}`;
   }, [dateTitle, formatDate]);
 
   // handlers that initiate reads/writes via the 'action' props
@@ -194,11 +195,13 @@ const Citas = () => {
               <CsLineIcons icon="chevron-right" />
             </Button>
           </Col>
-          <Col md="auto" className="d-flex align-items-start justify-content-end">
-            <Button variant="outline-primary" className="btn-icon btn-icon-start ms-1 w-100 w-md-auto" onClick={onNewEventClick}>
-              <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
-            </Button>
-          </Col>
+          {userHasPermission('C_APPOINTMENTS') && (
+            <Col md="auto" className="d-flex align-items-start justify-content-end">
+              <Button variant="outline-primary" className="btn-icon btn-icon-start ms-1 w-100 w-md-auto" onClick={onNewEventClick}>
+                <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
+              </Button>
+            </Col>
+          )}
         </Row>
       </div>
 

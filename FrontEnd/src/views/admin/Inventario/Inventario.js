@@ -8,6 +8,7 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 import { ButtonsAddNew, ControlsPageSize, ControlsAdd, ControlsSearch, Table, TablePagination } from 'components/datatables';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { ModalAddEditInventario } from './ModalAddEditInventario';
 
 const Inventory = () => {
@@ -20,7 +21,7 @@ const Inventory = () => {
   const [term, setTerm] = useState('');
   const dispatch = useDispatch();
   const { isInventoryLoading, inventory, pageCount } = useSelector((state) => state.inventory);
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -171,9 +172,11 @@ const Inventory = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_INVENTORY') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -186,7 +189,7 @@ const Inventory = () => {
               </Col>
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
-                  <ControlsAdd tableInstance={tableInstance} />
+                  {userHasPermission('C_INVENTORY') && <ControlsAdd tableInstance={tableInstance} />}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />

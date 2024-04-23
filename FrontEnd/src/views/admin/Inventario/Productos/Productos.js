@@ -18,6 +18,7 @@ import HtmlHead from 'components/html-head/HtmlHead';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import * as Yup from 'yup';
 import { useProducts } from 'hooks/react-query/useProducts';
+import { useUserPermissions } from 'hooks/useUserPermissions';
 import { ProductosModalAddEdit } from './ProductosModalAddEdit';
 import { ProductosTableListItem } from './ProductosTableListItem';
 import { ProductosTableListItemHeader } from './ProductosTableListItemHeader';
@@ -33,7 +34,7 @@ const Productos = () => {
   const [term2, setTerm2] = useState(true);
   const dispatch = useDispatch();
   const [pageCount, setPageCount] = useState();
-
+  const { userHasPermission } = useUserPermissions();
   const columns = React.useMemo(() => {
     return [
       {
@@ -192,10 +193,11 @@ const Productos = () => {
                 <h1 className="mb-0 pb-0 display-4">{title}</h1>
                 <BreadcrumbList items={breadcrumbs} />
               </Col>
-
-              <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
-                <ButtonsAddNew tableInstance={tableInstance} />
-              </Col>
+              {userHasPermission('C_PRODUCTS') && (
+                <Col xs="12" md="5" className="d-flex align-items-start justify-content-end">
+                  <ButtonsAddNew tableInstance={tableInstance} />
+                </Col>
+              )}
             </Row>
           </div>
 
@@ -209,15 +211,18 @@ const Productos = () => {
               <Col sm="12" md="7" lg="9" xxl="10" className="text-end">
                 <div className="d-inline-block me-0 me-sm-3 float-start float-md-none">
                   <ControlsVisible checked={term2} onChange={() => searchItem2(!term2)} tableInstance={tableInstance} />{' '}
-                  <ControlsAdd tableInstance={tableInstance} /> <ControlsEdit tableInstance={tableInstance} />{' '}
-                  <ControlsDelete
-                    tableInstance={tableInstance}
-                    deleteItems={deleteItems}
-                    modalTitle="¿Desea eliminar el producto seleccionado?"
-                    modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
-                    type="product"
-                    tipo="producto"
-                  />
+                  {userHasPermission('C_PRODUCTS') && <ControlsAdd tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('U_PRODUCTS') && <ControlsEdit tableInstance={tableInstance} />}{' '}
+                  {userHasPermission('D_PRODUCTS') && (
+                    <ControlsDelete
+                      tableInstance={tableInstance}
+                      deleteItems={deleteItems}
+                      modalTitle="¿Desea eliminar el producto seleccionado?"
+                      modalDescription="El producto seleccionado se pasará a inactivo y necesitarás ayuda de un administrador para volver a activarlo."
+                      type="product"
+                      tipo="producto"
+                    />
+                  )}
                 </div>
                 <div className="d-inline-block">
                   <ControlsPageSize tableInstance={tableInstance} />
