@@ -2,6 +2,7 @@ import { useField } from 'formik';
 import DatePicker from 'react-datepicker';
 import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
 
 export const DatepickerField = ({ label, ...props }) => {
   const [field, meta, helpers] = useField(props);
@@ -17,6 +18,7 @@ export const DatepickerField = ({ label, ...props }) => {
         selected={(field.value && new Date(field.value)) || null}
         onChange={(date) => setValue(date)}
         onBlur={() => field.onBlur(field.name)}
+        minDate={moment().add(1, 'day').toDate()}
       />
       {meta.touched && meta.error ? <div className="error">{meta.error}</div> : null}
     </div>
