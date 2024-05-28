@@ -23,8 +23,8 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install
-          npm run build --if-present
+          npm run install-dependencies
+          npm run start-prod
           npm run test --if-present
 
       - name: Zip artifact for deployment
