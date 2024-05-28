@@ -19,16 +19,17 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '20'
 
-      - name: npm install, build, and test
-        run: |
-          npm run install-dependencies
-          
-          
+      - name: Install dependencies
+        run: npm run install-dependencies
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./FrontEnd
 
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip -r release.zip ./*
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -43,7 +44,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write # This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -53,13 +54,13 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
-      
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5A030A1ACF3F418E899912CDBB2C222A }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_F4C25B2BC8424D0283888EC7C531910A }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E08B8304D28248C7B65527C1796FB91C }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -68,4 +69,3 @@ jobs:
           app-name: 'mayebeautysalonmain'
           slot-name: 'Production'
           package: .
-          
