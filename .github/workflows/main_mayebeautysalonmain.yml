@@ -22,10 +22,12 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm run install-dependencies
+        run: npm run install
 
       - name: Build frontend
-        run: npm run build
+        run: | 
+         npm install --legacy-peer-deps
+         npm run build
         working-directory: ./FrontEnd
 
       - name: Zip artifact for deployment
