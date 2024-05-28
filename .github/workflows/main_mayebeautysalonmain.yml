@@ -24,12 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build frontend
-        run: | 
-         npm install --legacy-peer-deps
-         npm run build
-        working-directory: ./FrontEnd
-
       - name: Zip artifact for deployment
         run: zip -r release.zip ./*
 
