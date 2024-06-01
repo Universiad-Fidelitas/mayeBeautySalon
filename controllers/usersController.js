@@ -23,7 +23,7 @@ const getUser = async (req, res = response) => {
 
         let baseQuery = 'SELECT * FROM users';
         if (term) {
-            baseQuery += ` WHERE id_card LIKE '%${term}%'`;
+            baseQuery += ` WHERE id_card LIKE '%${term}%' OR first_name LIKE '%${term}%' OR last_name LIKE '%${term}%' OR phone LIKE '%${term}%' OR email LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 

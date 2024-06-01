@@ -27,7 +27,7 @@ const getProducts = async (req, res = response) => {
         }
         let baseQuery = `SELECT * FROM product_info WHERE activated='${activatedTerm2}'`;
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%' OR brand_name LIKE '%${term}%' OR category_name LIKE '%${term}%' OR provider_name LIKE '%${term}%' OR size LIKE '%${term}%' OR price = '${term}'`;
         }
 
         const orderByClauses = [];

@@ -21,7 +21,7 @@ const getNotifications = async (req, res = response) => {
 
         let baseQuery = 'SELECT `notification_id`, `activated`, `product_id`, `amount`, `name` FROM `product_notifications`';
         if (term) {
-            baseQuery += `where name LIKE '%${term}%'`;
+            baseQuery += `where name LIKE '%${term}%' OR amount = '${term}'`;
         }
         const orderByClauses = [];
 

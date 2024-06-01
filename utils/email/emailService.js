@@ -14,7 +14,7 @@ const emailService = async (template, email, subject, emailParams) => {
             port: 587,
             secure: false,
             auth: {
-               user: 'noreply@mayebeautysalon.com',
+               user: 'no-reply@mayebeautysalon.com',
                pass: 'Bux57614'
             },
 
@@ -33,7 +33,7 @@ const emailService = async (template, email, subject, emailParams) => {
         transporter.use('compile', hbs(handlebarOptions))
 
         await transporter.sendMail({
-            from: 'noreply@mayebeautysalon.com',
+            from: 'no-reply@mayebeautysalon.com',
             template,
             to: email,
             subject: subject,
