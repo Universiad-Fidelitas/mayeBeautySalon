@@ -21,7 +21,7 @@ const getProviders = async (req, res = response) => {
 
         let baseQuery = 'select provider_id, name, phone, email, activated from providers WHERE activated = 1';
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%' OR phone LIKE '%${term}%' OR email LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 

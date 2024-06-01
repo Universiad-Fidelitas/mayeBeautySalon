@@ -39,11 +39,18 @@ const Pagos = () => {
         hideColumn: true,
       },
       {
+        Header: 'No Factura',
+        accessor: 'bills_id',
+        sortable: true,
+        headerClassName: 'col-10 col-lg-2',
+      },
+      {
         Header: 'Tipo de pago',
         accessor: 'payment_type',
         sortable: true,
         headerClassName: 'col-lg-2 col-12',
       },
+
       {
         Header: 'Estado del pago',
         accessor: 'status',
@@ -68,12 +75,7 @@ const Pagos = () => {
         sortable: true,
         headerClassName: 'col-10 col-lg-2',
       },
-      {
-        Header: 'No Factura',
-        accessor: 'bills_id',
-        sortable: true,
-        headerClassName: 'col-10 col-lg-2',
-      },
+
       {
         Header: 'Número de teléfono del SINPE',
         accessor: 'sinpe_phone_number',

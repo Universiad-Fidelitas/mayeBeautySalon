@@ -23,7 +23,7 @@ const getPayments = async (req, res = response) => {
         let baseQuery = 'SELECT `p`.`payment_id` AS `payment_id`, `b`.`bills_id` AS `bills_id`, `p`.`activated` AS `activated`, `u`.`first_name` AS `first_name`, `u`.`last_name` AS `last_name`, `p`.`payment_type` AS `payment_type`, `p`.`sinpe_phone_number` AS `sinpe_phone_number`, `p`.`status` AS `status`, `p`.`voucher_path` AS `voucher_path`, `i`.`date` AS `inventory_date`, `a`.`date` AS `appointment_date` FROM ( SELECT * FROM `mayebeautysalon`.`payments` GROUP BY `payment_id` ) AS `p` LEFT JOIN `mayebeautysalon`.`bills` `b` ON `b`.`payment_id` = `p`.`payment_id` LEFT JOIN `mayebeautysalon`.`users` `u` ON `b`.`user_id` = `u`.`user_id` LEFT JOIN `mayebeautysalon`.`inventory` `i` ON `b`.`inventory_id` = `i`.`inventory_id` LEFT JOIN `mayebeautysalon`.`appointments` `a` ON `b`.`appointment_id` = `a`.`appointment_id` WHERE p.activated=1 ';
 
         if (term) {
-            baseQuery += ` AND payment_type LIKE '%${term}%'`;
+            baseQuery += ` AND p.payment_type LIKE '%${term}%' OR b.bills_id = '${term}' OR p.status LIKE '%${term}%' OR u.first_name LIKE '%${term}%' OR u.last_name LIKE '%${term}%'`;
         }
 
         const orderByClauses = [];
@@ -42,7 +42,6 @@ const getPayments = async (req, res = response) => {
         }
 
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
-        console.log(query);
         const rows = await dbService.query(query);
 
         const totalRowCountResult = await dbService.query(`SELECT COUNT(*) AS count FROM (${baseQuery}) AS filtered_payments`);
