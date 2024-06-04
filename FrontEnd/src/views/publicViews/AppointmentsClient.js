@@ -1,4 +1,4 @@
-import React, { createRef, useMemo, useState } from 'react';
+import React, { createRef, useState } from 'react';
 import HtmlHead from 'components/html-head/HtmlHead';
 import useCustomLayout from 'hooks/useCustomLayout';
 import { Wizard, Steps, Step, WithWizard } from 'react-albus';
@@ -14,17 +14,15 @@ import { MENU_PLACEMENT } from '../../constants';
 
 import { ThanksTap } from './Appointments/ThanksTap';
 
-
 export const AppointmentsClient = () => {
   const title = 'Horizontal Menu';
   const description = 'Horizontal standard menu that turns into mobile menu for smaller screens.';
   const forms = [createRef(null), createRef(null)];
   const [bottomNavHidden, setBottomNavHidden] = useState(false);
   const [fields, setFields] = useState(false);
-  const [savingData, setSavingData] = useState();
   const { formatMessage: f } = useIntl();
   const { isAbleToNext } = useSelector((state) => state.appointments);
-  console.log('isAbleToNext', isAbleToNext)
+  console.log('isAbleToNext', isAbleToNext);
   const dispatch = useDispatch();
 
   const onClickNext = (goToNext, steps, step) => {
@@ -37,7 +35,6 @@ export const AppointmentsClient = () => {
     if (form) {
       form.submitForm().then(async () => {
         if (!form.isDirty && form.isValid) {
-
           form.validateForm();
           const newFields = { ...fields, ...form.values };
 
@@ -46,11 +43,6 @@ export const AppointmentsClient = () => {
           if (steps.length - 2 <= steps.indexOf(step)) {
             dispatch(setAppointmentServiceInformation(newFields));
             const { data } = await baseApi.post('/appointments/save-appointment', { ...newFields });
-            
-            setSavingData({
-              isLoaded: true,
-              ...data,
-            });
             setBottomNavHidden(true);
           }
           goToNext();
@@ -112,7 +104,7 @@ export const AppointmentsClient = () => {
               <SecondDataRequestTap formRef={forms} />
             </Step>
             <Step id="step3" hideTopNav>
-              <ThanksTap/>
+              <ThanksTap />
             </Step>
           </Steps>
           <WithWizard

@@ -21,11 +21,15 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
   const { data: employmentsData, isSuccess: isEmploymentsDataSuccess } = useGetEmployments();
   const { selectedEvent } = useSelector((state) => state.calendar);
 
-  const employmentsOptions = useMemo(() =>
-  isEmploymentsDataSuccess ? employmentsData.employments.map((employment) => {
-    return { value: employment.user_id, label: employment.full_name, image: employment.image };
-  }) : [],
-[employmentsData, isEmploymentsDataSuccess]);
+  const employmentsOptions = useMemo(
+    () =>
+      isEmploymentsDataSuccess
+        ? employmentsData.employments.map((employment) => {
+            return { value: employment.user_id, label: employment.full_name, image: employment.image };
+          })
+        : [],
+    [employmentsData, isEmploymentsDataSuccess]
+  );
 
   const { data, isSuccess: isServicesSuccess } = useGetAllServices();
   const services = useMemo(
@@ -201,77 +205,75 @@ const ModalAddEdit = ({ show = false, onHide = () => {} }) => {
       <>
         <Modal className="modal-right fade" show={show} onHide={onHide}>
           <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-          {({ errors, touched, dirty }) => (
-            <Form>
-              <Modal.Header>
-                <Modal.Title>{selectedEvent.id !== 0 ? f({ id: 'appointments.editAppointment' }) : f({ id: 'appointments.addAppointment' })}</Modal.Title>
-              </Modal.Header>
-              <Modal.Body className="d-flex flex-column">
-                <Row className="g-0">
-                  <DatepickerField label={f({ id: 'appointments.appointmentDate' })} name="serviceDate" showFullMonthYearPicker />
-                </Row>
-                <Row className="g-3">
-                  <Col className="col-8">
-                    <SelectField label={f({ id: 'appointments.service' })} name="service" options={services} />
-                  </Col>
-                  <Col className="col-4">
-                    {/* <ServicePriceField /> */}
-                  </Col>
-                </Row>
-                
-                <Row className="g-3">
-                  <Col>
-                    <SelectField label={f({ id: 'appointments.startTime' })} name="startTime" options={timeOptions} />
-                  </Col>
-                  <Col>
-                    <SelectField label={f({ id: 'appointments.endTime' })} name="endTime" options={timeOptions} />
-                  </Col>
-                </Row>
-                <Row>
-                  <Col className="col-12">
-                    <SelectField label="Empleado" name="employee" options={employmentsOptions} />
-                  </Col>
-                </Row>
-                <Row className="g-0">
-                  <div className="mb-3 top-label">
-                    <label className="form-label">{f({ id: 'appointments.extra' })}</label>
-                    <Field className="form-control" type="text" id="extra" name="extra" />
-                    <ErrorMessage className="text-danger" name="extra" component="div" />
-                  </div>
-                </Row>
-                <Row className="g-0 mb-2">
-                  <div className="top-label">
-                    <label className="form-label">{f({ id: 'appointments.extraDescription' })}</label>
-                    <Field as="textarea" className="form-control" type="text" id="extraDescription" name="extraDescription" />
-                    <ErrorMessage className="text-danger" name="extraDescription" component="div" />
-                  </div>
-                </Row>
-                <hr />
-                <h4 className="mb-3">{f({ id: 'appointments.customerInformation' })}</h4>
-                <SelectField label={f({ id: 'appointments.service' })} name="activeUser" options={activeUsers} />
-                <UserInformationField />
-              </Modal.Body>
-              <Modal.Footer>
-                {selectedEvent.id !== 0 ? (
-                  <>
-                    <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>{f({ id: 'appointments.deleteAppointment' })}</Tooltip>} placement="top">
-                      <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
-                        <CsLineIcons icon="bin" />
-                      </Button>
-                    </OverlayTrigger>
+            {({ errors, touched, dirty }) => (
+              <Form>
+                <Modal.Header>
+                  <Modal.Title>{selectedEvent.id !== 0 ? f({ id: 'appointments.editAppointment' }) : f({ id: 'appointments.addAppointment' })}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="d-flex flex-column">
+                  <Row className="g-0">
+                    <DatepickerField label={f({ id: 'appointments.appointmentDate' })} name="serviceDate" showFullMonthYearPicker />
+                  </Row>
+                  <Row className="g-3">
+                    <Col className="col-8">
+                      <SelectField label={f({ id: 'appointments.service' })} name="service" options={services} />
+                    </Col>
+                    <Col className="col-4">{/* <ServicePriceField /> */}</Col>
+                  </Row>
 
-                    <Button disabled={selectedEvent.length === 1 && !dirty && true} className="btn-icon btn-icon-end" type="submit">
-                      <span>{f({ id: 'appointments.saveAppointment' })}</span> <CsLineIcons icon="check" />
+                  <Row className="g-3">
+                    <Col>
+                      <SelectField label={f({ id: 'appointments.startTime' })} name="startTime" options={timeOptions} />
+                    </Col>
+                    <Col>
+                      <SelectField label={f({ id: 'appointments.endTime' })} name="endTime" options={timeOptions} />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col className="col-12">
+                      <SelectField label="Empleado" name="employee" options={employmentsOptions} />
+                    </Col>
+                  </Row>
+                  <Row className="g-0">
+                    <div className="mb-3 top-label">
+                      <label className="form-label">{f({ id: 'appointments.extra' })}</label>
+                      <Field className="form-control" type="text" id="extra" name="extra" />
+                      <ErrorMessage className="text-danger" name="extra" component="div" />
+                    </div>
+                  </Row>
+                  <Row className="g-0 mb-2">
+                    <div className="top-label">
+                      <label className="form-label">{f({ id: 'appointments.extraDescription' })}</label>
+                      <Field as="textarea" className="form-control" type="text" id="extraDescription" name="extraDescription" />
+                      <ErrorMessage className="text-danger" name="extraDescription" component="div" />
+                    </div>
+                  </Row>
+                  <hr />
+                  <h4 className="mb-3">{f({ id: 'appointments.customerInformation' })}</h4>
+                  <SelectField label={f({ id: 'appointments.service' })} name="activeUser" options={activeUsers} />
+                  <UserInformationField />
+                </Modal.Body>
+                <Modal.Footer>
+                  {selectedEvent.id !== 0 ? (
+                    <>
+                      <OverlayTrigger delay={{ show: 500, hide: 0 }} overlay={<Tooltip>{f({ id: 'appointments.deleteAppointment' })}</Tooltip>} placement="top">
+                        <Button variant="outline-primary" className="btn-icon btn-icon-only" onClick={deleteItem}>
+                          <CsLineIcons icon="bin" />
+                        </Button>
+                      </OverlayTrigger>
+
+                      <Button disabled={selectedEvent.length === 1 && !dirty && true} className="btn-icon btn-icon-end" type="submit">
+                        <span>{f({ id: 'appointments.saveAppointment' })}</span> <CsLineIcons icon="check" />
+                      </Button>
+                    </>
+                  ) : (
+                    <Button disabled={selectedEvent.length === 1 && dirty} className="btn-icon btn-icon-start" type="submit">
+                      <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
                     </Button>
-                  </>
-                ) : (
-                  <Button disabled={selectedEvent.length === 1 && dirty} className="btn-icon btn-icon-start" type="submit">
-                    <CsLineIcons icon="plus" /> <span>{f({ id: 'appointments.addAppointment' })}</span>
-                  </Button>
-                )}
-              </Modal.Footer>
-            </Form>
-          )}
+                  )}
+                </Modal.Footer>
+              </Form>
+            )}
           </Formik>
         </Modal>
 

@@ -8,40 +8,50 @@ import NumberFormat from 'react-number-format';
 import classNames from 'classnames';
 
 export const ProveedoresModalAddEdit = ({ tableInstance, apiParms }) => {
-    const { formatMessage: f } = useIntl();
-    const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-    const { updateProvider, addProvider } = useProviders(apiParms);
+  const { formatMessage: f } = useIntl();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { updateProvider, addProvider } = useProviders(apiParms);
 
-    const onSubmit = useCallback((values) => {
-        if (selectedFlatRows.length === 1) {
-          updateProvider.mutateAsync(values);
-        } else {
-          addProvider.mutateAsync(values);
-        }
-        setIsOpenAddEditModal(false);
-    }, [setIsOpenAddEditModal, selectedFlatRows, updateProvider, addProvider]);
+  const onSubmit = useCallback(
+    (values) => {
+      if (selectedFlatRows.length === 1) {
+        updateProvider.mutateAsync(values);
+      } else {
+        addProvider.mutateAsync(values);
+      }
+      setIsOpenAddEditModal(false);
+    },
+    [setIsOpenAddEditModal, selectedFlatRows, updateProvider, addProvider]
+  );
 
-    const initialValues = useMemo(() => ({
-        provider_id: selectedFlatRows?.[0]?.original.provider_id || '',
-        name: selectedFlatRows?.[0]?.original.name || '',
-        email: selectedFlatRows?.[0]?.original.email || '',
-        phone: selectedFlatRows?.[0]?.original.phone || '',
-    }), [selectedFlatRows]);
+  const initialValues = useMemo(
+    () => ({
+      provider_id: selectedFlatRows?.[0]?.original.provider_id || '',
+      name: selectedFlatRows?.[0]?.original.name || '',
+      email: selectedFlatRows?.[0]?.original.email || '',
+      phone: selectedFlatRows?.[0]?.original.phone || '',
+    }),
+    [selectedFlatRows]
+  );
 
-    const validationSchema = useMemo(() => Yup.object().shape({
-      name: Yup.string()
-        .required(f({ id: 'helper.nameRequired' }))
-        .min(3, f({ id: 'helper.nameMinLength' }))
-        .max(20, f({ id: 'helper.nameMaxLength' })),
-      email: Yup.string()
-        .email(f({ id: 'helper.emailInvalid' }))
-        .required(f({ id: 'helper.emailRequired' })),
-      phone: Yup.string()
-        .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
-        .min(8, f({ id: 'helper.phoneMinLength' }))
-        .max(10, f({ id: 'helper.phoneMaxLength' }))
-        .required(f({ id: 'helper.phoneRequired' })),
-    }), [f]);
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        name: Yup.string()
+          .required(f({ id: 'helper.nameRequired' }))
+          .min(3, f({ id: 'helper.nameMinLength' }))
+          .max(20, f({ id: 'helper.nameMaxLength' })),
+        email: Yup.string()
+          .email(f({ id: 'helper.emailInvalid' }))
+          .required(f({ id: 'helper.emailRequired' })),
+        phone: Yup.string()
+          .matches(/^\d+$/, f({ id: 'helper.phoneOnlyNumbers' }))
+          .min(8, f({ id: 'helper.phoneMinLength' }))
+          .max(10, f({ id: 'helper.phoneMaxLength' }))
+          .required(f({ id: 'helper.phoneRequired' })),
+      }),
+    [f]
+  );
 
   return (
     <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
@@ -72,7 +82,7 @@ export const ProveedoresModalAddEdit = ({ tableInstance, apiParms }) => {
                   </Col>
                   <Col className="col-6 top-label">
                     <div className="top-label">
-                      <label className="form-label">{f({ id: 'helper.phone' })}</label>                      
+                      <label className="form-label">{f({ id: 'helper.phone' })}</label>
                       <NumberFormat
                         className={classNames('form-control', { 'is-invalid': errors.phone && touched.phone })}
                         mask="_"
@@ -101,5 +111,5 @@ export const ProveedoresModalAddEdit = ({ tableInstance, apiParms }) => {
         </Formik>
       </Card>
     </Modal>
-  )
-}
+  );
+};

@@ -53,7 +53,7 @@ const UsuariosItemList = ({ tableInstance }) => {
                         {activated === 1 ? <span className="badge bg-outline-success">Activo</span> : <span className="badge bg-outline-danger">Inactivo</span>}
                       </Col>
                       <Col xs="1" lg="1" className="d-flex flex-column mb-2 mb-lg-0 align-items-end order-2 order-lg-last">
-                        <CsLineIcons className='link-secondary' icon="edit" />
+                        <CsLineIcons className="link-secondary" icon="edit" />
                       </Col>
                     </Row>
                   </Card.Body>

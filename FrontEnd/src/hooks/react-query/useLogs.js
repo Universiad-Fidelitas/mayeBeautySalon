@@ -1,5 +1,5 @@
 import { baseApi } from 'api/apiConfig';
-import {  useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 export const useActionLogs = () => {
   const getActionLogs = async () => {

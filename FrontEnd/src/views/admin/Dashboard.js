@@ -13,8 +13,6 @@ import { useIntl } from 'react-intl';
 import ChartLargeLineStock from './chart/ChartLargeLineStock';
 import { CardReport } from './Inventario/CardReport';
 
-
-
 const Dashboard = () => {
   const title = 'Panel de control';
   const description = 'Analytic Dashboard';
@@ -24,7 +22,6 @@ const Dashboard = () => {
   const { data: errorLogs } = useErrorLogs();
   moment.locale('es'); // Set the locale to Spanish
   const { formatDate } = useIntl();
-
 
   const breadcrumbs = [];
   const { data: reports2Data } = useReports2();
@@ -183,8 +180,6 @@ const Dashboard = () => {
         </Col>
       </Row>
 
-
-
       <Row>
         {/* Logs Start */}
         <h2 className="medium-title text-primary font-weight-bold mt-6">Registro de actividad</h2>
@@ -192,40 +187,41 @@ const Dashboard = () => {
         <Col xl="6" className="mb-5">
           <Card className="sh-40 border border-primary logs-card">
             <Card.Body className="mb-n2 scroll-out">
-            <h2 className="small-title font-weight-bold">Acciónes de usuarios</h2>
+              <h2 className="small-title font-weight-bold">Acciónes de usuarios</h2>
               <OverlayScrollbarsComponent options={{ scrollbars: { autoHide: 'leave' }, overflowBehavior: { x: 'hidden', y: 'scroll' } }}>
-                {
-                  actionLogs?.map(({ full_name, description: logDescription, date, affected_table, log_type }, index) => (
-                    <Row key={index} className={classNames('g-0 mb-2', { 'border-bottom pb-3': index !== actionLogs.length - 1 })}>
-                      <Col xs="auto">
-                        <div className="sw-3 d-inline-block d-flex justify-content-start align-items-center ">
-                          <div className="sh-3">
-                            {log_type === 'update' && <CsLineIcons icon="edit" className="text-warning align-top" />}
-                            {log_type === 'delete' && <CsLineIcons icon="bin" className="text-danger align-top" />}
-                            {log_type === 'create' && <CsLineIcons icon="plus" className="text-success align-top" />}
-                            {log_type === 'read' && <CsLineIcons icon="eye" className="text-info align-top" />}
-                          </div>
+                {actionLogs?.map(({ full_name, description: logDescription, date, affected_table, log_type }, index) => (
+                  <Row key={index} className={classNames('g-0 mb-2', { 'border-bottom pb-3': index !== actionLogs.length - 1 })}>
+                    <Col xs="auto">
+                      <div className="sw-3 d-inline-block d-flex justify-content-start align-items-center ">
+                        <div className="sh-3">
+                          {log_type === 'update' && <CsLineIcons icon="edit" className="text-warning align-top" />}
+                          {log_type === 'delete' && <CsLineIcons icon="bin" className="text-danger align-top" />}
+                          {log_type === 'create' && <CsLineIcons icon="plus" className="text-success align-top" />}
+                          {log_type === 'read' && <CsLineIcons icon="eye" className="text-info align-top" />}
                         </div>
-                      </Col>
-                      <Row className='flex-column gap-2'>
-                        <Col>
-                          <div className="text-muted">{ moment(date).calendar(null, {
+                      </div>
+                    </Col>
+                    <Row className="flex-column gap-2">
+                      <Col>
+                        <div className="text-muted">
+                          {moment(date).calendar(null, {
                             sameDay: '[Hoy] - h:mm A',
                             nextDay: '[Mañana] - h:mm A',
                             nextWeek: 'dddd - h:mm A',
                             lastDay: '[Ayer] - h:mm A',
                             lastWeek: '[El] dddd [pasado] - h:mm A',
-                            sameElse: 'L'
+                            sameElse: 'L',
                           })}
-                          </div>
-                        </Col>
-                        <Col>
-                          <div className="text-alternate mt-n1 lh-1-25"><span className='font-weight-bold text-primary'>{ affected_table }</span> | { logDescription } por { full_name }</div>
-                        </Col>
-                      </Row>
+                        </div>
+                      </Col>
+                      <Col>
+                        <div className="text-alternate mt-n1 lh-1-25">
+                          <span className="font-weight-bold text-primary">{affected_table}</span> | {logDescription} por {full_name}
+                        </div>
+                      </Col>
                     </Row>
-                  ))
-                }
+                  </Row>
+                ))}
               </OverlayScrollbarsComponent>
             </Card.Body>
           </Card>
@@ -233,43 +229,42 @@ const Dashboard = () => {
         <Col xl="6" className="mb-5">
           <Card className="sh-40 border border-primary logs-card">
             <Card.Body className="mb-n2 scroll-out">
-            <h2 className="small-title font-weight-bold">Alertas</h2>
+              <h2 className="small-title font-weight-bold">Alertas</h2>
               <OverlayScrollbarsComponent options={{ scrollbars: { autoHide: 'leave' }, overflowBehavior: { x: 'hidden', y: 'scroll' } }}>
-                {
-                  errorLogs?.map(({ description: logDescription, date, affected_table, log_type }, index) => (
-                    <Row key={index} className={classNames('g-0 mb-2', { 'border-bottom pb-3': index !== errorLogs.length - 1 })}>
-                      <Col xs="auto">
-                        <div className="sw-3 d-inline-block d-flex justify-content-start align-items-center">
-                          <div className="sh-3">
-                            {log_type === 'error' && <CsLineIcons icon="warning-hexagon" className="text-danger align-top" />}
-                          </div>
-                        </div>
-                      </Col>
-                      <Row className='flex-column gap-2'>
-                        <Col>
-                          <div className="text-muted">{ moment(date).calendar(null, {
+                {errorLogs?.map(({ description: logDescription, date, affected_table, log_type }, index) => (
+                  <Row key={index} className={classNames('g-0 mb-2', { 'border-bottom pb-3': index !== errorLogs.length - 1 })}>
+                    <Col xs="auto">
+                      <div className="sw-3 d-inline-block d-flex justify-content-start align-items-center">
+                        <div className="sh-3">{log_type === 'error' && <CsLineIcons icon="warning-hexagon" className="text-danger align-top" />}</div>
+                      </div>
+                    </Col>
+                    <Row className="flex-column gap-2">
+                      <Col>
+                        <div className="text-muted">
+                          {moment(date).calendar(null, {
                             sameDay: '[Hoy] - h:mm A',
                             nextDay: '[Mañana] - h:mm A',
                             nextWeek: 'dddd - h:mm A',
                             lastDay: '[Ayer] - h:mm A',
                             lastWeek: '[El] dddd [pasado] - h:mm A',
-                            sameElse: 'L'
+                            sameElse: 'L',
                           })}
-                          </div>
-                        </Col>
-                        <Col>
-                          <div className="text-alternate mt-n1 lh-1-25"><span className='font-weight-bold text-primary'>{ affected_table }</span> | { logDescription }</div>
-                        </Col>
-                      </Row>
+                        </div>
+                      </Col>
+                      <Col>
+                        <div className="text-alternate mt-n1 lh-1-25">
+                          <span className="font-weight-bold text-primary">{affected_table}</span> | {logDescription}
+                        </div>
+                      </Col>
                     </Row>
-                  ))
-                }
+                  </Row>
+                ))}
               </OverlayScrollbarsComponent>
             </Card.Body>
           </Card>
         </Col>
         {/* Logs End */}
-        </Row>
+      </Row>
       <Row>
         <CardReport />{' '}
       </Row>
@@ -277,34 +272,34 @@ const Dashboard = () => {
       <h2 className="medium-title text-primary font-weight-bold mt-6 mb-3">Reporte de facturación</h2>
       <Row xs={1} md={2} className="g-4">
         <Col lg="6">
-          <Card className='border border-primary'>
+          <Card className="border border-primary">
             <Card.Body>
-              <Card.Title className='font-weight-bold'>Ganancias de productos</Card.Title>
+              <Card.Title className="font-weight-bold">Ganancias de productos</Card.Title>
               <Card.Text>{reports3Data ? <div className="cta-2 text-primary">{reports3Data.items[0].profits_products}</div> : null}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
         <Col lg="6">
-          <Card className='border border-primary'>
+          <Card className="border border-primary">
             <Card.Body>
-              <Card.Title className='font-weight-bold'>Ganancias de servicios</Card.Title>
+              <Card.Title className="font-weight-bold">Ganancias de servicios</Card.Title>
               <Card.Text>{reports3Data ? <div className="cta-2 text-primary">{reports3Data.items[0].profits_services}</div> : null}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
         <Col lg="6">
-          <Card className='border border-primary'>
+          <Card className="border border-primary">
             <Card.Body>
-              <Card.Title className='font-weight-bold'>Gastos de salarios</Card.Title>
+              <Card.Title className="font-weight-bold">Gastos de salarios</Card.Title>
               <Card.Text>{reports3Data ? <div className="cta-2 text-primary">{reports3Data.items[0].salaries}</div> : null}</Card.Text>
             </Card.Body>
           </Card>
         </Col>
 
         <Col lg="6">
-          <Card className='border border-primary'>
+          <Card className="border border-primary">
             <Card.Body>
-              <Card.Title className='font-weight-bold'>Gastos de local</Card.Title>
+              <Card.Title className="font-weight-bold">Gastos de local</Card.Title>
               <Card.Text>{reports3Data ? <div className="cta-2 text-primary">{reports3Data.items[0].salon_expenses}</div> : null}</Card.Text>
             </Card.Body>
           </Card>
