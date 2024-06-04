@@ -42,6 +42,21 @@ const Gastos = () => {
         headerClassName: 'text-muted text-medium text-uppercase w-30',
       },
       {
+        Header: 'Fecha de Gasto',
+        accessor: 'date',
+        sortable: true,
+        headerClassName: 'text-muted text-medium text-uppercase w-20',
+        Cell: ({ value }) => {
+          if (value === null) {
+            return '';
+          }
+          const dateObject = new Date(value);
+          const dateString = dateObject.toLocaleDateString();
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `${dateString} ${timeString}`;
+        },
+      },
+      {
         Header: '',
         id: 'action',
         headerClassName: 'empty w-10',

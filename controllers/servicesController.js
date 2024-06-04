@@ -26,7 +26,7 @@ const getServices = async (req, res = response) => {
         }
         let baseQuery = `SELECT * FROM services WHERE activated='${activatedTerm2}'`;
         if (term) {
-            baseQuery += ` AND name LIKE '%${term}%'`;
+            baseQuery += ` AND name LIKE '%${term}%' OR duration LIKE '%${term}%' OR price LIKE '%${term}%'`;
         }
         const orderByClauses = [];
 

@@ -25,8 +25,8 @@ const getBills = async (req, res = response) => {
         let baseQuery = 'select * from bill_view where activated = 1';
         let querytotal = `SELECT COALESCE(appointment_price, 0) + COALESCE(inventory_price, 0) AS total_price FROM bill_view where activated = 1`;
         if (term) {
-            baseQuery += ` AND id_card LIKE '%${term}%'`;
-            querytotal += ` AND id_card LIKE '%${term}%'`;
+            baseQuery += ` AND bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%'`;
+            querytotal += ` AND bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%'`;
         }
         
         if (term2 && term3) {
@@ -51,7 +51,7 @@ const getBills = async (req, res = response) => {
         const query = `${baseQuery} LIMIT ${pageSize} OFFSET ${offset}`;
         const ttoal = `SELECT SUM(total_price) AS TotalPrice from (${querytotal} LIMIT ${pageSize} OFFSET ${offset}) AS subquery_alias`;
         const rows = await dbService.query(query);
-        console.log(ttoal)
+        console.log(query)
         const total = await dbService.query(ttoal);
         for (const row of rows) {
             const inventoryId = row.inventory_id;

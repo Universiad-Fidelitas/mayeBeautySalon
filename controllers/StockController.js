@@ -22,7 +22,7 @@ const getStock = async (req, res = response) => {
         let baseQuery = 'select * FROM `inventory_summary`';
 
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%'`;
+            baseQuery += ` WHERE name LIKE '%${term}%' OR size LIKE '%${term}%' OR total_amount LIKE '%${term}%' OR price = '${term}'`;
         }
         if(category){
             if(category !== 'Elija una categoria'){

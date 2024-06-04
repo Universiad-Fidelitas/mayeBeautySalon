@@ -34,7 +34,7 @@ export const ProductosTableListItem = ({ tableInstance }) => {
                       <Col xs="12" lg="2" className="d-flex flex-column d-flex order-1 view-click">
                         <h5 className="text-primary font-weight-bold">{name}</h5>
                         <p className="m-0">
-                          <span className="text-primary">Cantidad:</span> {size}
+                          <span className="text-primary">Tamaño:</span> {size}
                         </p>
                         <p className="m-0">
                           <span className="text-primary">Marca:</span> {brand_name}

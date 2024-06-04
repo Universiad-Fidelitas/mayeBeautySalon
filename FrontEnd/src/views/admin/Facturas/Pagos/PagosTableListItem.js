@@ -40,7 +40,14 @@ export const PagosTableListItem = ({ tableInstance }) => {
                 <Col className="py-3 py-sm-3">
                   <Card.Body className="h-100 ps-3 ps-lg-5 pe-4 pt-0 pb-0 d-flex flex-column justify-content-center">
                     <Row className="w-100">
-                      <Col xs="12" lg="2" className="d-flex flex-column d-flex order-1 view-click">
+                      <Col xs="12" lg="2" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-1">
+                        <div className="lh-1 text-alternate id_card">
+                          <p className="m-0">
+                            <span className="text-primary">No de factura: </span> {bills_id}
+                          </p>
+                        </div>
+                      </Col>
+                      <Col xs="12" lg="2" className="d-flex flex-column d-flex order-3 view-click">
                         <h5 className="text-primary font-weight-bold">{payment_type}</h5>
 
                         {payment_type === 'sinpe' && (
@@ -75,13 +82,7 @@ export const PagosTableListItem = ({ tableInstance }) => {
                           </p>
                         </div>
                       </Col>
-                      <Col xs="4" lg="1" className="d-flex flex-column pe-1 mb-2 mb-lg-0 justify-content-center order-3">
-                        <div className="lh-1 text-alternate id_card">
-                          <p className="m-0">
-                            <span className="text-primary">No de factura: </span> {bills_id}
-                          </p>
-                        </div>
-                      </Col>
+
                       <Col className="d-flex flex-column align-items-end order-3  justify-content-center">
                         <Form.Check className="form-check mt-2" type="checkbox" checked={checked} onChange={onChange} />
                       </Col>

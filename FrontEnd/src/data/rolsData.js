@@ -9,7 +9,6 @@ export const DB_TABLE_ROLS = [
   },
   {
     permissionName: 'Roles',
-    permissionKey: 'ROLES',
   },
   {
     permissionName: 'Movimientos de Inventario',
@@ -18,6 +17,10 @@ export const DB_TABLE_ROLS = [
   {
     permissionName: 'Categorias',
     permissionKey: 'CATEGORIES',
+  },
+  {
+    permissionName: 'Marcas',
+    permissionKey: 'BRANDS',
   },
   {
     permissionName: 'Productos',

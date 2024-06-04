@@ -21,7 +21,7 @@ const getInventory = async (req, res = response) => {
 
         let baseQuery = 'select * from inventory_view';
         if (term) {
-            baseQuery += ` WHERE product_name LIKE '%${term}%'`;
+            baseQuery += ` WHERE product_name LIKE '%${term}%' OR action LIKE '%${term}%' OR description LIKE '%${term}%' OR size LIKE '%${term}%' OR amount = '${term}' OR inventory_price = '${term}'`;
         }
         const orderByClauses = [];
 

@@ -32,7 +32,7 @@ const getExpenses = async (req, res = response) => {
 
         let baseQuery = 'select expense_id, expense_type, date, price, activated from expenses WHERE activated = 1';
         if (term) {
-            baseQuery += ` AND expense_type LIKE '%${term}%'`;
+            baseQuery += ` AND expense_type LIKE '%${term}%' OR price = '${term}'`;
         }
         const orderByClauses = [];
 
