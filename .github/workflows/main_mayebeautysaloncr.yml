@@ -23,7 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run:
-          npm run install
+          npm install
 
       - name: Build FrontEnd JS
         run:
