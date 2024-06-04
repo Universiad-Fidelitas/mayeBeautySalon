@@ -9,7 +9,7 @@ require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 class Server {
     constructor() {
         this.app = express();
-        this.port = process.env.SERVER_PORT;
+        this.port = process.env.PORT || 4000;
 
         // Middlewares
         this.middlewares();
