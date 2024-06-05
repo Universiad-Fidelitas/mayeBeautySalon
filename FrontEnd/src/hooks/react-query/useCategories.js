@@ -65,7 +65,7 @@ export const useCategories = ({ term, pageIndex, pageSize, sortBy }) => {
     const queryClient = useQueryClient();
 
     const updateCategoryApi = useCallback(async ({ category_id, name }) => {
-      const { data } = await baseApi.put(`/categories/${ category_id }`, { name });
+      const { data } = await baseApi.put(`/categories/${category_id}`, { name });
       const { success, message } = data;
       if (success) {
         toast(f({ id: message }), { className: 'success' });
@@ -77,7 +77,7 @@ export const useCategories = ({ term, pageIndex, pageSize, sortBy }) => {
 
     return useMutation(updateCategoryApi, {
       onMutate: async (categoryUpdated) => {
-        console.log('categoryUpdated', categoryUpdated)
+        console.log('categoryUpdated', categoryUpdated);
         await queryClient.cancelQueries(['project-categories', { term, pageIndex, pageSize, sortBy }]);
         const previousData = queryClient.getQueryData(['project-categories', { term, pageIndex, pageSize, sortBy }]);
 
@@ -98,7 +98,7 @@ export const useCategories = ({ term, pageIndex, pageSize, sortBy }) => {
         return { previousData };
       },
 
-      onSettled: async (pageCount , error) => {
+      onSettled: async (pageCount, error) => {
         await queryClient.invalidateQueries(['project-categories', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-categories', { term, pageIndex, pageSize, sortBy }], (oldData) => ({
@@ -112,7 +112,7 @@ export const useCategories = ({ term, pageIndex, pageSize, sortBy }) => {
 
   const inactivateCategories = () => {
     const queryClient = useQueryClient();
-  
+
     const inactivateCategoriesApi = useCallback(
       async (categories) => {
         const { data } = await baseApi.post('/categories/delete', { category_id: categories.toString() });
@@ -126,18 +126,18 @@ export const useCategories = ({ term, pageIndex, pageSize, sortBy }) => {
       },
       [f]
     );
-  
+
     return useMutation(inactivateCategoriesApi, {
       onMutate: async (newCategory) => {
         queryClient.setQueryData(['project-categories', { term, pageIndex, pageSize, sortBy }], (oldData) => {
-          console.log('oldDataMAUUU', oldData, newCategory)
+          console.log('oldDataMAUUU', oldData, newCategory);
           return {
             ...oldData,
             items: oldData.items.filter(({ category_id }) => !newCategory.includes(category_id)),
           };
         });
       },
-      onSettled: async (pageCount , error) => {
+      onSettled: async (pageCount, error) => {
         await queryClient.invalidateQueries(['project-categories', { term, pageIndex, pageSize, sortBy }]);
         if (!error && pageCount) {
           queryClient.setQueryData(['project-categories', { term, pageIndex, pageSize, sortBy }], (oldData) => ({

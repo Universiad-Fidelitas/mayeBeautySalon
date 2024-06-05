@@ -6,30 +6,40 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useBrands } from 'hooks/react-query/useBrands';
 
 export const MarcasModalAddEdit = ({ tableInstance, apiParms }) => {
-    const { formatMessage: f } = useIntl();
-    const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
-    const { updateBrand, addBrand } = useBrands(apiParms);
+  const { formatMessage: f } = useIntl();
+  const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
+  const { updateBrand, addBrand } = useBrands(apiParms);
 
-    const onSubmit = useCallback((values) => {
+  const onSubmit = useCallback(
+    (values) => {
       if (selectedFlatRows.length === 1) {
-          updateBrand.mutateAsync(values);
+        updateBrand.mutateAsync(values);
       } else {
-          addBrand.mutateAsync(values);
+        addBrand.mutateAsync(values);
       }
       setIsOpenAddEditModal(false);
-    }, [setIsOpenAddEditModal, selectedFlatRows, addBrand]);
+    },
+    [setIsOpenAddEditModal, selectedFlatRows, addBrand]
+  );
 
-    const initialValues = useMemo(() => ({
-        brand_id: selectedFlatRows?.[0]?.original.brand_id || '',
-        name: selectedFlatRows?.[0]?.original.name || '',
-    }), [selectedFlatRows]);
+  const initialValues = useMemo(
+    () => ({
+      brand_id: selectedFlatRows?.[0]?.original.brand_id || '',
+      name: selectedFlatRows?.[0]?.original.name || '',
+    }),
+    [selectedFlatRows]
+  );
 
-    const validationSchema = useMemo(() => Yup.object().shape({
-      name: Yup.string()
-      .required(f({ id: 'helper.nameRequired' }))
-      .min(3, f({ id: 'helper.nameMinLength' }))
-        .max(20, f({ id: 'helper.nameMaxLength' }))
-    }), [f]);
+  const validationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        name: Yup.string()
+          .required(f({ id: 'helper.nameRequired' }))
+          .min(3, f({ id: 'helper.nameMinLength' }))
+          .max(20, f({ id: 'helper.nameMaxLength' })),
+      }),
+    [f]
+  );
 
   return (
     <Modal className="modal-right" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
@@ -64,5 +74,5 @@ export const MarcasModalAddEdit = ({ tableInstance, apiParms }) => {
         </Formik>
       </Card>
     </Modal>
-  )
-}
+  );
+};

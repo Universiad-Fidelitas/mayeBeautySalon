@@ -106,11 +106,10 @@ export const FirstDataRequestTap = ({ formRef }) => {
         {({ dirty, values, setFieldValue }) => {
           return (
             <Form>
-            <Row className="mb-3 mt-5">
-              <h2 className="medium-title text-primary font-weight-bold m-0 text-center">Elegir Servicio</h2>
-              <p className="card-text m-0 text-center">Por favor, elija el servicio, fecha y su estilista de preferencia para la cita</p>
-            </Row>
-
+              <Row className="mb-3 mt-5">
+                <h2 className="medium-title text-primary font-weight-bold m-0 text-center">Elegir Servicio</h2>
+                <p className="card-text m-0 text-center">Por favor, elija el servicio, fecha y su estilista de preferencia para la cita</p>
+              </Row>
 
               <Row className="mb-3 justify-content-center">
                 <Col className="col-12 col-lg-4">

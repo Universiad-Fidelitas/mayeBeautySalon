@@ -13,11 +13,14 @@ export const ThanksTap = () => {
   const { appointmentServiceInformation } = useSelector((state) => state.appointments);
   const { service_time, service_date, email } = appointmentServiceInformation;
   const { data, isSuccess: isServicesSuccess } = useGetAllServices();
-  const { name, price } = useMemo(() =>  isServicesSuccess && data.services.find(({service_id}) => service_id === appointmentServiceInformation.service_id), [appointmentServiceInformation, isServicesSuccess])
+  const { name, price } = useMemo(
+    () => isServicesSuccess && data.services.find(({ service_id }) => service_id === appointmentServiceInformation.service_id),
+    [appointmentServiceInformation, isServicesSuccess]
+  );
 
   useEffect(() => {
     dispatch(setIsEnd(true));
-  }, [])
+  }, []);
 
   const { formatDate } = useIntl();
   return (
@@ -29,7 +32,13 @@ export const ThanksTap = () => {
       ) : (
         <div>
           <div className="text-center">
-            <NavLink to="/" onClick={() => { dispatch(setAppointmentServiceInformation({}))}} className="btn btn-icon btn-icon-start btn-primary mb-3 ">
+            <NavLink
+              to="/"
+              onClick={() => {
+                dispatch(setAppointmentServiceInformation({}));
+              }}
+              className="btn btn-icon btn-icon-start btn-primary mb-3 "
+            >
               <CsLineIcons icon="arrow-left" /> <span>Volver al inicio</span>
             </NavLink>
             <h1 className="mb-2">¡Tu cita se ha agendado con éxito!</h1>

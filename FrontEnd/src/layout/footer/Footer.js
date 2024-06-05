@@ -8,7 +8,7 @@ export const Footer = () => {
   const { isLogin } = useSelector((state) => state.auth);
   return (
     <footer className="text-white">
-      { !isLogin && (
+      {!isLogin && (
         <Col className="col-12 general-padding-x bg-primary text-white">
           <Col className="col-12 px-0 py-3 border-bottom border-white d-flex">
             <Col className="col-6 col-lg-2 p-0">Síguenos en redes sociales</Col>
@@ -43,7 +43,9 @@ export const Footer = () => {
           </Col>
         </Col>
       )}
-      <Col className={classNames({ 'bg-primary' : !isLogin })}><div className='g-0 col-12 px-0 bg-secondary text-center py-3 text-dark copyright-footer'>© 2024 Copyright | Maye Beauty Salon</div></Col>
+      <Col className={classNames({ 'bg-primary': !isLogin })}>
+        <div className="g-0 col-12 px-0 bg-secondary text-center py-3 text-dark copyright-footer">© 2024 Copyright | Maye Beauty Salon</div>
+      </Col>
     </footer>
   );
 };

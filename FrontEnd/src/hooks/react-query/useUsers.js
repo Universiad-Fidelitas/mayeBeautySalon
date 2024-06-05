@@ -124,5 +124,4 @@ export const useGetEmployments = () => {
   return useQuery(['employments-users'], getEmployments);
 };
 
-
 /* eslint-enable react-hooks/rules-of-hooks */

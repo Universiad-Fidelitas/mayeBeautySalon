@@ -4,12 +4,12 @@ import { useIntl } from 'react-intl';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 
-export const useGetWeekAppointments = ({serviceDate, serviceId, employee}) => {
+export const useGetWeekAppointments = ({ serviceDate, serviceId, employee }) => {
   const getWeekAppointments = async () => {
     const { data } = await baseApi.post('/appointments/service-status', {
       selected_day: serviceDate.toISOString().split('T')[0],
       service_id: serviceId,
-      employee
+      employee,
     });
     return data;
   };
