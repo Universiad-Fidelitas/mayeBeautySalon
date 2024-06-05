@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - mayebeautysalon
+name: Development | MayeBeautySalon | Azure App Service
 
 on:
   push:
@@ -21,11 +21,13 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: npm install, build, and test
-        run: |
-          npm install
-          npm run build --if-present
-          npm run test --if-present
+      - name: Install dependencies
+        run:
+          npm run install-dependencies
+
+      - name: Build MayeBeautySalon App
+        run:
+          cd FrontEnd && npm run build
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
