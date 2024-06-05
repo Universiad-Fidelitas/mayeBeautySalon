@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Adding Node js v20.x
+      - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
@@ -59,6 +59,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'mayebeautysalon'
-          slot-name: 'Production'
+          slot-name: 'production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E5E8E2B1E7884794815D0DDBF945A0AD }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_6ba2a8e18ee34d6e9d23471f3c159150 }}
