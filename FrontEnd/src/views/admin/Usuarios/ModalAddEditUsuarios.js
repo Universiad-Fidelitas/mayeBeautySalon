@@ -20,7 +20,6 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
   const { formatMessage: f } = useIntl();
   const { selectedFlatRows, setIsOpenAddEditModal, isOpenAddEditModal } = tableInstance;
   const { updateUser, addUser } = useUsers(apiParms);
-
   const { isLoading, data: rolesData } = useRoles();
   const rolDataDropdown = useMemo(
     () =>
@@ -39,7 +38,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
 
   const onSubmit = useCallback(
     (values) => {
-      if (values.salary === '') {
+      if (values.salary === '' || values.salary === null) {
         values.salary = 0;
       }
       const formData = new FormData();
@@ -146,6 +145,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
   const customFormat = (value) => {
     return value ? value.replace(/-/g, '') : '';
   };
+
   return (
     <Modal className="modal-right large" show={isOpenAddEditModal} onHide={() => setIsOpenAddEditModal(false)}>
       <Card className={classNames('mb-5', { 'overlay-spinner': isLoading })}>
@@ -274,6 +274,7 @@ export const ModalAddEditUsuarios = ({ tableInstance, apiParms }) => {
                       <ErrorMessage className="text-danger" name="salary" component="div" />
                     </div>
                   </Col>
+
                   <Col className="col-8 top-label">
                     <SelectField
                       label={f({ id: 'helper.role' })}

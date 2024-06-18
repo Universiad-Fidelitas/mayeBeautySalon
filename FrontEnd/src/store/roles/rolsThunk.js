@@ -51,15 +51,19 @@ const editRol = ({ role_id, name, permissions, activated }) => {
 
 const deleteRols = (rol_ids) => {
   return async (dispatch) => {
-    try {
-      const { data } = await baseApi.post('/roles/delete', { role_id: rol_ids.toString() });
-      const { success, message } = data;
-      if (success) {
-        dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5, term2: true }));
-        toast(message, { className: 'success' });
+    if (rol_ids.includes(1) || rol_ids.includes(7) || rol_ids.includes(19)) {
+      toast('¡No se puede elminar los roles por defecto!', { className: 'danger' });
+    } else {
+      try {
+        const { data } = await baseApi.post('/roles/delete', { role_id: rol_ids.toString() });
+        const { success, message } = data;
+        if (success) {
+          dispatch(getRols({ term: '', sortBy: [], pageIndex: 0, pageSize: 5, term2: true }));
+          toast(message, { className: 'success' });
+        }
+      } catch (error) {
+        toast('¡Se ha producido un error al ejecutar la acción.!', { className: 'danger' });
       }
-    } catch (error) {
-      toast('¡Se ha producido un error al ejecutar la acción.!', { className: 'danger' });
     }
   };
 };
