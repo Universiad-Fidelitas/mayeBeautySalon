@@ -154,7 +154,7 @@ const postBill = async (req, res = response) => {
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
         const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
-        const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
+        const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , `venta ${description}`]);
 
         for (const data of dataToInsert) {
             const query = 'INSERT INTO `inventory_products` (amount, inventory_id, product_id) VALUES (?, ?, ?);';
