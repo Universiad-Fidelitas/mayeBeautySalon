@@ -5,13 +5,17 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { toast } from 'react-toastify';
 
 export const useGetWeekAppointments = ({ serviceDate, serviceId, employee }) => {
+  console.log('useGetWeekAppointments', serviceDate, serviceId, employee)
   const getWeekAppointments = async () => {
-    const { data } = await baseApi.post('/appointments/service-status', {
-      selected_day: serviceDate.toISOString().split('T')[0],
-      service_id: serviceId,
-      employee,
-    });
-    return data;
+    if(serviceDate && serviceId && employee) {
+      const { data } = await baseApi.post('/appointments/service-status', {
+        selected_day: serviceDate.toISOString().split('T')[0],
+        service_id: serviceId,
+        employee,
+      });
+      return data;
+    }
+    return []
   };
   return useQuery(['client-appointments'], getWeekAppointments);
 };
