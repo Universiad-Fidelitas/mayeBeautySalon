@@ -23,7 +23,7 @@ export const HomeView = () => {
         </Container>
       </div>
       <div className="video-responsive">
-      <h1 className="display-3 text-white mb-5">Como agendar citas</h1>
+      <h1 className="display-3 text-primary font-weight-bold mb-5">Como agendar citas</h1>
         <iframe src="https://www.youtube.com/embed/t6pTwKRVBFA?si=wFpjdxx6XRXGIKbP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
       </div>
     </div>
