@@ -22,8 +22,10 @@ export const useGetWeekAppointments = ({ serviceDate, serviceId, employee }) => 
 
 export const useGetMonthAppointments = () => {
   const getMonthAppointments = async () => {
+    const d = new Date();
+    const month = d.getMonth();
     const { data } = await baseApi.post('/appointments', {
-      monthNumber: 4,
+      monthNumber: month + 1,
     });
     return data;
   };

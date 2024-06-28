@@ -6,7 +6,6 @@ import { CSVLink } from 'react-csv';
 
 export const ControlsExportCSV = ({ tableInstance, type }) => {
   const { formatMessage: f } = useIntl();
-  console.log('ti', tableInstance);
   let headers2 = [];
   let data2 = [];
 
