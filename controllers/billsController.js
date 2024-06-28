@@ -228,9 +228,11 @@ const putBill = async (req, res = response) => {
             const queryAddBill =`UPDATE bills SET appointment_id = ? WHERE bills_id = ?`;
             await dbService.query(queryAddBill, [appointment_id, bills_id]);
         }
-        const userQuery2 = `UPDATE inventory SET description= ? WHERE inventory_id = ? ;`;
-        await dbService.query(userQuery2, [ description, inventory_id]);
-
+        if(inventory_id !==null ){
+            const userQuery2 = `UPDATE inventory SET description= ? WHERE inventory_id = ? ;`;
+            await dbService.query(userQuery2, [ description, inventory_id]);
+        }
+        let NewInventoryID= inventory_id;
         // Delete items not included in dataToInsert
         const existingItemIds = dataToInsert.map((data) => data.invetory_products_id).filter((id) => id !== 0);
         let formattedIds = existingItemIds.join(',');
@@ -242,26 +244,26 @@ const putBill = async (req, res = response) => {
             const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
             await dbService.query(deleteQuery, [ inventory_id])
         }
-
+        
         for (const data of dataToInsert) {
             if (data.invetory_products_id === 0) {
                 // Insert new item
-                if(inventory_id === undefined || inventory_id === null || inventory_id === 0){
+                if(inventory_id === undefined || inventory_id === null || NewInventoryID === 0){
                     const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
                     const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
                     const queryAddBill =`UPDATE bills SET inventory_id = ? WHERE bills_id = ?`;
                     await dbService.query(queryAddBill, [inventoryInsertId,bills_id]);
                     const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
                     await dbService.query(insertItemQuery, [data.amount, data.product_id, inventoryInsertId]);
+                    NewInventoryID=inventoryInsertId;
                 }else{
                     const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
-                    await dbService.query(insertItemQuery, [data.amount, data.product_id, inventory_id]);
-                    
+                    await dbService.query(insertItemQuery, [data.amount, data.product_id, NewInventoryID]);
                 }
             } else {
                 // Update existing item
                 const updateItemQuery = 'UPDATE inventory_products SET amount = ?, product_id = ? WHERE invetory_products_id = ? AND inventory_id = ?';
-                await dbService.query(updateItemQuery, [data.amount, data.product_id, data.invetory_products_id, inventory_id]);
+                await dbService.query(updateItemQuery, [data.amount, data.product_id, data.invetory_products_id, NewInventoryID]);
             }
         }
         const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
