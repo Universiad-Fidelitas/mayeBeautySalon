@@ -25,13 +25,12 @@ const getBills = async (req, res = response) => {
         let baseQuery = 'select * from bill_view where activated = 1';
         let querytotal = `SELECT COALESCE(appointment_price, 0) + COALESCE(inventory_price, 0) AS total_price FROM bill_view where activated = 1`;
         if (term) {
-            baseQuery += ` AND bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%'`;
-            querytotal += ` AND bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%'`;
+            baseQuery += ` AND (bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%')`;
+            querytotal += ` AND (bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%')`;
         }
-        
         if (term2 && term3) {
-            baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
-            querytotal += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+            baseQuery += ` AND (inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}')`;
+            querytotal += ` AND (inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}')`;
         }
         const orderByClauses = [];
 
@@ -311,7 +310,7 @@ const deleteBill = async (req, res = response) => {
         const rows = await dbService.query(userQuery, [bills_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('CurrentUserId'), 'delete', 'Inactivación de factura']);
-
+        // Agregar un for each bills_id elimnar el pago asignado
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,

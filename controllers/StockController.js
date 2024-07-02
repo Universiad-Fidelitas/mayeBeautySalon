@@ -19,10 +19,10 @@ const getStock = async (req, res = response) => {
     try {
         const offset = pageIndex * pageSize;
 
-        let baseQuery = 'select * FROM `inventory_summary`';
+        let baseQuery = 'select * FROM `inventory_summary` WHERE activated = 1';
 
         if (term) {
-            baseQuery += ` WHERE name LIKE '%${term}%' OR size LIKE '%${term}%' OR total_amount LIKE '%${term}%' OR price = '${term}'`;
+            baseQuery += ` AND (name LIKE '%${term}%' OR size LIKE '%${term}%' OR total_amount LIKE '%${term}%' OR price = '${term})'`;
         }
         if(category){
             if(category !== 'Elija una categoria'){
