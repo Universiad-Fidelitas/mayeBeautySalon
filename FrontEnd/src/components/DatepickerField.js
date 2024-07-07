@@ -18,7 +18,7 @@ export const DatepickerField = ({ label, ...props }) => {
         selected={(field.value && new Date(field.value)) || null}
         onChange={(date) => setValue(date)}
         onBlur={() => field.onBlur(field.name)}
-        minDate={moment().add(1, 'day').toDate()}
+        minDate={moment().add(0, 'day').toDate()}
       />
       {meta.touched && meta.error ? <div className="error">{meta.error}</div> : null}
     </div>
