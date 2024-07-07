@@ -152,7 +152,7 @@ const postBill = async (req, res = response) => {
     try {
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
-        const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
+        const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CONVERT_TZ(CURRENT_TIMESTAMP, '+00:00', '-06:00'), ?);`;
         const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , `venta ${description}`]);
 
         for (const data of dataToInsert) {
@@ -248,7 +248,7 @@ const putBill = async (req, res = response) => {
             if (data.invetory_products_id === 0) {
                 // Insert new item
                 if(inventory_id === undefined || inventory_id === null || NewInventoryID === 0){
-                    const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
+                    const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CONVERT_TZ(CURRENT_TIMESTAMP, '+00:00', '-06:00'), ?);`;
                     const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
                     const queryAddBill =`UPDATE bills SET inventory_id = ? WHERE bills_id = ?`;
                     await dbService.query(queryAddBill, [inventoryInsertId,bills_id]);
