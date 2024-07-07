@@ -28,6 +28,7 @@ const routesAndMenuItems = {
       component: Dashboard,
       protected: true,
       hideInMenu: true,
+      exact: true
     },
     {
       path: `${appRoot}/admin/citas`,
@@ -35,30 +36,33 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: Citas,
       protected: true,
+      exact: true
     },
     {
       path: `${appRoot}/usuarios`,
       label: 'menu.usuarios',
       protected: true,
+      exact: true,
       icon: 'laptop',
       subs: [
-        { path: '/users', icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
-        { path: '/roles', icon: 'diagram-1', label: 'menu.roles', roles: 'R_ROLES', component: Roles },
+        { path: '/users', exact: true, icon: 'user', label: 'menu.users', roles: 'R_USERS', component: Usuarios },
+        { path: '/roles', exact: true, icon: 'diagram-1', label: 'menu.roles', roles: 'R_ROLES', component: Roles },
       ],
     },
     {
       path: `${appRoot}/inventariado`,
       label: 'inventory.title',
       icon: 'database',
+      exact: true,
       subs: [
-        { path: '/inventario', icon: 'file-text', label: 'Movimientos Inventario', roles: 'R_INVENTORY', component: Inventario },
-        { path: '/categories', icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
-        { path: '/brands', icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
-        { path: '/products', icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
-        { path: '/providers', icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
-        { path: '/servicios', icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
-        { path: '/stock', icon: 'wizard', label: 'Inventario', roles: 'R_PRODUCTS', component: Stock },
-        { path: '/notifications', icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificacions },
+        { path: '/inventario', exact: true, icon: 'file-text', label: 'Movimientos Inventario', roles: 'R_INVENTORY', component: Inventario },
+        { path: '/categories', exact: true, icon: 'dropdown', label: 'Categorias', roles: 'R_CATEGORIES', component: Categorias },
+        { path: '/brands', exact: true, icon: 'dropdown', label: 'Marcas', roles: 'R_BRANDS', component: Marcas },
+        { path: '/products', exact: true, icon: 'gift', label: 'Productos', roles: 'R_PRODUCTS', component: Productos },
+        { path: '/providers', exact: true, icon: 'destination', label: 'Proveedores', roles: 'R_PROVIDERS', component: Proveedores },
+        { path: '/servicios', exact: true, icon: 'wizard', label: 'Servicios', roles: 'R_SERVICES', component: ServicesView },
+        { path: '/stock', exact: true, icon: 'wizard', label: 'Inventario', roles: 'R_PRODUCTS', component: Stock },
+        { path: '/notifications', exact: true, icon: 'bell', label: 'Notificaciones', roles: 'R_PRODUCTS', component: Notificacions },
       ],
       protected: true,
     },
@@ -67,10 +71,11 @@ const routesAndMenuItems = {
       label: 'Facturación',
       icon: 'book',
       protected: true,
+      exact: true,
       subs: [
-        { path: '/gastos', icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
-        { path: '/facturas', icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
-        { path: '/pagos', icon: 'book-open', label: 'Pagos', component: Pagos },
+        { path: '/gastos', exact: true, icon: 'content', label: 'Gastos', roles: 'R_BILLS', component: Gastos },
+        { path: '/facturas', exact: true, icon: 'content', label: 'Facturas', roles: 'R_BILLS', component: Facturas },
+        { path: '/pagos',exact: true, icon: 'book-open', label: 'Pagos', component: Pagos },
       ],
     },
     {
@@ -79,11 +84,13 @@ const routesAndMenuItems = {
       icon: 'check-square',
       component: AppointmentsClient,
       publicOnly: true,
+      exact: true
     },
     {
       path: '/',
       component: HomeView,
       publicOnly: true,
+      exact: true
     },
   ],
   sidebarItems: [],

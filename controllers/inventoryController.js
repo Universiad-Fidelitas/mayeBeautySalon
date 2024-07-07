@@ -63,7 +63,7 @@ const postInventory = async (req, res = response) => {
     const { action, dataToInsert , description } = req.body;
     let insertIds = []; 
     try {
-        const userQuery = `INSERT INTO inventory ( action, price, date, description) VALUES (?, ?, CURRENT_TIMESTAMP, ?);`;
+        const userQuery = `INSERT INTO inventory ( action, price, date, description) VALUES (?, ?, CONVERT_TZ(CURRENT_TIMESTAMP, '+00:00', '-06:00'), ?);`;
         const { insertId: inventoryInsertId } = await dbService.query(userQuery, [action, 0 , description]);
         for (const data of dataToInsert) {
             const query = 'INSERT INTO `inventory_products` (amount, inventory_id, product_id) VALUES (?, ?, ?);';

@@ -588,6 +588,16 @@ export const ModalAddEditFacturas = ({ tableInstance, addItem, editItem, validat
                               </Row>
                             </div>
                           ))}
+                          {/* Always show the add button at the end */}
+                          {values.dataToInsert.length === 0 && (
+                            <Row className="g-3 m-0">
+                              <Col className="col-6 m-0 mt-1">
+                                <Button variant="success w-100 p-2" onClick={() => push({ product_id: '', amount: '', invetory_products_id: 0 })}>
+                                  <CsLineIcons icon="plus" />
+                                </Button>
+                              </Col>
+                            </Row>
+                          )}
                         </div>
                       )}
                     </FieldArray>

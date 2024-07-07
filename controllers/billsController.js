@@ -25,13 +25,12 @@ const getBills = async (req, res = response) => {
         let baseQuery = 'select * from bill_view where activated = 1';
         let querytotal = `SELECT COALESCE(appointment_price, 0) + COALESCE(inventory_price, 0) AS total_price FROM bill_view where activated = 1`;
         if (term) {
-            baseQuery += ` AND bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%'`;
-            querytotal += ` AND bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%'`;
+            baseQuery += ` AND (bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%')`;
+            querytotal += ` AND (bills_id = '${term}' OR email LIKE '%${term}%' OR id_card_type LIKE '%${term}%' OR id_card LIKE '%${term}%' OR status LIKE '%${term}%')`;
         }
-        
         if (term2 && term3) {
-            baseQuery += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
-            querytotal += ` AND inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}'`;
+            baseQuery += ` AND (inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}')`;
+            querytotal += ` AND (inventory_date BETWEEN '${term2}' AND '${term3}' OR appointment_date BETWEEN '${term2}' AND '${term3}')`;
         }
         const orderByClauses = [];
 
@@ -153,8 +152,8 @@ const postBill = async (req, res = response) => {
     try {
         const userQuery = `INSERT INTO payments(status, payment_type, sinpe_phone_number) VALUES (?, ?, ?);`;
         const { insertId: paymentInsertId } = await dbService.query(userQuery, [status, payment_type, sinpe_phone_number]);
-        const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
-        const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
+        const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CONVERT_TZ(CURRENT_TIMESTAMP, '+00:00', '-06:00'), ?);`;
+        const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , `venta ${description}`]);
 
         for (const data of dataToInsert) {
             const query = 'INSERT INTO `inventory_products` (amount, inventory_id, product_id) VALUES (?, ?, ?);';
@@ -228,9 +227,11 @@ const putBill = async (req, res = response) => {
             const queryAddBill =`UPDATE bills SET appointment_id = ? WHERE bills_id = ?`;
             await dbService.query(queryAddBill, [appointment_id, bills_id]);
         }
-        const userQuery2 = `UPDATE inventory SET description= ? WHERE inventory_id = ? ;`;
-        await dbService.query(userQuery2, [ description, inventory_id]);
-
+        if(inventory_id !==null ){
+            const userQuery2 = `UPDATE inventory SET description= ? WHERE inventory_id = ? ;`;
+            await dbService.query(userQuery2, [ description, inventory_id]);
+        }
+        let NewInventoryID= inventory_id;
         // Delete items not included in dataToInsert
         const existingItemIds = dataToInsert.map((data) => data.invetory_products_id).filter((id) => id !== 0);
         let formattedIds = existingItemIds.join(',');
@@ -242,26 +243,26 @@ const putBill = async (req, res = response) => {
             const  deleteQuery = `DELETE FROM inventory_products WHERE invetory_products_id NOT IN (${formattedIds}) AND inventory_id = ?`;
             await dbService.query(deleteQuery, [ inventory_id])
         }
-
+        
         for (const data of dataToInsert) {
             if (data.invetory_products_id === 0) {
                 // Insert new item
-                if(inventory_id === undefined || inventory_id === null || inventory_id === 0){
-                    const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CURRENT_TIMESTAMP, ?);`;
+                if(inventory_id === undefined || inventory_id === null || NewInventoryID === 0){
+                    const userQuery2 = `INSERT INTO inventory ( action, price, date, description) VALUES ('remove', ?, CONVERT_TZ(CURRENT_TIMESTAMP, '+00:00', '-06:00'), ?);`;
                     const { insertId: inventoryInsertId } = await dbService.query(userQuery2, [ 0 , description]);
                     const queryAddBill =`UPDATE bills SET inventory_id = ? WHERE bills_id = ?`;
                     await dbService.query(queryAddBill, [inventoryInsertId,bills_id]);
                     const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
                     await dbService.query(insertItemQuery, [data.amount, data.product_id, inventoryInsertId]);
+                    NewInventoryID=inventoryInsertId;
                 }else{
                     const insertItemQuery = 'INSERT INTO inventory_products (amount, product_id, inventory_id) VALUES (?, ?, ?)';
-                    await dbService.query(insertItemQuery, [data.amount, data.product_id, inventory_id]);
-                    
+                    await dbService.query(insertItemQuery, [data.amount, data.product_id, NewInventoryID]);
                 }
             } else {
                 // Update existing item
                 const updateItemQuery = 'UPDATE inventory_products SET amount = ?, product_id = ? WHERE invetory_products_id = ? AND inventory_id = ?';
-                await dbService.query(updateItemQuery, [data.amount, data.product_id, data.invetory_products_id, inventory_id]);
+                await dbService.query(updateItemQuery, [data.amount, data.product_id, data.invetory_products_id, NewInventoryID]);
             }
         }
         const queryUserChecker = "SELECT * FROM users WHERE id_card = ? ";
@@ -309,7 +310,7 @@ const deleteBill = async (req, res = response) => {
         const rows = await dbService.query(userQuery, [bills_id]);
         const { affectedRows } = helper.emptyOrRows(rows);
         await dbService.query('INSERT INTO logs (log_id, affected_table, user_id, log_type, description) VALUES (NULL, ?, ?, ?, ?)', ['Facturas', req.header('CurrentUserId'), 'delete', 'Inactivación de factura']);
-
+        // Agregar un for each bills_id elimnar el pago asignado
         if( affectedRows === 1 ) {
             res.status(200).json({
                 success: true,

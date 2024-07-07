@@ -3,8 +3,10 @@ import { NavLink } from 'react-router-dom';
 import LayoutFullpage from 'layout/LayoutFullpage';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 import HtmlHead from 'components/html-head/HtmlHead';
+import { useSelector } from 'react-redux';
 
 const InvalidAccess = () => {
+  const { isLogin } = useSelector((state) => state.auth);
   const title = 'Invalid Access';
   const description = 'Invalid Access Page';
 
@@ -27,7 +29,7 @@ const InvalidAccess = () => {
           </p>
         </div>
         <div>
-          <NavLink to="/" className="btn btn-icon btn-icon-start btn-primary">
+          <NavLink to={ isLogin ? '/dashboard' : '/'} className="btn btn-icon btn-icon-start btn-primary">
             <CsLineIcons icon="arrow-left" /> <span>Volver a Inicio</span>
           </NavLink>
         </div>

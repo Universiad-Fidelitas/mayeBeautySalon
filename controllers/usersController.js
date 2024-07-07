@@ -62,7 +62,15 @@ const getUser = async (req, res = response) => {
         res.status(500).json({ message: error.message });
     }
 }
-
+function generateRandomPassword(length) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * chars.length);
+        password += chars[randomIndex];
+    }
+    return password;
+}
 const postUser = async (req, res = response) => {
     const { role_id, id_card, first_name, last_name, email, phone, salary, id_card_type, activated } = req.body;
     try {
@@ -71,7 +79,8 @@ const postUser = async (req, res = response) => {
         
         if (affectedRows > 0) {
             const userQuery = 'INSERT INTO passwords (user_id, password) VALUES (?, ?)';
-            const { affectedRows } = await dbService.query(userQuery, [insertId, await hashPassword('123456789') ]);
+            const randomPassword = generateRandomPassword(12);
+            const { affectedRows } = await dbService.query(userQuery, [insertId, await hashPassword(randomPassword) ]);
             if (affectedRows > 0) {
                 res.status(200).json({
                     user_id: insertId,
