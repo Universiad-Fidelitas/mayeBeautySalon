@@ -45,20 +45,20 @@ class Server {
         this.app.use('/v1/api/users', require('../routes/users'));
         this.app.use('/v1/api/roles', require('../routes/roles'));
         this.app.use('/v1/api/auth', require('../routes/auth'));
-        this.app.use('/v1/api/providers', require('../routes/providers'));
-        this.app.use('/v1/api/products', require('../routes/products'));
-        this.app.use('/v1/api/brands', require('../routes/brands'));
-        this.app.use('/v1/api/categories', require('../routes/categories'));
-        this.app.use('/v1/api/inventory', require('../routes/inventory'));
+        this.app.use('/v1/api/providers',  authenticateToken,require('../routes/providers'));
+        this.app.use('/v1/api/products',  authenticateToken,require('../routes/products'));
+        this.app.use('/v1/api/brands',  authenticateToken,require('../routes/brands'));
+        this.app.use('/v1/api/categories',  authenticateToken,require('../routes/categories'));
+        this.app.use('/v1/api/inventory',  authenticateToken,require('../routes/inventory'));
         this.app.use('/v1/api/services', require('../routes/services'));
-        this.app.use('/v1/api/stock', require('../routes/stock'));
-        this.app.use('/v1/api/notifications', require('../routes/notifications'));
+        this.app.use('/v1/api/stock',  authenticateToken,require('../routes/stock'));
+        this.app.use('/v1/api/notifications',  authenticateToken,require('../routes/notifications'));
         this.app.use('/v1/api/appointments', require('../routes/appointments'));
-        this.app.use('/v1/api/expenses', require('../routes/expenses'));
-        this.app.use('/v1/api/reports', require('../routes/reports'));
-        this.app.use('/v1/api/bills', require('../routes/bills'));
-        this.app.use('/v1/api/logs', require('../routes/logs'));
-        this.app.use('/v1/api/payments', require('../routes/payments'));
+        this.app.use('/v1/api/expenses', authenticateToken, require('../routes/expenses'));
+        this.app.use('/v1/api/reports',  authenticateToken,require('../routes/reports'));
+        this.app.use('/v1/api/bills',  authenticateToken,require('../routes/bills'));
+        this.app.use('/v1/api/logs', authenticateToken, require('../routes/logs'));
+        this.app.use('/v1/api/payments', authenticateToken, require('../routes/payments'));
         this.app.use('/v1/api/images-uploader', require('../routes/imagesUploader'));
 
         // // Serve the static files for the React app
