@@ -1,6 +1,5 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
-import YouTube from 'react-youtube';
 
 export const HomeView = () => {
   return (
