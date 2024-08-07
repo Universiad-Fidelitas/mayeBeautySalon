@@ -1,8 +1,10 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
+import YouTube from 'react-youtube';
 
 export const HomeView = () => {
   return (
+    <>
     <div className="home-page-hero">
       <Container>
         <div className="min-h-100 d-flex align-items-center">
@@ -21,5 +23,10 @@ export const HomeView = () => {
         </div>
       </Container>
     </div>
+    <div className='home-vide-wrapper'>
+      <h2 className="big-title text-primary mb-3 font-weight-bold">¿Como agendar citas?</h2>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/t6pTwKRVBFA?si=BZufFIPFMVsTG00i" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen/>
+    </div>
+    </>
   );
 };

@@ -60,11 +60,22 @@ html[data-show='true'] {
     display: flex;
   }
 }
+.home-vide-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 0;
+  flex-direction: column;
+  iframe {
+    width: 100% !important;
+    max-width: 800px !important;
+    height: 500px;
+    display: block;
+  }
+}
+
 iframe {
-  z-index: 1 !important;
   position: relative !important;
-  width: 100% !important;
-  max-width: 700px !important;
-  height: 400px;
+  z-index: 1 !important;
   display: none;
 }
