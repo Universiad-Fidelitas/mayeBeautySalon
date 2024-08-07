@@ -295,8 +295,10 @@
   padding-top: calc(var(--nav-size-slim) + var(--main-spacing-horizontal) / 2);
   background: url('/img/background/background-blue.webp') no-repeat center center fixed;
   background-size: cover;
-  min-height: calc(100vh - 282px);
+  min-height: calc(100vh - 482px);
   display: flex;
+  padding-left: var(--main-spacing-horizontal);
+  padding-right: var(--main-spacing-horizontal);
 }
 
 .appointmentWorkedSelect {

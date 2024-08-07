@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
     return (
       <>
         <Nav />
-        <main className={classNames('p-0', { isadmin: isLogin })}>
+        <main className={classNames('homepage-wrapper', { isadmin: isLogin })}>
           <div className="h-100">
             <SidebarMenu />
             <Col className="h-100" id="contentArea">

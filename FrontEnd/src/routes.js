@@ -16,6 +16,7 @@ import { ServicesView } from 'views/admin/Inventario/Services/ServicesView';
 import { HomeView } from 'views/publicViews/HomeView';
 import Categorias from 'views/admin/Inventario/Categorias/Categorias';
 import { Notificacions } from 'views/admin/Inventario/Notifications/Notificacions';
+import { Tutoriales } from 'views/admin/Tutoriales/Tutoriales';
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 
@@ -90,6 +91,14 @@ const routesAndMenuItems = {
       path: '/',
       component: HomeView,
       publicOnly: true,
+      exact: true
+    },
+    {
+      path: `${appRoot}/admin/tutoriales`,
+      label: 'Tutoriales',
+      icon: 'file-video',
+      component: Tutoriales,
+      protected: true,
       exact: true
     },
   ],
