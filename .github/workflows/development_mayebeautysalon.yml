@@ -60,5 +60,5 @@ jobs:
         with:
           app-name: 'mayebeautysalon'
           slot-name: 'production'
-          package: .
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_727886b42aee4a35b8265c348da32ab7 }}
+          package: .
