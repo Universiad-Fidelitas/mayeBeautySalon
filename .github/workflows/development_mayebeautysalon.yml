@@ -56,9 +56,9 @@ jobs:
       
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'mayebeautysalon'
-          slot-name: 'Production'
+          slot-name: 'production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_05d064a1bc1541a5bdb2464c73fb5ef4 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_05d064a1bc1541a5bdb2464c73fb5ef4 }}
