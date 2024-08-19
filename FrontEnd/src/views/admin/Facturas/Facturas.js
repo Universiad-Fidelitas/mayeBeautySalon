@@ -152,8 +152,8 @@ const Facturas = () => {
             return '';
           }
           const dateObject = new Date(value);
-          const dateString = dateObject.toLocaleDateString();
-          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const dateString = dateObject.toLocaleDateString('en-US', { timeZone: 'America/Guatemala' });
+          const timeString = dateObject.toLocaleTimeString('en-US', { timeZone: 'America/Guatemala' }, { hour: '2-digit', minute: '2-digit' });
           return `${dateString} ${timeString}`;
         },
       },
@@ -172,7 +172,9 @@ const Facturas = () => {
           if (value === null) {
             return '';
           }
-          const dateObject = new Date(value);
+          const dateInTimeZone = new Date(value);
+          const options = { timeZone: 'America/Guatemala', hour12: false };
+          const dateObject = new Date(dateInTimeZone.toLocaleString('en-US', options));
           const month = dateObject.getMonth() + 1;
           const day = dateObject.getDate();
           const year = dateObject.getFullYear();

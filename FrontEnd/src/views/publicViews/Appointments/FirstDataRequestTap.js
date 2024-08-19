@@ -212,7 +212,7 @@ export const FirstDataRequestTap = ({ formRef }) => {
                                       : 'text-primary'
                                   }`}
                                 >
-                                  {formatDate(day.date, { month: 'long', day: 'numeric' })}
+                                  {moment(day.date).locale('es').format('D [de] MMMM')}
                                 </p>
                               </th>
                             ))}

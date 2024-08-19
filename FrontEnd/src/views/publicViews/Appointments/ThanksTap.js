@@ -55,7 +55,7 @@ export const ThanksTap = () => {
             </p>
             <p className="m-0">
               <span className="font-weight-bold text-primary">Fecha: </span>
-              {formatDate(moment(service_date, 'YYYY-MM-DD'), { month: 'long', day: 'numeric', year: 'numeric' })}
+              {moment(service_date, 'YYYY-MM-DD').locale('es').format('D [de] MMMM [de] YYYY')}
             </p>
             <p className="m-0">
               <span className="font-weight-bold text-primary">Hora:</span> {moment(service_time, 'HH:mm:ss').format('hh:mm A')}{' '}
